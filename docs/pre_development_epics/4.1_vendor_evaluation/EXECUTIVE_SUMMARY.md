@@ -269,23 +269,53 @@ for (const event of events) {
 
 ### Supabase ✅
 ```
-Year 1 (5K avg users):   $1,200 (infrastructure) + $5,000 (dev)  = $6,200
-Year 2 (10K avg users):  $2,400 (infrastructure) + $2,000 (maint) = $4,400
-Year 3 (15K avg users):  $3,600 (infrastructure) + $2,000 (maint) = $5,600
-────────────────────────────────────────────────────────────────────
-3-Year TCO:              $16,200
+Year 1 (Avg 5K users):
+  Infrastructure:              $600 ($50/mo avg)
+  Development:               $5,000
+  ────────────────────────────────
+  Total Year 1:              $5,600
+
+Year 2 (Avg 10K users):
+  Infrastructure:            $1,200 ($100/mo avg)
+  Maintenance:               $2,000
+  ────────────────────────────────
+  Total Year 2:              $3,200
+
+Year 3 (Avg 15K users):
+  Infrastructure:            $1,800 ($150/mo avg)
+  Maintenance:               $2,000
+  ────────────────────────────────
+  Total Year 3:              $3,800
+
+════════════════════════════════════
+3-YEAR TCO:                 $12,600
 ```
 
 ### Firebase
 ```
-Year 1 (5K avg users):   $2,400 (infrastructure) + $5,000 (dev)  = $7,400
-Year 2 (10K avg users):  $4,800 (infrastructure) + $3,000 (maint) = $7,800
-Year 3 (15K avg users):  $7,200 (infrastructure) + $3,000 (maint) = $10,200
-────────────────────────────────────────────────────────────────────
-3-Year TCO:              $25,400
+Year 1 (Avg 5K users):
+  Infrastructure:            $1,500 ($125/mo avg)
+  Development:               $5,000
+  ────────────────────────────────
+  Total Year 1:              $6,500
+
+Year 2 (Avg 10K users):
+  Infrastructure:            $3,000 ($250/mo avg)
+  Maintenance:               $2,500
+  ────────────────────────────────
+  Total Year 2:              $5,500
+
+Year 3 (Avg 15K users):
+  Infrastructure:            $4,500 ($375/mo avg)
+  Maintenance:               $2,500
+  ────────────────────────────────
+  Total Year 3:              $7,000
+
+════════════════════════════════════
+3-YEAR TCO:                 $19,000
 ```
 
-**Savings with Supabase:** $9,200 over 3 years (36% reduction)
+**Savings with Supabase:** $6,400 over 3 years (34% reduction)
 
 ---
 
