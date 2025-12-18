@@ -150,7 +150,7 @@ This threat model uses the **STRIDE** methodology to systematically identify thr
 **Likelihood:** Medium
 
 **Existing Mitigations:**
-- Email/password authentication with password complexity requirements (min 6 chars + number/special char)
+- Email/password authentication with password complexity requirements (min 6 chars + number/special char) - *as defined in Requirements.md section 3.1*
 - Email verification required before first login
 - JWT tokens with expiration
 - Secure storage using iOS Keychain / Android Keystore
@@ -191,7 +191,7 @@ This threat model uses the **STRIDE** methodology to systematically identify thr
 
 **Additional Mitigations Required:**
 - **Token rotation** - refresh tokens before expiration
-- **Short-lived access tokens** (15 minutes) with longer-lived refresh tokens
+- **Short-lived access tokens** (1 hour recommended for mobile apps) with longer-lived refresh tokens (30 days)
 - **Token revocation list** for compromised tokens
 - **Certificate pinning** to prevent MITM attacks
 - **No logging of tokens** in application logs or error reports
@@ -376,13 +376,13 @@ This threat model uses the **STRIDE** methodology to systematically identify thr
 - Supabase infrastructure with built-in rate limiting
 
 **Additional Mitigations Required:**
-- **Aggressive rate limiting** on all auth endpoints:
-  - Login: 5 attempts per 15 min per IP
+- **Aggressive rate limiting** on all auth endpoints (combine IP-based with user/device-based for robustness):
+  - Login: 5 attempts per 15 min per IP/email combination
   - Registration: 3 attempts per hour per IP
   - Password reset: 3 attempts per hour per email
   - Email verification: 5 attempts per hour per user
 - **CAPTCHA** for repeated failed attempts
-- **IP-based throttling and blocking**
+- **Combined throttling** - IP-based, user-based, and device-based to handle shared NAT gateways and distributed attacks
 - **Geographic rate limiting** if applicable
 - **Monitoring and alerting** for abnormal traffic patterns
 - **DDoS protection** at infrastructure level
@@ -582,7 +582,7 @@ This threat model uses the **STRIDE** methodology to systematically identify thr
 - Gallery limit (1,000 photos per baby profile)
 
 **Additional Mitigations Required:**
-- **Per-user storage quotas** (e.g., 5GB per baby profile)
+- **Per-user storage quotas** (specific values to be determined based on business requirements and cost analysis)
 - **Upload rate limiting** (max 20 uploads per hour)
 - **Download rate limiting** (max 100 downloads per hour)
 - **Bandwidth monitoring and alerting**
@@ -770,8 +770,8 @@ This threat model uses the **STRIDE** methodology to systematically identify thr
 ### Phase 1: Critical Mitigations (Pre-Launch - Weeks 1-4)
 
 **Authentication:**
-- [ ] Implement rate limiting on all auth endpoints
-- [ ] Configure short-lived access tokens (15 min) with refresh tokens
+- [ ] Implement rate limiting on all auth endpoints (combined IP/user/device-based)
+- [ ] Configure short-lived access tokens (1 hour) with refresh tokens (30 days)
 - [ ] Implement token rotation mechanism
 - [ ] Add certificate pinning to mobile app
 - [ ] Configure session timeout (30 days inactivity)
@@ -930,9 +930,15 @@ This threat model uses the **STRIDE** methodology to systematically identify thr
 
 - **Access:** Users can view all their data
 - **Rectification:** Users can correct their data
-- **Erasure:** Soft delete with 7-year retention
+- **Erasure:** Soft delete with 7-year retention *as defined in Requirements.md section 6 for legal/compliance purposes*
 - **Portability:** Ability to export user data (future enhancement)
 - **Consent:** Clear consent for data collection and processing
+
+**Note on Data Retention:** The 7-year retention policy comes from Requirements.md section 6. This retention period must be supported by specific legal grounds (e.g., regulatory requirements, legitimate business interests). For jurisdictions with stricter privacy requirements (e.g., GDPR), consider implementing:
+- Clear communication of retention policy in Terms of Service
+- Documentation of legal basis for retention
+- Hard delete option for users in jurisdictions requiring immediate deletion
+- Regular review of retention requirements with legal counsel
 
 ### 8.3. Data Retention
 
