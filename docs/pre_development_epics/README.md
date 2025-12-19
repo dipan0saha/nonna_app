@@ -109,6 +109,25 @@ Analysis of competitive landscape for family sharing and baby tracking apps.
 - ✅ Privacy trend: 78% of parents concerned about baby photo privacy
 - ✅ Unique position: Role-based access, event RSVP, integrated registry
 
+### Story 9.3: Draft Terms of Service and Policies
+Comprehensive legal and policy documentation for stakeholder and legal compliance.
+
+- 📄 [Executive Summary](docs/9.3_terms_policies/EXECUTIVE_SUMMARY.md) - Overview and implementation roadmap
+- 📋 [Terms of Service](docs/9.3_terms_policies/TERMS_OF_SERVICE.md) - User agreement and legal framework
+- 🔒 [Privacy Policy](docs/9.3_terms_policies/PRIVACY_POLICY.md) - Data practices transparency
+- 👶 [Children's Privacy Policy](docs/9.3_terms_policies/CHILDRENS_PRIVACY_POLICY.md) - COPPA compliance
+- 📅 [Data Retention Policy](docs/9.3_terms_policies/DATA_RETENTION_POLICY.md) - Retention periods and deletion
+- ✅ [User Consent Flows](docs/9.3_terms_policies/USER_CONSENT_FLOWS.md) - Consent UI/UX specifications
+- 📖 [Docs Index](docs/9.3_terms_policies/README.md) - Navigation guide
+
+**Key Findings:**
+- ✅ Comprehensive policy suite (143K+ words, 8 documents)
+- ✅ GDPR, COPPA, CCPA compliant (ready for legal review)
+- ✅ Privacy-first commitment: No ads, no tracking, no data selling
+- ✅ Enhanced child protection beyond COPPA requirements
+- ✅ Complete consent flow specifications for implementation
+- ⚠️ Next steps: Legal review (2 weeks, $10K-15K), implementation (8 weeks, $20K-34K total)
+
 ### Story 10.1: Ethics Review for Data Handling
 Ethics review evaluating data handling practices and user trust for the Nonna App.
 
