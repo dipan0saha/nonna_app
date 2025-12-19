@@ -127,9 +127,9 @@ Ethics review evaluating data handling practices and user trust for the Nonna Ap
 ### Story 13.3: Contingency Planning
 Comprehensive contingency planning for potential delays in third-party integrations, resource constraints, and project risks.
 
-- 📄 [Executive Summary](docs/13.3_contingency_planning/EXECUTIVE_SUMMARY.md) - Overview, budget reserves, and ROI analysis
-- 📋 [Contingency Plan](docs/13.3_contingency_planning/contingency-plan.md) - Detailed contingency plans and recovery procedures
-- 📖 [Docs Index](docs/13.3_contingency_planning/README.md) - Navigation guide
+- 📄 [Executive Summary](13.3_contingency_planning/EXECUTIVE_SUMMARY.md) - Overview, budget reserves, and ROI analysis
+- 📋 [Contingency Plan](13.3_contingency_planning/contingency-plan.md) - Detailed contingency plans and recovery procedures
+- 📖 [Docs Index](13.3_contingency_planning/README.md) - Navigation guide
 
 **Key Findings:**
 - ✅ Comprehensive plans for 15+ risk scenarios including third-party integration delays
