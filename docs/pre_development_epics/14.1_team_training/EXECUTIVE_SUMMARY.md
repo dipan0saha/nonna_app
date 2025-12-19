@@ -13,7 +13,7 @@
 
 **Bottom Line:**
 - **Investment:** $10,000 budget, 6 weeks part-time training
-- **ROI:** 400% in first 6 months through increased productivity
+- **ROI:** 500% in first 6 months through increased productivity
 - **Timeline:** Start Week 1 of project kickoff
 - **Risk Level:** LOW - Proven training methodologies
 
