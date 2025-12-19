@@ -131,7 +131,10 @@ class ApiUtils {
       if (decoded is Map<String, dynamic>) {
         return decoded;
       }
-      throw ApiException('Response is not a JSON object', 0);
+      throw ApiException(
+        'Response is not a JSON object, got ${decoded.runtimeType}',
+        0,
+      );
     } catch (e) {
       throw ApiException('Failed to parse JSON response: $e', 0);
     }
@@ -149,7 +152,10 @@ class ApiUtils {
       if (decoded is List) {
         return decoded;
       }
-      throw ApiException('Response is not a JSON array', 0);
+      throw ApiException(
+        'Response is not a JSON array, got ${decoded.runtimeType}',
+        0,
+      );
     } catch (e) {
       throw ApiException('Failed to parse JSON array response: $e', 0);
     }
@@ -352,7 +358,9 @@ class ApiUtils {
 
       attempts++;
       if (attempts <= maxRetries) {
-        await Future.delayed(retryDelay * attempts);
+        // Use exponential backoff: delay * 2^(attempts-1)
+        final backoffMultiplier = attempts == 1 ? 1 : (1 << (attempts - 1));
+        await Future.delayed(retryDelay * backoffMultiplier);
       }
     }
 

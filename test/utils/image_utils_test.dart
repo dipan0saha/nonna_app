@@ -49,7 +49,8 @@ void main() {
       });
 
       test('throws exception for non-existent file', () async {
-        final nonExistentFile = File('/tmp/non_existent_image.png');
+        final tempDir = Directory.systemTemp;
+        final nonExistentFile = File('${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png');
         expect(
           () => ImageUtils.compressImage(nonExistentFile),
           throwsA(isA<Exception>()),
@@ -207,7 +208,8 @@ void main() {
       });
 
       test('throws exception for non-existent file', () async {
-        final nonExistentFile = File('/tmp/non_existent_image.png');
+        final tempDir = Directory.systemTemp;
+        final nonExistentFile = File('${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png');
         expect(
           () => ImageUtils.getImageDimensions(nonExistentFile),
           throwsA(isA<Exception>()),
@@ -242,7 +244,8 @@ void main() {
       });
 
       test('returns false for non-existent file', () async {
-        final nonExistentFile = File('/tmp/non_existent_image.png');
+        final tempDir = Directory.systemTemp;
+        final nonExistentFile = File('${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png');
         final isValid = await ImageUtils.isValidImage(nonExistentFile);
         expect(isValid, isFalse);
       });

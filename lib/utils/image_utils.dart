@@ -256,6 +256,8 @@ class ImageUtils {
         encodedBytes = img.encodePng(image);
         break;
       case 'webp':
+        // Note: The image package doesn't have native WebP encoding yet
+        // Fall back to JPG for now. In production, use a WebP-specific library
         encodedBytes = img.encodeJpg(image, quality: quality);
         break;
       default:
