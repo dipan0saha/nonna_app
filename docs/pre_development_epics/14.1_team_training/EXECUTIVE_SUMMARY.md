@@ -117,7 +117,7 @@ Without proper training:
 - **Value:** $20,000+ in avoided rework
 
 ### Total Value Delivered: $60,000+ in first 6 months
-### ROI: 500% ($60K return on $10K investment)
+### ROI: 500% ($50K net gain on $10K investment)
 
 ---
 

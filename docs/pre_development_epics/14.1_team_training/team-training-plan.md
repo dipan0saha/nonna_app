@@ -843,7 +843,7 @@ This comprehensive training plan provides a structured approach to onboarding an
 - Faster onboarding savings: ~$6,000 (per new hire)
 - Technical debt avoided: ~$20,000 (proper patterns from start)
 - **Total Value Delivered: $60,000+**
-- **Net ROI: 500% in first 6 months**
+- **Net ROI: 500% ($50,000 net gain on $10,000 investment)**
 
 **Recommendation:** APPROVED - Proceed with training plan as outlined.
 
