@@ -28,7 +28,10 @@ void main() {
     group('formatDateTime', () {
       test('formats date-time correctly', () {
         final dateTime = DateTime(2024, 1, 15, 14, 30, 45);
-        expect(DateUtils.formatDateTime(dateTime), equals('2024-01-15 14:30:45'));
+        expect(
+          DateUtils.formatDateTime(dateTime),
+          equals('2024-01-15 14:30:45'),
+        );
       });
 
       test('returns null for null input', () {
@@ -50,7 +53,10 @@ void main() {
     group('formatDisplayDateTime', () {
       test('formats date-time in display format', () {
         final dateTime = DateTime(2024, 1, 15, 15, 30);
-        expect(DateUtils.formatDisplayDateTime(dateTime), equals('Jan 15, 2024 03:30 PM'));
+        expect(
+          DateUtils.formatDisplayDateTime(dateTime),
+          equals('Jan 15, 2024 03:30 PM'),
+        );
       });
 
       test('returns null for null input', () {
@@ -77,12 +83,18 @@ void main() {
     group('formatCustom', () {
       test('formats date with custom pattern', () {
         final date = DateTime(2024, 1, 15);
-        expect(DateUtils.formatCustom(date, 'yyyy/MM/dd'), equals('2024/01/15'));
+        expect(
+          DateUtils.formatCustom(date, 'yyyy/MM/dd'),
+          equals('2024/01/15'),
+        );
       });
 
       test('formats date with different custom pattern', () {
         final date = DateTime(2024, 1, 15);
-        expect(DateUtils.formatCustom(date, 'dd-MM-yyyy'), equals('15-01-2024'));
+        expect(
+          DateUtils.formatCustom(date, 'dd-MM-yyyy'),
+          equals('15-01-2024'),
+        );
       });
 
       test('returns null for null input', () {
@@ -190,7 +202,8 @@ void main() {
       test('returns "in X minutes" for future minutes', () {
         final time = DateTime.now().add(const Duration(minutes: 5));
         final result = DateUtils.getRelativeTime(time);
-        expect(result, equals('in 5 minutes'));
+        // Allow for execution time - could be 4 or 5 minutes
+        expect(result, anyOf(equals('in 4 minutes'), equals('in 5 minutes')));
       });
 
       test('returns null for null input', () {
@@ -321,14 +334,20 @@ void main() {
     group('subtractDuration', () {
       test('subtracts duration correctly', () {
         final date = DateTime(2024, 1, 15, 10, 30);
-        final result = DateUtils.subtractDuration(date, const Duration(hours: 2));
+        final result = DateUtils.subtractDuration(
+          date,
+          const Duration(hours: 2),
+        );
         expect(result, isNotNull);
         expect(result!.hour, equals(8));
         expect(result.minute, equals(30));
       });
 
       test('returns null for null input', () {
-        expect(DateUtils.subtractDuration(null, const Duration(hours: 1)), isNull);
+        expect(
+          DateUtils.subtractDuration(null, const Duration(hours: 1)),
+          isNull,
+        );
       });
     });
   });

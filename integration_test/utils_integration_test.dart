@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:nonna_app/utils/date_utils.dart';
@@ -124,9 +125,8 @@ void main() {
           testImageFile,
           size: 50,
         );
-        final thumbnailDimensions = await ImageUtils.getImageDimensionsFromBytes(
-          thumbnail,
-        );
+        final thumbnailDimensions =
+            await ImageUtils.getImageDimensionsFromBytes(thumbnail);
         expect(thumbnailDimensions['width'], equals(50));
         expect(thumbnailDimensions['height'], equals(50));
 
@@ -158,10 +158,7 @@ void main() {
         expect(jpg.isNotEmpty, isTrue);
 
         // Convert back to PNG
-        final png = await ImageUtils.convertFormat(
-          jpg,
-          format: 'png',
-        );
+        final png = await ImageUtils.convertFormat(jpg, format: 'png');
         expect(png, isNotNull);
         expect(png.isNotEmpty, isTrue);
       });
@@ -175,10 +172,7 @@ void main() {
         expect(rotated90, isNotNull);
 
         // Rotate another 90 degrees (total 180)
-        final rotated180 = await ImageUtils.rotateImage(
-          rotated90,
-          angle: 90,
-        );
+        final rotated180 = await ImageUtils.rotateImage(rotated90, angle: 90);
         expect(rotated180, isNotNull);
 
         // Rotate another 180 degrees (back to original orientation)
@@ -219,7 +213,7 @@ void main() {
 
       test('URL building workflow', () {
         const baseUrl = 'https://api.example.com/users';
-        
+
         // Build query params
         final params = {
           'page': 1,
@@ -227,7 +221,7 @@ void main() {
           'sort': 'name',
           'filter': 'active',
         };
-        
+
         final queryString = ApiUtils.buildQueryParams(params);
         expect(queryString, isNotEmpty);
         expect(queryString, contains('page=1'));
@@ -291,10 +285,14 @@ void main() {
         expect(parsed['metadata']['total'], equals(2));
 
         // Parse array from response
-        final usersJson = ApiUtils.encodeJson(parsed['users']);
+        // Use json.encode directly since parsed['users'] is a List, not a Map
+        final usersJson = json.encode(parsed['users']);
         final usersArray = ApiUtils.parseJsonArrayResponse(usersJson);
+        expect(usersArray, isA<List>());
         expect(usersArray.length, equals(2));
-        expect(usersArray[0]['name'], equals('Alice'));
+        final firstUser = usersArray[0];
+        expect(firstUser, isA<Map<String, dynamic>>());
+        expect((firstUser as Map<String, dynamic>)['name'], equals('Alice'));
       });
     });
 
@@ -305,10 +303,7 @@ void main() {
         final formattedDate = DateUtils.formatDateTime(timestamp);
 
         // Create API payload with date
-        final payload = {
-          'created_at': formattedDate,
-          'name': 'Test Event',
-        };
+        final payload = {'created_at': formattedDate, 'name': 'Test Event'};
 
         // Encode for API
         final jsonPayload = ApiUtils.encodeJson(payload);
@@ -316,7 +311,7 @@ void main() {
 
         // Decode response
         final decoded = ApiUtils.parseJsonResponse(jsonPayload);
-        
+
         // Parse date back
         final parsedDate = DateUtils.parseDateTime(decoded['created_at']);
         expect(parsedDate, isNotNull);
@@ -344,7 +339,7 @@ void main() {
 
         // Encode for API
         final jsonMetadata = ApiUtils.encodeJson(metadata);
-        
+
         // Decode and verify
         final decoded = ApiUtils.parseJsonResponse(jsonMetadata);
         expect(decoded['width'], equals(150));

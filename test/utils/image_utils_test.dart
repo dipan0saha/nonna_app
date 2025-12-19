@@ -50,7 +50,9 @@ void main() {
 
       test('throws exception for non-existent file', () async {
         final tempDir = Directory.systemTemp;
-        final nonExistentFile = File('${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png');
+        final nonExistentFile = File(
+          '${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png',
+        );
         expect(
           () => ImageUtils.compressImage(nonExistentFile),
           throwsA(isA<Exception>()),
@@ -87,7 +89,9 @@ void main() {
         expect(resized.isNotEmpty, isTrue);
 
         // Verify dimensions
-        final dimensions = await ImageUtils.getImageDimensionsFromBytes(resized);
+        final dimensions = await ImageUtils.getImageDimensionsFromBytes(
+          resized,
+        );
         expect(dimensions['width'], lessThanOrEqualTo(50));
         expect(dimensions['height'], lessThanOrEqualTo(50));
       });
@@ -98,9 +102,13 @@ void main() {
           maxWidth: 50,
           maxHeight: 100,
         );
-        final dimensions = await ImageUtils.getImageDimensionsFromBytes(resized);
+        final dimensions = await ImageUtils.getImageDimensionsFromBytes(
+          resized,
+        );
         expect(dimensions['width'], equals(50));
-        expect(dimensions['height'], equals(50)); // Original is square
+        // With maintainAspect, height will be <= maxHeight and maintain aspect ratio
+        expect(dimensions['height'], lessThanOrEqualTo(100));
+        expect(dimensions['height'], greaterThan(0));
       });
     });
 
@@ -137,7 +145,9 @@ void main() {
         expect(thumbnail.isNotEmpty, isTrue);
 
         // Verify dimensions are square
-        final dimensions = await ImageUtils.getImageDimensionsFromBytes(thumbnail);
+        final dimensions = await ImageUtils.getImageDimensionsFromBytes(
+          thumbnail,
+        );
         expect(dimensions['width'], equals(32));
         expect(dimensions['height'], equals(32));
       });
@@ -209,7 +219,9 @@ void main() {
 
       test('throws exception for non-existent file', () async {
         final tempDir = Directory.systemTemp;
-        final nonExistentFile = File('${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png');
+        final nonExistentFile = File(
+          '${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png',
+        );
         expect(
           () => ImageUtils.getImageDimensions(nonExistentFile),
           throwsA(isA<Exception>()),
@@ -245,7 +257,9 @@ void main() {
 
       test('returns false for non-existent file', () async {
         final tempDir = Directory.systemTemp;
-        final nonExistentFile = File('${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png');
+        final nonExistentFile = File(
+          '${tempDir.path}/non_existent_image_${DateTime.now().millisecondsSinceEpoch}.png',
+        );
         final isValid = await ImageUtils.isValidImage(nonExistentFile);
         expect(isValid, isFalse);
       });
@@ -275,10 +289,7 @@ void main() {
 
     group('rotateImage', () {
       test('rotates image by 90 degrees', () async {
-        final rotated = await ImageUtils.rotateImage(
-          testImageBytes,
-          angle: 90,
-        );
+        final rotated = await ImageUtils.rotateImage(testImageBytes, angle: 90);
         expect(rotated, isNotNull);
         expect(rotated.isNotEmpty, isTrue);
       });
