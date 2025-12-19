@@ -124,6 +124,20 @@ Ethics review evaluating data handling practices and user trust for the Nonna Ap
 - ✅ Timeline to launch-ready: 6-8 weeks, estimated cost: $15,000-25,000
 - ✅ Risk level: LOW after implementation
 
+### Story 14.1: Team Training Plan
+Comprehensive plan for team training sessions on tools and methodologies for Nonna App development.
+
+- 📄 [Executive Summary](docs/14.1_team_training/EXECUTIVE_SUMMARY.md) - Quick overview and ROI analysis
+- 📊 [Team Training Plan](docs/14.1_team_training/team-training-plan.md) - Detailed training program design
+- 📖 [Docs Index](docs/14.1_team_training/README.md) - Navigation guide
+
+**Key Findings:**
+- ✅ 6-week structured training program covering Flutter, Supabase, Security, Testing, CI/CD, Agile
+- ✅ Investment: $10,000 with 500% ROI in first 6 months ($60,000+ value)
+- ✅ Part-time format: 50% training, 50% project work (72 hours total)
+- ✅ Comprehensive modules with hands-on labs, assessments, and certification
+- ✅ Post-training support: mentorship, weekly tech talks, knowledge base
+- ✅ Risk level: LOW with proven training methodologies
 ### Story 13.3: Contingency Planning
 Comprehensive contingency planning for potential delays in third-party integrations, resource constraints, and project risks.
 
