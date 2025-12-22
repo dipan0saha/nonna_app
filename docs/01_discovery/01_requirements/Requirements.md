@@ -127,9 +127,11 @@ The application will have two primary user roles with distinct permissions:
 
 ### 3.11. Toggle Between Owner and Follower
 
--   Top right of the screen has photo that has dropdown which allows user to easily switch between baby profiles.
--   Sort ordered should be with Baby profiles owned on top, and baby profiles followed below
--   once a selection is made, a filter should be applied to the rest of the app that shows only content that belongs to that baby profile selected
+-   A user avatar or profile photo in the top-right corner of the screen includes a dropdown menu that allows users to switch between their roles as Parents (Owners) or Friends & Family (Followers) for specific baby profiles.
+-   This toggle is available when a user has both owner and follower roles across different baby profiles, enabling seamless role-switching without logging out or navigating away.
+-   Selecting the Owner role displays the interface with full editing capabilities, including options to create, update, or delete baby profiles, events, registry items, photos, and other content.
+-   Selecting the Follower role displays the interface with viewing and interaction capabilities, such as RSVPing to events, commenting, "squishing" (liking) photos, marking registry items as purchased, and voting/suggesting names, while hiding edit or management controls.
+-   The selected role dynamically adjusts the visibility and functionality of UI elements (e.g., tiles, buttons, and menus) to reflect the user's permissions, ensuring a tailored and intuitive experience based on their relationship to each baby profile.
 
 ### 3.12. Filtering Baby Profiles
 

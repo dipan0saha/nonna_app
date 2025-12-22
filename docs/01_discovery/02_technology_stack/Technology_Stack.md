@@ -113,7 +113,9 @@ This document outlines the definitive technology stack and architectural strateg
 
 ### 3.2. State Management & Navigation
 
-*   **State Management:** Use **BLoC** (or Provider for simpler screens) to keep business logic testable and to handle realtime streams cleanly.
+*   **State Management:** Use **Riverpod** for reactive, compile-time safe state management across the app.
+    *   **Why Riverpod over BLoC/Provider:** Riverpod provides better dependency injection, automatic disposal, and easier testing than BLoC or Provider. It handles complex state (e.g., auth, profiles, realtime updates) with less boilerplate, supports async operations seamlessly, and integrates well with Supabase streams for live data.
+    *   **Usage:** Providers for auth state, baby profiles, calendar events, etc. Combine with `supabase_flutter` for realtime subscriptions.
 *   **Navigation:** Use **GoRouter** for structured routing and deep link handling.
     *   **Deep links:** Used for invitation acceptance flows (the 7-day expiring token links).
 
@@ -179,6 +181,7 @@ To support product success metrics (active users, retention, feature engagement)
 *   **RLS:** Row-Level Security, a PostgreSQL feature used to control data access per user.
 *   **Realtime:** Supabase feature that broadcasts database changes over websockets.
 *   **Deep Link:** A URL that opens the app to a specific screen (e.g., invitation acceptance).
+*   **Riverpod:** A reactive state management library for Flutter, used for managing app state with compile-time safety and dependency injection.
 
 ## 8. Requirements-to-Stack Mapping
 

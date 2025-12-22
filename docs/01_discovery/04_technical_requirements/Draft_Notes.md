@@ -10,7 +10,6 @@ Do we need 2 layers?
 Nah, stick to one layer—keep the normalized babies/tiles tables, but add jsonb data column to tiles for pre-aggregated stuff like ```{photos: [...], votes: 42}``` that owners update via edge functions/triggers. Followers query tiles directly, realtime pushes the full tile payload. Zero sync issues, sub-100ms loads. Layers just add complexity here.
 
 ## Performance:
-
 You'll want a central data provider or Riverpod to fetch visibility flags from Supabase once, then share that state across screens to avoid duplicate queries. For the tiles, use a ListView.builder with conditional rendering based on those flags—keeps it efficient even if the same tile shows on multiple tabs.
 
 Cache Supabase data locally with Hive or SharedPreferences, and sync only when needed using Supabase's realtime subscriptions. Use Riverpod or Bloc for state management with lazy loading—fetch tile data on-demand via pagination with ListView.builder and .sliver for smooth scrolling. Minimize rebuilds with const constructors, ValueKey on tiles, and precache images; enable Flutter's performance overlay in dev to spot jank. For high users, deploy Supabase edge functions for heavy queries and consider Firebase for even better scaling if needed.
