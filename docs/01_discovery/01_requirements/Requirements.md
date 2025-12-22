@@ -59,6 +59,7 @@ The application will have two primary user roles with distinct permissions:
     -   Expected Birth Date (optional, editable)
     -   Gender (optional, editable)
     -   Name (optional, editable)
+-   Expected birth date must be in the future; gender options include male, female, unknown.
 -   Logic - expected birthdate, and gender should inform what tiles are shown and should also inform what products are suggested by AI for the registry and what events are suggested by AI for the calendar. 
 -   Each baby profile has its own private calendar, baby registry, photo gallery and fund.
 -   Parents (Owners) will receive a notification when baby profile has a new follower and should be added to recent activity.
@@ -96,6 +97,8 @@ The application will have two primary user roles with distinct permissions:
 -   All followers can view, comment on, and "squish" (like) photos. A user can only "squish" a photo once.
 -   The gallery will be sorted by upload date, with the most recent photos at the top.
 -   Followers get a notification when a new photo is added to the gallery. (THIS MIGHT BE TOO MUCH, WE SHOULD DISCUSS)
+-   Photos can be tagged with keywords for search
+-   Support bulk upload/delete for Owners.
 
 ### 3.6. Navigation Bar
 
