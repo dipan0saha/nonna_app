@@ -143,8 +143,8 @@ The application will have two primary user roles with distinct permissions:
 -   Countdown visible for baby followers only
 -   Baby Arrival Announcement - visible for baby profile owners only, allows profile owners to complete information and submit and share the news with everyone that their baby is born.
 -   Notification is sent to all baby profile followers, and Baby Announcement is placed on top of the Home screen for all users.
--   Baby Announcement is visible by all users, comments and baby squishes are allowed by all users.
--   Baby Announcement should have a Share in Instagram feature (only available for Profile Owners)
+-   Welcome Announcement is visible by all users, comments and baby squishes are allowed by all users.
+-   Welcome Announcement should have a Share in Instagram feature (only available for Profile Owners)
 
 ## 4. Non-Functional Requirements
 
