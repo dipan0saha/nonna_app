@@ -15,14 +15,18 @@ The application will have two primary user roles with distinct permissions:
 -   Can manage the list of followers (view, resend, and revoke invitations).
 -   Have full control over the content of their baby profile, including the calendar, baby registry, photo gallery and fun (add, edit, delete).
 -   Can delete comments made by any user on their baby profile's content.
--   Cannot remove themselves as an owner if they are the only owner of a baby profile. Must delete baby profile, and when baby profile doesn't have any owners it automatically gets deactivated
+-   Owners receive priority notifications for profile changes, follower actions, and security events (e.g., failed login attempts).
+-   Support bulk resend/revoke of invitations for efficiency.
+-   Owners can export baby profile data (e.g., photos, calendar) before deletion.
+-   Owners can delete their account, but must transfer (to another owner) or delete baby profiles first to avoid data loss.
 
 ### 2.2. Friends & Family (Followers)
 
 -   Can only access a baby profile after accepting an email invitation.
 -   Upon acceptance, users must provide their relationship (e.g., Grandma, Grandpa, Aunt, Uncle, Godmother, Godfather, Family Friend) from a predefined list. 
 -   Can view the baby profile, calendar, baby registry, photo gallery and fun.
--   Can interact with content by RSVPing to events, commenting, "squishing" photos (liking), marking registry items as purchased, voting in gender/birthdate/name and suggesting names. 
+-   Can interact with content by RSVPing to events, commenting, "squishing" photos (liking), marking registry items as purchased, voting in gender/birthdate/name and suggesting names.
+-   Followers can only suggest one unique name per gender per baby profile.
 -   Cannot create, edit, or delete baby profiles, events, registry items, photos or fun.
 -   Cannot invite or manage other followers.
 -   Can remove themselves from a baby profile at any time.
@@ -31,11 +35,19 @@ The application will have two primary user roles with distinct permissions:
 
 ### 3.1. Account Creation and Management
 
--   Users must be able to create an account with a unique email and a password (minimum 6 characters, with at least one number or special character).
--   Email verification is required for new accounts before the first login.
--   Passwords must be securely hashed.
--   Users must be able to log in with their registered credentials.
--   A secure password reset option via email must be available.
+-   Users must be able to create an account with a unique email and a password (minimum 6 characters, with at least one number or special character), or alternatively via Google or Facebook OAuth integration.
+-   For email/password accounts, email verification is required for new accounts before the first login. For social logins, account creation is immediate upon OAuth approval, but users must verify their email within 7 days to maintain access (send verification link to the email associated with the social account).
+-   Passwords must be securely hashed using industry-standard algorithms (e.g., bcrypt or Argon2). Social login accounts may not have a password initially but can set one later for fallback login.
+-   Users must be able to log in with their registered credentials (email/password), or via Google/Facebook OAuth. Social logins should support seamless re-authentication without repeated prompts.
+-   If a social login matches an existing email account, prompt to merge or link accounts with user confirmation.
+-   A secure password reset option via email must be available for email/password accounts. Social login users can reset via their provider's account settings or by linking an email/password.
+-   Users can link multiple login methods (e.g., add Google/Facebook to an existing email account) for flexibility, with clear UI prompts to prevent account duplication.
+-   All social login data must comply with OAuth 2.0 standards, with user consent for profile data access (e.g., email, name). Revoke social access if the user deactivates their provider account.
+-   Social profile data (e.g., name, email) is stored only with user consent and can be deleted on request.
+-   Handle OAuth failures (e.g., provider downtime) with clear user messages and fallback to email/password.
+-   Implement rate limiting and fraud detection for login attempts across all methods to prevent abuse.
+-   Users must accept terms of service and privacy policy during signup for all account types.
+-   Implement secure logout for all methods, with automatic session expiration after inactivity (e.g., 30 days).
 
 ### 3.2. Baby Profile
 
@@ -114,7 +126,7 @@ The application will have two primary user roles with distinct permissions:
 
 -   Top right of the screen has photo that has dropdown which allows user to easily switch between baby profiles.
 -   Sort ordered should be with Baby profiles owned on top, and baby profiles followed below
--   once a selection is made, a filter should be applied to the rest of the app that shows only content that belongs to that baby profile selcted
+-   once a selection is made, a filter should be applied to the rest of the app that shows only content that belongs to that baby profile selected
 
 ### 3.12. Filtering Baby Profiles
 
