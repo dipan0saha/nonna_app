@@ -1,4 +1,4 @@
-package com.example.nonna_app
+package com.nonna.app
 
 import io.flutter.embedding.android.FlutterActivity
 

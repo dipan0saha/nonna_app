@@ -1,0 +1,12 @@
+# Android Signing Configuration
+# This file should be created locally and NEVER committed to version control
+# Copy this file to android/key.properties and fill in your actual values
+
+# Path to your keystore file (e.g., /path/to/your/keystore.jks)
+storeFile=
+# Password for the keystore
+storePassword=
+# Alias for the key
+keyAlias=
+# Password for the key
+keyPassword=
