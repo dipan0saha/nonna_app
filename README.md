@@ -48,8 +48,10 @@ flutter pub get
    
    a. Generate a keystore (if you don't have one):
    ```bash
-   keytool -genkey -v -keystore ~/nonna-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias nonna
+   keytool -genkey -v -keystore ~/nonna-release-key.jks -storetype PKCS12 -keyalg RSA -keysize 2048 -validity 10000 -alias nonna
    ```
+   
+   **Note**: PKCS12 format is used as JKS is deprecated.
    
    b. Create `android/key.properties` by copying the example:
    ```bash

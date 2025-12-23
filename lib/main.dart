@@ -8,10 +8,26 @@ Future<void> main() async {
   // Load environment variables
   await dotenv.load(fileName: ".env");
 
+  // Validate required environment variables
+  final supabaseUrl = dotenv.env['SUPABASE_URL'];
+  final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
+
+  if (supabaseUrl == null || supabaseUrl.isEmpty) {
+    throw Exception(
+      'SUPABASE_URL is not set. Please create a .env file with your Supabase credentials.',
+    );
+  }
+
+  if (supabaseAnonKey == null || supabaseAnonKey.isEmpty) {
+    throw Exception(
+      'SUPABASE_ANON_KEY is not set. Please create a .env file with your Supabase credentials.',
+    );
+  }
+
   // Initialize Supabase
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL'] ?? '',
-    anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
     authOptions: const FlutterAuthClientOptions(
       authFlowType: AuthFlowType.pkce,
     ),
