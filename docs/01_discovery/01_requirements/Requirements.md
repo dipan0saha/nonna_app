@@ -63,6 +63,7 @@ The application will have two primary user roles with distinct permissions:
 -   Logic - expected birthdate, and gender should inform what tiles are shown and should also inform what products are suggested by AI for the registry and what events are suggested by AI for the calendar. 
 -   Each baby profile has its own private calendar, baby registry, photo gallery and fund.
 -   Parents (Owners) will receive a notification when baby profile has a new follower and should be added to recent activity.
+-   Tiles on screens are role-driven: owners manage tiles per baby, followers view aggregated tiles across all followed babies, with optional per-baby filtering.
 
 
 ### 3.3. Calendar
@@ -74,6 +75,7 @@ The application will have two primary user roles with distinct permissions:
 -   Parents (Owners) will receive a notification when an RSVP or comment is made and should be added to recent activity.
 -   AI suggestions allows baby profile owners (only) to see list of events that could be added to the calendar. events are organized by different stages in life of the baby.
 -   Followers get a notification when a new event is added to the calendar. (THIS MIGHT BE TOO MUCH, WE SHOULD DISCUSS)
+-   Tiles display calendar events based on user role: owners see editable tiles per baby, followers see aggregated tiles from all followed babies.
 
 
 ### 3.4. Registry (Baby List)
@@ -86,6 +88,7 @@ The application will have two primary user roles with distinct permissions:
 -   Parents (Owners) will receive a notification when an item is purchased and should be added to recent activity.
 -   Followers get a notification when a new item is added to the registry. (THIS MIGHT BE TOO MUCH, WE SHOULD DISCUSS)
 -   AI Suggestions allows baby profile owners (only) to see list of items they could add to their registry. it is broken out by ages and products that are great of each stage of the baby life. 
+-   Tiles display registry items based on user role: owners see editable tiles per baby, followers see aggregated tiles from all followed babies. 
 
 ### 3.5. Photo Gallery
 
@@ -99,6 +102,7 @@ The application will have two primary user roles with distinct permissions:
 -   Followers get a notification when a new photo is added to the gallery. (THIS MIGHT BE TOO MUCH, WE SHOULD DISCUSS)
 -   Photos can be tagged with keywords for search
 -   Support bulk upload/delete for Owners.
+-   Tiles display photos based on user role: owners see editable tiles per baby, followers see aggregated tiles from all followed babies.
 
 ### 3.6. Navigation Bar
 
@@ -138,6 +142,7 @@ The application will have two primary user roles with distinct permissions:
 -   Gallery, Calendar, Registry, and Fun should have a filter that allows user to select which baby they want to see activity for.
 -   Content should belong only to the Baby profile selected.
 -   Reset filter should be available. 
+-   For followers, tiles default to aggregated views across all followed babies, but filters allow switching to per-baby views. For owners, filters enable selecting specific babies for management. 
 
 ### 3.13. Baby Countdown and Baby Announcement
 
@@ -147,6 +152,7 @@ The application will have two primary user roles with distinct permissions:
 -   Notification is sent to all baby profile followers, and Baby Announcement is placed on top of the Home screen for all users.
 -   Welcome Announcement is visible by all users, comments and baby squishes are allowed by all users.
 -   Welcome Announcement should have a Share in Instagram feature (only available for Profile Owners)
+-   Countdown and announcement tiles are role-driven: owners see per-baby tiles, followers see aggregated tiles from all followed babies.
 
 ## 4. Non-Functional Requirements
 
