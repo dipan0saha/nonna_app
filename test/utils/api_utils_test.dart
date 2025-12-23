@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'package:test/test.dart';
 import 'package:nonna_app/utils/api_utils.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
 
 void main() {
   group('ApiUtils', () {
@@ -170,7 +167,7 @@ void main() {
 
       test('encodes nested Map', () {
         final data = {
-          'user': {'name': 'John', 'age': 30}
+          'user': {'name': 'John', 'age': 30},
         };
         final result = ApiUtils.encodeJson(data);
         expect(result, contains('"user"'));
@@ -195,10 +192,7 @@ void main() {
 
       test('throws FormatException for invalid JSON', () {
         const invalidJson = 'not json';
-        expect(
-          () => ApiUtils.decodeJson(invalidJson),
-          throwsFormatException,
-        );
+        expect(() => ApiUtils.decodeJson(invalidJson), throwsFormatException);
       });
     });
 

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 
@@ -197,7 +196,9 @@ class ImageUtils {
     }
 
     // Crop to square from center
-    final minDimension = image.width < image.height ? image.width : image.height;
+    final minDimension = image.width < image.height
+        ? image.width
+        : image.height;
     final xOffset = (image.width - minDimension) ~/ 2;
     final yOffset = (image.height - minDimension) ~/ 2;
 
@@ -301,10 +302,7 @@ class ImageUtils {
       throw Exception('Failed to decode image');
     }
 
-    return {
-      'width': image.width,
-      'height': image.height,
-    };
+    return {'width': image.width, 'height': image.height};
   }
 
   /// Validates if a file is a supported image format.
@@ -328,7 +326,10 @@ class ImageUtils {
   /// [compressedSize] - Compressed file size in bytes
   ///
   /// Returns the reduction percentage (0-100).
-  static double calculateCompressionRatio(int originalSize, int compressedSize) {
+  static double calculateCompressionRatio(
+    int originalSize,
+    int compressedSize,
+  ) {
     if (originalSize == 0) return 0.0;
     return ((originalSize - compressedSize) / originalSize) * 100;
   }
@@ -348,10 +349,7 @@ class ImageUtils {
       throw Exception('Invalid rotation angle. Use 90, 180, or 270 degrees.');
     }
 
-    return compute(_rotateImageIsolate, {
-      'bytes': imageBytes,
-      'angle': angle,
-    });
+    return compute(_rotateImageIsolate, {'bytes': imageBytes, 'angle': angle});
   }
 
   /// Isolate function for rotating images.
