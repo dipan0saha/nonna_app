@@ -87,6 +87,16 @@ AS $$
     );
 $$;
 
+-- Check if current user is service role
+CREATE OR REPLACE FUNCTION public.is_service_role()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+    SELECT COALESCE(auth.jwt()->>'role' = 'service_role', false);
+$$;
+
 -- ============================================================================
 -- SECTION 3: Profiles RLS Policies
 -- ============================================================================
@@ -275,20 +285,20 @@ CREATE POLICY "tile_configs_select_authenticated"
 CREATE POLICY "tile_system_manage_service_role"
     ON public.screens
     FOR ALL
-    USING (auth.jwt()->>'role' = 'service_role')
-    WITH CHECK (auth.jwt()->>'role' = 'service_role');
+    USING (public.is_service_role())
+    WITH CHECK (public.is_service_role());
 
 CREATE POLICY "tile_definitions_manage_service_role"
     ON public.tile_definitions
     FOR ALL
-    USING (auth.jwt()->>'role' = 'service_role')
-    WITH CHECK (auth.jwt()->>'role' = 'service_role');
+    USING (public.is_service_role())
+    WITH CHECK (public.is_service_role());
 
 CREATE POLICY "tile_configs_manage_service_role"
     ON public.tile_configs
     FOR ALL
-    USING (auth.jwt()->>'role' = 'service_role')
-    WITH CHECK (auth.jwt()->>'role' = 'service_role');
+    USING (public.is_service_role())
+    WITH CHECK (public.is_service_role());
 
 -- ============================================================================
 -- SECTION 9: Owner Update Markers RLS Policies

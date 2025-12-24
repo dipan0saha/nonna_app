@@ -405,6 +405,17 @@ COMMENT ON FUNCTION public.log_activity_event() IS 'Logs significant actions to 
 -- SECTION 6: Notification Triggers
 -- ============================================================================
 
+-- Constant for null UUID (used when actor is unknown)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'null_uuid') THEN
+        CREATE FUNCTION public.null_uuid() RETURNS uuid AS
+        'SELECT ''00000000-0000-0000-0000-000000000000''::uuid;'
+        LANGUAGE SQL IMMUTABLE;
+    END IF;
+END
+$$;
+
 -- Function: Create notifications for new content
 CREATE OR REPLACE FUNCTION public.create_content_notifications()
 RETURNS trigger
@@ -464,7 +475,7 @@ BEGIN
         FROM public.baby_memberships
         WHERE baby_profile_id = v_baby_profile_id
           AND removed_at IS NULL
-          AND user_id != COALESCE(auth.uid(), '00000000-0000-0000-0000-000000000000'::uuid)
+          AND user_id != COALESCE(auth.uid(), public.null_uuid())
     LOOP
         INSERT INTO public.notifications (recipient_user_id, baby_profile_id, type, payload)
         VALUES (v_recipient.user_id, v_baby_profile_id, v_type, v_payload);
