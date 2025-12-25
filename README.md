@@ -75,6 +75,27 @@ flutter run
 
 For more details, see the [Implementation Guide](docs/supabase-implementation-guide.md).
 
+### Database Setup
+
+To populate the database with test data:
+
+```bash
+# Using Supabase CLI (local development)
+supabase start
+supabase db seed
+
+# Or using psql
+psql "your-connection-string" -f supabase/seed/seed_data.sql
+```
+
+The seed data includes:
+- 10 baby profiles
+- 30 owners (3 per baby)
+- 120 followers (12 per baby)
+- Complete tile system configuration
+
+For detailed instructions, see the [Seed Data User Guide](docs/SEED_DATA_GUIDE.md).
+
 ## Tech Stack
 
 - **Frontend:** Flutter

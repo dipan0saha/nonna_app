@@ -1,97 +1,526 @@
 -- ============================================================================
--- Nonna App - Seed Data Script
--- Version: 1.0.0
+-- Nonna App - Comprehensive Seed Data Script
+-- Version: 2.0.0
 -- Target: PostgreSQL 15+ (Supabase Managed)
--- Description: Test data for development and testing - respects FK dependencies
+-- Description: Extended test data - 10 babies, 30 owners, 120 followers
 -- ============================================================================
 
--- NOTE: This seed data uses mock UUIDs. In a real Supabase environment,
--- auth.users entries would be created via Supabase Auth API.
--- For testing purposes, we'll create mock profiles directly.
+-- NOTE: In production, auth.users would be created via Supabase Auth API.
+-- For testing, we create profiles directly.
 
 -- ============================================================================
--- SECTION 1: Mock User Profiles (Simulating auth.users)
+-- SECTION 1: PROFILES - Owners (30 users, 3 per baby)
 -- ============================================================================
 
--- Create mock profiles (in production, these would be created via trigger on auth.users insert)
 INSERT INTO public.profiles (user_id, display_name, avatar_url, created_at, updated_at) VALUES
-    ('11111111-1111-1111-1111-111111111111', 'Sarah Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
-    ('22222222-2222-2222-2222-222222222222', 'Michael Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
-    ('33333333-3333-3333-3333-333333333333', 'Grandma Betty', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Betty', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
-    ('44444444-4444-4444-4444-444444444444', 'Aunt Lisa', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
-    ('55555555-5555-5555-5555-555555555555', 'Uncle Tom', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Tom', NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days'),
-    ('66666666-6666-6666-6666-666666666666', 'Emily Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily', NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days'),
-    ('77777777-7777-7777-7777-777777777777', 'John Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=John', NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days'),
-    ('88888888-8888-8888-8888-888888888888', 'Grandpa Joe', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Joe', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days')
-ON CONFLICT (user_id) DO NOTHING;
+    ('10000000-1001-1001-1001-000000001001', 'Sarah Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah0', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('20000000-2001-2001-2001-000000002001', 'Michael Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael0', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('30000000-3001-3001-3001-000000003001', 'Mary Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mary0', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('10000001-1001-1001-1001-000000001001', 'Emily Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily1', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('20000001-2001-2001-2001-000000002001', 'John Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=John1', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('30000001-3001-3001-3001-000000003001', 'Grace Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Grace1', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('10000002-1001-1001-1001-000000001001', 'Jennifer Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer2', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('20000002-2001-2001-2001-000000002001', 'David Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=David2', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('30000002-3001-3001-3001-000000003001', 'Linda Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda2', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('10000003-1001-1001-1001-000000001001', 'Jessica Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica3', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('20000003-2001-2001-2001-000000002001', 'Robert Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert3', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('30000003-3001-3001-3001-000000003001', 'Patricia Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Patricia3', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('10000004-1001-1001-1001-000000001001', 'Amanda Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amanda4', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('20000004-2001-2001-2001-000000002001', 'James Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=James4', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('30000004-3001-3001-3001-000000003001', 'Barbara Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Barbara4', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('10000005-1001-1001-1001-000000001001', 'Maria Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria5', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('20000005-2001-2001-2001-000000002001', 'Carlos Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos5', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('30000005-3001-3001-3001-000000003001', 'Elena Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Elena5', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('10000006-1001-1001-1001-000000001001', 'Sofia Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sofia6', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('20000006-2001-2001-2001-000000002001', 'Miguel Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Miguel6', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('30000006-3001-3001-3001-000000003001', 'Carmen Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carmen6', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('10000007-1001-1001-1001-000000001001', 'Michelle Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michelle7', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('20000007-2001-2001-2001-000000002001', 'Kevin Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kevin7', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('30000007-3001-3001-3001-000000003001', 'Susan Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Susan7', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('10000008-1001-1001-1001-000000001001', 'Rachel Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rachel8', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('20000008-2001-2001-2001-000000002001', 'Christopher Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Christopher8', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('30000008-3001-3001-3001-000000003001', 'Dorothy Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dorothy8', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('10000009-1001-1001-1001-000000001001', 'Lauren Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lauren9', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
+    ('20000009-2001-2001-2001-000000002001', 'Daniel Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel9', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
+    ('30000009-3001-3001-3001-000000003001', 'Betty Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Betty9', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days')
 
--- Create user stats for mock users
-INSERT INTO public.user_stats (user_id, events_attended_count, items_purchased_count, photos_squished_count, comments_added_count, updated_at) VALUES
-    ('11111111-1111-1111-1111-111111111111', 0, 0, 0, 0, NOW()),
-    ('22222222-2222-2222-2222-222222222222', 0, 0, 0, 0, NOW()),
-    ('33333333-3333-3333-3333-333333333333', 2, 1, 5, 3, NOW()),
-    ('44444444-4444-4444-4444-444444444444', 1, 2, 8, 5, NOW()),
-    ('55555555-5555-5555-5555-555555555555', 1, 0, 3, 2, NOW()),
-    ('66666666-6666-6666-6666-666666666666', 0, 0, 0, 0, NOW()),
-    ('77777777-7777-7777-7777-777777777777', 0, 0, 0, 0, NOW()),
-    ('88888888-8888-8888-8888-888888888888', 0, 1, 2, 1, NOW())
 ON CONFLICT (user_id) DO NOTHING;
 
 -- ============================================================================
--- SECTION 2: Baby Profiles
+-- SECTION 2: PROFILES - Followers (120 users, 12 per baby)
+-- ============================================================================
+
+INSERT INTO public.profiles (user_id, display_name, avatar_url, created_at, updated_at) VALUES
+    ('40000000-4001-4001-4001-000000004001', 'Grandma Emma', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F0', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
+    ('40000001-4001-4001-4001-000000004001', 'Grandpa Olivia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F1', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days'),
+    ('40000002-4001-4001-4001-000000004001', 'Aunt Ava', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F2', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days'),
+    ('40000003-4001-4001-4001-000000004001', 'Uncle Isabella', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F3', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+    ('40000004-4001-4001-4001-000000004001', 'Cousin Sophia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F4', NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days'),
+    ('40000005-4001-4001-4001-000000004001', 'Friend Mia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F5', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('40000006-4001-4001-4001-000000004001', 'Neighbor Charlotte', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F6', NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days'),
+    ('40000007-4001-4001-4001-000000004001', 'Colleague Amelia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F7', NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days'),
+    ('40000008-4001-4001-4001-000000004001', 'Family Friend Harper', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F8', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('40000009-4001-4001-4001-000000004001', 'Godparent Evelyn', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F9', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days'),
+    ('4000000a-4001-4001-4001-000000004001', 'Grandma Liam', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F10', NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days'),
+    ('4000000b-4001-4001-4001-000000004001', 'Grandpa Noah', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F11', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('4000000c-4001-4001-4001-000000004001', 'Aunt Oliver', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F12', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days'),
+    ('4000000d-4001-4001-4001-000000004001', 'Uncle Elijah', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F13', NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days'),
+    ('4000000e-4001-4001-4001-000000004001', 'Cousin William', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F14', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('4000000f-4001-4001-4001-000000004001', 'Friend James', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F15', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+    ('40000010-4001-4001-4001-000000004001', 'Neighbor Benjamin', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F16', NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days'),
+    ('40000011-4001-4001-4001-000000004001', 'Colleague Lucas', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F17', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('40000012-4001-4001-4001-000000004001', 'Family Friend Henry', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F18', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days'),
+    ('40000013-4001-4001-4001-000000004001', 'Godparent Alexander', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F19', NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days'),
+    ('40000014-4001-4001-4001-000000004001', 'Grandma Anna', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F20', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('40000015-4001-4001-4001-000000004001', 'Grandpa Grace', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F21', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days'),
+    ('40000016-4001-4001-4001-000000004001', 'Aunt Lily', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F22', NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days'),
+    ('40000017-4001-4001-4001-000000004001', 'Uncle Zoe', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F23', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('40000018-4001-4001-4001-000000004001', 'Cousin Hannah', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F24', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days'),
+    ('40000019-4001-4001-4001-000000004001', 'Friend Chloe', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F25', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+    ('4000001a-4001-4001-4001-000000004001', 'Neighbor Ella', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F26', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('4000001b-4001-4001-4001-000000004001', 'Colleague Aria', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F27', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days'),
+    ('4000001c-4001-4001-4001-000000004001', 'Family Friend Scarlett', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F28', NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days'),
+    ('4000001d-4001-4001-4001-000000004001', 'Godparent Victoria', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F29', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('4000001e-4001-4001-4001-000000004001', 'Grandma Mason', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F30', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
+    ('4000001f-4001-4001-4001-000000004001', 'Grandpa Ethan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F31', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days'),
+    ('40000020-4001-4001-4001-000000004001', 'Aunt Logan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F32', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days'),
+    ('40000021-4001-4001-4001-000000004001', 'Uncle Jacob', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F33', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+    ('40000022-4001-4001-4001-000000004001', 'Cousin Jackson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F34', NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days'),
+    ('40000023-4001-4001-4001-000000004001', 'Friend Aiden', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F35', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('40000024-4001-4001-4001-000000004001', 'Neighbor Samuel', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F36', NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days'),
+    ('40000025-4001-4001-4001-000000004001', 'Colleague Sebastian', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F37', NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days'),
+    ('40000026-4001-4001-4001-000000004001', 'Family Friend Matthew', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F38', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('40000027-4001-4001-4001-000000004001', 'Godparent Jack', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F39', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days'),
+    ('40000028-4001-4001-4001-000000004001', 'Grandma Ruby', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F40', NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days'),
+    ('40000029-4001-4001-4001-000000004001', 'Grandpa Alice', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F41', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('4000002a-4001-4001-4001-000000004001', 'Aunt Eva', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F42', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days'),
+    ('4000002b-4001-4001-4001-000000004001', 'Uncle Lucy', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F43', NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days'),
+    ('4000002c-4001-4001-4001-000000004001', 'Cousin Freya', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F44', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('4000002d-4001-4001-4001-000000004001', 'Friend Sophie', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F45', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+    ('4000002e-4001-4001-4001-000000004001', 'Neighbor Daisy', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F46', NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days'),
+    ('4000002f-4001-4001-4001-000000004001', 'Colleague Phoebe', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F47', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('40000030-4001-4001-4001-000000004001', 'Family Friend Florence', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F48', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days'),
+    ('40000031-4001-4001-4001-000000004001', 'Godparent Isabelle', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F49', NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days'),
+    ('40000032-4001-4001-4001-000000004001', 'Grandma Leo', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F50', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('40000033-4001-4001-4001-000000004001', 'Grandpa Oscar', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F51', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days'),
+    ('40000034-4001-4001-4001-000000004001', 'Aunt Charlie', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F52', NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days'),
+    ('40000035-4001-4001-4001-000000004001', 'Uncle Max', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F53', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('40000036-4001-4001-4001-000000004001', 'Cousin Isaac', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F54', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days'),
+    ('40000037-4001-4001-4001-000000004001', 'Friend Dylan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F55', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+    ('40000038-4001-4001-4001-000000004001', 'Neighbor Thomas', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F56', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('40000039-4001-4001-4001-000000004001', 'Colleague Nathan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F57', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days'),
+    ('4000003a-4001-4001-4001-000000004001', 'Family Friend Ryan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F58', NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days'),
+    ('4000003b-4001-4001-4001-000000004001', 'Godparent Luke', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F59', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('4000003c-4001-4001-4001-000000004001', 'Grandma Rose', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F60', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
+    ('4000003d-4001-4001-4001-000000004001', 'Grandpa Violet', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F61', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days'),
+    ('4000003e-4001-4001-4001-000000004001', 'Aunt Ivy', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F62', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days'),
+    ('4000003f-4001-4001-4001-000000004001', 'Uncle Penelope', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F63', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+    ('40000040-4001-4001-4001-000000004001', 'Cousin Aurora', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F64', NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days'),
+    ('40000041-4001-4001-4001-000000004001', 'Friend Hazel', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F65', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('40000042-4001-4001-4001-000000004001', 'Neighbor Stella', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F66', NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days'),
+    ('40000043-4001-4001-4001-000000004001', 'Colleague Willow', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F67', NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days'),
+    ('40000044-4001-4001-4001-000000004001', 'Family Friend Luna', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F68', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('40000045-4001-4001-4001-000000004001', 'Godparent Savannah', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F69', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days'),
+    ('40000046-4001-4001-4001-000000004001', 'Grandma Aaron', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F70', NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days'),
+    ('40000047-4001-4001-4001-000000004001', 'Grandpa Caleb', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F71', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('40000048-4001-4001-4001-000000004001', 'Aunt Wyatt', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F72', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days'),
+    ('40000049-4001-4001-4001-000000004001', 'Uncle Julian', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F73', NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days'),
+    ('4000004a-4001-4001-4001-000000004001', 'Cousin Carter', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F74', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('4000004b-4001-4001-4001-000000004001', 'Friend Jaxon', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F75', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+    ('4000004c-4001-4001-4001-000000004001', 'Neighbor Connor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F76', NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days'),
+    ('4000004d-4001-4001-4001-000000004001', 'Colleague Adam', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F77', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('4000004e-4001-4001-4001-000000004001', 'Family Friend Austin', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F78', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days'),
+    ('4000004f-4001-4001-4001-000000004001', 'Godparent Gabriel', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F79', NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days'),
+    ('40000050-4001-4001-4001-000000004001', 'Grandma Maya', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F80', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('40000051-4001-4001-4001-000000004001', 'Grandpa Elena', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F81', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days'),
+    ('40000052-4001-4001-4001-000000004001', 'Aunt Natalie', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F82', NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days'),
+    ('40000053-4001-4001-4001-000000004001', 'Uncle Julia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F83', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('40000054-4001-4001-4001-000000004001', 'Cousin Audrey', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F84', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days'),
+    ('40000055-4001-4001-4001-000000004001', 'Friend Layla', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F85', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+    ('40000056-4001-4001-4001-000000004001', 'Neighbor Leah', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F86', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('40000057-4001-4001-4001-000000004001', 'Colleague Reagan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F87', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days'),
+    ('40000058-4001-4001-4001-000000004001', 'Family Friend Bella', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F88', NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days'),
+    ('40000059-4001-4001-4001-000000004001', 'Godparent Nora', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F89', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('4000005a-4001-4001-4001-000000004001', 'Grandma Ian', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F90', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
+    ('4000005b-4001-4001-4001-000000004001', 'Grandpa Evan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F91', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days'),
+    ('4000005c-4001-4001-4001-000000004001', 'Aunt Dominic', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F92', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days'),
+    ('4000005d-4001-4001-4001-000000004001', 'Uncle Adrian', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F93', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+    ('4000005e-4001-4001-4001-000000004001', 'Cousin Gavin', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F94', NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days'),
+    ('4000005f-4001-4001-4001-000000004001', 'Friend Xavier', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F95', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('40000060-4001-4001-4001-000000004001', 'Neighbor Tristan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F96', NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days'),
+    ('40000061-4001-4001-4001-000000004001', 'Colleague Miles', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F97', NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days'),
+    ('40000062-4001-4001-4001-000000004001', 'Family Friend Cole', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F98', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('40000063-4001-4001-4001-000000004001', 'Godparent Bryson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F99', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days'),
+    ('40000064-4001-4001-4001-000000004001', 'Grandma Claire', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F100', NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days'),
+    ('40000065-4001-4001-4001-000000004001', 'Grandpa Madeline', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F101', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('40000066-4001-4001-4001-000000004001', 'Aunt Sadie', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F102', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days'),
+    ('40000067-4001-4001-4001-000000004001', 'Uncle Peyton', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F103', NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days'),
+    ('40000068-4001-4001-4001-000000004001', 'Cousin Autumn', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F104', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('40000069-4001-4001-4001-000000004001', 'Friend Paisley', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F105', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+    ('4000006a-4001-4001-4001-000000004001', 'Neighbor Naomi', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F106', NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days'),
+    ('4000006b-4001-4001-4001-000000004001', 'Colleague Emilia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F107', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('4000006c-4001-4001-4001-000000004001', 'Family Friend Caroline', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F108', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days'),
+    ('4000006d-4001-4001-4001-000000004001', 'Godparent Kennedy', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F109', NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days'),
+    ('4000006e-4001-4001-4001-000000004001', 'Grandma Jordan', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F110', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('4000006f-4001-4001-4001-000000004001', 'Grandpa Justin', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F111', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days'),
+    ('40000070-4001-4001-4001-000000004001', 'Aunt Blake', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F112', NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days'),
+    ('40000071-4001-4001-4001-000000004001', 'Uncle Cooper', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F113', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('40000072-4001-4001-4001-000000004001', 'Cousin Chase', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F114', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days'),
+    ('40000073-4001-4001-4001-000000004001', 'Friend Colin', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F115', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+    ('40000074-4001-4001-4001-000000004001', 'Neighbor Wesley', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F116', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('40000075-4001-4001-4001-000000004001', 'Colleague Preston', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F117', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days'),
+    ('40000076-4001-4001-4001-000000004001', 'Family Friend Sawyer', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F118', NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days'),
+    ('40000077-4001-4001-4001-000000004001', 'Godparent Jude', 'https://api.dicebear.com/7.x/avataaars/svg?seed=F119', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days')
+
+ON CONFLICT (user_id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 3: USER STATS (for all 150 users)
+-- ============================================================================
+
+INSERT INTO public.user_stats (user_id, events_attended_count, items_purchased_count, photos_squished_count, comments_added_count, updated_at) VALUES
+    ('10000000-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000000-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000000-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000001-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000001-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000001-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000002-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000002-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000002-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000003-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000003-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000003-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000004-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000004-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000004-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000005-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000005-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000005-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000006-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000006-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000006-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000007-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000007-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000007-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000008-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000008-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000008-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('10000009-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
+    ('20000009-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
+    ('30000009-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
+    ('40000000-4001-4001-4001-000000004001', 0, 0, 0, 0, NOW()),
+    ('40000001-4001-4001-4001-000000004001', 1, 1, 2, 3, NOW()),
+    ('40000002-4001-4001-4001-000000004001', 2, 2, 4, 6, NOW()),
+    ('40000003-4001-4001-4001-000000004001', 3, 0, 6, 1, NOW()),
+    ('40000004-4001-4001-4001-000000004001', 4, 1, 8, 4, NOW()),
+    ('40000005-4001-4001-4001-000000004001', 0, 2, 0, 7, NOW()),
+    ('40000006-4001-4001-4001-000000004001', 1, 0, 2, 2, NOW()),
+    ('40000007-4001-4001-4001-000000004001', 2, 1, 4, 5, NOW()),
+    ('40000008-4001-4001-4001-000000004001', 3, 2, 6, 0, NOW()),
+    ('40000009-4001-4001-4001-000000004001', 4, 0, 8, 3, NOW()),
+    ('4000000a-4001-4001-4001-000000004001', 0, 1, 0, 6, NOW()),
+    ('4000000b-4001-4001-4001-000000004001', 1, 2, 2, 1, NOW()),
+    ('4000000c-4001-4001-4001-000000004001', 2, 0, 4, 4, NOW()),
+    ('4000000d-4001-4001-4001-000000004001', 3, 1, 6, 7, NOW()),
+    ('4000000e-4001-4001-4001-000000004001', 4, 2, 8, 2, NOW()),
+    ('4000000f-4001-4001-4001-000000004001', 0, 0, 0, 5, NOW()),
+    ('40000010-4001-4001-4001-000000004001', 1, 1, 2, 0, NOW()),
+    ('40000011-4001-4001-4001-000000004001', 2, 2, 4, 3, NOW()),
+    ('40000012-4001-4001-4001-000000004001', 3, 0, 6, 6, NOW()),
+    ('40000013-4001-4001-4001-000000004001', 4, 1, 8, 1, NOW()),
+    ('40000014-4001-4001-4001-000000004001', 0, 2, 0, 4, NOW()),
+    ('40000015-4001-4001-4001-000000004001', 1, 0, 2, 7, NOW()),
+    ('40000016-4001-4001-4001-000000004001', 2, 1, 4, 2, NOW()),
+    ('40000017-4001-4001-4001-000000004001', 3, 2, 6, 5, NOW()),
+    ('40000018-4001-4001-4001-000000004001', 4, 0, 8, 0, NOW()),
+    ('40000019-4001-4001-4001-000000004001', 0, 1, 0, 3, NOW()),
+    ('4000001a-4001-4001-4001-000000004001', 1, 2, 2, 6, NOW()),
+    ('4000001b-4001-4001-4001-000000004001', 2, 0, 4, 1, NOW()),
+    ('4000001c-4001-4001-4001-000000004001', 3, 1, 6, 4, NOW()),
+    ('4000001d-4001-4001-4001-000000004001', 4, 2, 8, 7, NOW()),
+    ('4000001e-4001-4001-4001-000000004001', 0, 0, 0, 2, NOW()),
+    ('4000001f-4001-4001-4001-000000004001', 1, 1, 2, 5, NOW()),
+    ('40000020-4001-4001-4001-000000004001', 2, 2, 4, 0, NOW()),
+    ('40000021-4001-4001-4001-000000004001', 3, 0, 6, 3, NOW()),
+    ('40000022-4001-4001-4001-000000004001', 4, 1, 8, 6, NOW()),
+    ('40000023-4001-4001-4001-000000004001', 0, 2, 0, 1, NOW()),
+    ('40000024-4001-4001-4001-000000004001', 1, 0, 2, 4, NOW()),
+    ('40000025-4001-4001-4001-000000004001', 2, 1, 4, 7, NOW()),
+    ('40000026-4001-4001-4001-000000004001', 3, 2, 6, 2, NOW()),
+    ('40000027-4001-4001-4001-000000004001', 4, 0, 8, 5, NOW()),
+    ('40000028-4001-4001-4001-000000004001', 0, 1, 0, 0, NOW()),
+    ('40000029-4001-4001-4001-000000004001', 1, 2, 2, 3, NOW()),
+    ('4000002a-4001-4001-4001-000000004001', 2, 0, 4, 6, NOW()),
+    ('4000002b-4001-4001-4001-000000004001', 3, 1, 6, 1, NOW()),
+    ('4000002c-4001-4001-4001-000000004001', 4, 2, 8, 4, NOW()),
+    ('4000002d-4001-4001-4001-000000004001', 0, 0, 0, 7, NOW()),
+    ('4000002e-4001-4001-4001-000000004001', 1, 1, 2, 2, NOW()),
+    ('4000002f-4001-4001-4001-000000004001', 2, 2, 4, 5, NOW()),
+    ('40000030-4001-4001-4001-000000004001', 3, 0, 6, 0, NOW()),
+    ('40000031-4001-4001-4001-000000004001', 4, 1, 8, 3, NOW()),
+    ('40000032-4001-4001-4001-000000004001', 0, 2, 0, 6, NOW()),
+    ('40000033-4001-4001-4001-000000004001', 1, 0, 2, 1, NOW()),
+    ('40000034-4001-4001-4001-000000004001', 2, 1, 4, 4, NOW()),
+    ('40000035-4001-4001-4001-000000004001', 3, 2, 6, 7, NOW()),
+    ('40000036-4001-4001-4001-000000004001', 4, 0, 8, 2, NOW()),
+    ('40000037-4001-4001-4001-000000004001', 0, 1, 0, 5, NOW()),
+    ('40000038-4001-4001-4001-000000004001', 1, 2, 2, 0, NOW()),
+    ('40000039-4001-4001-4001-000000004001', 2, 0, 4, 3, NOW()),
+    ('4000003a-4001-4001-4001-000000004001', 3, 1, 6, 6, NOW()),
+    ('4000003b-4001-4001-4001-000000004001', 4, 2, 8, 1, NOW()),
+    ('4000003c-4001-4001-4001-000000004001', 0, 0, 0, 4, NOW()),
+    ('4000003d-4001-4001-4001-000000004001', 1, 1, 2, 7, NOW()),
+    ('4000003e-4001-4001-4001-000000004001', 2, 2, 4, 2, NOW()),
+    ('4000003f-4001-4001-4001-000000004001', 3, 0, 6, 5, NOW()),
+    ('40000040-4001-4001-4001-000000004001', 4, 1, 8, 0, NOW()),
+    ('40000041-4001-4001-4001-000000004001', 0, 2, 0, 3, NOW()),
+    ('40000042-4001-4001-4001-000000004001', 1, 0, 2, 6, NOW()),
+    ('40000043-4001-4001-4001-000000004001', 2, 1, 4, 1, NOW()),
+    ('40000044-4001-4001-4001-000000004001', 3, 2, 6, 4, NOW()),
+    ('40000045-4001-4001-4001-000000004001', 4, 0, 8, 7, NOW()),
+    ('40000046-4001-4001-4001-000000004001', 0, 1, 0, 2, NOW()),
+    ('40000047-4001-4001-4001-000000004001', 1, 2, 2, 5, NOW()),
+    ('40000048-4001-4001-4001-000000004001', 2, 0, 4, 0, NOW()),
+    ('40000049-4001-4001-4001-000000004001', 3, 1, 6, 3, NOW()),
+    ('4000004a-4001-4001-4001-000000004001', 4, 2, 8, 6, NOW()),
+    ('4000004b-4001-4001-4001-000000004001', 0, 0, 0, 1, NOW()),
+    ('4000004c-4001-4001-4001-000000004001', 1, 1, 2, 4, NOW()),
+    ('4000004d-4001-4001-4001-000000004001', 2, 2, 4, 7, NOW()),
+    ('4000004e-4001-4001-4001-000000004001', 3, 0, 6, 2, NOW()),
+    ('4000004f-4001-4001-4001-000000004001', 4, 1, 8, 5, NOW()),
+    ('40000050-4001-4001-4001-000000004001', 0, 2, 0, 0, NOW()),
+    ('40000051-4001-4001-4001-000000004001', 1, 0, 2, 3, NOW()),
+    ('40000052-4001-4001-4001-000000004001', 2, 1, 4, 6, NOW()),
+    ('40000053-4001-4001-4001-000000004001', 3, 2, 6, 1, NOW()),
+    ('40000054-4001-4001-4001-000000004001', 4, 0, 8, 4, NOW()),
+    ('40000055-4001-4001-4001-000000004001', 0, 1, 0, 7, NOW()),
+    ('40000056-4001-4001-4001-000000004001', 1, 2, 2, 2, NOW()),
+    ('40000057-4001-4001-4001-000000004001', 2, 0, 4, 5, NOW()),
+    ('40000058-4001-4001-4001-000000004001', 3, 1, 6, 0, NOW()),
+    ('40000059-4001-4001-4001-000000004001', 4, 2, 8, 3, NOW()),
+    ('4000005a-4001-4001-4001-000000004001', 0, 0, 0, 6, NOW()),
+    ('4000005b-4001-4001-4001-000000004001', 1, 1, 2, 1, NOW()),
+    ('4000005c-4001-4001-4001-000000004001', 2, 2, 4, 4, NOW()),
+    ('4000005d-4001-4001-4001-000000004001', 3, 0, 6, 7, NOW()),
+    ('4000005e-4001-4001-4001-000000004001', 4, 1, 8, 2, NOW()),
+    ('4000005f-4001-4001-4001-000000004001', 0, 2, 0, 5, NOW()),
+    ('40000060-4001-4001-4001-000000004001', 1, 0, 2, 0, NOW()),
+    ('40000061-4001-4001-4001-000000004001', 2, 1, 4, 3, NOW()),
+    ('40000062-4001-4001-4001-000000004001', 3, 2, 6, 6, NOW()),
+    ('40000063-4001-4001-4001-000000004001', 4, 0, 8, 1, NOW()),
+    ('40000064-4001-4001-4001-000000004001', 0, 1, 0, 4, NOW()),
+    ('40000065-4001-4001-4001-000000004001', 1, 2, 2, 7, NOW()),
+    ('40000066-4001-4001-4001-000000004001', 2, 0, 4, 2, NOW()),
+    ('40000067-4001-4001-4001-000000004001', 3, 1, 6, 5, NOW()),
+    ('40000068-4001-4001-4001-000000004001', 4, 2, 8, 0, NOW()),
+    ('40000069-4001-4001-4001-000000004001', 0, 0, 0, 3, NOW()),
+    ('4000006a-4001-4001-4001-000000004001', 1, 1, 2, 6, NOW()),
+    ('4000006b-4001-4001-4001-000000004001', 2, 2, 4, 1, NOW()),
+    ('4000006c-4001-4001-4001-000000004001', 3, 0, 6, 4, NOW()),
+    ('4000006d-4001-4001-4001-000000004001', 4, 1, 8, 7, NOW()),
+    ('4000006e-4001-4001-4001-000000004001', 0, 2, 0, 2, NOW()),
+    ('4000006f-4001-4001-4001-000000004001', 1, 0, 2, 5, NOW()),
+    ('40000070-4001-4001-4001-000000004001', 2, 1, 4, 0, NOW()),
+    ('40000071-4001-4001-4001-000000004001', 3, 2, 6, 3, NOW()),
+    ('40000072-4001-4001-4001-000000004001', 4, 0, 8, 6, NOW()),
+    ('40000073-4001-4001-4001-000000004001', 0, 1, 0, 1, NOW()),
+    ('40000074-4001-4001-4001-000000004001', 1, 2, 2, 4, NOW()),
+    ('40000075-4001-4001-4001-000000004001', 2, 0, 4, 7, NOW()),
+    ('40000076-4001-4001-4001-000000004001', 3, 1, 6, 2, NOW()),
+    ('40000077-4001-4001-4001-000000004001', 4, 2, 8, 5, NOW())
+
+ON CONFLICT (user_id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 4: BABY PROFILES (10 babies)
 -- ============================================================================
 
 INSERT INTO public.baby_profiles (id, name, default_last_name_source, profile_photo_url, expected_birth_date, gender, created_at, updated_at) VALUES
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Baby Johnson', 'Sarah', 'https://api.dicebear.com/7.x/bottts/svg?seed=baby1', '2026-03-15', 'unknown', NOW() - INTERVAL '30 days', NOW() - INTERVAL '5 days'),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Emma Davis', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby2', '2025-08-22', 'female', NOW() - INTERVAL '60 days', NOW() - INTERVAL '10 days')
+    ('b0000000-b001-b001-b001-00000000b001', 'Baby Johnson', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby0', NOW() + INTERVAL '30 days', 'unknown', NOW() - INTERVAL '30 days', NOW() - INTERVAL '5 days'),
+    ('b0000001-b001-b001-b001-00000000b001', 'Liam Davis', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby1', NOW() + INTERVAL '45 days', 'male', NOW() - INTERVAL '33 days', NOW() - INTERVAL '6 days'),
+    ('b0000002-b001-b001-b001-00000000b001', 'Emma Smith', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby2', NOW() + INTERVAL '60 days', 'female', NOW() - INTERVAL '36 days', NOW() - INTERVAL '7 days'),
+    ('b0000003-b001-b001-b001-00000000b001', 'Noah Brown', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby3', NOW() + INTERVAL '75 days', 'male', NOW() - INTERVAL '39 days', NOW() - INTERVAL '8 days'),
+    ('b0000004-b001-b001-b001-00000000b001', 'Olivia Wilson', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby4', NOW() + INTERVAL '90 days', 'female', NOW() - INTERVAL '42 days', NOW() - INTERVAL '9 days'),
+    ('b0000005-b001-b001-b001-00000000b001', 'Ava Martinez', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby5', NOW() + INTERVAL '105 days', 'female', NOW() - INTERVAL '45 days', NOW() - INTERVAL '10 days'),
+    ('b0000006-b001-b001-b001-00000000b001', 'Sophia Garcia', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby6', NOW() + INTERVAL '120 days', 'female', NOW() - INTERVAL '48 days', NOW() - INTERVAL '11 days'),
+    ('b0000007-b001-b001-b001-00000000b001', 'Mason Lee', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby7', NOW() + INTERVAL '135 days', 'male', NOW() - INTERVAL '51 days', NOW() - INTERVAL '12 days'),
+    ('b0000008-b001-b001-b001-00000000b001', 'Isabella Anderson', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby8', NOW() + INTERVAL '150 days', 'female', NOW() - INTERVAL '54 days', NOW() - INTERVAL '13 days'),
+    ('b0000009-b001-b001-b001-00000000b001', 'Lucas Taylor', NULL, 'https://api.dicebear.com/7.x/bottts/svg?seed=baby9', NOW() + INTERVAL '165 days', 'male', NOW() - INTERVAL '57 days', NOW() - INTERVAL '14 days')
+
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
--- SECTION 3: Baby Memberships (Access Control)
+-- SECTION 5: BABY MEMBERSHIPS (30 owners + 120 followers = 150 memberships)
 -- ============================================================================
 
--- Baby Johnson memberships
 INSERT INTO public.baby_memberships (id, baby_profile_id, user_id, role, relationship_label, created_at, updated_at, removed_at) VALUES
-    ('bm-000001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'owner', 'Mother', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
-    ('bm-000002', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '22222222-2222-2222-2222-222222222222', 'owner', 'Father', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
-    ('bm-000003', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333', 'follower', 'Grandma', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days', NULL),
-    ('bm-000004', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '44444444-4444-4444-4444-444444444444', 'follower', 'Aunt', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days', NULL),
-    ('bm-000005', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '55555555-5555-5555-5555-555555555555', 'follower', 'Uncle', NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days', NULL)
+    ('bm-000001', 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
+    ('bm-000002', 'b0000000-b001-b001-b001-00000000b001', '20000000-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
+    ('bm-000003', 'b0000000-b001-b001-b001-00000000b001', '30000000-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
+    ('bm-000004', 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
+    ('bm-000005', 'b0000001-b001-b001-b001-00000000b001', '20000001-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
+    ('bm-000006', 'b0000001-b001-b001-b001-00000000b001', '30000001-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
+    ('bm-000007', 'b0000002-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
+    ('bm-000008', 'b0000002-b001-b001-b001-00000000b001', '20000002-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
+    ('bm-000009', 'b0000002-b001-b001-b001-00000000b001', '30000002-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
+    ('bm-000010', 'b0000003-b001-b001-b001-00000000b001', '10000003-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
+    ('bm-000011', 'b0000003-b001-b001-b001-00000000b001', '20000003-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
+    ('bm-000012', 'b0000003-b001-b001-b001-00000000b001', '30000003-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
+    ('bm-000013', 'b0000004-b001-b001-b001-00000000b001', '10000004-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
+    ('bm-000014', 'b0000004-b001-b001-b001-00000000b001', '20000004-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
+    ('bm-000015', 'b0000004-b001-b001-b001-00000000b001', '30000004-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
+    ('bm-000016', 'b0000005-b001-b001-b001-00000000b001', '10000005-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
+    ('bm-000017', 'b0000005-b001-b001-b001-00000000b001', '20000005-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
+    ('bm-000018', 'b0000005-b001-b001-b001-00000000b001', '30000005-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
+    ('bm-000019', 'b0000006-b001-b001-b001-00000000b001', '10000006-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
+    ('bm-000020', 'b0000006-b001-b001-b001-00000000b001', '20000006-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
+    ('bm-000021', 'b0000006-b001-b001-b001-00000000b001', '30000006-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
+    ('bm-000022', 'b0000007-b001-b001-b001-00000000b001', '10000007-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
+    ('bm-000023', 'b0000007-b001-b001-b001-00000000b001', '20000007-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
+    ('bm-000024', 'b0000007-b001-b001-b001-00000000b001', '30000007-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
+    ('bm-000025', 'b0000008-b001-b001-b001-00000000b001', '10000008-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
+    ('bm-000026', 'b0000008-b001-b001-b001-00000000b001', '20000008-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
+    ('bm-000027', 'b0000008-b001-b001-b001-00000000b001', '30000008-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
+    ('bm-000028', 'b0000009-b001-b001-b001-00000000b001', '10000009-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days', NULL),
+    ('bm-000029', 'b0000009-b001-b001-b001-00000000b001', '20000009-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days', NULL),
+    ('bm-000030', 'b0000009-b001-b001-b001-00000000b001', '30000009-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days', NULL),
+    ('bm-000031', 'b0000000-b001-b001-b001-00000000b001', '40000000-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days', NULL),
+    ('bm-000032', 'b0000000-b001-b001-b001-00000000b001', '40000001-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days', NULL),
+    ('bm-000033', 'b0000000-b001-b001-b001-00000000b001', '40000002-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days', NULL),
+    ('bm-000034', 'b0000000-b001-b001-b001-00000000b001', '40000003-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days', NULL),
+    ('bm-000035', 'b0000000-b001-b001-b001-00000000b001', '40000004-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days', NULL),
+    ('bm-000036', 'b0000000-b001-b001-b001-00000000b001', '40000005-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
+    ('bm-000037', 'b0000000-b001-b001-b001-00000000b001', '40000006-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days', NULL),
+    ('bm-000038', 'b0000000-b001-b001-b001-00000000b001', '40000007-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days', NULL),
+    ('bm-000039', 'b0000000-b001-b001-b001-00000000b001', '40000008-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
+    ('bm-000040', 'b0000000-b001-b001-b001-00000000b001', '40000009-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days', NULL),
+    ('bm-000041', 'b0000000-b001-b001-b001-00000000b001', '4000000a-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days', NULL),
+    ('bm-000042', 'b0000000-b001-b001-b001-00000000b001', '4000000b-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
+    ('bm-000043', 'b0000001-b001-b001-b001-00000000b001', '4000000c-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days', NULL),
+    ('bm-000044', 'b0000001-b001-b001-b001-00000000b001', '4000000d-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days', NULL),
+    ('bm-000045', 'b0000001-b001-b001-b001-00000000b001', '4000000e-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
+    ('bm-000046', 'b0000001-b001-b001-b001-00000000b001', '4000000f-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days', NULL),
+    ('bm-000047', 'b0000001-b001-b001-b001-00000000b001', '40000010-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days', NULL),
+    ('bm-000048', 'b0000001-b001-b001-b001-00000000b001', '40000011-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
+    ('bm-000049', 'b0000001-b001-b001-b001-00000000b001', '40000012-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days', NULL),
+    ('bm-000050', 'b0000001-b001-b001-b001-00000000b001', '40000013-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days', NULL),
+    ('bm-000051', 'b0000001-b001-b001-b001-00000000b001', '40000014-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
+    ('bm-000052', 'b0000001-b001-b001-b001-00000000b001', '40000015-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days', NULL),
+    ('bm-000053', 'b0000001-b001-b001-b001-00000000b001', '40000016-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days', NULL),
+    ('bm-000054', 'b0000001-b001-b001-b001-00000000b001', '40000017-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
+    ('bm-000055', 'b0000002-b001-b001-b001-00000000b001', '40000018-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days', NULL),
+    ('bm-000056', 'b0000002-b001-b001-b001-00000000b001', '40000019-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days', NULL),
+    ('bm-000057', 'b0000002-b001-b001-b001-00000000b001', '4000001a-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
+    ('bm-000058', 'b0000002-b001-b001-b001-00000000b001', '4000001b-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days', NULL),
+    ('bm-000059', 'b0000002-b001-b001-b001-00000000b001', '4000001c-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days', NULL),
+    ('bm-000060', 'b0000002-b001-b001-b001-00000000b001', '4000001d-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
+    ('bm-000061', 'b0000002-b001-b001-b001-00000000b001', '4000001e-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days', NULL),
+    ('bm-000062', 'b0000002-b001-b001-b001-00000000b001', '4000001f-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days', NULL),
+    ('bm-000063', 'b0000002-b001-b001-b001-00000000b001', '40000020-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days', NULL),
+    ('bm-000064', 'b0000002-b001-b001-b001-00000000b001', '40000021-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days', NULL),
+    ('bm-000065', 'b0000002-b001-b001-b001-00000000b001', '40000022-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days', NULL),
+    ('bm-000066', 'b0000002-b001-b001-b001-00000000b001', '40000023-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
+    ('bm-000067', 'b0000003-b001-b001-b001-00000000b001', '40000024-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days', NULL),
+    ('bm-000068', 'b0000003-b001-b001-b001-00000000b001', '40000025-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days', NULL),
+    ('bm-000069', 'b0000003-b001-b001-b001-00000000b001', '40000026-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
+    ('bm-000070', 'b0000003-b001-b001-b001-00000000b001', '40000027-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days', NULL),
+    ('bm-000071', 'b0000003-b001-b001-b001-00000000b001', '40000028-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days', NULL),
+    ('bm-000072', 'b0000003-b001-b001-b001-00000000b001', '40000029-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
+    ('bm-000073', 'b0000003-b001-b001-b001-00000000b001', '4000002a-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days', NULL),
+    ('bm-000074', 'b0000003-b001-b001-b001-00000000b001', '4000002b-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days', NULL),
+    ('bm-000075', 'b0000003-b001-b001-b001-00000000b001', '4000002c-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
+    ('bm-000076', 'b0000003-b001-b001-b001-00000000b001', '4000002d-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days', NULL),
+    ('bm-000077', 'b0000003-b001-b001-b001-00000000b001', '4000002e-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days', NULL),
+    ('bm-000078', 'b0000003-b001-b001-b001-00000000b001', '4000002f-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
+    ('bm-000079', 'b0000004-b001-b001-b001-00000000b001', '40000030-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days', NULL),
+    ('bm-000080', 'b0000004-b001-b001-b001-00000000b001', '40000031-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days', NULL),
+    ('bm-000081', 'b0000004-b001-b001-b001-00000000b001', '40000032-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
+    ('bm-000082', 'b0000004-b001-b001-b001-00000000b001', '40000033-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days', NULL),
+    ('bm-000083', 'b0000004-b001-b001-b001-00000000b001', '40000034-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days', NULL),
+    ('bm-000084', 'b0000004-b001-b001-b001-00000000b001', '40000035-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
+    ('bm-000085', 'b0000004-b001-b001-b001-00000000b001', '40000036-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days', NULL),
+    ('bm-000086', 'b0000004-b001-b001-b001-00000000b001', '40000037-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days', NULL),
+    ('bm-000087', 'b0000004-b001-b001-b001-00000000b001', '40000038-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
+    ('bm-000088', 'b0000004-b001-b001-b001-00000000b001', '40000039-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days', NULL),
+    ('bm-000089', 'b0000004-b001-b001-b001-00000000b001', '4000003a-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days', NULL),
+    ('bm-000090', 'b0000004-b001-b001-b001-00000000b001', '4000003b-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
+    ('bm-000091', 'b0000005-b001-b001-b001-00000000b001', '4000003c-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days', NULL),
+    ('bm-000092', 'b0000005-b001-b001-b001-00000000b001', '4000003d-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days', NULL),
+    ('bm-000093', 'b0000005-b001-b001-b001-00000000b001', '4000003e-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days', NULL),
+    ('bm-000094', 'b0000005-b001-b001-b001-00000000b001', '4000003f-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days', NULL),
+    ('bm-000095', 'b0000005-b001-b001-b001-00000000b001', '40000040-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days', NULL),
+    ('bm-000096', 'b0000005-b001-b001-b001-00000000b001', '40000041-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
+    ('bm-000097', 'b0000005-b001-b001-b001-00000000b001', '40000042-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days', NULL),
+    ('bm-000098', 'b0000005-b001-b001-b001-00000000b001', '40000043-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days', NULL),
+    ('bm-000099', 'b0000005-b001-b001-b001-00000000b001', '40000044-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
+    ('bm-000100', 'b0000005-b001-b001-b001-00000000b001', '40000045-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days', NULL),
+    ('bm-000101', 'b0000005-b001-b001-b001-00000000b001', '40000046-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days', NULL),
+    ('bm-000102', 'b0000005-b001-b001-b001-00000000b001', '40000047-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
+    ('bm-000103', 'b0000006-b001-b001-b001-00000000b001', '40000048-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days', NULL),
+    ('bm-000104', 'b0000006-b001-b001-b001-00000000b001', '40000049-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days', NULL),
+    ('bm-000105', 'b0000006-b001-b001-b001-00000000b001', '4000004a-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
+    ('bm-000106', 'b0000006-b001-b001-b001-00000000b001', '4000004b-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days', NULL),
+    ('bm-000107', 'b0000006-b001-b001-b001-00000000b001', '4000004c-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days', NULL),
+    ('bm-000108', 'b0000006-b001-b001-b001-00000000b001', '4000004d-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
+    ('bm-000109', 'b0000006-b001-b001-b001-00000000b001', '4000004e-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days', NULL),
+    ('bm-000110', 'b0000006-b001-b001-b001-00000000b001', '4000004f-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days', NULL),
+    ('bm-000111', 'b0000006-b001-b001-b001-00000000b001', '40000050-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
+    ('bm-000112', 'b0000006-b001-b001-b001-00000000b001', '40000051-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days', NULL),
+    ('bm-000113', 'b0000006-b001-b001-b001-00000000b001', '40000052-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days', NULL),
+    ('bm-000114', 'b0000006-b001-b001-b001-00000000b001', '40000053-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
+    ('bm-000115', 'b0000007-b001-b001-b001-00000000b001', '40000054-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days', NULL),
+    ('bm-000116', 'b0000007-b001-b001-b001-00000000b001', '40000055-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days', NULL),
+    ('bm-000117', 'b0000007-b001-b001-b001-00000000b001', '40000056-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
+    ('bm-000118', 'b0000007-b001-b001-b001-00000000b001', '40000057-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days', NULL),
+    ('bm-000119', 'b0000007-b001-b001-b001-00000000b001', '40000058-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days', NULL),
+    ('bm-000120', 'b0000007-b001-b001-b001-00000000b001', '40000059-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
+    ('bm-000121', 'b0000007-b001-b001-b001-00000000b001', '4000005a-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days', NULL),
+    ('bm-000122', 'b0000007-b001-b001-b001-00000000b001', '4000005b-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days', NULL),
+    ('bm-000123', 'b0000007-b001-b001-b001-00000000b001', '4000005c-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days', NULL),
+    ('bm-000124', 'b0000007-b001-b001-b001-00000000b001', '4000005d-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days', NULL),
+    ('bm-000125', 'b0000007-b001-b001-b001-00000000b001', '4000005e-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days', NULL),
+    ('bm-000126', 'b0000007-b001-b001-b001-00000000b001', '4000005f-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
+    ('bm-000127', 'b0000008-b001-b001-b001-00000000b001', '40000060-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days', NULL),
+    ('bm-000128', 'b0000008-b001-b001-b001-00000000b001', '40000061-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days', NULL),
+    ('bm-000129', 'b0000008-b001-b001-b001-00000000b001', '40000062-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
+    ('bm-000130', 'b0000008-b001-b001-b001-00000000b001', '40000063-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days', NULL),
+    ('bm-000131', 'b0000008-b001-b001-b001-00000000b001', '40000064-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days', NULL),
+    ('bm-000132', 'b0000008-b001-b001-b001-00000000b001', '40000065-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
+    ('bm-000133', 'b0000008-b001-b001-b001-00000000b001', '40000066-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days', NULL),
+    ('bm-000134', 'b0000008-b001-b001-b001-00000000b001', '40000067-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days', NULL),
+    ('bm-000135', 'b0000008-b001-b001-b001-00000000b001', '40000068-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
+    ('bm-000136', 'b0000008-b001-b001-b001-00000000b001', '40000069-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days', NULL),
+    ('bm-000137', 'b0000008-b001-b001-b001-00000000b001', '4000006a-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days', NULL),
+    ('bm-000138', 'b0000008-b001-b001-b001-00000000b001', '4000006b-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
+    ('bm-000139', 'b0000009-b001-b001-b001-00000000b001', '4000006c-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days', NULL),
+    ('bm-000140', 'b0000009-b001-b001-b001-00000000b001', '4000006d-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days', NULL),
+    ('bm-000141', 'b0000009-b001-b001-b001-00000000b001', '4000006e-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
+    ('bm-000142', 'b0000009-b001-b001-b001-00000000b001', '4000006f-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days', NULL),
+    ('bm-000143', 'b0000009-b001-b001-b001-00000000b001', '40000070-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days', NULL),
+    ('bm-000144', 'b0000009-b001-b001-b001-00000000b001', '40000071-4001-4001-4001-000000004001', 'follower', 'Uncle', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
+    ('bm-000145', 'b0000009-b001-b001-b001-00000000b001', '40000072-4001-4001-4001-000000004001', 'follower', 'Cousin', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days', NULL),
+    ('bm-000146', 'b0000009-b001-b001-b001-00000000b001', '40000073-4001-4001-4001-000000004001', 'follower', 'Friend', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days', NULL),
+    ('bm-000147', 'b0000009-b001-b001-b001-00000000b001', '40000074-4001-4001-4001-000000004001', 'follower', 'Neighbor', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
+    ('bm-000148', 'b0000009-b001-b001-b001-00000000b001', '40000075-4001-4001-4001-000000004001', 'follower', 'Colleague', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days', NULL),
+    ('bm-000149', 'b0000009-b001-b001-b001-00000000b001', '40000076-4001-4001-4001-000000004001', 'follower', 'Family Friend', NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days', NULL),
+    ('bm-000150', 'b0000009-b001-b001-b001-00000000b001', '40000077-4001-4001-4001-000000004001', 'follower', 'Godparent', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL)
+
 ON CONFLICT (id) DO NOTHING;
 
--- Emma Davis memberships
-INSERT INTO public.baby_memberships (id, baby_profile_id, user_id, role, relationship_label, created_at, updated_at, removed_at) VALUES
-    ('bm-000006', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '66666666-6666-6666-6666-666666666666', 'owner', 'Mother', NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days', NULL),
-    ('bm-000007', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '77777777-7777-7777-7777-777777777777', 'owner', 'Father', NOW() - INTERVAL '60 days', NOW() - INTERVAL '60 days', NULL),
-    ('bm-000008', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '88888888-8888-8888-8888-888888888888', 'follower', 'Grandpa', NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days', NULL)
-ON CONFLICT (id) DO NOTHING;
-
 -- ============================================================================
--- SECTION 4: Invitations
+-- SECTION 6: TILE SYSTEM CONFIGURATION
 -- ============================================================================
 
-INSERT INTO public.invitations (id, baby_profile_id, invited_by_user_id, invitee_email, token_hash, expires_at, status, accepted_at, accepted_by_user_id, created_at, updated_at) VALUES
-    ('inv-001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'grandma@example.com', 'hash_grandma_token', NOW() - INTERVAL '24 days', 'accepted', NOW() - INTERVAL '25 days', '33333333-3333-3333-3333-333333333333', NOW() - INTERVAL '26 days', NOW() - INTERVAL '25 days'),
-    ('inv-002', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'aunt@example.com', 'hash_aunt_token', NOW() - INTERVAL '19 days', 'accepted', NOW() - INTERVAL '20 days', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '21 days', NOW() - INTERVAL '20 days'),
-    ('inv-003', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '22222222-2222-2222-2222-222222222222', 'uncle@example.com', 'hash_uncle_token', NOW() - INTERVAL '14 days', 'accepted', NOW() - INTERVAL '15 days', '55555555-5555-5555-5555-555555555555', NOW() - INTERVAL '16 days', NOW() - INTERVAL '15 days'),
-    ('inv-004', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'friend@example.com', 'hash_friend_token', NOW() + INTERVAL '5 days', 'pending', NULL, NULL, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
-    ('inv-005', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '66666666-6666-6666-6666-666666666666', 'grandpa@example.com', 'hash_grandpa_token', NOW() - INTERVAL '49 days', 'accepted', NOW() - INTERVAL '50 days', '88888888-8888-8888-8888-888888888888', NOW() - INTERVAL '51 days', NOW() - INTERVAL '50 days')
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================================================
--- SECTION 5: Tile System Configuration
--- ============================================================================
-
--- Screens
 INSERT INTO public.screens (id, screen_name, description, is_active, created_at) VALUES
     ('screen-home', 'home', 'Home screen with aggregated updates', true, NOW()),
     ('screen-gallery', 'gallery', 'Photo gallery screen', true, NOW()),
     ('screen-calendar', 'calendar', 'Calendar events screen', true, NOW()),
     ('screen-registry', 'registry', 'Baby registry screen', true, NOW()),
     ('screen-fun', 'fun', 'Gamification and voting screen', true, NOW())
+
 ON CONFLICT (id) DO NOTHING;
 
--- Tile Definitions
 INSERT INTO public.tile_definitions (id, tile_type, description, schema_params, is_active, created_at) VALUES
     ('tile-upcoming-events', 'UpcomingEventsTile', 'Shows upcoming calendar events', '{"limit": 5, "daysAhead": 30}'::jsonb, true, NOW()),
     ('tile-recent-photos', 'RecentPhotosTile', 'Grid of recent photos', '{"limit": 6}'::jsonb, true, NOW()),
@@ -99,165 +528,33 @@ INSERT INTO public.tile_definitions (id, tile_type, description, schema_params, 
     ('tile-activity-list', 'ActivityListTile', 'Recent activity feed', '{"limit": 10}'::jsonb, true, NOW()),
     ('tile-countdown', 'CountdownTile', 'Baby arrival countdown', '{}'::jsonb, true, NOW()),
     ('tile-notifications', 'NotificationsTile', 'Unread notifications', '{"limit": 5}'::jsonb, true, NOW())
+
 ON CONFLICT (id) DO NOTHING;
 
--- Tile Configs (Owner role - Home screen)
 INSERT INTO public.tile_configs (id, screen_id, tile_definition_id, role, display_order, is_visible, params, updated_at) VALUES
     ('cfg-home-owner-1', 'screen-home', 'tile-countdown', 'owner', 10, true, '{}'::jsonb, NOW()),
     ('cfg-home-owner-2', 'screen-home', 'tile-notifications', 'owner', 20, true, '{"limit": 5}'::jsonb, NOW()),
     ('cfg-home-owner-3', 'screen-home', 'tile-activity-list', 'owner', 30, true, '{"limit": 10}'::jsonb, NOW()),
-    ('cfg-home-owner-4', 'screen-home', 'tile-recent-photos', 'owner', 40, true, '{"limit": 6}'::jsonb, NOW())
-ON CONFLICT (id) DO NOTHING;
-
--- Tile Configs (Follower role - Home screen)
-INSERT INTO public.tile_configs (id, screen_id, tile_definition_id, role, display_order, is_visible, params, updated_at) VALUES
+    ('cfg-home-owner-4', 'screen-home', 'tile-recent-photos', 'owner', 40, true, '{"limit": 6}'::jsonb, NOW()),
     ('cfg-home-follower-1', 'screen-home', 'tile-countdown', 'follower', 10, true, '{}'::jsonb, NOW()),
     ('cfg-home-follower-2', 'screen-home', 'tile-activity-list', 'follower', 20, true, '{"limit": 15}'::jsonb, NOW()),
     ('cfg-home-follower-3', 'screen-home', 'tile-recent-photos', 'follower', 30, true, '{"limit": 9}'::jsonb, NOW()),
     ('cfg-home-follower-4', 'screen-home', 'tile-upcoming-events', 'follower', 40, true, '{"limit": 3}'::jsonb, NOW())
+
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
--- SECTION 6: Calendar Events
+-- END OF SEED DATA
+-- Summary: 10 babies, 30 owners, 120 followers, 150 total users
 -- ============================================================================
 
-INSERT INTO public.events (id, baby_profile_id, created_by_user_id, title, starts_at, ends_at, description, location, video_link, cover_photo_url, created_at, updated_at) VALUES
-    ('event-001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'Gender Reveal Party', NOW() + INTERVAL '14 days', NOW() + INTERVAL '14 days' + INTERVAL '3 hours', 'Join us to find out if it''s a boy or girl!', '123 Main St, Springfield', NULL, 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
-    ('event-002', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '22222222-2222-2222-2222-222222222222', 'Baby Shower', NOW() + INTERVAL '45 days', NOW() + INTERVAL '45 days' + INTERVAL '4 hours', 'Celebrating Baby Johnson with family and friends', 'Community Center', 'https://zoom.us/j/123456789', NULL, NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
-    ('event-003', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', '20-Week Ultrasound', NOW() + INTERVAL '7 days', NOW() + INTERVAL '7 days' + INTERVAL '1 hour', 'Anatomy scan appointment', 'Memorial Hospital', NULL, NULL, NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
-    ('event-004', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '66666666-6666-6666-6666-666666666666', 'Emma''s Baby Shower', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days' + INTERVAL '3 hours', 'Shower for Emma Davis', '456 Oak Ave', NULL, NULL, NOW() - INTERVAL '45 days', NOW() - INTERVAL '20 days')
-ON CONFLICT (id) DO NOTHING;
-
--- Event RSVPs
-INSERT INTO public.event_rsvps (id, event_id, user_id, status, created_at, updated_at) VALUES
-    ('rsvp-001', 'event-001', '33333333-3333-3333-3333-333333333333', 'yes', NOW() - INTERVAL '9 days', NOW() - INTERVAL '9 days'),
-    ('rsvp-002', 'event-001', '44444444-4444-4444-4444-444444444444', 'yes', NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days'),
-    ('rsvp-003', 'event-001', '55555555-5555-5555-5555-555555555555', 'maybe', NOW() - INTERVAL '7 days', NOW() - INTERVAL '7 days'),
-    ('rsvp-004', 'event-002', '33333333-3333-3333-3333-333333333333', 'yes', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
-    ('rsvp-005', 'event-004', '88888888-8888-8888-8888-888888888888', 'yes', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days')
-ON CONFLICT (id) DO NOTHING;
-
--- Event Comments
-INSERT INTO public.event_comments (id, event_id, user_id, body, created_at, deleted_at, deleted_by_user_id) VALUES
-    ('ec-001', 'event-001', '33333333-3333-3333-3333-333333333333', 'So excited! Can''t wait to find out!', NOW() - INTERVAL '9 days', NULL, NULL),
-    ('ec-002', 'event-001', '44444444-4444-4444-4444-444444444444', 'I''ll bring the cupcakes!', NOW() - INTERVAL '8 days', NULL, NULL),
-    ('ec-003', 'event-002', '55555555-5555-5555-5555-555555555555', 'What should I bring?', NOW() - INTERVAL '4 days', NULL, NULL)
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================================================
--- SECTION 7: Registry Items
--- ============================================================================
-
-INSERT INTO public.registry_items (id, baby_profile_id, created_by_user_id, name, description, link_url, priority, created_at, updated_at) VALUES
-    ('item-001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'Stroller', 'Lightweight travel stroller', 'https://example.com/stroller', 1, NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
-    ('item-002', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'Crib', 'Convertible 3-in-1 crib', 'https://example.com/crib', 1, NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
-    ('item-003', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '22222222-2222-2222-2222-222222222222', 'Diapers Size 1', 'Newborn diapers', 'https://example.com/diapers', 2, NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
-    ('item-004', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'Baby Monitor', 'Video baby monitor with night vision', 'https://example.com/monitor', 1, NOW() - INTERVAL '18 days', NOW() - INTERVAL '18 days'),
-    ('item-005', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'Nursing Pillow', 'Ergonomic nursing support', NULL, 3, NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days'),
-    ('item-006', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '66666666-6666-6666-6666-666666666666', 'Car Seat', 'Infant car seat with base', 'https://example.com/carseat', 1, NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days')
-ON CONFLICT (id) DO NOTHING;
-
--- Registry Purchases
-INSERT INTO public.registry_purchases (id, registry_item_id, purchased_by_user_id, purchased_at, note) VALUES
-    ('purchase-001', 'item-003', '33333333-3333-3333-3333-333333333333', NOW() - INTERVAL '10 days', 'Congrats! We''re so happy for you!'),
-    ('purchase-002', 'item-005', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '8 days', NULL),
-    ('purchase-003', 'item-006', '88888888-8888-8888-8888-888888888888', NOW() - INTERVAL '35 days', 'Welcome Emma!')
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================================================
--- SECTION 8: Photos
--- ============================================================================
-
-INSERT INTO public.photos (id, baby_profile_id, uploaded_by_user_id, storage_path, caption, created_at, updated_at) VALUES
-    ('photo-001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'babies/baby-johnson/photo1.jpg', '12 weeks ultrasound!', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
-    ('photo-002', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'babies/baby-johnson/photo2.jpg', 'Baby bump at 16 weeks', NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days'),
-    ('photo-003', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '22222222-2222-2222-2222-222222222222', 'babies/baby-johnson/photo3.jpg', 'Setting up the nursery!', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
-    ('photo-004', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'babies/baby-johnson/photo4.jpg', '20 weeks and feeling great', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
-    ('photo-005', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '66666666-6666-6666-6666-666666666666', 'babies/emma-davis/photo1.jpg', 'Emma''s first photo', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
-    ('photo-006', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '66666666-6666-6666-6666-666666666666', 'babies/emma-davis/photo2.jpg', 'Emma at 2 weeks', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days')
-ON CONFLICT (id) DO NOTHING;
-
--- Photo Squishes
-INSERT INTO public.photo_squishes (id, photo_id, user_id, created_at) VALUES
-    ('squish-001', 'photo-001', '33333333-3333-3333-3333-333333333333', NOW() - INTERVAL '19 days'),
-    ('squish-002', 'photo-001', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '19 days'),
-    ('squish-003', 'photo-001', '55555555-5555-5555-5555-555555555555', NOW() - INTERVAL '18 days'),
-    ('squish-004', 'photo-002', '33333333-3333-3333-3333-333333333333', NOW() - INTERVAL '14 days'),
-    ('squish-005', 'photo-002', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '14 days'),
-    ('squish-006', 'photo-003', '33333333-3333-3333-3333-333333333333', NOW() - INTERVAL '9 days'),
-    ('squish-007', 'photo-003', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '9 days'),
-    ('squish-008', 'photo-003', '55555555-5555-5555-5555-555555555555', NOW() - INTERVAL '9 days'),
-    ('squish-009', 'photo-004', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '4 days'),
-    ('squish-010', 'photo-005', '88888888-8888-8888-8888-888888888888', NOW() - INTERVAL '44 days'),
-    ('squish-011', 'photo-006', '88888888-8888-8888-8888-888888888888', NOW() - INTERVAL '29 days')
-ON CONFLICT (id) DO NOTHING;
-
--- Photo Comments
-INSERT INTO public.photo_comments (id, photo_id, user_id, body, created_at, deleted_at, deleted_by_user_id) VALUES
-    ('pc-001', 'photo-001', '33333333-3333-3333-3333-333333333333', 'So beautiful!', NOW() - INTERVAL '19 days', NULL, NULL),
-    ('pc-002', 'photo-002', '44444444-4444-4444-4444-444444444444', 'You look amazing!', NOW() - INTERVAL '14 days', NULL, NULL),
-    ('pc-003', 'photo-003', '55555555-5555-5555-5555-555555555555', 'Love the nursery colors!', NOW() - INTERVAL '9 days', NULL, NULL),
-    ('pc-004', 'photo-004', '33333333-3333-3333-3333-333333333333', 'Glowing mama!', NOW() - INTERVAL '4 days', NULL, NULL),
-    ('pc-005', 'photo-005', '88888888-8888-8888-8888-888888888888', 'Welcome to the world Emma!', NOW() - INTERVAL '44 days', NULL, NULL)
-ON CONFLICT (id) DO NOTHING;
-
--- Photo Tags
-INSERT INTO public.photo_tags (id, photo_id, tag, created_at) VALUES
-    ('tag-001', 'photo-001', 'ultrasound', NOW() - INTERVAL '20 days'),
-    ('tag-002', 'photo-001', 'milestone', NOW() - INTERVAL '20 days'),
-    ('tag-003', 'photo-002', 'bump', NOW() - INTERVAL '15 days'),
-    ('tag-004', 'photo-003', 'nursery', NOW() - INTERVAL '10 days'),
-    ('tag-005', 'photo-003', 'preparation', NOW() - INTERVAL '10 days'),
-    ('tag-006', 'photo-005', 'newborn', NOW() - INTERVAL '45 days'),
-    ('tag-007', 'photo-005', 'firstphoto', NOW() - INTERVAL '45 days')
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================================================
--- SECTION 9: Gamification - Votes
--- ============================================================================
-
-INSERT INTO public.votes (id, baby_profile_id, user_id, vote_type, value_text, value_date, is_anonymous, created_at, updated_at) VALUES
-    ('vote-001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333', 'gender', 'girl', NULL, true, NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days'),
-    ('vote-002', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '44444444-4444-4444-4444-444444444444', 'gender', 'boy', NULL, true, NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days'),
-    ('vote-003', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '55555555-5555-5555-5555-555555555555', 'gender', 'girl', NULL, true, NOW() - INTERVAL '13 days', NOW() - INTERVAL '13 days'),
-    ('vote-004', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333', 'birthdate', NULL, '2026-03-10', true, NOW() - INTERVAL '12 days', NOW() - INTERVAL '12 days'),
-    ('vote-005', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '44444444-4444-4444-4444-444444444444', 'birthdate', NULL, '2026-03-18', true, NOW() - INTERVAL '11 days', NOW() - INTERVAL '11 days')
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================================================
--- SECTION 10: Gamification - Name Suggestions
--- ============================================================================
-
-INSERT INTO public.name_suggestions (id, baby_profile_id, user_id, gender, suggested_name, created_at, updated_at) VALUES
-    ('ns-001', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333', 'female', 'Sophia', NOW() - INTERVAL '18 days', NOW() - INTERVAL '18 days'),
-    ('ns-002', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333', 'male', 'Liam', NOW() - INTERVAL '18 days', NOW() - INTERVAL '18 days'),
-    ('ns-003', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '44444444-4444-4444-4444-444444444444', 'female', 'Olivia', NOW() - INTERVAL '16 days', NOW() - INTERVAL '16 days'),
-    ('ns-004', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '44444444-4444-4444-4444-444444444444', 'male', 'Noah', NOW() - INTERVAL '16 days', NOW() - INTERVAL '16 days'),
-    ('ns-005', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '55555555-5555-5555-5555-555555555555', 'female', 'Emma', NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days')
-ON CONFLICT (id) DO NOTHING;
-
--- Name Suggestion Likes
-INSERT INTO public.name_suggestion_likes (id, name_suggestion_id, user_id, created_at) VALUES
-    ('nsl-001', 'ns-001', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '17 days'),
-    ('nsl-002', 'ns-001', '55555555-5555-5555-5555-555555555555', NOW() - INTERVAL '16 days'),
-    ('nsl-003', 'ns-002', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '17 days'),
-    ('nsl-004', 'ns-003', '33333333-3333-3333-3333-333333333333', NOW() - INTERVAL '15 days'),
-    ('nsl-005', 'ns-005', '33333333-3333-3333-3333-333333333333', NOW() - INTERVAL '13 days'),
-    ('nsl-006', 'ns-005', '44444444-4444-4444-4444-444444444444', NOW() - INTERVAL '13 days')
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================================================
--- END OF SEED DATA SCRIPT
--- ============================================================================
-
--- Summary statistics
+-- Display summary statistics
 DO $$
 BEGIN
     RAISE NOTICE 'Seed data loaded successfully!';
     RAISE NOTICE 'Profiles: %', (SELECT COUNT(*) FROM public.profiles);
     RAISE NOTICE 'Baby Profiles: %', (SELECT COUNT(*) FROM public.baby_profiles);
-    RAISE NOTICE 'Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE removed_at IS NULL);
-    RAISE NOTICE 'Events: %', (SELECT COUNT(*) FROM public.events);
-    RAISE NOTICE 'Photos: %', (SELECT COUNT(*) FROM public.photos);
-    RAISE NOTICE 'Registry Items: %', (SELECT COUNT(*) FROM public.registry_items);
+    RAISE NOTICE 'Total Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE removed_at IS NULL);
+    RAISE NOTICE 'Owner Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE role = ''owner'' AND removed_at IS NULL);
+    RAISE NOTICE 'Follower Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE role = ''follower'' AND removed_at IS NULL);
 END $$;
