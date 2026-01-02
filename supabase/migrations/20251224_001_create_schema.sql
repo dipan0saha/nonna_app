@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     user_id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     display_name text,
     avatar_url text,
+    biometric_enabled boolean NOT NULL DEFAULT false,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
 );

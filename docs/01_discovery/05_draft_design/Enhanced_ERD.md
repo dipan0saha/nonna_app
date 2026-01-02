@@ -37,6 +37,7 @@ erDiagram
         uuid user_id PK,FK "🔗 auth.users(id) ON DELETE CASCADE"
         text display_name "User display name"
         text avatar_url "Profile picture URL"
+        boolean biometric_enabled "Biometric auth preference (default false)"
         timestamptz created_at "NOT NULL DEFAULT now()"
         timestamptz updated_at "Auto-updated via trigger"
     }
