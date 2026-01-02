@@ -1,8 +1,8 @@
 -- ============================================================================
 -- Nonna App - Comprehensive Seed Data Script
--- Version: 2.0.0
+-- Version: 2.1.0
 -- Target: PostgreSQL 15+ (Supabase Managed)
--- Description: Extended test data - 10 babies, 30 owners, 120 followers
+-- Description: Extended test data - 10 babies, 20 owners, 120 followers
 -- ============================================================================
 
 -- ---------------------------------------------------------------------------
@@ -21,40 +21,30 @@ COMMIT;
 -- For testing, we create profiles directly.
 
 -- ============================================================================
--- SECTION 1: PROFILES - Owners (30 users, 3 per baby)
+-- SECTION 1: PROFILES - Owners (20 users, 2 per baby)
 -- ============================================================================
 
 INSERT INTO public.profiles (user_id, display_name, avatar_url, biometric_enabled, created_at, updated_at) VALUES
     ('10000000-1001-1001-1001-000000001001', 'Sarah Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah0', false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
     ('20000000-2001-2001-2001-000000002001', 'Michael Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael0', false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
-    ('30000000-3001-3001-3001-000000003001', 'Mary Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mary0', false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
     ('10000001-1001-1001-1001-000000001001', 'Emily Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily1', false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
     ('20000001-2001-2001-2001-000000002001', 'John Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=John1', false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
-    ('30000001-3001-3001-3001-000000003001', 'Grace Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Grace1', false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
     ('10000002-1001-1001-1001-000000001001', 'Jennifer Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer2', false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
     ('20000002-2001-2001-2001-000000002001', 'David Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=David2', false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
-    ('30000002-3001-3001-3001-000000003001', 'Linda Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda2', false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
     ('10000003-1001-1001-1001-000000001001', 'Jessica Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica3', false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
     ('20000003-2001-2001-2001-000000002001', 'Robert Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert3', false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
-    ('30000003-3001-3001-3001-000000003001', 'Patricia Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Patricia3', false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
     ('10000004-1001-1001-1001-000000001001', 'Amanda Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amanda4', false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
     ('20000004-2001-2001-2001-000000002001', 'James Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=James4', false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
-    ('30000004-3001-3001-3001-000000003001', 'Barbara Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Barbara4', false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
     ('10000005-1001-1001-1001-000000001001', 'Maria Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria5', false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
     ('20000005-2001-2001-2001-000000002001', 'Carlos Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos5', false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
-    ('30000005-3001-3001-3001-000000003001', 'Elena Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Elena5', false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
     ('10000006-1001-1001-1001-000000001001', 'Sofia Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sofia6', false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
     ('20000006-2001-2001-2001-000000002001', 'Miguel Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Miguel6', false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
-    ('30000006-3001-3001-3001-000000003001', 'Carmen Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carmen6', false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
     ('10000007-1001-1001-1001-000000001001', 'Michelle Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michelle7', false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
     ('20000007-2001-2001-2001-000000002001', 'Kevin Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kevin7', false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
-    ('30000007-3001-3001-3001-000000003001', 'Susan Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Susan7', false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
     ('10000008-1001-1001-1001-000000001001', 'Rachel Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rachel8', false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
     ('20000008-2001-2001-2001-000000002001', 'Christopher Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Christopher8', false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
-    ('30000008-3001-3001-3001-000000003001', 'Dorothy Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dorothy8', false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
     ('10000009-1001-1001-1001-000000001001', 'Lauren Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lauren9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
-    ('20000009-2001-2001-2001-000000002001', 'Daniel Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
-    ('30000009-3001-3001-3001-000000003001', 'Betty Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Betty9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days')
+    ('20000009-2001-2001-2001-000000002001', 'Daniel Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days')
 
 ON CONFLICT (user_id) DO NOTHING;
 
@@ -193,34 +183,24 @@ ON CONFLICT (user_id) DO NOTHING;
 INSERT INTO public.user_stats (user_id, events_attended_count, items_purchased_count, photos_squished_count, comments_added_count, updated_at) VALUES
     ('10000000-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000000-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000000-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000001-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000001-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000001-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000002-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000002-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000002-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000003-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000003-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000003-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000004-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000004-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000004-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000005-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000005-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000005-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000006-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000006-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000006-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000007-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000007-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000007-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000008-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000008-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000008-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('10000009-1001-1001-1001-000000001001', 0, 0, 0, 0, NOW()),
     ('20000009-2001-2001-2001-000000002001', 0, 0, 0, 0, NOW()),
-    ('30000009-3001-3001-3001-000000003001', 0, 0, 0, 0, NOW()),
     ('40000000-4001-4001-4001-000000004001', 0, 0, 0, 0, NOW()),
     ('40000001-4001-4001-4001-000000004001', 1, 1, 2, 3, NOW()),
     ('40000002-4001-4001-4001-000000004001', 2, 2, 4, 6, NOW()),
@@ -363,40 +343,52 @@ INSERT INTO public.baby_profiles (id, name, default_last_name_source, profile_ph
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
--- SECTION 5: BABY MEMBERSHIPS (30 owners + 120 followers = 150 memberships)
+-- SECTION 5: BABY MEMBERSHIPS (20 owners + 120 followers + 10 cross-profile = 150 memberships)
+-- Note: 2 owners per baby, with some owners also being followers of other babies
 -- ============================================================================
 
 INSERT INTO public.baby_memberships (id, baby_profile_id, user_id, role, relationship_label, created_at, updated_at, removed_at) VALUES
+    -- Baby 0 owners (2)
     ('b1a81fd9-4595-49e8-9476-37acc900f55a', 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
     ('7aae85fe-78a7-42d7-96ee-4c6874ea9136', 'b0000000-b001-b001-b001-00000000b001', '20000000-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
-    ('29461712-0b1c-432e-af0a-41a806bd91f7', 'b0000000-b001-b001-b001-00000000b001', '30000000-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days', NULL),
+    -- Baby 1 owners (2)
     ('9dd5a931-4fef-40c9-b1f2-6c849b871835', 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
     ('37c0c051-6776-4fbc-a5db-e37485957542', 'b0000001-b001-b001-b001-00000000b001', '20000001-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
-    ('617939b3-f434-4d6c-8e09-2b5a61e0bae1', 'b0000001-b001-b001-b001-00000000b001', '30000001-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days', NULL),
+    -- Baby 2 owners (2)
     ('5b24fb53-94f0-491f-a704-cb98cdf15217', 'b0000002-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
     ('99c7aba8-9223-479f-947f-5bbc7b9ce800', 'b0000002-b001-b001-b001-00000000b001', '20000002-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
-    ('ec58be71-3446-4541-9eec-3097ee175fb6', 'b0000002-b001-b001-b001-00000000b001', '30000002-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days', NULL),
+    -- Baby 3 owners (2)
     ('82405c74-ec4e-4aec-a2c8-372075cc0fe9', 'b0000003-b001-b001-b001-00000000b001', '10000003-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
     ('8b7491e9-8707-49de-9302-e50b07a0b9af', 'b0000003-b001-b001-b001-00000000b001', '20000003-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
-    ('9e645440-8b79-452a-b421-dbecd3a868e1', 'b0000003-b001-b001-b001-00000000b001', '30000003-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days', NULL),
+    -- Baby 4 owners (2)
     ('14a35789-8417-465a-a091-ce0a290b360f', 'b0000004-b001-b001-b001-00000000b001', '10000004-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
     ('9233d56e-9e65-475f-8461-48213a472cb1', 'b0000004-b001-b001-b001-00000000b001', '20000004-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
-    ('db94a89e-aade-4f54-97be-5ab694b45725', 'b0000004-b001-b001-b001-00000000b001', '30000004-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days', NULL),
+    -- Baby 5 owners (2)
     ('b4782789-9366-465f-bfb9-002b5be03c82', 'b0000005-b001-b001-b001-00000000b001', '10000005-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
     ('06379c90-3557-43d4-815f-beaffc39b631', 'b0000005-b001-b001-b001-00000000b001', '20000005-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
-    ('fea65e22-d625-47af-bfb5-9d02e0411362', 'b0000005-b001-b001-b001-00000000b001', '30000005-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days', NULL),
+    -- Baby 6 owners (2)
     ('5ce3f608-d973-49c5-b0cd-e6b1b4fbaf4e', 'b0000006-b001-b001-b001-00000000b001', '10000006-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
     ('eaa6301a-6226-4c52-a366-8650ab1c9e53', 'b0000006-b001-b001-b001-00000000b001', '20000006-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
-    ('929efb17-dfba-4e27-9fa6-fc3619f1d804', 'b0000006-b001-b001-b001-00000000b001', '30000006-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days', NULL),
+    -- Baby 7 owners (2)
     ('3c2c888a-0191-4bde-87e1-c25ce35f38be', 'b0000007-b001-b001-b001-00000000b001', '10000007-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
     ('43e3d8a8-2e18-42f0-b07e-08e13daa05b7', 'b0000007-b001-b001-b001-00000000b001', '20000007-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
-    ('3553d37e-7ba4-4a94-8199-995d7d6a0a7a', 'b0000007-b001-b001-b001-00000000b001', '30000007-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days', NULL),
+    -- Baby 8 owners (2)
     ('35727ced-d6c1-4da9-a9fb-15bd70674e3a', 'b0000008-b001-b001-b001-00000000b001', '10000008-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
     ('4b0e0adc-74e6-4962-95c9-eddeb5d60d0e', 'b0000008-b001-b001-b001-00000000b001', '20000008-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
-    ('b9e0e457-8d6a-4e02-abe3-da47e6ecd15d', 'b0000008-b001-b001-b001-00000000b001', '30000008-3001-3001-3001-000000003001', 'owner', 'Grandmother', NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days', NULL),
+    -- Baby 9 owners (2)
     ('b7523e88-1adb-4cff-8d0d-89ead091fa18', 'b0000009-b001-b001-b001-00000000b001', '10000009-1001-1001-1001-000000001001', 'owner', 'Mother', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days', NULL),
     ('2e8aa096-be19-4cb9-8513-d9f0af6e4814', 'b0000009-b001-b001-b001-00000000b001', '20000009-2001-2001-2001-000000002001', 'owner', 'Father', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days', NULL),
-    ('bd55056e-324a-481a-9f5b-a5e2270360f2', 'b0000009-b001-b001-b001-00000000b001', '30000009-3001-3001-3001-000000003001', 'owner', 'Grandfather', NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days', NULL),
+    -- Cross-profile followers: Some owners following other babies (10 total)
+    ('a1000000-a001-a001-a001-00000000a001', 'b0000001-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'follower', 'Friend', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days', NULL),
+    ('a2000000-a001-a001-a001-00000000a002', 'b0000002-b001-b001-b001-00000000b001', '20000001-2001-2001-2001-000000002001', 'follower', 'Family Friend', NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days', NULL),
+    ('a3000000-a001-a001-a001-00000000a003', 'b0000003-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'follower', 'Friend', NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days', NULL),
+    ('a4000000-a001-a001-a001-00000000a004', 'b0000004-b001-b001-b001-00000000b001', '20000003-2001-2001-2001-000000002001', 'follower', 'Family Friend', NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days', NULL),
+    ('a5000000-a001-a001-a001-00000000a005', 'b0000005-b001-b001-b001-00000000b001', '10000004-1001-1001-1001-000000001001', 'follower', 'Friend', NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days', NULL),
+    ('a6000000-a001-a001-a001-00000000a006', 'b0000006-b001-b001-b001-00000000b001', '20000005-2001-2001-2001-000000002001', 'follower', 'Family Friend', NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days', NULL),
+    ('a7000000-a001-a001-a001-00000000a007', 'b0000007-b001-b001-b001-00000000b001', '10000006-1001-1001-1001-000000001001', 'follower', 'Friend', NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days', NULL),
+    ('a8000000-a001-a001-a001-00000000a008', 'b0000008-b001-b001-b001-00000000b001', '20000007-2001-2001-2001-000000002001', 'follower', 'Family Friend', NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days', NULL),
+    ('a9000000-a001-a001-a001-00000000a009', 'b0000009-b001-b001-b001-00000000b001', '10000008-1001-1001-1001-000000001001', 'follower', 'Friend', NOW() - INTERVAL '55 days', NOW() - INTERVAL '55 days', NULL),
+    ('aa000000-a001-a001-a001-00000000a00a', 'b0000000-b001-b001-b001-00000000b001', '20000009-2001-2001-2001-000000002001', 'follower', 'Family Friend', NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days', NULL),
     ('1464609a-0800-42e1-804c-36ee56d958f2', 'b0000000-b001-b001-b001-00000000b001', '40000000-4001-4001-4001-000000004001', 'follower', 'Grandma', NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days', NULL),
     ('df07cc3f-c667-4488-8469-ca96f6d4a798', 'b0000000-b001-b001-b001-00000000b001', '40000001-4001-4001-4001-000000004001', 'follower', 'Grandpa', NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days', NULL),
     ('f3d7711f-b7c4-44ce-b997-e97591333315', 'b0000000-b001-b001-b001-00000000b001', '40000002-4001-4001-4001-000000004001', 'follower', 'Aunt', NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days', NULL),
@@ -557,7 +549,8 @@ ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
 -- END OF SEED DATA
--- Summary: 10 babies, 30 owners, 120 followers, 150 total users
+-- Summary: 10 babies, 20 owners, 120 followers, 140 total users, 150 memberships
+-- Note: 10 owners also follow other baby profiles (cross-profile relationships)
 -- ============================================================================
 
 -- Display summary statistics
