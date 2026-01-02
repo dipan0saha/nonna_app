@@ -25,13 +25,13 @@ psql "your-connection-string" -f seed_data.sql
 
 - **140 User Profiles** (20 owners + 120 followers)
 - **10 Baby Profiles** (10 different families)
-- **150 Baby Memberships** (access control relationships)
+- **150 Baby Memberships** (20 owner + 130 follower relationships)
 - **140 User Stats** (gamification data)
 - **Tile System Configuration** (UI layouts)
 
 ### Distribution per Baby:
 - 2 Owners (Mother, Father)
-- ~13 Followers (Extended family and friends, including some cross-profile owners)
+- ~13 Follower relationships (some followers follow multiple babies)
 
 ## Full Documentation
 

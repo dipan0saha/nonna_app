@@ -2,7 +2,7 @@
 -- Nonna App - Comprehensive Seed Data Script
 -- Version: 2.1.0
 -- Target: PostgreSQL 15+ (Supabase Managed)
--- Description: Extended test data - 10 babies, 20 owners, 120 followers
+-- Description: Extended test data - 10 babies, 20 owners, 130 followers
 -- ============================================================================
 
 -- ---------------------------------------------------------------------------
@@ -49,7 +49,8 @@ INSERT INTO public.profiles (user_id, display_name, avatar_url, biometric_enable
 ON CONFLICT (user_id) DO NOTHING;
 
 -- ============================================================================
--- SECTION 2: PROFILES - Followers (120 users, 12 per baby)
+-- SECTION 2: PROFILES - Followers (120 users)
+-- Note: 10 of these users are also owners of other babies (cross-profile)
 -- ============================================================================
 
 INSERT INTO public.profiles (user_id, display_name, avatar_url, biometric_enabled, created_at, updated_at) VALUES
@@ -549,8 +550,8 @@ ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
 -- END OF SEED DATA
--- Summary: 10 babies, 20 owners, 120 followers, 140 total users, 150 memberships
--- Note: 10 owners also follow other baby profiles (cross-profile relationships)
+-- Summary: 10 babies, 20 owners, 120 unique followers, 140 total users
+-- Memberships: 20 owner + 130 follower (including 10 cross-profile) = 150 total
 -- ============================================================================
 
 -- Display summary statistics
