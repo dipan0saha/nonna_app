@@ -40,19 +40,19 @@ Cache the full visibility map in-memory with Riverpod's autoDispose, and use Fad
 
 
 
-
+# Tiles
 
 Tiles are essentially parameterized, reusable widgets that encapsulate a consistent query logic and display format (e.g., tabular for events, grid for photos), while adapting their data fetching and rendering based on dynamic inputs like user role, screen context, and baby IDs. This aligns with the technical requirements for self-contained, modular tiles with independent Supabase queries, supporting aggregation and role-based visibility.
 
-How It Fits the App Structure
+## How It Fits the App Structure
 Placement: Placing tiles directly under lib/tiles/ (as discussed) emphasizes their widget nature and reusability across screens (e.g., home_screen.dart and calendar_screen.dart both import tiles/upcoming_events_tile.dart).
-Implementation:
+## Implementation:
 Each tile (e.g., upcoming_events_tile.dart) includes its query logic (via a provider or datasource) and UI rendering.
 Parameters (e.g., role, babyIds, limit) are passed from the screen or TileFactory, fetched from /tile-configs.
 For followers, the query aggregates across babies; for owners, it's per baby—same underlying query, different params.
 Pros in This Context: Simplifies maintenance since the query and display are fixed per tile type, with only params varying. Avoids duplication while keeping modularity.
 
-Key points to incorporate:
+## Key points to incorporate:
 
 Tiles should be at the top level under lib/tiles/ (not nested under features)
 Tiles are parameterized, reusable widgets with query logic and display format
