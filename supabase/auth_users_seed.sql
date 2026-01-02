@@ -2,6 +2,7 @@
 -- Review and run in Supabase SQL editor or via Admin API
 
 BEGIN;
+INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('10000000-1001-1001-1001-000000001001', 'seed+10000000@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('10000001-1001-1001-1001-000000001001', 'seed+10000001@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('10000002-1001-1001-1001-000000001001', 'seed+10000002@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('10000003-1001-1001-1001-000000001001', 'seed+10000003@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
@@ -21,16 +22,6 @@ INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VA
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('20000007-2001-2001-2001-000000002001', 'seed+20000007@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('20000008-2001-2001-2001-000000002001', 'seed+20000008@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('20000009-2001-2001-2001-000000002001', 'seed+20000009@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000000-3001-3001-3001-000000003001', 'seed+30000000@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000001-3001-3001-3001-000000003001', 'seed+30000001@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000002-3001-3001-3001-000000003001', 'seed+30000002@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000003-3001-3001-3001-000000003001', 'seed+30000003@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000004-3001-3001-3001-000000003001', 'seed+30000004@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000005-3001-3001-3001-000000003001', 'seed+30000005@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000006-3001-3001-3001-000000003001', 'seed+30000006@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000007-3001-3001-3001-000000003001', 'seed+30000007@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000008-3001-3001-3001-000000003001', 'seed+30000008@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('30000009-3001-3001-3001-000000003001', 'seed+30000009@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('40000000-4001-4001-4001-000000004001', 'seed+40000000@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('40000001-4001-4001-4001-000000004001', 'seed+40000001@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('40000002-4001-4001-4001-000000004001', 'seed+40000002@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;

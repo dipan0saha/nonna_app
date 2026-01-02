@@ -23,15 +23,15 @@ psql "your-connection-string" -f seed_data.sql
 
 ## Data Contents
 
-- **150 User Profiles** (30 owners + 120 followers)
+- **140 User Profiles** (20 owners + 120 followers)
 - **10 Baby Profiles** (10 different families)
-- **150 Baby Memberships** (access control relationships)
-- **150 User Stats** (gamification data)
+- **150 Baby Memberships** (20 owner + 130 follower relationships)
+- **140 User Stats** (gamification data)
 - **Tile System Configuration** (UI layouts)
 
 ### Distribution per Baby:
-- 3 Owners (Mother, Father, Grandparent/Caregiver)
-- 12 Followers (Extended family and friends)
+- 2 Owners (Mother, Father)
+- ~13 Follower relationships (some followers follow multiple babies)
 
 ## Full Documentation
 
@@ -47,12 +47,14 @@ See **[docs/SEED_DATA_GUIDE.md](../../docs/SEED_DATA_GUIDE.md)** for:
 ```
 10 Babies (Johnson, Davis, Smith, Brown, Wilson, Martinez, Garcia, Lee, Anderson, Taylor)
 ├── Baby 1 (Johnson)
-│   ├── 3 Owners: Sarah, Michael, Mary
-│   └── 12 Followers: Grandma Emma, Aunt Olivia, Uncle Liam, etc.
+│   ├── 2 Owners: Sarah, Michael
+│   └── ~13 Followers: Grandma Emma, Aunt Olivia, Uncle Liam, etc.
 ├── Baby 2 (Davis)
-│   ├── 3 Owners: Emily, John, Grace
-│   └── 12 Followers: ...
+│   ├── 2 Owners: Emily, John
+│   └── ~13 Followers: ...
 └── ... (8 more babies)
+
+Note: Some owners also follow other baby profiles (cross-profile relationships)
 ```
 
 ## Verification
@@ -71,7 +73,7 @@ Expected result:
 ```
 profiles | babies | owners | followers
 ---------|--------|--------|----------
-   150   |   10   |   30   |   120
+   140   |   10   |   20   |   130
 ```
 
 ## Notes
