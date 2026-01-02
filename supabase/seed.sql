@@ -11,7 +11,7 @@
 -- Adjust or remove if you prefer manual cleanup.
 BEGIN;
 TRUNCATE TABLE public.tile_configs, public.tile_definitions, public.screens,
-    public.baby_memberships, public.baby_profiles, public.user_stats, public.profiles
+    public.baby_memberships, public.baby_profiles, public.user_stats, public.profiles, public.notifications
     RESTART IDENTITY CASCADE;
 COMMIT;
 -- ---------------------------------------------------------------------------
@@ -561,6 +561,6 @@ BEGIN
     RAISE NOTICE 'Profiles: %', (SELECT COUNT(*) FROM public.profiles);
     RAISE NOTICE 'Baby Profiles: %', (SELECT COUNT(*) FROM public.baby_profiles);
     RAISE NOTICE 'Total Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE removed_at IS NULL);
-    RAISE NOTICE 'Owner Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE role = ''owner'' AND removed_at IS NULL);
-    RAISE NOTICE 'Follower Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE role = ''follower'' AND removed_at IS NULL);
+    RAISE NOTICE 'Owner Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE role = 'owner' AND removed_at IS NULL);
+    RAISE NOTICE 'Follower Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE role = 'follower' AND removed_at IS NULL);
 END $$;
