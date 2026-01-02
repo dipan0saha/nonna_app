@@ -40,7 +40,7 @@ The Nonna App Physical Data Model has been comprehensively validated and enhance
 
 ### ✅ Comprehensive DDL Migration Scripts
 
-**File:** `supabase/migrations/20251224_001_create_schema.sql` (580 lines)
+**File:** `supabase/migrations/202512240001_create_schema.sql` (580 lines)
 
 **Contents:**
 - [x] 23 table definitions with Supabase-optimized data types
@@ -67,7 +67,7 @@ The Nonna App Physical Data Model has been comprehensively validated and enhance
 
 ### ✅ Security & Access Control Scripts
 
-**File:** `supabase/migrations/20251224_002_row_level_security.sql` (860 lines)
+**File:** `supabase/migrations/202512240002_row_level_security.sql` (860 lines)
 
 **Contents:**
 - [x] RLS enabled on all 23 tables
@@ -87,7 +87,7 @@ The Nonna App Physical Data Model has been comprehensively validated and enhance
 
 ### ✅ Database Triggers & Functions
 
-**File:** `supabase/migrations/20251224_003_triggers_functions.sql` (635 lines)
+**File:** `supabase/migrations/202512240003_triggers_functions.sql` (635 lines)
 
 **Contents:**
 - [x] Profile auto-creation on user signup
@@ -407,9 +407,9 @@ The database is ready for deployment to support:
 ## Files Delivered
 
 ### Migration Scripts
-- `supabase/migrations/20251224_001_create_schema.sql` (580 lines)
-- `supabase/migrations/20251224_002_row_level_security.sql` (860 lines)
-- `supabase/migrations/20251224_003_triggers_functions.sql` (635 lines)
+- `supabase/migrations/202512240001_create_schema.sql` (580 lines)
+- `supabase/migrations/202512240002_row_level_security.sql` (860 lines)
+- `supabase/migrations/202512240003_triggers_functions.sql` (635 lines)
 
 ### Seed Data
 - `supabase/seed/seed_data.sql` (750 lines)

@@ -253,9 +253,9 @@ babies/
 
 | Script | Lines | Purpose |
 |--------|-------|---------|
-| `20251224_001_create_schema.sql` | 580 | Complete DDL with tables, indexes, constraints |
-| `20251224_002_row_level_security.sql` | 850 | All RLS policies and helper functions |
-| `20251224_003_triggers_functions.sql` | 620 | Automation triggers and functions |
+| `202512240001_create_schema.sql` | 580 | Complete DDL with tables, indexes, constraints |
+| `202512240002_row_level_security.sql` | 850 | All RLS policies and helper functions |
+| `202512240003_triggers_functions.sql` | 620 | Automation triggers and functions |
 | `seed_data.sql` | 750 | Test data respecting all FK dependencies |
 
 **Total**: 2,800 lines of production-ready SQL
@@ -345,9 +345,9 @@ For projects using the previous conceptual model:
 For new Supabase projects:
 
 1. **Initialize Supabase Project**: Create project in Supabase dashboard
-2. **Run Schema Migration**: Execute `20251224_001_create_schema.sql`
-3. **Apply RLS Policies**: Execute `20251224_002_row_level_security.sql`
-4. **Setup Triggers**: Execute `20251224_003_triggers_functions.sql`
+2. **Run Schema Migration**: Execute `202512240001_create_schema.sql`
+3. **Apply RLS Policies**: Execute `202512240002_row_level_security.sql`
+4. **Setup Triggers**: Execute `202512240003_triggers_functions.sql`
 5. **Configure Realtime**: Follow `REALTIME_CONFIGURATION.md`
 6. **Load Seed Data**: Execute `seed_data.sql` for testing
 7. **Test End-to-End**: Validate all CRUD operations with RLS

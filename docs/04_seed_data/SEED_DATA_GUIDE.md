@@ -31,9 +31,9 @@ Before running the seed script, ensure the following database schema elements ar
 
 ### Required Migrations:
 Ensure these migrations have been applied (in order):
-1. `20251224_001_create_schema.sql` - Creates all tables
-2. `20251224_002_row_level_security.sql` - Sets up RLS policies
-3. `20251224_003_triggers_functions.sql` - Creates triggers and functions
+1. `202512240001_create_schema.sql` - Creates all tables
+2. `202512240002_row_level_security.sql` - Sets up RLS policies
+3. `202512240003_triggers_functions.sql` - Creates triggers and functions
 
 ## Installation Methods
 

@@ -471,7 +471,7 @@ This enhanced ERD provides:
 - ✅ Production-ready for 10K+ concurrent users
 
 For implementation details, refer to:
-- DDL: `supabase/migrations/20251224_001_create_schema.sql`
-- RLS: `supabase/migrations/20251224_002_row_level_security.sql`
-- Triggers: `supabase/migrations/20251224_003_triggers_functions.sql`
+- DDL: `supabase/migrations/202512240001_create_schema.sql`
+- RLS: `supabase/migrations/202512240002_row_level_security.sql`
+- Triggers: `supabase/migrations/202512240003_triggers_functions.sql`
 - Realtime: `supabase/REALTIME_CONFIGURATION.md`

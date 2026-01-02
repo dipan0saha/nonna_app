@@ -7,9 +7,9 @@ This directory contains all database-related files for the Nonna App, including 
 ```
 supabase/
 ├── migrations/          # Sequential database migration scripts
-│   ├── 20251224_001_create_schema.sql           # Tables, indexes, constraints
-│   ├── 20251224_002_row_level_security.sql      # RLS policies & permissions
-│   └── 20251224_003_triggers_functions.sql      # Automation & triggers
+│   ├── 202512240001_create_schema.sql           # Tables, indexes, constraints
+│   ├── 202512240002_row_level_security.sql      # RLS policies & permissions
+│   └── 202512240003_triggers_functions.sql      # Automation & triggers
 ├── seed/                # Test data for development
 │   └── seed_data.sql                             # Sample data with edge cases
 ├── REALTIME_CONFIGURATION.md                     # Realtime setup guide
@@ -39,13 +39,13 @@ supabase/
 3. **Run migrations in order**:
    ```bash
    # Schema creation
-   supabase db push --file migrations/20251224_001_create_schema.sql
+   supabase db push --file migrations/202512240001_create_schema.sql
    
    # RLS policies
-   supabase db push --file migrations/20251224_002_row_level_security.sql
+   supabase db push --file migrations/202512240002_row_level_security.sql
    
    # Triggers and functions
-   supabase db push --file migrations/20251224_003_triggers_functions.sql
+   supabase db push --file migrations/202512240003_triggers_functions.sql
    ```
 
 4. **Load seed data** (development only):
@@ -66,7 +66,7 @@ supabase db push --include-all
 
 ## 📋 Migration Scripts Overview
 
-### 1. Schema Creation (`20251224_001_create_schema.sql`)
+### 1. Schema Creation (`202512240001_create_schema.sql`)
 
 **Purpose**: Creates all tables, indexes, and constraints
 
@@ -97,7 +97,7 @@ supabase db push --include-all
 
 **Run time**: ~5-10 seconds
 
-### 2. Row Level Security (`20251224_002_row_level_security.sql`)
+### 2. Row Level Security (`202512240002_row_level_security.sql`)
 
 **Purpose**: Implements comprehensive RLS policies for data security
 
@@ -123,7 +123,7 @@ supabase db push --include-all
 
 **Run time**: ~10-15 seconds
 
-### 3. Triggers & Functions (`20251224_003_triggers_functions.sql`)
+### 3. Triggers & Functions (`202512240003_triggers_functions.sql`)
 
 **Purpose**: Automates common database operations
 
