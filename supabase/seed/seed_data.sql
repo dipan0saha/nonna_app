@@ -2,47 +2,37 @@
 -- Nonna App - Comprehensive Seed Data Script
 -- Version: 2.0.0
 -- Target: PostgreSQL 15+ (Supabase Managed)
--- Description: Extended test data - 10 babies, 30 owners, 120 followers
+-- Description: Extended test data - 10 babies, 20 owners, 120 followers
 -- ============================================================================
 
 -- NOTE: In production, auth.users would be created via Supabase Auth API.
 -- For testing, we create profiles directly.
 
 -- ============================================================================
--- SECTION 1: PROFILES - Owners (30 users, 3 per baby)
+-- SECTION 1: PROFILES - Owners (20 users, 2 per baby)
 -- ============================================================================
-
+SET session_replication_role = 'replica';
 INSERT INTO public.profiles (user_id, display_name, avatar_url, biometric_enabled, created_at, updated_at) VALUES
     ('10000000-1001-1001-1001-000000001001', 'Sarah Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah0', false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
     ('20000000-2001-2001-2001-000000002001', 'Michael Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael0', false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
-    ('30000000-3001-3001-3001-000000003001', 'Mary Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mary0', false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
     ('10000001-1001-1001-1001-000000001001', 'Emily Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily1', false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
     ('20000001-2001-2001-2001-000000002001', 'John Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=John1', false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
-    ('30000001-3001-3001-3001-000000003001', 'Grace Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Grace1', false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
     ('10000002-1001-1001-1001-000000001001', 'Jennifer Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer2', false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
     ('20000002-2001-2001-2001-000000002001', 'David Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=David2', false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
-    ('30000002-3001-3001-3001-000000003001', 'Linda Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda2', false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
     ('10000003-1001-1001-1001-000000001001', 'Jessica Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica3', false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
     ('20000003-2001-2001-2001-000000002001', 'Robert Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert3', false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
-    ('30000003-3001-3001-3001-000000003001', 'Patricia Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Patricia3', false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
     ('10000004-1001-1001-1001-000000001001', 'Amanda Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amanda4', false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
     ('20000004-2001-2001-2001-000000002001', 'James Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=James4', false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
-    ('30000004-3001-3001-3001-000000003001', 'Barbara Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Barbara4', false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
     ('10000005-1001-1001-1001-000000001001', 'Maria Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria5', false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
     ('20000005-2001-2001-2001-000000002001', 'Carlos Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos5', false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
-    ('30000005-3001-3001-3001-000000003001', 'Elena Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Elena5', false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
     ('10000006-1001-1001-1001-000000001001', 'Sofia Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sofia6', false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
     ('20000006-2001-2001-2001-000000002001', 'Miguel Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Miguel6', false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
-    ('30000006-3001-3001-3001-000000003001', 'Carmen Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carmen6', false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
     ('10000007-1001-1001-1001-000000001001', 'Michelle Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michelle7', false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
     ('20000007-2001-2001-2001-000000002001', 'Kevin Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kevin7', false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
-    ('30000007-3001-3001-3001-000000003001', 'Susan Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Susan7', false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
     ('10000008-1001-1001-1001-000000001001', 'Rachel Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rachel8', false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
     ('20000008-2001-2001-2001-000000002001', 'Christopher Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Christopher8', false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
-    ('30000008-3001-3001-3001-000000003001', 'Dorothy Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dorothy8', false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
     ('10000009-1001-1001-1001-000000001001', 'Lauren Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lauren9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
-    ('20000009-2001-2001-2001-000000002001', 'Daniel Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
-    ('30000009-3001-3001-3001-000000003001', 'Betty Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Betty9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days')
+    ('20000009-2001-2001-2001-000000002001', 'Daniel Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days')
 
 ON CONFLICT (user_id) DO NOTHING;
 
@@ -846,7 +836,7 @@ INSERT INTO public.activity_events (id, baby_profile_id, actor_user_id, type, pa
     (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '20000002-2001-2001-2001-000000002001', 'photo_uploaded', '{"photo_id": "photo-7", "caption": "Crib assembly"}'::jsonb, NOW() - INTERVAL '6 days'),
     (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '40000018-4001-4001-4001-000000004001', 'name_suggested', '{"name": "Sophia", "gender": "female"}'::jsonb, NOW() - INTERVAL '9 days')
 ON CONFLICT (id) DO NOTHING;
-
+SET session_replication_role = 'origin';
 -- ============================================================================
 -- END OF ADDITIONAL SEED DATA
 -- ============================================================================

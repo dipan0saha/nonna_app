@@ -1,8 +1,10 @@
+-- Truncate the auth users table first
+TRUNCATE TABLE auth.users CASCADE;
+
 -- Generated auth.users INSERTs for seed (run as service role)
 -- Review and run in Supabase SQL editor or via Admin API
 
 BEGIN;
-INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('10000000-1001-1001-1001-000000001001', 'seed+10000000@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('10000001-1001-1001-1001-000000001001', 'seed+10000001@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('10000002-1001-1001-1001-000000001001', 'seed+10000002@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
 INSERT INTO auth.users (id, email, aud, role, email_confirmed_at, created_at) VALUES ('10000003-1001-1001-1001-000000001001', 'seed+10000003@example.local', 'authenticated', 'authenticated', NOW(), NOW()) ON CONFLICT (id) DO NOTHING;
