@@ -72,14 +72,14 @@ These personas were developed through:
 - **Devices**: iPhone 12+ or Samsung Galaxy S21+ (high-end smartphones); occasionally uses iPad
 - **Platforms**: Slight iOS preference (60% iOS, 40% Android) among target demographic
 - **Must-Have Features**: Private photo sharing, calendar, registry, push notifications, intuitive UI, fast photo uploads (<5 seconds)
-- **Nice-to-Have Features**: AI suggestions for events/registry, name voting, activity counters, Instagram sharing for announcements
+- **Nice-to-Have Features**: AI suggestions for events/registry, name voting, activity counters, Instagram sharing for announcements, photo tagging for organization, email digest summaries, memory lane for throwback moments
 
 **Nonna App Usage Patterns:**
 - **Frequency**: Opens app 4-5 times per week
 - **Session Duration**: 10-15 minutes per session (upload photos, check interactions)
 - **Peak Usage**: Evenings (7-10pm) and weekends
-- **Primary Actions**: Photo uploads (3-5 per week), responding to comments, monitoring registry purchases
-- **Feature Priorities**: Photo gallery (highest usage), calendar (pre-birth), registry (pre-birth and early months)
+- **Primary Actions**: Photo uploads (3-5 per week), responding to comments, monitoring registry purchases, organizing photos with tags
+- **Feature Priorities**: Photo gallery (highest usage), calendar (pre-birth), registry (pre-birth and early months), memory lane for reminiscing
 
 **Quote**: *"I want my parents to feel connected to their grandchild's life, but I'm not comfortable posting baby photos on Facebook where anyone can see them. I need a private, organized way to share updates with just family and close friends."*
 
@@ -203,15 +203,15 @@ These personas were developed through:
 **Technology Preferences:**
 - **Devices**: iPhone 8+ or mid-range Android; uses smartphone primarily (not tablet)
 - **Platforms**: iOS preference (65% iOS among older users for perceived ease of use)
-- **Must-Have Features**: Simple navigation, large photos, easy commenting, push notifications, clear indication of new content
-- **Nice-to-Have Features**: Photo download/save, calendar reminders, video calls (future)
+- **Must-Have Features**: Simple navigation, large photos, easy commenting, push notifications, clear indication of new content, email digest summaries
+- **Nice-to-Have Features**: Photo download/save, calendar reminders, video calls (future), memory lane for throwback moments
 
 **Nonna App Usage Patterns:**
 - **Frequency**: Opens app 5-7 times per week (high engagement despite lower tech confidence)
 - **Session Duration**: 3-7 minutes per session (focused on new content)
 - **Peak Usage**: Mornings (8-10am), afternoons (2-4pm)
-- **Primary Actions**: Viewing new photos, reading updates, "squishing" photos, commenting, checking calendar
-- **Feature Priorities**: Photo gallery (highest), calendar (for events), registry (for gifting)
+- **Primary Actions**: Viewing new photos, reading updates, "squishing" photos, commenting, checking calendar, enjoying memory lane content
+- **Feature Priorities**: Photo gallery (highest), calendar (for events), registry (for gifting), memory lane (for reminiscing), email digest (to stay updated)
 
 **Quote**: *"I live 800 miles away from my daughter and new grandchild. I don't want to miss a single moment. I need an easy way to see photos and feel like I'm part of their lives, even from far away."*
 

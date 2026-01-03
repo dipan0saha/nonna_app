@@ -93,11 +93,12 @@ These journey maps were created through:
 **Phase 4: Content Population**
 - **Actions:**
   - Uploads first ultrasound photo with caption "12 weeks! 💙"
+  - Adds tags to photo: "ultrasound", "trimester_2" for organization
   - Adds calendar event "20-week anatomy scan" with date and description
   - Starts building baby registry: adds crib, stroller, diaper bag (uses AI suggestions)
   - Browses AI-suggested registry items by baby age (helpful!)
   - Reviews baby profile, feels satisfied with progress
-- **Thoughts:** *"I love that I can put everything in one place. The AI suggestions are helpful—I hadn't thought of some of these items. I can't wait to show this to my mom."*
+- **Thoughts:** *"I love that I can put everything in one place. The AI suggestions are helpful—I hadn't thought of some of these items. Photo tags will help me find specific moments later. I can't wait to show this to my mom."*
 - **Feelings:** 😍 Proud, organized, excited to share
 - **Pain Points:**
   - Photo upload feels slow (if > 5 seconds)
@@ -156,7 +157,7 @@ These journey maps were created through:
 
 **Phase 7: Ongoing Engagement & Growth**
 - **Actions:**
-  - Uploads 2-3 photos per week (bump progression, nursery setup, pregnancy cravings)
+  - Uploads 2-3 photos per week (bump progression, nursery setup, pregnancy cravings) with tags like "nursery", "bump_update", "cravings"
   - Adds calendar events (baby shower, hospital tour, maternity photo shoot)
   - Updates registry as she learns more (adds/removes items)
   - Monitors who RSVP'd to baby shower (virtual + in-person)
@@ -164,18 +165,21 @@ These journey maps were created through:
   - Invites additional followers (work friends, extended family) - now 15 total
   - Uses name suggestion voting feature (fun!)
   - Checks activity counters (gamification): "12 photos squished, 5 registry items purchased, 3 events with RSVPs"
-- **Thoughts:** *"This has become my go-to for anything baby-related. Everyone can see updates without me having to post to Facebook. I love tracking who's engaged. The name voting is a fun bonus!"*
+  - Receives weekly email digest summarizing follower activity
+  - Enjoys Memory Lane tile showing "On this day" content from earlier in pregnancy
+- **Thoughts:** *"This has become my go-to for anything baby-related. Everyone can see updates without me having to post to Facebook. I love tracking who's engaged. The name voting is a fun bonus! The weekly digest helps me stay on top of interactions without checking constantly, and Memory Lane is a nice surprise."*
 - **Feelings:** 😊 Satisfied, connected, efficient, excited
 - **Pain Points:**
   - Managing 15 followers' permissions individually is tedious (if needed)
   - Can't bulk-remove followers if relationship changes
   - Gamification activity counters feel arbitrary (what do they mean long-term?)
-- **Touchpoints:** Photo gallery, calendar, registry, notifications, activity dashboard, role toggle (if following other babies), gamification tiles
+- **Touchpoints:** Photo gallery (with tagging), calendar, registry, notifications, activity dashboard, role toggle (if following other babies), gamification tiles, email digest, Memory Lane tile
 - **Opportunities:**
   - Bulk follower management (e.g., "remove all" or "change relationship")
   - Follower segmentation (family vs. friends) with group notifications
   - Gamification leaderboard or badges for top engagers (fun for competitive users)
-  - Monthly recap email/notification summarizing activity
+  - Photo tag suggestions based on common patterns
+  - Memory Lane personalization based on user preferences
 
 **Phase 8: Baby Arrival & Announcement**
 - **Actions:**
@@ -327,20 +331,22 @@ These journey maps were created through:
   - Checks registry for additional items to purchase
   - Monitors activity counters (proud of engagement stats)
   - Shares screenshots with husband (Grandpa) to keep him informed
-- **Thoughts:** *"This is my favorite part of the day—seeing updates from Sarah. I feel so connected even though we're far apart. I can't wait for the virtual baby shower!"*
+  - Enjoys Memory Lane tile showing throwback ultrasound photos
+  - Receives weekly email digest with summary of Sarah's updates
+- **Thoughts:** *"This is my favorite part of the day—seeing updates from Sarah. I feel so connected even though we're far apart. I can't wait for the virtual baby shower! The weekly email is helpful so I don't miss anything, and Memory Lane reminds me how far we've come."*
 - **Feelings:** 😊 Content, connected, engaged, joyful
 - **Pain Points:**
   - Too many push notifications if Sarah posts frequently (could feel overwhelming)
   - Video call link for baby shower not accessible until event day (wants to test ahead)
   - Activity counters don't translate to anything meaningful (just numbers)
   - Can't message Sarah directly in app (must text separately)
-- **Touchpoints:** Push notifications, photo gallery, comments, calendar, RSVP functionality, activity dashboard
+- **Touchpoints:** Push notifications, photo gallery, comments, calendar, RSVP functionality, activity dashboard, Memory Lane tile, email digest
 - **Opportunities:**
   - Notification frequency preferences: "Notify me: For every update / Daily summary / Major events only"
   - Early access to video call links (24 hours before event) with "Test Your Connection" feature
   - Gamification leaderboard: "You're the #1 most engaged follower!" (positive reinforcement)
   - In-app messaging for direct communication (future feature)
-  - Weekly digest email summarizing all activity (for those who prefer email)
+  - Email digest preference controls (weekly, monthly, or disabled)
 
 **Phase 6: Baby Arrival & Celebration**
 - **Actions:**
