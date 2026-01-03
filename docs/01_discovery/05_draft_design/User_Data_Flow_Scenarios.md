@@ -1289,3 +1289,29 @@ For any scenario not covered, follow the same pattern:
 4. Side effects (stats, notifications, activity)
 5. Realtime broadcasts
 6. Test assertions
+
+
+##Questions: 
+-	Tagging users in photos? What do we use to tag?
+-	Tagging baby profiles in photos? What do we use to tag?
+
+Upload photo/calendar/registry:
+-	Baby_profile_id – is this automatic?
+-	Difference between ‘Verify notifications created for all followers’ and ‘Verify realtime event broadcasted’
+-	
+
+User Votes (Anonymous)
+-	How can you vote ‘Anonymous’?
+
+Subscribe to Baby Profile 
+-	What does ‘subscribe’ mean?
+
+Notification Trigger Events                                 
+- New photo uploaded                                         
+- Event created                                              
+- Registry item purchased                                    
+- Event RSVP received                                        
+- New follower accepted invitation                           
+- Name suggestion liked      
+- Gender vote (missing)
+- Birthdate vote (missing) 
