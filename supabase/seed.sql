@@ -564,3 +564,318 @@ BEGIN
     RAISE NOTICE 'Owner Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE role = 'owner' AND removed_at IS NULL);
     RAISE NOTICE 'Follower Memberships: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE role = 'follower' AND removed_at IS NULL);
 END $$;
+-- ============================================================================
+-- Additional Seed Data for Missing Tables
+-- To be appended to existing seed files
+-- ============================================================================
+
+-- ============================================================================
+-- SECTION 7: OWNER UPDATE MARKERS (Cache invalidation)
+-- ============================================================================
+
+INSERT INTO public.owner_update_markers (id, baby_profile_id, tiles_last_updated_at, updated_by_user_id, reason) VALUES
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', NOW() - INTERVAL '1 day', '10000000-1001-1001-1001-000000001001', 'Initial profile setup'),
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', NOW() - INTERVAL '2 days', '10000001-1001-1001-1001-000000001001', 'Updated tiles configuration'),
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', NOW() - INTERVAL '3 days', '10000002-1001-1001-1001-000000001001', 'Added new content'),
+    (gen_random_uuid(), 'b0000003-b001-b001-b001-00000000b001', NOW() - INTERVAL '4 days', '10000003-1001-1001-1001-000000001001', 'Modified settings'),
+    (gen_random_uuid(), 'b0000004-b001-b001-b001-00000000b001', NOW() - INTERVAL '5 days', '10000004-1001-1001-1001-000000001001', 'Content update'),
+    (gen_random_uuid(), 'b0000005-b001-b001-b001-00000000b001', NOW() - INTERVAL '6 days', '10000005-1001-1001-1001-000000001001', 'Profile changes'),
+    (gen_random_uuid(), 'b0000006-b001-b001-b001-00000000b001', NOW() - INTERVAL '7 days', '10000006-1001-1001-1001-000000001001', 'New photos added'),
+    (gen_random_uuid(), 'b0000007-b001-b001-b001-00000000b001', NOW() - INTERVAL '8 days', '10000007-1001-1001-1001-000000001001', 'Event created'),
+    (gen_random_uuid(), 'b0000008-b001-b001-b001-00000000b001', NOW() - INTERVAL '9 days', '10000008-1001-1001-1001-000000001001', 'Registry updated'),
+    (gen_random_uuid(), 'b0000009-b001-b001-b001-00000000b001', NOW() - INTERVAL '10 days', '10000009-1001-1001-1001-000000001001', 'General update')
+ON CONFLICT (baby_profile_id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 8: EVENTS (Calendar events for baby profiles)
+-- ============================================================================
+
+INSERT INTO public.events (id, baby_profile_id, created_by_user_id, title, starts_at, ends_at, description, location, video_link, cover_photo_url, created_at, updated_at) VALUES
+    -- Baby 0 events
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'Baby Shower', NOW() + INTERVAL '15 days', NOW() + INTERVAL '15 days' + INTERVAL '3 hours', 'Celebrating the upcoming arrival!', '123 Main St, Hometown', NULL, 'https://api.dicebear.com/7.x/shapes/svg?seed=event0', NOW() - INTERVAL '20 days', NOW() - INTERVAL '10 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '20000000-2001-2001-2001-000000002001', 'Hospital Tour', NOW() + INTERVAL '10 days', NOW() + INTERVAL '10 days' + INTERVAL '1 hour', 'Tour of the maternity ward', 'City Hospital, 456 Oak Ave', NULL, NULL, NOW() - INTERVAL '15 days', NOW() - INTERVAL '8 days'),
+    -- Baby 1 events
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'Gender Reveal Party', NOW() + INTERVAL '25 days', NOW() + INTERVAL '25 days' + INTERVAL '4 hours', 'Find out if it\'s a boy or girl!', 'Community Center', NULL, 'https://api.dicebear.com/7.x/shapes/svg?seed=event1', NOW() - INTERVAL '18 days', NOW() - INTERVAL '9 days'),
+    -- Baby 2 events
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'Nursery Setup Day', NOW() + INTERVAL '20 days', NOW() + INTERVAL '20 days' + INTERVAL '6 hours', 'Help us set up the nursery', '789 Elm St', NULL, NULL, NOW() - INTERVAL '12 days', NOW() - INTERVAL '7 days'),
+    -- Baby 3 events
+    (gen_random_uuid(), 'b0000003-b001-b001-b001-00000000b001', '10000003-1001-1001-1001-000000001001', 'Virtual Baby Shower', NOW() + INTERVAL '30 days', NOW() + INTERVAL '30 days' + INTERVAL '2 hours', 'Join us online!', NULL, 'https://zoom.us/j/example', 'https://api.dicebear.com/7.x/shapes/svg?seed=event3', NOW() - INTERVAL '14 days', NOW() - INTERVAL '6 days'),
+    -- Baby 4 events
+    (gen_random_uuid(), 'b0000004-b001-b001-b001-00000000b001', '10000004-1001-1001-1001-000000001001', 'Meet and Greet', NOW() + INTERVAL '40 days', NOW() + INTERVAL '40 days' + INTERVAL '3 hours', 'Meet the parents-to-be', 'Local Park', NULL, NULL, NOW() - INTERVAL '16 days', NOW() - INTERVAL '5 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 9: EVENT RSVPS
+-- ============================================================================
+
+INSERT INTO public.event_rsvps (id, event_id, user_id, status, created_at, updated_at) VALUES
+    -- RSVPs for first event (Baby 0 shower) - mix of responses
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000000-4001-4001-4001-000000004001', 'yes', NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days'),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000001-4001-4001-4001-000000004001', 'yes', NOW() - INTERVAL '7 days', NOW() - INTERVAL '7 days'),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000002-4001-4001-4001-000000004001', 'maybe', NOW() - INTERVAL '6 days', NOW() - INTERVAL '6 days'),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000003-4001-4001-4001-000000004001', 'no', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
+    -- RSVPs for Hospital Tour
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Hospital Tour' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000004-4001-4001-4001-000000004001', 'yes', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Hospital Tour' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000005-4001-4001-4001-000000004001', 'maybe', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+    -- RSVPs for Gender Reveal
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Gender Reveal Party' LIMIT 1), '4000000c-4001-4001-4001-000000004001', 'yes', NOW() - INTERVAL '6 days', NOW() - INTERVAL '6 days'),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Gender Reveal Party' LIMIT 1), '4000000d-4001-4001-4001-000000004001', 'yes', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days')
+ON CONFLICT DO NOTHING;
+
+-- ============================================================================
+-- SECTION 10: EVENT COMMENTS
+-- ============================================================================
+
+INSERT INTO public.event_comments (id, event_id, user_id, body, created_at, deleted_at, deleted_by_user_id) VALUES
+    -- Comments on Baby Shower
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000000-4001-4001-4001-000000004001', 'So excited for this! Can\'t wait to celebrate with you!', NOW() - INTERVAL '7 days', NULL, NULL),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000001-4001-4001-4001-000000004001', 'What should I bring?', NOW() - INTERVAL '6 days', NULL, NULL),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '10000000-1001-1001-1001-000000001001', 'Just bring yourself! We have everything covered.', NOW() - INTERVAL '5 days', NULL, NULL),
+    -- Comments on Gender Reveal
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Gender Reveal Party' LIMIT 1), '4000000c-4001-4001-4001-000000004001', 'This is going to be so much fun!', NOW() - INTERVAL '5 days', NULL, NULL),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Gender Reveal Party' LIMIT 1), '4000000d-4001-4001-4001-000000004001', 'I think it\'s a girl! 💕', NOW() - INTERVAL '4 days', NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 11: PHOTOS
+-- ============================================================================
+
+INSERT INTO public.photos (id, baby_profile_id, uploaded_by_user_id, storage_path, caption, created_at, updated_at) VALUES
+    -- Baby 0 photos
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'baby0/ultrasound_20weeks.jpg', '20 week ultrasound - looking healthy!', NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '20000000-2001-2001-2001-000000002001', 'baby0/nursery_progress.jpg', 'Nursery is coming together nicely', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'baby0/baby_bump_25weeks.jpg', '25 weeks and growing!', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
+    -- Baby 1 photos
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'baby1/first_ultrasound.jpg', 'Our first glimpse!', NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '20000001-2001-2001-2001-000000002001', 'baby1/gender_reveal_cake.jpg', 'Gender reveal party preparations', NOW() - INTERVAL '12 days', NOW() - INTERVAL '12 days'),
+    -- Baby 2 photos
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'baby2/baby_shower_decorations.jpg', 'Baby shower decorations', NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days'),
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '20000002-2001-2001-2001-000000002001', 'baby2/crib_assembly.jpg', 'Dad building the crib!', NOW() - INTERVAL '6 days', NOW() - INTERVAL '6 days'),
+    -- Baby 3 photos
+    (gen_random_uuid(), 'b0000003-b001-b001-b001-00000000b001', '10000003-1001-1001-1001-000000001001', 'baby3/baby_clothes.jpg', 'First baby clothes shopping spree', NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 12: PHOTO SQUISHES (Likes)
+-- ============================================================================
+
+INSERT INTO public.photo_squishes (id, photo_id, user_id, created_at) VALUES
+    -- Likes on various photos
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1), '40000000-4001-4001-4001-000000004001', NOW() - INTERVAL '14 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1), '40000001-4001-4001-4001-000000004001', NOW() - INTERVAL '13 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1), '40000002-4001-4001-4001-000000004001', NOW() - INTERVAL '12 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 1), '40000003-4001-4001-4001-000000004001', NOW() - INTERVAL '9 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 1), '40000004-4001-4001-4001-000000004001', NOW() - INTERVAL '8 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 2), '40000005-4001-4001-4001-000000004001', NOW() - INTERVAL '4 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 2), '40000006-4001-4001-4001-000000004001', NOW() - INTERVAL '3 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 2), '40000007-4001-4001-4001-000000004001', NOW() - INTERVAL '2 days')
+ON CONFLICT DO NOTHING;
+
+-- ============================================================================
+-- SECTION 13: PHOTO COMMENTS
+-- ============================================================================
+
+INSERT INTO public.photo_comments (id, photo_id, user_id, body, created_at, deleted_at, deleted_by_user_id) VALUES
+    -- Comments on first photo
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1), '40000000-4001-4001-4001-000000004001', 'Such a beautiful ultrasound picture! 💕', NOW() - INTERVAL '14 days', NULL, NULL),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1), '40000001-4001-4001-4001-000000004001', 'Can\'t wait to meet the little one!', NOW() - INTERVAL '13 days', NULL, NULL),
+    -- Comments on nursery photo
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 1), '40000003-4001-4001-4001-000000004001', 'The nursery looks amazing!', NOW() - INTERVAL '9 days', NULL, NULL),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 1), '40000004-4001-4001-4001-000000004001', 'Love the color scheme!', NOW() - INTERVAL '8 days', NULL, NULL),
+    -- Comments on baby bump photo
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 2), '40000005-4001-4001-4001-000000004001', 'You look radiant! ✨', NOW() - INTERVAL '4 days', NULL, NULL)
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 14: PHOTO TAGS
+-- ============================================================================
+
+INSERT INTO public.photo_tags (id, photo_id, tag, created_at) VALUES
+    -- Tags for ultrasound photos
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%ultrasound%' LIMIT 1), 'ultrasound', NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%ultrasound%' LIMIT 1), '20weeks', NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%ultrasound%' LIMIT 1), 'healthy', NOW() - INTERVAL '15 days'),
+    -- Tags for nursery photos
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%nursery%' LIMIT 1), 'nursery', NOW() - INTERVAL '10 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%nursery%' LIMIT 1), 'preparation', NOW() - INTERVAL '10 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%nursery%' LIMIT 1), 'babyroom', NOW() - INTERVAL '10 days'),
+    -- Tags for baby bump photos
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%baby_bump%' LIMIT 1), 'babybump', NOW() - INTERVAL '5 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%baby_bump%' LIMIT 1), '25weeks', NOW() - INTERVAL '5 days'),
+    (gen_random_uuid(), (SELECT id FROM public.photos WHERE storage_path LIKE '%baby_bump%' LIMIT 1), 'pregnancy', NOW() - INTERVAL '5 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 15: REGISTRY ITEMS
+-- ============================================================================
+
+INSERT INTO public.registry_items (id, baby_profile_id, created_by_user_id, name, description, link_url, priority, created_at, updated_at) VALUES
+    -- Baby 0 registry
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'Crib', 'Convertible crib with organic mattress', 'https://example.com/crib', 1, NOW() - INTERVAL '25 days', NOW() - INTERVAL '20 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'Stroller', 'All-terrain jogging stroller', 'https://example.com/stroller', 1, NOW() - INTERVAL '25 days', NOW() - INTERVAL '20 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '20000000-2001-2001-2001-000000002001', 'Car Seat', 'Infant car seat with base', 'https://example.com/carseat', 1, NOW() - INTERVAL '24 days', NOW() - INTERVAL '19 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'Baby Monitor', 'Video baby monitor with night vision', 'https://example.com/monitor', 2, NOW() - INTERVAL '23 days', NOW() - INTERVAL '18 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'Diaper Bag', 'Stylish diaper backpack', 'https://example.com/diaperbag', 2, NOW() - INTERVAL '22 days', NOW() - INTERVAL '17 days'),
+    -- Baby 1 registry
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'Baby Clothes Set', 'Newborn onesies and sleepers (0-3 months)', 'https://example.com/clothes', 1, NOW() - INTERVAL '20 days', NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'Nursing Pillow', 'Ergonomic nursing and feeding pillow', 'https://example.com/nursing-pillow', 2, NOW() - INTERVAL '20 days', NOW() - INTERVAL '15 days'),
+    -- Baby 2 registry
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'Baby Swing', 'Portable baby swing with music', 'https://example.com/swing', 2, NOW() - INTERVAL '18 days', NOW() - INTERVAL '13 days'),
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'Bottles and Sterilizer', 'Complete bottle feeding set', 'https://example.com/bottles', 1, NOW() - INTERVAL '18 days', NOW() - INTERVAL '13 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 16: REGISTRY PURCHASES
+-- ============================================================================
+
+INSERT INTO public.registry_purchases (id, registry_item_id, purchased_by_user_id, purchased_at, note) VALUES
+    -- Crib purchased
+    (gen_random_uuid(), (SELECT id FROM public.registry_items WHERE name = 'Crib' LIMIT 1), '40000000-4001-4001-4001-000000004001', NOW() - INTERVAL '18 days', 'So happy to get this for you!'),
+    -- Stroller purchased
+    (gen_random_uuid(), (SELECT id FROM public.registry_items WHERE name = 'Stroller' LIMIT 1), '40000001-4001-4001-4001-000000004001', NOW() - INTERVAL '16 days', 'Can\'t wait for walks with baby!'),
+    -- Baby Monitor purchased
+    (gen_random_uuid(), (SELECT id FROM public.registry_items WHERE name = 'Baby Monitor' LIMIT 1), '40000002-4001-4001-4001-000000004001', NOW() - INTERVAL '15 days', 'For peace of mind'),
+    -- Baby Clothes purchased
+    (gen_random_uuid(), (SELECT id FROM public.registry_items WHERE name = 'Baby Clothes Set' LIMIT 1), '4000000c-4001-4001-4001-000000004001', NOW() - INTERVAL '12 days', 'These are adorable!')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 17: VOTES (Gender/Birthdate predictions)
+-- ============================================================================
+
+INSERT INTO public.votes (id, baby_profile_id, user_id, vote_type, value_text, value_date, is_anonymous, created_at, updated_at) VALUES
+    -- Baby 0 gender votes
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000000-4001-4001-4001-000000004001', 'gender', 'girl', NULL, true, NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000001-4001-4001-4001-000000004001', 'gender', 'boy', NULL, true, NOW() - INTERVAL '19 days', NOW() - INTERVAL '19 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000002-4001-4001-4001-000000004001', 'gender', 'girl', NULL, false, NOW() - INTERVAL '18 days', NOW() - INTERVAL '18 days'),
+    -- Baby 0 birthdate votes
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000003-4001-4001-4001-000000004001', 'birthdate', NULL, NOW() + INTERVAL '28 days', true, NOW() - INTERVAL '17 days', NOW() - INTERVAL '17 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000004-4001-4001-4001-000000004001', 'birthdate', NULL, NOW() + INTERVAL '32 days', true, NOW() - INTERVAL '16 days', NOW() - INTERVAL '16 days'),
+    -- Baby 1 gender votes
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '4000000c-4001-4001-4001-000000004001', 'gender', 'boy', NULL, true, NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '4000000d-4001-4001-4001-000000004001', 'gender', 'boy', NULL, true, NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days'),
+    -- Baby 2 gender votes
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '40000018-4001-4001-4001-000000004001', 'gender', 'girl', NULL, false, NOW() - INTERVAL '13 days', NOW() - INTERVAL '13 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 18: NAME SUGGESTIONS
+-- ============================================================================
+
+INSERT INTO public.name_suggestions (id, baby_profile_id, user_id, gender, suggested_name, created_at, updated_at) VALUES
+    -- Baby 0 name suggestions (gender unknown, so suggestions for both)
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000000-4001-4001-4001-000000004001', 'female', 'Olivia', NOW() - INTERVAL '15 days', NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000001-4001-4001-4001-000000004001', 'female', 'Emma', NOW() - INTERVAL '14 days', NOW() - INTERVAL '14 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000002-4001-4001-4001-000000004001', 'male', 'Noah', NOW() - INTERVAL '13 days', NOW() - INTERVAL '13 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000003-4001-4001-4001-000000004001', 'male', 'Liam', NOW() - INTERVAL '12 days', NOW() - INTERVAL '12 days'),
+    -- Baby 1 name suggestions (male)
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '4000000c-4001-4001-4001-000000004001', 'male', 'Oliver', NOW() - INTERVAL '11 days', NOW() - INTERVAL '11 days'),
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '4000000d-4001-4001-4001-000000004001', 'male', 'Ethan', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+    -- Baby 2 name suggestions (female)
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '40000018-4001-4001-4001-000000004001', 'female', 'Sophia', NOW() - INTERVAL '9 days', NOW() - INTERVAL '9 days'),
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '40000019-4001-4001-4001-000000004001', 'female', 'Isabella', NOW() - INTERVAL '8 days', NOW() - INTERVAL '8 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 19: NAME SUGGESTION LIKES
+-- ============================================================================
+
+INSERT INTO public.name_suggestion_likes (id, name_suggestion_id, user_id, created_at) VALUES
+    -- Likes on Olivia
+    (gen_random_uuid(), (SELECT id FROM public.name_suggestions WHERE suggested_name = 'Olivia' LIMIT 1), '40000004-4001-4001-4001-000000004001', NOW() - INTERVAL '14 days'),
+    (gen_random_uuid(), (SELECT id FROM public.name_suggestions WHERE suggested_name = 'Olivia' LIMIT 1), '40000005-4001-4001-4001-000000004001', NOW() - INTERVAL '13 days'),
+    (gen_random_uuid(), (SELECT id FROM public.name_suggestions WHERE suggested_name = 'Olivia' LIMIT 1), '40000006-4001-4001-4001-000000004001', NOW() - INTERVAL '12 days'),
+    -- Likes on Noah
+    (gen_random_uuid(), (SELECT id FROM public.name_suggestions WHERE suggested_name = 'Noah' LIMIT 1), '40000007-4001-4001-4001-000000004001', NOW() - INTERVAL '11 days'),
+    (gen_random_uuid(), (SELECT id FROM public.name_suggestions WHERE suggested_name = 'Noah' LIMIT 1), '40000008-4001-4001-4001-000000004001', NOW() - INTERVAL '10 days'),
+    -- Likes on Oliver
+    (gen_random_uuid(), (SELECT id FROM public.name_suggestions WHERE suggested_name = 'Oliver' LIMIT 1), '4000000e-4001-4001-4001-000000004001', NOW() - INTERVAL '9 days'),
+    (gen_random_uuid(), (SELECT id FROM public.name_suggestions WHERE suggested_name = 'Oliver' LIMIT 1), '4000000f-4001-4001-4001-000000004001', NOW() - INTERVAL '8 days')
+ON CONFLICT DO NOTHING;
+
+-- ============================================================================
+-- SECTION 20: INVITATIONS
+-- ============================================================================
+
+INSERT INTO public.invitations (id, baby_profile_id, invited_by_user_id, invitee_email, token_hash, expires_at, status, accepted_at, accepted_by_user_id, created_at, updated_at) VALUES
+    -- Pending invitations
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'friend1@example.com', encode(sha256('token_baby0_pending1'::bytea), 'hex'), NOW() + INTERVAL '5 days', 'pending', NULL, NULL, NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'friend2@example.com', encode(sha256('token_baby0_pending2'::bytea), 'hex'), NOW() + INTERVAL '6 days', 'pending', NULL, NULL, NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
+    -- Accepted invitation
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'accepted@example.com', encode(sha256('token_baby1_accepted'::bytea), 'hex'), NOW() + INTERVAL '7 days', 'accepted', NOW() - INTERVAL '3 days', '40000010-4001-4001-4001-000000004001', NOW() - INTERVAL '5 days', NOW() - INTERVAL '3 days'),
+    -- Expired invitation
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'expired@example.com', encode(sha256('token_baby2_expired'::bytea), 'hex'), NOW() - INTERVAL '1 day', 'expired', NULL, NULL, NOW() - INTERVAL '8 days', NOW() - INTERVAL '1 day'),
+    -- Revoked invitation
+    (gen_random_uuid(), 'b0000003-b001-b001-b001-00000000b001', '10000003-1001-1001-1001-000000001001', 'revoked@example.com', encode(sha256('token_baby3_revoked'::bytea), 'hex'), NOW() + INTERVAL '7 days', 'revoked', NULL, NULL, NOW() - INTERVAL '4 days', NOW() - INTERVAL '2 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 21: NOTIFICATIONS
+-- ============================================================================
+
+INSERT INTO public.notifications (id, recipient_user_id, baby_profile_id, type, payload, created_at, read_at) VALUES
+    -- Notifications for follower users
+    (gen_random_uuid(), '40000000-4001-4001-4001-000000004001', 'b0000000-b001-b001-b001-00000000b001', 'new_photo', '{"photo_id": "photo-123", "caption": "New ultrasound!"}'::jsonb, NOW() - INTERVAL '5 days', NULL),
+    (gen_random_uuid(), '40000000-4001-4001-4001-000000004001', 'b0000000-b001-b001-b001-00000000b001', 'event_created', '{"event_id": "event-456", "title": "Baby Shower"}'::jsonb, NOW() - INTERVAL '10 days', NOW() - INTERVAL '8 days'),
+    (gen_random_uuid(), '40000001-4001-4001-4001-000000004001', 'b0000000-b001-b001-b001-00000000b001', 'comment_on_photo', '{"photo_id": "photo-123", "commenter": "Grandma Emma"}'::jsonb, NOW() - INTERVAL '4 days', NULL),
+    (gen_random_uuid(), '40000001-4001-4001-4001-000000004001', 'b0000000-b001-b001-b001-00000000b001', 'registry_item_purchased', '{"item_name": "Crib", "purchaser": "Aunt Ava"}'::jsonb, NOW() - INTERVAL '18 days', NOW() - INTERVAL '17 days'),
+    -- Owner notifications
+    (gen_random_uuid(), '10000000-1001-1001-1001-000000001001', 'b0000000-b001-b001-b001-00000000b001', 'new_rsvp', '{"event_title": "Baby Shower", "user": "Grandma Emma", "status": "yes"}'::jsonb, NOW() - INTERVAL '8 days', NOW() - INTERVAL '7 days'),
+    (gen_random_uuid(), '10000000-1001-1001-1001-000000001001', 'b0000000-b001-b001-b001-00000000b001', 'photo_like', '{"photo_caption": "20 week ultrasound", "liker": "Godparent Evelyn"}'::jsonb, NOW() - INTERVAL '14 days', NOW() - INTERVAL '12 days'),
+    (gen_random_uuid(), '10000001-1001-1001-1001-000000001001', 'b0000001-b001-b001-b001-00000000b001', 'name_suggestion', '{"suggested_name": "Oliver", "suggester": "Aunt Oliver"}'::jsonb, NOW() - INTERVAL '11 days', NULL),
+    (gen_random_uuid(), '10000001-1001-1001-1001-000000001001', 'b0000001-b001-b001-b001-00000000b001', 'new_vote', '{"vote_type": "gender", "value": "boy"}'::jsonb, NOW() - INTERVAL '15 days', NOW() - INTERVAL '14 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 22: ACTIVITY EVENTS (Recent activity stream)
+-- ============================================================================
+
+INSERT INTO public.activity_events (id, baby_profile_id, actor_user_id, type, payload, created_at) VALUES
+    -- Baby 0 activities
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'photo_uploaded', '{"photo_id": "photo-1", "caption": "20 week ultrasound"}'::jsonb, NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '20000000-2001-2001-2001-000000002001', 'event_created', '{"event_id": "event-1", "title": "Baby Shower"}'::jsonb, NOW() - INTERVAL '20 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000000-4001-4001-4001-000000004001', 'registry_item_purchased', '{"item_name": "Crib"}'::jsonb, NOW() - INTERVAL '18 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000000-4001-4001-4001-000000004001', 'rsvp_submitted', '{"event_title": "Baby Shower", "status": "yes"}'::jsonb, NOW() - INTERVAL '8 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000002-4001-4001-4001-000000004001', 'vote_submitted', '{"vote_type": "gender", "value": "girl"}'::jsonb, NOW() - INTERVAL '18 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000000-4001-4001-4001-000000004001', 'name_suggested', '{"name": "Olivia", "gender": "female"}'::jsonb, NOW() - INTERVAL '15 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'photo_uploaded', '{"photo_id": "photo-2", "caption": "Nursery progress"}'::jsonb, NOW() - INTERVAL '10 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000001-4001-4001-4001-000000004001', 'comment_added', '{"resource_type": "photo", "comment": "So excited!"}'::jsonb, NOW() - INTERVAL '7 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '10000000-1001-1001-1001-000000001001', 'photo_uploaded', '{"photo_id": "photo-3", "caption": "25 weeks"}'::jsonb, NOW() - INTERVAL '5 days'),
+    (gen_random_uuid(), 'b0000000-b001-b001-b001-00000000b001', '40000005-4001-4001-4001-000000004001', 'comment_added', '{"resource_type": "photo", "comment": "You look radiant!"}'::jsonb, NOW() - INTERVAL '4 days'),
+    -- Baby 1 activities
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'event_created', '{"event_id": "event-2", "title": "Gender Reveal Party"}'::jsonb, NOW() - INTERVAL '18 days'),
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '10000001-1001-1001-1001-000000001001', 'photo_uploaded', '{"photo_id": "photo-4", "caption": "First ultrasound"}'::jsonb, NOW() - INTERVAL '20 days'),
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '4000000c-4001-4001-4001-000000004001', 'name_suggested', '{"name": "Oliver", "gender": "male"}'::jsonb, NOW() - INTERVAL '11 days'),
+    (gen_random_uuid(), 'b0000001-b001-b001-b001-00000000b001', '4000000c-4001-4001-4001-000000004001', 'vote_submitted', '{"vote_type": "gender", "value": "boy"}'::jsonb, NOW() - INTERVAL '15 days'),
+    -- Baby 2 activities  
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '10000002-1001-1001-1001-000000001001', 'photo_uploaded', '{"photo_id": "photo-6", "caption": "Baby shower decorations"}'::jsonb, NOW() - INTERVAL '8 days'),
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '20000002-2001-2001-2001-000000002001', 'photo_uploaded', '{"photo_id": "photo-7", "caption": "Crib assembly"}'::jsonb, NOW() - INTERVAL '6 days'),
+    (gen_random_uuid(), 'b0000002-b001-b001-b001-00000000b001', '40000018-4001-4001-4001-000000004001', 'name_suggested', '{"name": "Sophia", "gender": "female"}'::jsonb, NOW() - INTERVAL '9 days')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- END OF ADDITIONAL SEED DATA
+-- ============================================================================
+
+-- Display summary of additional data
+DO $$
+BEGIN
+    RAISE NOTICE '=== Additional Seed Data Summary ===';
+    RAISE NOTICE 'Owner Update Markers: %', (SELECT COUNT(*) FROM public.owner_update_markers);
+    RAISE NOTICE 'Events: %', (SELECT COUNT(*) FROM public.events);
+    RAISE NOTICE 'Event RSVPs: %', (SELECT COUNT(*) FROM public.event_rsvps);
+    RAISE NOTICE 'Event Comments: %', (SELECT COUNT(*) FROM public.event_comments);
+    RAISE NOTICE 'Photos: %', (SELECT COUNT(*) FROM public.photos);
+    RAISE NOTICE 'Photo Squishes: %', (SELECT COUNT(*) FROM public.photo_squishes);
+    RAISE NOTICE 'Photo Comments: %', (SELECT COUNT(*) FROM public.photo_comments);
+    RAISE NOTICE 'Photo Tags: %', (SELECT COUNT(*) FROM public.photo_tags);
+    RAISE NOTICE 'Registry Items: %', (SELECT COUNT(*) FROM public.registry_items);
+    RAISE NOTICE 'Registry Purchases: %', (SELECT COUNT(*) FROM public.registry_purchases);
+    RAISE NOTICE 'Votes: %', (SELECT COUNT(*) FROM public.votes);
+    RAISE NOTICE 'Name Suggestions: %', (SELECT COUNT(*) FROM public.name_suggestions);
+    RAISE NOTICE 'Name Suggestion Likes: %', (SELECT COUNT(*) FROM public.name_suggestion_likes);
+    RAISE NOTICE 'Invitations: %', (SELECT COUNT(*) FROM public.invitations);
+    RAISE NOTICE 'Notifications: %', (SELECT COUNT(*) FROM public.notifications);
+    RAISE NOTICE 'Activity Events: %', (SELECT COUNT(*) FROM public.activity_events);
+    RAISE NOTICE '====================================';
+END $$;
