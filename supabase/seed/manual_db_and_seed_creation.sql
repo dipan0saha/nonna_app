@@ -1,3 +1,457 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public AUTHORIZATION CURRENT_USER;
+GRANT ALL ON SCHEMA public TO CURRENT_USER;
+GRANT ALL ON SCHEMA public TO public;
+
+-- ============================================================================
+-- Nonna App - Physical Data Model DDL Migration Script
+-- Version: 1.0.0
+-- Target: PostgreSQL 15+ (Supabase Managed)
+-- Description: Complete schema creation with Supabase optimizations
+-- ============================================================================
+
+-- Enable required PostgreSQL extensions
+-- ============================================================================
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";       -- UUID generation
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements"; -- Performance monitoring
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";         -- Text search optimization
+CREATE EXTENSION IF NOT EXISTS "btree_gin";       -- Multi-column indexing
+
+-- ============================================================================
+-- SECTION 1: Core User Tables
+-- ============================================================================
+
+-- User Profiles (1:1 with auth.users)
+-- Links application profile data to Supabase Auth
+CREATE TABLE IF NOT EXISTS public.profiles (
+    user_id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    display_name text,
+    avatar_url text,
+    biometric_enabled boolean NOT NULL DEFAULT false,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.profiles IS 'User profile information linked to Supabase Auth';
+COMMENT ON COLUMN public.profiles.user_id IS 'Foreign key to auth.users with CASCADE delete';
+
+-- User Statistics (Gamification counters)
+CREATE TABLE IF NOT EXISTS public.user_stats (
+    user_id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    events_attended_count int NOT NULL DEFAULT 0,
+    items_purchased_count int NOT NULL DEFAULT 0,
+    photos_squished_count int NOT NULL DEFAULT 0,
+    comments_added_count int NOT NULL DEFAULT 0,
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.user_stats IS 'Pre-computed user engagement statistics for gamification';
+
+-- ============================================================================
+-- SECTION 2: Baby Profile & Access Control
+-- ============================================================================
+
+-- Baby Profiles (Core entity)
+CREATE TABLE IF NOT EXISTS public.baby_profiles (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name text NOT NULL,
+    default_last_name_source text,
+    profile_photo_url text,
+    expected_birth_date date,
+    gender text CHECK (gender IN ('male', 'female', 'unknown')),
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.baby_profiles IS 'Central baby profile hub - tenant boundary for all content';
+COMMENT ON COLUMN public.baby_profiles.gender IS 'Enum: male, female, unknown';
+
+-- Baby Memberships (Access Control & Roles)
+CREATE TABLE IF NOT EXISTS public.baby_memberships (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    role text NOT NULL CHECK (role IN ('owner', 'follower')),
+    relationship_label text,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    removed_at timestamptz
+);
+
+COMMENT ON TABLE public.baby_memberships IS 'Maps users to baby profiles with roles (owner/follower) for RLS';
+COMMENT ON COLUMN public.baby_memberships.role IS 'Enum: owner (full control), follower (read + interact)';
+COMMENT ON COLUMN public.baby_memberships.removed_at IS 'Soft delete timestamp for audit trail';
+
+-- Invitations
+CREATE TABLE IF NOT EXISTS public.invitations (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    invited_by_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    invitee_email text NOT NULL,
+    token_hash text NOT NULL UNIQUE,
+    expires_at timestamptz NOT NULL,
+    status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'revoked', 'expired')),
+    accepted_at timestamptz,
+    accepted_by_user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.invitations IS 'Email invitation lifecycle with 7-day expiration';
+COMMENT ON COLUMN public.invitations.token_hash IS 'Secure hashed token for invitation verification';
+COMMENT ON COLUMN public.invitations.status IS 'Enum: pending, accepted, revoked, expired';
+
+-- ============================================================================
+-- SECTION 3: Dynamic Tile System Configuration
+-- ============================================================================
+
+-- Screens (Navigation destinations)
+CREATE TABLE IF NOT EXISTS public.screens (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    screen_name text NOT NULL UNIQUE,
+    description text,
+    is_active boolean NOT NULL DEFAULT true,
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.screens IS 'App screens for tile configuration (Home, Calendar, etc.)';
+
+-- Tile Definitions (Tile type catalog)
+CREATE TABLE IF NOT EXISTS public.tile_definitions (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    tile_type text NOT NULL UNIQUE,
+    description text,
+    schema_params jsonb,
+    is_active boolean NOT NULL DEFAULT true,
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.tile_definitions IS 'Catalog of tile types for TileFactory';
+COMMENT ON COLUMN public.tile_definitions.schema_params IS 'JSON schema for tile parameters validation';
+
+-- Tile Configurations (Role-driven layout)
+CREATE TABLE IF NOT EXISTS public.tile_configs (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    screen_id uuid NOT NULL REFERENCES public.screens(id) ON DELETE CASCADE,
+    tile_definition_id uuid NOT NULL REFERENCES public.tile_definitions(id) ON DELETE CASCADE,
+    role text NOT NULL CHECK (role IN ('owner', 'follower')),
+    display_order int NOT NULL,
+    is_visible boolean NOT NULL DEFAULT true,
+    params jsonb DEFAULT '{}'::jsonb,
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.tile_configs IS 'Role-driven tile placement and configuration per screen';
+COMMENT ON COLUMN public.tile_configs.params IS 'Tile-specific parameters (limit, days, etc.)';
+
+-- ============================================================================
+-- SECTION 4: Cache Invalidation
+-- ============================================================================
+
+-- Owner Update Markers (Follower cache invalidation)
+CREATE TABLE IF NOT EXISTS public.owner_update_markers (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL UNIQUE REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    tiles_last_updated_at timestamptz NOT NULL DEFAULT now(),
+    updated_by_user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+    reason text
+);
+
+COMMENT ON TABLE public.owner_update_markers IS 'Cache invalidation marker - one per baby profile';
+COMMENT ON COLUMN public.owner_update_markers.tiles_last_updated_at IS 'Timestamp for follower cache checks';
+
+-- ============================================================================
+-- SECTION 5: Calendar Features
+-- ============================================================================
+
+-- Events
+CREATE TABLE IF NOT EXISTS public.events (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    created_by_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    title text NOT NULL,
+    starts_at timestamptz NOT NULL,
+    ends_at timestamptz,
+    description text,
+    location text,
+    video_link text,
+    cover_photo_url text,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.events IS 'Calendar events for baby profiles';
+
+-- Event RSVPs
+CREATE TABLE IF NOT EXISTS public.event_rsvps (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_id uuid NOT NULL REFERENCES public.events(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    status text NOT NULL CHECK (status IN ('yes', 'no', 'maybe')),
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    UNIQUE(event_id, user_id)
+);
+
+COMMENT ON TABLE public.event_rsvps IS 'RSVP responses - one per user per event';
+
+-- Event Comments
+CREATE TABLE IF NOT EXISTS public.event_comments (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_id uuid NOT NULL REFERENCES public.events(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    body text NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    deleted_at timestamptz,
+    deleted_by_user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL
+);
+
+COMMENT ON TABLE public.event_comments IS 'Comments on events with owner moderation';
+
+-- ============================================================================
+-- SECTION 6: Registry Features
+-- ============================================================================
+
+-- Registry Items
+CREATE TABLE IF NOT EXISTS public.registry_items (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    created_by_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    name text NOT NULL,
+    description text,
+    link_url text,
+    priority int DEFAULT 0,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.registry_items IS 'Baby registry items created by owners';
+
+-- Registry Purchases
+CREATE TABLE IF NOT EXISTS public.registry_purchases (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    registry_item_id uuid NOT NULL REFERENCES public.registry_items(id) ON DELETE CASCADE,
+    purchased_by_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    purchased_at timestamptz NOT NULL DEFAULT now(),
+    note text
+);
+
+COMMENT ON TABLE public.registry_purchases IS 'Purchase records - keeps registry_items immutable';
+
+-- ============================================================================
+-- SECTION 7: Photo Gallery Features
+-- ============================================================================
+
+-- Photos
+CREATE TABLE IF NOT EXISTS public.photos (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    uploaded_by_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    storage_path text NOT NULL,
+    caption text,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.photos IS 'Photo metadata - storage_path links to Supabase Storage';
+COMMENT ON COLUMN public.photos.storage_path IS 'Supabase Storage bucket path';
+
+-- Photo Squishes (Likes)
+CREATE TABLE IF NOT EXISTS public.photo_squishes (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    photo_id uuid NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    UNIQUE(photo_id, user_id)
+);
+
+COMMENT ON TABLE public.photo_squishes IS 'Photo likes - one squish per user per photo';
+
+-- Photo Comments
+CREATE TABLE IF NOT EXISTS public.photo_comments (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    photo_id uuid NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    body text NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    deleted_at timestamptz,
+    deleted_by_user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL
+);
+
+COMMENT ON TABLE public.photo_comments IS 'Comments on photos with owner moderation';
+
+-- Photo Tags (Search)
+CREATE TABLE IF NOT EXISTS public.photo_tags (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    photo_id uuid NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
+    tag text NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.photo_tags IS 'Searchable tags for photos';
+
+-- ============================================================================
+-- SECTION 8: Gamification Features
+-- ============================================================================
+
+-- Votes (Gender/Birthdate predictions)
+CREATE TABLE IF NOT EXISTS public.votes (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    vote_type text NOT NULL CHECK (vote_type IN ('gender', 'birthdate')),
+    value_text text,
+    value_date date,
+    is_anonymous boolean NOT NULL DEFAULT true,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.votes IS 'Anonymous voting for gender/birthdate predictions';
+
+-- Name Suggestions
+CREATE TABLE IF NOT EXISTS public.name_suggestions (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    gender text NOT NULL CHECK (gender IN ('male', 'female', 'unknown')),
+    suggested_name text NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.name_suggestions IS 'Name suggestions - one per user per gender per baby';
+
+-- Name Suggestion Likes
+CREATE TABLE IF NOT EXISTS public.name_suggestion_likes (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name_suggestion_id uuid NOT NULL REFERENCES public.name_suggestions(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    UNIQUE(name_suggestion_id, user_id)
+);
+
+COMMENT ON TABLE public.name_suggestion_likes IS 'Likes on name suggestions';
+
+-- ============================================================================
+-- SECTION 9: Notifications & Activity
+-- ============================================================================
+
+-- Notifications (In-app inbox)
+CREATE TABLE IF NOT EXISTS public.notifications (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    recipient_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    baby_profile_id uuid REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    type text NOT NULL,
+    payload jsonb DEFAULT '{}'::jsonb,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    read_at timestamptz
+);
+
+COMMENT ON TABLE public.notifications IS 'In-app notification inbox for users';
+COMMENT ON COLUMN public.notifications.payload IS 'Structured notification data for deep-linking';
+
+-- Activity Events (Recent activity stream)
+CREATE TABLE IF NOT EXISTS public.activity_events (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    baby_profile_id uuid NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+    actor_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    type text NOT NULL,
+    payload jsonb DEFAULT '{}'::jsonb,
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE public.activity_events IS 'Append-only activity stream for Recent Activity tiles';
+
+-- ============================================================================
+-- SECTION 10: Performance Indexes (PostgREST & Frontend Optimization)
+-- ============================================================================
+
+-- Membership checks (critical for RLS performance)
+CREATE INDEX IF NOT EXISTS idx_baby_memberships_user_active
+    ON public.baby_memberships (user_id)
+    WHERE removed_at IS NULL;
+
+CREATE INDEX IF NOT EXISTS idx_baby_memberships_baby_active
+    ON public.baby_memberships (baby_profile_id)
+    WHERE removed_at IS NULL;
+
+CREATE INDEX IF NOT EXISTS idx_baby_memberships_baby_user_role
+    ON public.baby_memberships (baby_profile_id, user_id, role)
+    WHERE removed_at IS NULL;
+
+-- Screen tiles: fetch by screen + role in stable order
+CREATE INDEX IF NOT EXISTS idx_tile_configs_screen_role_order
+    ON public.tile_configs (screen_id, role, display_order)
+    WHERE is_visible = true;
+
+-- Baby-scoped feeds (critical for tile queries)
+CREATE INDEX IF NOT EXISTS idx_events_baby_starts
+    ON public.events (baby_profile_id, starts_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_photos_baby_created
+    ON public.photos (baby_profile_id, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_registry_items_baby_created
+    ON public.registry_items (baby_profile_id, created_at DESC);
+
+-- Conversations (comments sorted by time)
+CREATE INDEX IF NOT EXISTS idx_event_comments_event_created
+    ON public.event_comments (event_id, created_at DESC)
+    WHERE deleted_at IS NULL;
+
+CREATE INDEX IF NOT EXISTS idx_photo_comments_photo_created
+    ON public.photo_comments (photo_id, created_at DESC)
+    WHERE deleted_at IS NULL;
+
+-- Inbox queries (notifications)
+CREATE INDEX IF NOT EXISTS idx_notifications_recipient_created
+    ON public.notifications (recipient_user_id, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_notifications_recipient_unread
+    ON public.notifications (recipient_user_id, created_at DESC)
+    WHERE read_at IS NULL;
+
+-- Activity streams
+CREATE INDEX IF NOT EXISTS idx_activity_events_baby_created
+    ON public.activity_events (baby_profile_id, created_at DESC);
+
+-- Photo tags (text search with trigram)
+CREATE INDEX IF NOT EXISTS idx_photo_tags_tag_trgm
+    ON public.photo_tags USING gin (tag gin_trgm_ops);
+
+-- Invitation lookups
+CREATE INDEX IF NOT EXISTS idx_invitations_token_hash
+    ON public.invitations (token_hash);
+
+CREATE INDEX IF NOT EXISTS idx_invitations_baby_status
+    ON public.invitations (baby_profile_id, status);
+
+-- ============================================================================
+-- SECTION 11: Unique Constraints (Data Integrity)
+-- ============================================================================
+
+-- One active membership per user per baby
+CREATE UNIQUE INDEX IF NOT EXISTS uq_baby_memberships_baby_user_active
+    ON public.baby_memberships (baby_profile_id, user_id)
+    WHERE removed_at IS NULL;
+
+-- One name suggestion per user per gender per baby
+CREATE UNIQUE INDEX IF NOT EXISTS uq_name_suggestions_baby_user_gender
+    ON public.name_suggestions (baby_profile_id, user_id, gender);
+
+-- Stable identifiers
+CREATE UNIQUE INDEX IF NOT EXISTS uq_screens_screen_name
+    ON public.screens (screen_name);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_tile_definitions_tile_type
+    ON public.tile_definitions (tile_type);
+
+-- ============================================================================
+-- END OF DDL MIGRATION SCRIPT
+-- ============================================================================
+
+
 -- ============================================================================
 -- Nonna App - Comprehensive Seed Data Script
 -- Version: 2.1.0
@@ -1162,27 +1616,1462 @@ ON CONFLICT (id) DO NOTHING;
 -- END OF ADDITIONAL SEED DATA
 -- ============================================================================
 
--- Display summary of additional data
+SET session_replication_role = 'origin';
+
+-- ============================================================================
+-- Nonna App - Row Level Security (RLS) Policies
+-- Version: 1.0.0
+-- Target: PostgreSQL 15+ (Supabase Managed)
+-- Description: Comprehensive RLS policies for security and access control
+-- ============================================================================
+
+-- ============================================================================
+-- SECTION 1: Enable RLS on All Tables
+-- ============================================================================
+
+-- Core user tables
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_stats ENABLE ROW LEVEL SECURITY;
+
+-- Baby profile and access control
+ALTER TABLE public.baby_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.baby_memberships ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.invitations ENABLE ROW LEVEL SECURITY;
+
+-- Tile system configuration
+ALTER TABLE public.screens ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tile_definitions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tile_configs ENABLE ROW LEVEL SECURITY;
+
+-- Cache invalidation
+ALTER TABLE public.owner_update_markers ENABLE ROW LEVEL SECURITY;
+
+-- Calendar features
+ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.event_rsvps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.event_comments ENABLE ROW LEVEL SECURITY;
+
+-- Registry features
+ALTER TABLE public.registry_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.registry_purchases ENABLE ROW LEVEL SECURITY;
+
+-- Photo gallery features
+ALTER TABLE public.photos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.photo_squishes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.photo_comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.photo_tags ENABLE ROW LEVEL SECURITY;
+
+-- Gamification features
+ALTER TABLE public.votes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.name_suggestions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.name_suggestion_likes ENABLE ROW LEVEL SECURITY;
+
+-- Notifications and activity
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.activity_events ENABLE ROW LEVEL SECURITY;
+
+-- ============================================================================
+-- SECTION 2: Helper Functions for RLS
+-- ============================================================================
+
+-- Check if user is an active member of a baby profile
+CREATE OR REPLACE FUNCTION public.is_baby_member(p_baby_profile_id uuid, p_user_id uuid)
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.baby_memberships
+        WHERE baby_profile_id = p_baby_profile_id
+          AND user_id = p_user_id
+          AND removed_at IS NULL
+    );
+$$;
+
+-- Check if user is an owner of a baby profile
+CREATE OR REPLACE FUNCTION public.is_baby_owner(p_baby_profile_id uuid, p_user_id uuid)
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.baby_memberships
+        WHERE baby_profile_id = p_baby_profile_id
+          AND user_id = p_user_id
+          AND role = 'owner'
+          AND removed_at IS NULL
+    );
+$$;
+
+-- Check if current user is service role
+CREATE OR REPLACE FUNCTION public.is_service_role()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+    SELECT COALESCE(auth.jwt()->>'role' = 'service_role', false);
+$$;
+
+-- ============================================================================
+-- SECTION 3: Profiles RLS Policies
+-- ============================================================================
+
+-- Users can view all profiles (for displaying names/avatars)
+CREATE POLICY "profiles_select_all"
+    ON public.profiles
+    FOR SELECT
+    USING (true);
+
+-- Users can insert their own profile
+CREATE POLICY "profiles_insert_self"
+    ON public.profiles
+    FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+-- Users can update their own profile
+CREATE POLICY "profiles_update_self"
+    ON public.profiles
+    FOR UPDATE
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
+
+-- Users can delete their own profile
+CREATE POLICY "profiles_delete_self"
+    ON public.profiles
+    FOR DELETE
+    USING (auth.uid() = user_id);
+
+-- ============================================================================
+-- SECTION 4: User Stats RLS Policies
+-- ============================================================================
+
+-- Users can view all stats (for gamification display)
+CREATE POLICY "user_stats_select_all"
+    ON public.user_stats
+    FOR SELECT
+    USING (true);
+
+-- System can insert/update stats (typically via triggers)
+CREATE POLICY "user_stats_insert_system"
+    ON public.user_stats
+    FOR INSERT
+    WITH CHECK (true);
+
+CREATE POLICY "user_stats_update_system"
+    ON public.user_stats
+    FOR UPDATE
+    USING (true)
+    WITH CHECK (true);
+
+-- ============================================================================
+-- SECTION 5: Baby Profiles RLS Policies
+-- ============================================================================
+
+-- Members can view baby profiles they have access to
+CREATE POLICY "baby_profiles_select_for_members"
+    ON public.baby_profiles
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.baby_memberships bm
+            WHERE bm.baby_profile_id = baby_profiles.id
+              AND bm.user_id = auth.uid()
+              AND bm.removed_at IS NULL
+        )
+    );
+
+-- Owners can insert baby profiles (membership created separately)
+CREATE POLICY "baby_profiles_insert_authenticated"
+    ON public.baby_profiles
+    FOR INSERT
+    WITH CHECK (auth.uid() IS NOT NULL);
+
+-- Owners can update their baby profiles
+CREATE POLICY "baby_profiles_update_for_owners"
+    ON public.baby_profiles
+    FOR UPDATE
+    USING (public.is_baby_owner(id, auth.uid()))
+    WITH CHECK (public.is_baby_owner(id, auth.uid()));
+
+-- Owners can delete their baby profiles
+CREATE POLICY "baby_profiles_delete_for_owners"
+    ON public.baby_profiles
+    FOR DELETE
+    USING (public.is_baby_owner(id, auth.uid()));
+
+-- ============================================================================
+-- SECTION 6: Baby Memberships RLS Policies
+-- ============================================================================
+
+-- Members can view memberships for babies they have access to
+CREATE POLICY "baby_memberships_select_for_members"
+    ON public.baby_memberships
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.baby_memberships bm
+            WHERE bm.baby_profile_id = baby_memberships.baby_profile_id
+              AND bm.user_id = auth.uid()
+              AND bm.removed_at IS NULL
+        )
+    );
+
+-- Owners can insert new memberships (for invitations)
+CREATE POLICY "baby_memberships_insert_for_owners"
+    ON public.baby_memberships
+    FOR INSERT
+    WITH CHECK (
+        public.is_baby_owner(baby_profile_id, auth.uid())
+        OR user_id = auth.uid() -- Allow self-join after invitation acceptance
+    );
+
+-- Owners can update memberships (e.g., revoke access)
+CREATE POLICY "baby_memberships_update_for_owners"
+    ON public.baby_memberships
+    FOR UPDATE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()))
+    WITH CHECK (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- Members can soft-delete their own membership (leave)
+CREATE POLICY "baby_memberships_update_self_leave"
+    ON public.baby_memberships
+    FOR UPDATE
+    USING (user_id = auth.uid() AND removed_at IS NULL)
+    WITH CHECK (user_id = auth.uid() AND removed_at IS NOT NULL);
+
+-- ============================================================================
+-- SECTION 7: Invitations RLS Policies
+-- ============================================================================
+
+-- Owners can view invitations for their baby profiles
+CREATE POLICY "invitations_select_for_owners"
+    ON public.invitations
+    FOR SELECT
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- Owners can create invitations
+CREATE POLICY "invitations_insert_for_owners"
+    ON public.invitations
+    FOR INSERT
+    WITH CHECK (
+        public.is_baby_owner(baby_profile_id, auth.uid())
+        AND invited_by_user_id = auth.uid()
+    );
+
+-- Owners can update invitations (revoke)
+CREATE POLICY "invitations_update_for_owners"
+    ON public.invitations
+    FOR UPDATE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()))
+    WITH CHECK (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- System can update invitations (for acceptance flow via Edge Function)
+CREATE POLICY "invitations_update_system"
+    ON public.invitations
+    FOR UPDATE
+    USING (true)
+    WITH CHECK (true);
+
+-- ============================================================================
+-- SECTION 8: Tile System RLS Policies (Read-Only for Users)
+-- ============================================================================
+
+-- All authenticated users can view screens
+CREATE POLICY "screens_select_authenticated"
+    ON public.screens
+    FOR SELECT
+    USING (auth.uid() IS NOT NULL);
+
+-- All authenticated users can view tile definitions
+CREATE POLICY "tile_definitions_select_authenticated"
+    ON public.tile_definitions
+    FOR SELECT
+    USING (auth.uid() IS NOT NULL);
+
+-- Users can view tile configs for their role
+CREATE POLICY "tile_configs_select_authenticated"
+    ON public.tile_configs
+    FOR SELECT
+    USING (auth.uid() IS NOT NULL);
+
+-- Service role can manage tile system (admin operations)
+CREATE POLICY "tile_system_manage_service_role"
+    ON public.screens
+    FOR ALL
+    USING (public.is_service_role())
+    WITH CHECK (public.is_service_role());
+
+CREATE POLICY "tile_definitions_manage_service_role"
+    ON public.tile_definitions
+    FOR ALL
+    USING (public.is_service_role())
+    WITH CHECK (public.is_service_role());
+
+CREATE POLICY "tile_configs_manage_service_role"
+    ON public.tile_configs
+    FOR ALL
+    USING (public.is_service_role())
+    WITH CHECK (public.is_service_role());
+
+-- ============================================================================
+-- SECTION 9: Owner Update Markers RLS Policies
+-- ============================================================================
+
+-- Members can view markers for babies they have access to
+CREATE POLICY "markers_select_for_members"
+    ON public.owner_update_markers
+    FOR SELECT
+    USING (public.is_baby_member(baby_profile_id, auth.uid()));
+
+-- Owners can update markers
+CREATE POLICY "markers_update_for_owners"
+    ON public.owner_update_markers
+    FOR UPDATE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()))
+    WITH CHECK (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- System can insert markers (typically on baby profile creation)
+CREATE POLICY "markers_insert_system"
+    ON public.owner_update_markers
+    FOR INSERT
+    WITH CHECK (true);
+
+-- ============================================================================
+-- SECTION 10: Events RLS Policies
+-- ============================================================================
+
+-- Members can view events for babies they have access to
+CREATE POLICY "events_select_for_members"
+    ON public.events
+    FOR SELECT
+    USING (public.is_baby_member(baby_profile_id, auth.uid()));
+
+-- Owners can create events
+CREATE POLICY "events_insert_for_owners"
+    ON public.events
+    FOR INSERT
+    WITH CHECK (
+        public.is_baby_owner(baby_profile_id, auth.uid())
+        AND created_by_user_id = auth.uid()
+    );
+
+-- Owners can update events
+CREATE POLICY "events_update_for_owners"
+    ON public.events
+    FOR UPDATE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()))
+    WITH CHECK (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- Owners can delete events
+CREATE POLICY "events_delete_for_owners"
+    ON public.events
+    FOR DELETE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- ============================================================================
+-- SECTION 11: Event RSVPs RLS Policies
+-- ============================================================================
+
+-- Members can view RSVPs for events they have access to
+CREATE POLICY "event_rsvps_select_for_members"
+    ON public.event_rsvps
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.events e
+            WHERE e.id = event_rsvps.event_id
+              AND public.is_baby_member(e.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can insert their own RSVPs
+CREATE POLICY "event_rsvps_insert_self"
+    ON public.event_rsvps
+    FOR INSERT
+    WITH CHECK (
+        user_id = auth.uid()
+        AND EXISTS (
+            SELECT 1
+            FROM public.events e
+            WHERE e.id = event_rsvps.event_id
+              AND public.is_baby_member(e.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can update their own RSVPs
+CREATE POLICY "event_rsvps_update_self"
+    ON public.event_rsvps
+    FOR UPDATE
+    USING (user_id = auth.uid())
+    WITH CHECK (user_id = auth.uid());
+
+-- Members can delete their own RSVPs
+CREATE POLICY "event_rsvps_delete_self"
+    ON public.event_rsvps
+    FOR DELETE
+    USING (user_id = auth.uid());
+
+-- ============================================================================
+-- SECTION 12: Event Comments RLS Policies
+-- ============================================================================
+
+-- Members can view non-deleted comments
+CREATE POLICY "event_comments_select_for_members"
+    ON public.event_comments
+    FOR SELECT
+    USING (
+        deleted_at IS NULL
+        AND EXISTS (
+            SELECT 1
+            FROM public.events e
+            WHERE e.id = event_comments.event_id
+              AND public.is_baby_member(e.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can insert comments
+CREATE POLICY "event_comments_insert_for_members"
+    ON public.event_comments
+    FOR INSERT
+    WITH CHECK (
+        user_id = auth.uid()
+        AND EXISTS (
+            SELECT 1
+            FROM public.events e
+            WHERE e.id = event_comments.event_id
+              AND public.is_baby_member(e.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Users can update their own comments
+CREATE POLICY "event_comments_update_self"
+    ON public.event_comments
+    FOR UPDATE
+    USING (user_id = auth.uid() AND deleted_at IS NULL)
+    WITH CHECK (user_id = auth.uid());
+
+-- Owners can soft-delete any comment (moderation)
+CREATE POLICY "event_comments_update_moderate_owners"
+    ON public.event_comments
+    FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.events e
+            WHERE e.id = event_comments.event_id
+              AND public.is_baby_owner(e.baby_profile_id, auth.uid())
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1
+            FROM public.events e
+            WHERE e.id = event_comments.event_id
+              AND public.is_baby_owner(e.baby_profile_id, auth.uid())
+        )
+    );
+
+-- ============================================================================
+-- SECTION 13: Registry Items RLS Policies
+-- ============================================================================
+
+-- Members can view registry items
+CREATE POLICY "registry_items_select_for_members"
+    ON public.registry_items
+    FOR SELECT
+    USING (public.is_baby_member(baby_profile_id, auth.uid()));
+
+-- Owners can create registry items
+CREATE POLICY "registry_items_insert_for_owners"
+    ON public.registry_items
+    FOR INSERT
+    WITH CHECK (
+        public.is_baby_owner(baby_profile_id, auth.uid())
+        AND created_by_user_id = auth.uid()
+    );
+
+-- Owners can update registry items
+CREATE POLICY "registry_items_update_for_owners"
+    ON public.registry_items
+    FOR UPDATE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()))
+    WITH CHECK (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- Owners can delete registry items
+CREATE POLICY "registry_items_delete_for_owners"
+    ON public.registry_items
+    FOR DELETE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- ============================================================================
+-- SECTION 14: Registry Purchases RLS Policies
+-- ============================================================================
+
+-- Members can view purchases
+CREATE POLICY "registry_purchases_select_for_members"
+    ON public.registry_purchases
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.registry_items ri
+            WHERE ri.id = registry_purchases.registry_item_id
+              AND public.is_baby_member(ri.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can create purchases
+CREATE POLICY "registry_purchases_insert_for_members"
+    ON public.registry_purchases
+    FOR INSERT
+    WITH CHECK (
+        purchased_by_user_id = auth.uid()
+        AND EXISTS (
+            SELECT 1
+            FROM public.registry_items ri
+            WHERE ri.id = registry_purchases.registry_item_id
+              AND public.is_baby_member(ri.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Users can delete their own purchases
+CREATE POLICY "registry_purchases_delete_self"
+    ON public.registry_purchases
+    FOR DELETE
+    USING (purchased_by_user_id = auth.uid());
+
+-- ============================================================================
+-- SECTION 15: Photos RLS Policies
+-- ============================================================================
+
+-- Members can view photos
+CREATE POLICY "photos_select_for_members"
+    ON public.photos
+    FOR SELECT
+    USING (public.is_baby_member(baby_profile_id, auth.uid()));
+
+-- Owners can upload photos
+CREATE POLICY "photos_insert_for_owners"
+    ON public.photos
+    FOR INSERT
+    WITH CHECK (
+        public.is_baby_owner(baby_profile_id, auth.uid())
+        AND uploaded_by_user_id = auth.uid()
+    );
+
+-- Owners can update photos
+CREATE POLICY "photos_update_for_owners"
+    ON public.photos
+    FOR UPDATE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()))
+    WITH CHECK (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- Owners can delete photos
+CREATE POLICY "photos_delete_for_owners"
+    ON public.photos
+    FOR DELETE
+    USING (public.is_baby_owner(baby_profile_id, auth.uid()));
+
+-- ============================================================================
+-- SECTION 16: Photo Squishes RLS Policies
+-- ============================================================================
+
+-- Members can view squishes
+CREATE POLICY "photo_squishes_select_for_members"
+    ON public.photo_squishes
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_squishes.photo_id
+              AND public.is_baby_member(p.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can insert their own squishes
+CREATE POLICY "photo_squishes_insert_self"
+    ON public.photo_squishes
+    FOR INSERT
+    WITH CHECK (
+        user_id = auth.uid()
+        AND EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_squishes.photo_id
+              AND public.is_baby_member(p.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can delete their own squishes
+CREATE POLICY "photo_squishes_delete_self"
+    ON public.photo_squishes
+    FOR DELETE
+    USING (user_id = auth.uid());
+
+-- ============================================================================
+-- SECTION 17: Photo Comments RLS Policies
+-- ============================================================================
+
+-- Members can view non-deleted comments
+CREATE POLICY "photo_comments_select_for_members"
+    ON public.photo_comments
+    FOR SELECT
+    USING (
+        deleted_at IS NULL
+        AND EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_comments.photo_id
+              AND public.is_baby_member(p.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can insert comments
+CREATE POLICY "photo_comments_insert_for_members"
+    ON public.photo_comments
+    FOR INSERT
+    WITH CHECK (
+        user_id = auth.uid()
+        AND EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_comments.photo_id
+              AND public.is_baby_member(p.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Users can update their own comments
+CREATE POLICY "photo_comments_update_self"
+    ON public.photo_comments
+    FOR UPDATE
+    USING (user_id = auth.uid() AND deleted_at IS NULL)
+    WITH CHECK (user_id = auth.uid());
+
+-- Owners can soft-delete any comment (moderation)
+CREATE POLICY "photo_comments_update_moderate_owners"
+    ON public.photo_comments
+    FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_comments.photo_id
+              AND public.is_baby_owner(p.baby_profile_id, auth.uid())
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_comments.photo_id
+              AND public.is_baby_owner(p.baby_profile_id, auth.uid())
+        )
+    );
+
+-- ============================================================================
+-- SECTION 18: Photo Tags RLS Policies
+-- ============================================================================
+
+-- Members can view tags
+CREATE POLICY "photo_tags_select_for_members"
+    ON public.photo_tags
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_tags.photo_id
+              AND public.is_baby_member(p.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Owners can create tags
+CREATE POLICY "photo_tags_insert_for_owners"
+    ON public.photo_tags
+    FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_tags.photo_id
+              AND public.is_baby_owner(p.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Owners can delete tags
+CREATE POLICY "photo_tags_delete_for_owners"
+    ON public.photo_tags
+    FOR DELETE
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.photos p
+            WHERE p.id = photo_tags.photo_id
+              AND public.is_baby_owner(p.baby_profile_id, auth.uid())
+        )
+    );
+
+-- ============================================================================
+-- SECTION 19: Votes RLS Policies
+-- ============================================================================
+
+-- Members can view votes (anonymity handled in application logic)
+CREATE POLICY "votes_select_for_members"
+    ON public.votes
+    FOR SELECT
+    USING (public.is_baby_member(baby_profile_id, auth.uid()));
+
+-- Members can insert their own votes
+CREATE POLICY "votes_insert_self"
+    ON public.votes
+    FOR INSERT
+    WITH CHECK (
+        user_id = auth.uid()
+        AND public.is_baby_member(baby_profile_id, auth.uid())
+    );
+
+-- Members can update their own votes
+CREATE POLICY "votes_update_self"
+    ON public.votes
+    FOR UPDATE
+    USING (user_id = auth.uid())
+    WITH CHECK (user_id = auth.uid());
+
+-- Members can delete their own votes
+CREATE POLICY "votes_delete_self"
+    ON public.votes
+    FOR DELETE
+    USING (user_id = auth.uid());
+
+-- ============================================================================
+-- SECTION 20: Name Suggestions RLS Policies
+-- ============================================================================
+
+-- Members can view name suggestions
+CREATE POLICY "name_suggestions_select_for_members"
+    ON public.name_suggestions
+    FOR SELECT
+    USING (public.is_baby_member(baby_profile_id, auth.uid()));
+
+-- Members can insert their own suggestions
+CREATE POLICY "name_suggestions_insert_self"
+    ON public.name_suggestions
+    FOR INSERT
+    WITH CHECK (
+        user_id = auth.uid()
+        AND public.is_baby_member(baby_profile_id, auth.uid())
+    );
+
+-- Members can update their own suggestions
+CREATE POLICY "name_suggestions_update_self"
+    ON public.name_suggestions
+    FOR UPDATE
+    USING (user_id = auth.uid())
+    WITH CHECK (user_id = auth.uid());
+
+-- Members can delete their own suggestions
+CREATE POLICY "name_suggestions_delete_self"
+    ON public.name_suggestions
+    FOR DELETE
+    USING (user_id = auth.uid());
+
+-- ============================================================================
+-- SECTION 21: Name Suggestion Likes RLS Policies
+-- ============================================================================
+
+-- Members can view likes
+CREATE POLICY "name_suggestion_likes_select_for_members"
+    ON public.name_suggestion_likes
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM public.name_suggestions ns
+            WHERE ns.id = name_suggestion_likes.name_suggestion_id
+              AND public.is_baby_member(ns.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can insert their own likes
+CREATE POLICY "name_suggestion_likes_insert_self"
+    ON public.name_suggestion_likes
+    FOR INSERT
+    WITH CHECK (
+        user_id = auth.uid()
+        AND EXISTS (
+            SELECT 1
+            FROM public.name_suggestions ns
+            WHERE ns.id = name_suggestion_likes.name_suggestion_id
+              AND public.is_baby_member(ns.baby_profile_id, auth.uid())
+        )
+    );
+
+-- Members can delete their own likes
+CREATE POLICY "name_suggestion_likes_delete_self"
+    ON public.name_suggestion_likes
+    FOR DELETE
+    USING (user_id = auth.uid());
+
+-- ============================================================================
+-- SECTION 22: Notifications RLS Policies
+-- ============================================================================
+
+-- Users can view their own notifications
+CREATE POLICY "notifications_select_self"
+    ON public.notifications
+    FOR SELECT
+    USING (recipient_user_id = auth.uid());
+
+-- System can insert notifications (typically via triggers/Edge Functions)
+CREATE POLICY "notifications_insert_system"
+    ON public.notifications
+    FOR INSERT
+    WITH CHECK (true);
+
+-- Users can update their own notifications (mark as read)
+CREATE POLICY "notifications_update_self"
+    ON public.notifications
+    FOR UPDATE
+    USING (recipient_user_id = auth.uid())
+    WITH CHECK (recipient_user_id = auth.uid());
+
+-- Users can delete their own notifications
+CREATE POLICY "notifications_delete_self"
+    ON public.notifications
+    FOR DELETE
+    USING (recipient_user_id = auth.uid());
+
+-- ============================================================================
+-- SECTION 23: Activity Events RLS Policies
+-- ============================================================================
+
+-- Members can view activity events for babies they have access to
+CREATE POLICY "activity_events_select_for_members"
+    ON public.activity_events
+    FOR SELECT
+    USING (public.is_baby_member(baby_profile_id, auth.uid()));
+
+-- System can insert activity events (typically via triggers)
+CREATE POLICY "activity_events_insert_system"
+    ON public.activity_events
+    FOR INSERT
+    WITH CHECK (true);
+
+-- ============================================================================
+-- SECTION 24: Grant Permissions
+-- ============================================================================
+
+-- Grant usage on schema
+GRANT USAGE ON SCHEMA public TO authenticated, anon, service_role;
+
+-- Grant select on all tables to authenticated users (RLS handles row-level access)
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO authenticated;
+
+-- Grant appropriate permissions to anon role (for invitation acceptance flow)
+GRANT SELECT, INSERT, UPDATE ON public.invitations TO anon;
+GRANT SELECT ON public.baby_profiles TO anon;
+
+-- Grant all permissions to service_role for admin operations
+GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role;
+
+-- Grant usage on sequences
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated, service_role;
+
+-- ============================================================================
+-- END OF RLS POLICIES SCRIPT
+-- ============================================================================
+
+
+-- ============================================================================
+-- Nonna App - Database Triggers and Functions
+-- Version: 1.0.0
+-- Target: PostgreSQL 15+ (Supabase Managed)
+-- Description: Automated triggers for profile creation, timestamps, and cache invalidation
+-- ============================================================================
+
+-- ============================================================================
+-- SECTION 1: Auto-Create Profile on User Signup
+-- ============================================================================
+
+-- Function: Create profile when new user signs up
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    -- Insert profile for new auth user
+    INSERT INTO public.profiles (user_id, display_name, created_at, updated_at)
+    VALUES (
+        NEW.id,
+        COALESCE(NEW.raw_user_meta_data->>'display_name', split_part(NEW.email, '@', 1)),
+        NOW(),
+        NOW()
+    );
+    
+    -- Insert initial user stats
+    INSERT INTO public.user_stats (user_id, updated_at)
+    VALUES (NEW.id, NOW());
+    
+    RETURN NEW;
+END;
+$$;
+
+-- Trigger: Execute handle_new_user after auth.users insert
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_new_user();
+
+COMMENT ON FUNCTION public.handle_new_user() IS 'Auto-creates profile and stats when new user signs up via Supabase Auth';
+
+-- ============================================================================
+-- SECTION 2: Auto-Update Timestamps
+-- ============================================================================
+
+-- Function: Update updated_at timestamp
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$;
+
+-- Apply update_updated_at trigger to all relevant tables
+CREATE TRIGGER set_updated_at_profiles
+    BEFORE UPDATE ON public.profiles
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_user_stats
+    BEFORE UPDATE ON public.user_stats
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_baby_profiles
+    BEFORE UPDATE ON public.baby_profiles
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_baby_memberships
+    BEFORE UPDATE ON public.baby_memberships
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_invitations
+    BEFORE UPDATE ON public.invitations
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_tile_configs
+    BEFORE UPDATE ON public.tile_configs
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_events
+    BEFORE UPDATE ON public.events
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_event_rsvps
+    BEFORE UPDATE ON public.event_rsvps
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_registry_items
+    BEFORE UPDATE ON public.registry_items
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_photos
+    BEFORE UPDATE ON public.photos
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_votes
+    BEFORE UPDATE ON public.votes
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_name_suggestions
+    BEFORE UPDATE ON public.name_suggestions
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at_column();
+
+COMMENT ON FUNCTION public.update_updated_at_column() IS 'Auto-updates updated_at timestamp on row modification';
+
+-- ============================================================================
+-- SECTION 3: Owner Update Marker Management
+-- ============================================================================
+
+-- Function: Create owner update marker on baby profile creation
+CREATE OR REPLACE FUNCTION public.create_owner_update_marker()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    -- Create initial marker for new baby profile
+    INSERT INTO public.owner_update_markers (baby_profile_id, tiles_last_updated_at, reason)
+    VALUES (NEW.id, NOW(), 'baby_profile_created');
+    
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER on_baby_profile_created
+    AFTER INSERT ON public.baby_profiles
+    FOR EACH ROW
+    EXECUTE FUNCTION public.create_owner_update_marker();
+
+COMMENT ON FUNCTION public.create_owner_update_marker() IS 'Creates cache invalidation marker when baby profile is created';
+
+-- Function: Update owner marker on content changes
+CREATE OR REPLACE FUNCTION public.update_owner_marker()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+    v_baby_profile_id uuid;
+    v_reason text;
+BEGIN
+    -- Determine baby_profile_id and reason based on table
+    IF TG_TABLE_NAME = 'events' THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_reason := 'event_' || TG_OP;
+    ELSIF TG_TABLE_NAME = 'photos' THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_reason := 'photo_' || TG_OP;
+    ELSIF TG_TABLE_NAME = 'registry_items' THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_reason := 'registry_item_' || TG_OP;
+    ELSIF TG_TABLE_NAME = 'registry_purchases' THEN
+        -- Get baby_profile_id from registry_items
+        SELECT ri.baby_profile_id INTO v_baby_profile_id
+        FROM public.registry_items ri
+        WHERE ri.id = NEW.registry_item_id;
+        v_reason := 'registry_purchase_' || TG_OP;
+    ELSE
+        RETURN NEW;
+    END IF;
+    
+    -- Update marker timestamp
+    UPDATE public.owner_update_markers
+    SET tiles_last_updated_at = NOW(),
+        updated_by_user_id = auth.uid(),
+        reason = v_reason
+    WHERE baby_profile_id = v_baby_profile_id;
+    
+    RETURN NEW;
+END;
+$$;
+
+-- Apply marker update triggers to content tables
+CREATE TRIGGER update_marker_on_event_change
+    AFTER INSERT OR UPDATE OR DELETE ON public.events
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_owner_marker();
+
+CREATE TRIGGER update_marker_on_photo_change
+    AFTER INSERT OR UPDATE OR DELETE ON public.photos
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_owner_marker();
+
+CREATE TRIGGER update_marker_on_registry_item_change
+    AFTER INSERT OR UPDATE OR DELETE ON public.registry_items
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_owner_marker();
+
+CREATE TRIGGER update_marker_on_registry_purchase
+    AFTER INSERT ON public.registry_purchases
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_owner_marker();
+
+COMMENT ON FUNCTION public.update_owner_marker() IS 'Updates cache invalidation marker when owners modify content';
+
+-- ============================================================================
+-- SECTION 4: User Stats Update Triggers
+-- ============================================================================
+
+-- Function: Increment events attended count
+CREATE OR REPLACE FUNCTION public.increment_events_attended()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    -- Only count 'yes' RSVPs
+    IF NEW.status = 'yes' THEN
+        UPDATE public.user_stats
+        SET events_attended_count = events_attended_count + 1,
+            updated_at = NOW()
+        WHERE user_id = NEW.user_id;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER on_event_rsvp_yes
+    AFTER INSERT OR UPDATE ON public.event_rsvps
+    FOR EACH ROW
+    WHEN (NEW.status = 'yes')
+    EXECUTE FUNCTION public.increment_events_attended();
+
+-- Function: Increment items purchased count
+CREATE OR REPLACE FUNCTION public.increment_items_purchased()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    UPDATE public.user_stats
+    SET items_purchased_count = items_purchased_count + 1,
+        updated_at = NOW()
+    WHERE user_id = NEW.purchased_by_user_id;
+    
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER on_registry_purchase
+    AFTER INSERT ON public.registry_purchases
+    FOR EACH ROW
+    EXECUTE FUNCTION public.increment_items_purchased();
+
+-- Function: Increment photos squished count
+CREATE OR REPLACE FUNCTION public.increment_photos_squished()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    UPDATE public.user_stats
+    SET photos_squished_count = photos_squished_count + 1,
+        updated_at = NOW()
+    WHERE user_id = NEW.user_id;
+    
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER on_photo_squish
+    AFTER INSERT ON public.photo_squishes
+    FOR EACH ROW
+    EXECUTE FUNCTION public.increment_photos_squished();
+
+-- Function: Increment comments added count
+CREATE OR REPLACE FUNCTION public.increment_comments_added()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    UPDATE public.user_stats
+    SET comments_added_count = comments_added_count + 1,
+        updated_at = NOW()
+    WHERE user_id = NEW.user_id;
+    
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER on_event_comment
+    AFTER INSERT ON public.event_comments
+    FOR EACH ROW
+    EXECUTE FUNCTION public.increment_comments_added();
+
+CREATE TRIGGER on_photo_comment
+    AFTER INSERT ON public.photo_comments
+    FOR EACH ROW
+    EXECUTE FUNCTION public.increment_comments_added();
+
+COMMENT ON FUNCTION public.increment_events_attended() IS 'Updates user stats when RSVP changes to yes';
+COMMENT ON FUNCTION public.increment_items_purchased() IS 'Updates user stats when registry item purchased';
+COMMENT ON FUNCTION public.increment_photos_squished() IS 'Updates user stats when photo squished';
+COMMENT ON FUNCTION public.increment_comments_added() IS 'Updates user stats when comment added';
+
+-- ============================================================================
+-- SECTION 5: Activity Event Logging
+-- ============================================================================
+
+-- Function: Log activity events
+CREATE OR REPLACE FUNCTION public.log_activity_event()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+    v_baby_profile_id uuid;
+    v_type text;
+    v_payload jsonb;
+BEGIN
+    -- Determine activity type and payload based on table
+    IF TG_TABLE_NAME = 'photos' THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_type := 'photo_uploaded';
+        v_payload := jsonb_build_object('photo_id', NEW.id, 'caption', NEW.caption);
+        
+    ELSIF TG_TABLE_NAME = 'events' THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_type := 'event_created';
+        v_payload := jsonb_build_object('event_id', NEW.id, 'title', NEW.title);
+        
+    ELSIF TG_TABLE_NAME = 'registry_purchases' THEN
+        -- Get baby_profile_id from registry_items
+        SELECT ri.baby_profile_id INTO v_baby_profile_id
+        FROM public.registry_items ri
+        WHERE ri.id = NEW.registry_item_id;
+        v_type := 'item_purchased';
+        v_payload := jsonb_build_object('registry_item_id', NEW.registry_item_id);
+        
+    ELSIF TG_TABLE_NAME = 'event_comments' THEN
+        -- Get baby_profile_id from events
+        SELECT e.baby_profile_id INTO v_baby_profile_id
+        FROM public.events e
+        WHERE e.id = NEW.event_id;
+        v_type := 'comment_added';
+        v_payload := jsonb_build_object('event_id', NEW.event_id, 'comment_id', NEW.id);
+        
+    ELSIF TG_TABLE_NAME = 'photo_comments' THEN
+        -- Get baby_profile_id from photos
+        SELECT p.baby_profile_id INTO v_baby_profile_id
+        FROM public.photos p
+        WHERE p.id = NEW.photo_id;
+        v_type := 'comment_added';
+        v_payload := jsonb_build_object('photo_id', NEW.photo_id, 'comment_id', NEW.id);
+        
+    ELSE
+        RETURN NEW;
+    END IF;
+    
+    -- Insert activity event
+    INSERT INTO public.activity_events (baby_profile_id, actor_user_id, type, payload)
+    VALUES (v_baby_profile_id, auth.uid(), v_type, v_payload);
+    
+    RETURN NEW;
+END;
+$$;
+
+-- Apply activity logging triggers
+CREATE TRIGGER log_photo_activity
+    AFTER INSERT ON public.photos
+    FOR EACH ROW
+    EXECUTE FUNCTION public.log_activity_event();
+
+CREATE TRIGGER log_event_activity
+    AFTER INSERT ON public.events
+    FOR EACH ROW
+    EXECUTE FUNCTION public.log_activity_event();
+
+CREATE TRIGGER log_purchase_activity
+    AFTER INSERT ON public.registry_purchases
+    FOR EACH ROW
+    EXECUTE FUNCTION public.log_activity_event();
+
+CREATE TRIGGER log_event_comment_activity
+    AFTER INSERT ON public.event_comments
+    FOR EACH ROW
+    EXECUTE FUNCTION public.log_activity_event();
+
+CREATE TRIGGER log_photo_comment_activity
+    AFTER INSERT ON public.photo_comments
+    FOR EACH ROW
+    EXECUTE FUNCTION public.log_activity_event();
+
+COMMENT ON FUNCTION public.log_activity_event() IS 'Logs significant actions to activity_events for Recent Activity tiles';
+
+-- ============================================================================
+-- SECTION 6: Notification Triggers
+-- ============================================================================
+
+-- Constant for null UUID (used when actor is unknown)
 DO $$
 BEGIN
-    RAISE NOTICE '=== Additional Seed Data Summary ===';
-    RAISE NOTICE 'Owner Update Markers: %', (SELECT COUNT(*) FROM public.owner_update_markers);
-    RAISE NOTICE 'Events: %', (SELECT COUNT(*) FROM public.events);
-    RAISE NOTICE 'Event RSVPs: %', (SELECT COUNT(*) FROM public.event_rsvps);
-    RAISE NOTICE 'Event Comments: %', (SELECT COUNT(*) FROM public.event_comments);
-    RAISE NOTICE 'Photos: %', (SELECT COUNT(*) FROM public.photos);
-    RAISE NOTICE 'Photo Squishes: %', (SELECT COUNT(*) FROM public.photo_squishes);
-    RAISE NOTICE 'Photo Comments: %', (SELECT COUNT(*) FROM public.photo_comments);
-    RAISE NOTICE 'Photo Tags: %', (SELECT COUNT(*) FROM public.photo_tags);
-    RAISE NOTICE 'Registry Items: %', (SELECT COUNT(*) FROM public.registry_items);
-    RAISE NOTICE 'Registry Purchases: %', (SELECT COUNT(*) FROM public.registry_purchases);
-    RAISE NOTICE 'Votes: %', (SELECT COUNT(*) FROM public.votes);
-    RAISE NOTICE 'Name Suggestions: %', (SELECT COUNT(*) FROM public.name_suggestions);
-    RAISE NOTICE 'Name Suggestion Likes: %', (SELECT COUNT(*) FROM public.name_suggestion_likes);
-    RAISE NOTICE 'Invitations: %', (SELECT COUNT(*) FROM public.invitations);
-    RAISE NOTICE 'Notifications: %', (SELECT COUNT(*) FROM public.notifications);
-    RAISE NOTICE 'Activity Events: %', (SELECT COUNT(*) FROM public.activity_events);
-    RAISE NOTICE '====================================';
-END $$;
+    IF NOT EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'null_uuid') THEN
+        CREATE FUNCTION public.null_uuid() RETURNS uuid AS
+        'SELECT ''00000000-0000-0000-0000-000000000000''::uuid;'
+        LANGUAGE SQL IMMUTABLE;
+    END IF;
+END
+$$;
 
-SET session_replication_role = 'origin';
+-- Function: Create notifications for new content
+CREATE OR REPLACE FUNCTION public.create_content_notifications()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+    v_baby_profile_id uuid;
+    v_type text;
+    v_payload jsonb;
+    v_recipient record;
+BEGIN
+    -- Determine notification type and payload
+    IF TG_TABLE_NAME = 'photos' THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_type := 'photo_added';
+        v_payload := jsonb_build_object('photo_id', NEW.id);
+        
+    ELSIF TG_TABLE_NAME = 'events' THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_type := 'event_created';
+        v_payload := jsonb_build_object('event_id', NEW.id);
+        
+    ELSIF TG_TABLE_NAME = 'registry_items' THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_type := 'registry_item_added';
+        v_payload := jsonb_build_object('registry_item_id', NEW.id);
+        
+    ELSIF TG_TABLE_NAME = 'registry_purchases' THEN
+        -- Get baby_profile_id from registry_items
+        SELECT ri.baby_profile_id INTO v_baby_profile_id
+        FROM public.registry_items ri
+        WHERE ri.id = NEW.registry_item_id;
+        v_type := 'registry_item_purchased';
+        v_payload := jsonb_build_object('registry_item_id', NEW.registry_item_id, 'purchased_by', NEW.purchased_by_user_id);
+        
+    ELSIF TG_TABLE_NAME = 'event_rsvps' THEN
+        -- Get baby_profile_id from events
+        SELECT e.baby_profile_id INTO v_baby_profile_id
+        FROM public.events e
+        WHERE e.id = NEW.event_id;
+        v_type := 'event_rsvp';
+        v_payload := jsonb_build_object('event_id', NEW.event_id, 'user_id', NEW.user_id, 'status', NEW.status);
+        
+    ELSIF TG_TABLE_NAME = 'baby_memberships' AND NEW.removed_at IS NULL THEN
+        v_baby_profile_id := NEW.baby_profile_id;
+        v_type := 'new_follower';
+        v_payload := jsonb_build_object('user_id', NEW.user_id, 'relationship', NEW.relationship_label);
+        
+    ELSE
+        RETURN NEW;
+    END IF;
+    
+    -- Create notifications for all members (excluding actor)
+    FOR v_recipient IN
+        SELECT DISTINCT user_id
+        FROM public.baby_memberships
+        WHERE baby_profile_id = v_baby_profile_id
+          AND removed_at IS NULL
+          AND user_id != COALESCE(auth.uid(), public.null_uuid())
+    LOOP
+        INSERT INTO public.notifications (recipient_user_id, baby_profile_id, type, payload)
+        VALUES (v_recipient.user_id, v_baby_profile_id, v_type, v_payload);
+    END LOOP;
+    
+    RETURN NEW;
+END;
+$$;
+
+-- Apply notification triggers
+CREATE TRIGGER notify_on_photo_upload
+    AFTER INSERT ON public.photos
+    FOR EACH ROW
+    EXECUTE FUNCTION public.create_content_notifications();
+
+CREATE TRIGGER notify_on_event_creation
+    AFTER INSERT ON public.events
+    FOR EACH ROW
+    EXECUTE FUNCTION public.create_content_notifications();
+
+CREATE TRIGGER notify_on_registry_item_added
+    AFTER INSERT ON public.registry_items
+    FOR EACH ROW
+    EXECUTE FUNCTION public.create_content_notifications();
+
+CREATE TRIGGER notify_on_registry_purchase
+    AFTER INSERT ON public.registry_purchases
+    FOR EACH ROW
+    EXECUTE FUNCTION public.create_content_notifications();
+
+CREATE TRIGGER notify_on_event_rsvp
+    AFTER INSERT OR UPDATE ON public.event_rsvps
+    FOR EACH ROW
+    EXECUTE FUNCTION public.create_content_notifications();
+
+CREATE TRIGGER notify_on_new_follower
+    AFTER INSERT ON public.baby_memberships
+    FOR EACH ROW
+    WHEN (NEW.removed_at IS NULL AND NEW.role = 'follower')
+    EXECUTE FUNCTION public.create_content_notifications();
+
+COMMENT ON FUNCTION public.create_content_notifications() IS 'Creates in-app notifications for significant events';
+
+-- ============================================================================
+-- SECTION 7: Constraint Enforcement via Triggers
+-- ============================================================================
+
+-- Function: Enforce max 2 owners per baby profile
+CREATE OR REPLACE FUNCTION public.check_max_owners()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_owner_count int;
+BEGIN
+    -- Only check for owner role insertions
+    IF NEW.role = 'owner' AND NEW.removed_at IS NULL THEN
+        SELECT COUNT(*)
+        INTO v_owner_count
+        FROM public.baby_memberships
+        WHERE baby_profile_id = NEW.baby_profile_id
+          AND role = 'owner'
+          AND removed_at IS NULL
+          AND id != NEW.id; -- Exclude current row for updates
+        
+        IF v_owner_count >= 2 THEN
+            RAISE EXCEPTION 'Maximum 2 owners allowed per baby profile';
+        END IF;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER enforce_max_owners
+    BEFORE INSERT OR UPDATE ON public.baby_memberships
+    FOR EACH ROW
+    EXECUTE FUNCTION public.check_max_owners();
+
+COMMENT ON FUNCTION public.check_max_owners() IS 'Enforces maximum 2 owners per baby profile requirement';
+
+-- Function: Validate invitation expiry
+CREATE OR REPLACE FUNCTION public.validate_invitation()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Auto-expire invitations past expiration date
+    IF NEW.expires_at < NOW() AND NEW.status = 'pending' THEN
+        NEW.status := 'expired';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER check_invitation_expiry
+    BEFORE INSERT OR UPDATE ON public.invitations
+    FOR EACH ROW
+    EXECUTE FUNCTION public.validate_invitation();
+
+COMMENT ON FUNCTION public.validate_invitation() IS 'Auto-expires invitations past 7-day expiration';
+
+-- ============================================================================
+-- END OF TRIGGERS AND FUNCTIONS SCRIPT
+-- ============================================================================
