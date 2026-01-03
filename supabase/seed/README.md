@@ -88,19 +88,19 @@ Note: Some owners also follow other baby profiles (cross-profile relationships)
 
 After loading, verify with:
 
+```bash
+# Quick verification
+psql "your-connection-string" -f validate_seed_data.sql
+```
+
+Or run individual queries:
+
 ```sql
 SELECT 
   (SELECT COUNT(*) FROM public.profiles) as profiles,
   (SELECT COUNT(*) FROM public.baby_profiles) as babies,
   (SELECT COUNT(*) FROM public.baby_memberships WHERE role='owner') as owners,
   (SELECT COUNT(*) FROM public.baby_memberships WHERE role='follower') as followers;
-```
-
-Expected result:
-```
-profiles | babies | owners | followers
----------|--------|--------|----------
-   140   |   10   |   20   |   130
 ```
 
 To verify all tables have data:
