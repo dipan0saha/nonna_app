@@ -108,24 +108,30 @@ SELECT
   'Events → Baby Profiles' as check_name,
   COUNT(*) as total_events,
   COUNT(DISTINCT e.baby_profile_id) as unique_babies_with_events,
+  (SELECT COUNT(*) FROM public.baby_profiles) as total_baby_profiles,
   CASE 
-    WHEN COUNT(*) > 0 THEN '✓ Events exist and reference valid babies'
-    ELSE '✗ No events found'
+    WHEN COUNT(*) > 0 AND COUNT(DISTINCT e.baby_profile_id) <= (SELECT COUNT(*) FROM public.baby_profiles)
+    THEN '✓ Events exist and all reference valid babies'
+    WHEN COUNT(*) = 0 THEN '⚠ No events found'
+    ELSE '✗ Invalid baby profile references found'
   END as status
 FROM public.events e
-INNER JOIN public.baby_profiles bp ON e.baby_profile_id = bp.id;
+LEFT JOIN public.baby_profiles bp ON e.baby_profile_id = bp.id;
 
 -- Verify photos have valid baby profiles
 SELECT 
   'Photos → Baby Profiles' as check_name,
   COUNT(*) as total_photos,
   COUNT(DISTINCT p.baby_profile_id) as unique_babies_with_photos,
+  (SELECT COUNT(*) FROM public.baby_profiles) as total_baby_profiles,
   CASE 
-    WHEN COUNT(*) > 0 THEN '✓ Photos exist and reference valid babies'
-    ELSE '✗ No photos found'
+    WHEN COUNT(*) > 0 AND COUNT(DISTINCT p.baby_profile_id) <= (SELECT COUNT(*) FROM public.baby_profiles)
+    THEN '✓ Photos exist and all reference valid babies'
+    WHEN COUNT(*) = 0 THEN '⚠ No photos found'
+    ELSE '✗ Invalid baby profile references found'
   END as status
 FROM public.photos p
-INNER JOIN public.baby_profiles bp ON p.baby_profile_id = bp.id;
+LEFT JOIN public.baby_profiles bp ON p.baby_profile_id = bp.id;
 
 -- Display final message
 SELECT '===================================================' as message

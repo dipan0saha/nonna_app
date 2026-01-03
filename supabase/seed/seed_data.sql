@@ -622,7 +622,7 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO public.event_comments (id, event_id, user_id, body, created_at, deleted_at, deleted_by_user_id) VALUES
     -- Comments on Baby Shower
-    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000000-4001-4001-4001-000000004001', 'So excited for this! Can\'t wait to celebrate with you!', NOW() - INTERVAL '7 days', NULL, NULL),
+    (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000000-4001-4001-4001-000000004001', 'So excited for this! Can''t wait to celebrate with you!', NOW() - INTERVAL '7 days', NULL, NULL),
     (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '40000001-4001-4001-4001-000000004001', 'What should I bring?', NOW() - INTERVAL '6 days', NULL, NULL),
     (gen_random_uuid(), (SELECT id FROM public.events WHERE title = 'Baby Shower' AND baby_profile_id = 'b0000000-b001-b001-b001-00000000b001'), '10000000-1001-1001-1001-000000001001', 'Just bring yourself! We have everything covered.', NOW() - INTERVAL '5 days', NULL, NULL),
     -- Comments on Gender Reveal
@@ -672,7 +672,7 @@ ON CONFLICT DO NOTHING;
 INSERT INTO public.photo_comments (id, photo_id, user_id, body, created_at, deleted_at, deleted_by_user_id) VALUES
     -- Comments on first photo
     (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1), '40000000-4001-4001-4001-000000004001', 'Such a beautiful ultrasound picture! 💕', NOW() - INTERVAL '14 days', NULL, NULL),
-    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1), '40000001-4001-4001-4001-000000004001', 'Can\'t wait to meet the little one!', NOW() - INTERVAL '13 days', NULL, NULL),
+    (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1), '40000001-4001-4001-4001-000000004001', 'Can''t wait to meet the little one!', NOW() - INTERVAL '13 days', NULL, NULL),
     -- Comments on nursery photo
     (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 1), '40000003-4001-4001-4001-000000004001', 'The nursery looks amazing!', NOW() - INTERVAL '9 days', NULL, NULL),
     (gen_random_uuid(), (SELECT id FROM public.photos ORDER BY created_at LIMIT 1 OFFSET 1), '40000004-4001-4001-4001-000000004001', 'Love the color scheme!', NOW() - INTERVAL '8 days', NULL, NULL),
@@ -726,7 +726,7 @@ INSERT INTO public.registry_purchases (id, registry_item_id, purchased_by_user_i
     -- Crib purchased
     (gen_random_uuid(), (SELECT id FROM public.registry_items WHERE name = 'Crib' LIMIT 1), '40000000-4001-4001-4001-000000004001', NOW() - INTERVAL '18 days', 'So happy to get this for you!'),
     -- Stroller purchased
-    (gen_random_uuid(), (SELECT id FROM public.registry_items WHERE name = 'Stroller' LIMIT 1), '40000001-4001-4001-4001-000000004001', NOW() - INTERVAL '16 days', 'Can\'t wait for walks with baby!'),
+    (gen_random_uuid(), (SELECT id FROM public.registry_items WHERE name = 'Stroller' LIMIT 1), '40000001-4001-4001-4001-000000004001', NOW() - INTERVAL '16 days', 'Can''t wait for walks with baby!'),
     -- Baby Monitor purchased
     (gen_random_uuid(), (SELECT id FROM public.registry_items WHERE name = 'Baby Monitor' LIMIT 1), '40000002-4001-4001-4001-000000004001', NOW() - INTERVAL '15 days', 'For peace of mind'),
     -- Baby Clothes purchased
