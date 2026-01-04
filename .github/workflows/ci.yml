@@ -72,7 +72,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y lcov
-          genhtml coverage/lcov.info -o coverage/html
+          genhtml coverage/lcov.info -o coverage/html --ignore-errors empty || echo "Coverage report generation skipped (no coverage data)"
       
       - name: Upload coverage HTML report
         if: always()

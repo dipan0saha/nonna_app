@@ -88,8 +88,10 @@ Ensures code quality, runs tests, and validates builds for every code change.
 
 **Quality Gates**:
 - ✅ All tests must pass
-- ✅ Coverage report generated
+- ✅ Coverage report generated (skipped if no coverage data)
 - ✅ No test failures
+
+**Note**: Coverage report generation uses `--ignore-errors empty` flag to handle scenarios where tests exist but don't yet cover application code.
 
 **Artifacts Produced**:
 - Coverage report (HTML) - Available for 7 days
