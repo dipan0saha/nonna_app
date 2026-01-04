@@ -283,20 +283,25 @@ flutter:
 
 ```yaml
 flutter:
-  assets:
-    - .env
+  uses-material-design: true
+  # assets:
+  #   - .env
+  # Note: .env file should be created locally from .env.example for development
 ```
-**Current Assets**:
-- `.env`: Environment configuration file
+
+**Asset Management Note**:
+- The `.env` file is intentionally excluded from assets to prevent CI/CD failures
+- Developers should create `.env` locally from `.env.example`
+- The `flutter_dotenv` package loads `.env` at runtime (not as an asset)
 
 **Future Asset Directories** (to be added as needed):
 ```yaml
   assets:
-    - .env
     - assets/images/
     - assets/icons/
     - assets/fonts/
     - assets/animations/
+    # Note: .env is loaded by flutter_dotenv, not as an asset
 ```
 
 ## Dependency Security Analysis
@@ -557,8 +562,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - .env
+  # assets:
+  #   - .env
+  # Note: Create .env locally from .env.example
 ```
 
 ## Approval
