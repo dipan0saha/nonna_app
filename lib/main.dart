@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/config/supabase_config.dart';
+import 'core/services/app_initialization_service.dart';
 import 'core/router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SupabaseConfig.initialize();
+  
+  // Initialize all third-party integrations
+  // (Supabase, OneSignal, Firebase Analytics)
+  await AppInitializationService.initialize();
+  
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -16,8 +20,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: appRouter,
-      title: 'nonna_app',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      title: 'Nonna App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
     );
   }
 }
