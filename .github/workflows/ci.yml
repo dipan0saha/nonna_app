@@ -49,10 +49,9 @@ jobs:
       
       - name: Push formatting changes
         if: steps.format-check.outputs.has_changes == 'true' && github.event_name == 'pull_request'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.head_ref }}
+        run: |
+          git pull --rebase origin ${{ github.head_ref }}
+          git push origin HEAD:${{ github.head_ref }}
       
       - name: Analyze code
         run: flutter analyze --fatal-infos --fatal-warnings
