@@ -118,7 +118,7 @@ go_router: ^13.2.0
 
 #### Intl
 ```yaml
-intl: ^0.20.2
+intl: ^0.19.0
 ```
 **Purpose**: Internationalization and localization  
 **Type**: Required  
@@ -534,7 +534,7 @@ dependencies:
   supabase: ^2.2.0
   flutter_dotenv: ^5.1.0
   cupertino_icons: ^1.0.8
-  intl: ^0.20.2
+  intl: ^0.19.0
   image: ^4.1.7
   http: ^1.2.0
   riverpod: ^2.4.9
