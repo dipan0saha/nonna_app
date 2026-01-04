@@ -72,10 +72,10 @@ build-android:
 	flutter build apk --release
 	@echo "✅ Android APK built successfully"
 
-# Build iOS (no codesign)
+# Build iOS (simulator)
 build-ios:
-	flutter build ios --release --no-codesign
-	@echo "✅ iOS build completed successfully (no code signing)"
+	flutter build ios --simulator
+	@echo "✅ iOS simulator build completed successfully"
 
 # Build Web
 build-web:
