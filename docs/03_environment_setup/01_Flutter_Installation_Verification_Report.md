@@ -17,7 +17,7 @@ This document provides comprehensive guidance for installing, verifying, and val
 This document aligns with:
 - `discovery/01_discovery/02_technology_stack/Technology_Stack.md` - Flutter and Dart requirements
 - `docs/01_technical_requirements/non_functional_requirements_specification.md` - Development environment standards
-- `pubspec.yaml` - Project SDK version requirements (SDK ^3.10.1)
+- `pubspec.yaml` - Project SDK version requirements (SDK ^3.5.0)
 
 ---
 
@@ -27,8 +27,8 @@ This document aligns with:
 
 Based on the project's `pubspec.yaml` configuration:
 
-- **Dart SDK**: ^3.10.1 or higher
-- **Flutter SDK**: Latest stable version supporting Dart 3.10.1+
+- **Dart SDK**: ^3.5.0 or higher
+- **Flutter SDK**: Latest stable version supporting Dart 3.5.0+
 - **Recommended Flutter Channel**: Stable (for production readiness)
 
 ### 1.2 Platform Support
@@ -403,9 +403,9 @@ flutter channel stable
 # Update to latest stable
 flutter upgrade
 
-# Verify Dart SDK version meets requirements (^3.10.1)
+# Verify Dart SDK version meets requirements (^3.5.0)
 dart --version
-# Expected: Dart SDK version: 3.10.1 or higher
+# Expected: Dart SDK version: 3.5.0 or higher
 ```
 
 ---
@@ -419,7 +419,7 @@ Use this checklist to validate your Flutter environment setup:
 - [ ] **Flutter SDK Installed**
   - [ ] Flutter executable accessible in PATH
   - [ ] Flutter version displayed: `flutter --version`
-  - [ ] Dart SDK version ≥ 3.10.1
+  - [ ] Dart SDK version ≥ 3.5.0
 
 - [ ] **Environment Variables Configured**
   - [ ] `FLUTTER_ROOT` set (optional but recommended)
@@ -444,7 +444,7 @@ Use this checklist to validate your Flutter environment setup:
   - [ ] Latest stable version: `flutter upgrade`
 
 - [ ] **Project Compatibility**
-  - [ ] Dart SDK version meets project requirements (^3.10.1)
+  - [ ] Dart SDK version meets project requirements (^3.5.0)
   - [ ] `flutter pub get` runs successfully in project directory
   - [ ] No dependency conflicts in `pubspec.yaml`
 
@@ -480,11 +480,11 @@ flutter run
 cat pubspec.yaml | grep -A 1 "environment:"
 # Expected output:
 # environment:
-#   sdk: ^3.10.1
+#   sdk: ^3.5.0
 
 # Verify current Dart SDK meets requirements
 dart --version
-# Should be 3.10.1 or higher
+# Should be 3.5.0 or higher
 ```
 
 ---
@@ -710,7 +710,7 @@ RUN flutter build apk --release
 Before proceeding to Section 2.2 (Project Initialization), verify:
 
 - [ ] Flutter SDK installed and accessible
-- [ ] Dart SDK version ≥ 3.10.1
+- [ ] Dart SDK version ≥ 3.5.0
 - [ ] `flutter doctor` passes with no critical errors
 - [ ] Environment variables configured correctly
 - [ ] Platform-specific toolchains installed (Android SDK, Xcode)
