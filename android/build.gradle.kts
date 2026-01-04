@@ -15,12 +15,9 @@ rootProject.layout.buildDirectory.value(newBuildDir)
 subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
-}
-// Ensure app project is evaluated first
-project.evaluationDependsOn(":app")
 
-subprojects {
     // Workaround for plugins that expect flutter extension properties from legacy Flutter Gradle Plugin
+    // This block only applies to subprojects that are not the main app (e.g., Flutter plugins)
     if (project.name != "app") {
         afterEvaluate {
             if (project.extensions.findByName("android") != null) {
