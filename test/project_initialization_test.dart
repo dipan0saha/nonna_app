@@ -150,7 +150,7 @@ void main() {
       expect(setupValue, equals('modified'));
     });
 
-    test('previous test modifications don\'t affect this test', () {
+    test("previous test modifications don't affect this test", () {
       // This should still be 'initialized' despite previous test modifying it
       expect(setupValue, equals('initialized'));
     });
