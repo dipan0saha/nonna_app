@@ -11,3 +11,13 @@ repos:
     entry: dart format --set-exit-if-changed lib test
     language: system
     pass_filenames: false
+  - id: detect-secrets
+    name: Detect Secrets
+    entry: detect-secrets-hook --baseline .secrets.baseline
+    language: system
+    pass_filenames: false
+  - id: check-pubspec
+    name: Check Pubspec Changes
+    entry: bash -c "if git diff --cached --name-only | grep -q pubspec.yaml; then echo 'pubspec.yaml changed - running flutter pub get'; flutter pub get; fi"
+    language: system
+    pass_filenames: false

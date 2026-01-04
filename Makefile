@@ -1,22 +1,28 @@
 # Makefile for Local CI/CD
 
-.PHONY: help doctor deps format analyze test build-android build-ios build-web ci all
+.PHONY: help doctor deps format analyze test build-android build-ios build-web ci all clean run test-integration coverage-report pre-commit lint-fix
 
 # Default target
 help:
 	@echo "Available targets:"
-	@echo "  doctor       - Verify Flutter installation"
-	@echo "  deps         - Get and verify dependencies"
-	@echo "  upgrade-safe - Upgrade to latest compatible versions (safe)"
-	@echo "  upgrade-deps - Upgrade dependencies to latest major versions (CAUTION)"
-	@echo "  format       - Format Dart code (fail if changes needed)"
-	@echo "  analyze      - Analyze Flutter code (fatal warnings)"
-	@echo "  test         - Run Flutter tests with coverage"
-	@echo "  build-android - Build Android APK"
-	@echo "  build-ios    - Build iOS (no codesign)"
-	@echo "  build-web    - Build Web app"
-	@echo "  ci           - Run full CI pipeline (doctor, deps, format, analyze, test)"
-	@echo "  all          - Run full pipeline + all builds"
+	@echo "  doctor         - Verify Flutter installation"
+	@echo "  deps           - Get and verify dependencies"
+	@echo "  upgrade-safe   - Upgrade to latest compatible versions (safe)"
+	@echo "  upgrade-deps   - Upgrade dependencies to latest major versions (CAUTION)"
+	@echo "  format         - Format Dart code (fail if changes needed)"
+	@echo "  analyze        - Analyze Flutter code (fatal warnings)"
+	@echo "  lint-fix       - Auto-fix lints where possible"
+	@echo "  test           - Run Flutter tests with coverage"
+	@echo "  test-integration - Run integration tests"
+	@echo "  pre-commit     - Run pre-commit hooks"
+	@echo "  coverage-report - Generate HTML coverage report"
+	@echo "  clean          - Clean build artifacts"
+	@echo "  run            - Run the app in debug mode"
+	@echo "  build-android  - Build Android APK"
+	@echo "  build-ios      - Build iOS simulator"
+	@echo "  build-web      - Build Web app"
+	@echo "  ci             - Run full CI pipeline"
+	@echo "  all            - Run full pipeline + all builds"
 
 # Verify Flutter installation
 doctor:
@@ -83,8 +89,38 @@ build-web:
 	flutter build web --release
 	@echo "✅ Web build completed successfully"
 
+# Auto-fix lints
+lint-fix:
+	dart fix --apply
+	@echo "✅ Auto-fixable lints applied"
+
+# Run integration tests
+test-integration:
+	flutter test integration_test/
+	@echo "✅ Integration tests completed"
+
+# Run pre-commit checks
+pre-commit:
+	pre-commit run --all-files
+	@echo "✅ Pre-commit checks passed"
+
+# Generate coverage report
+coverage-report:
+	genhtml coverage/lcov.info -o coverage/html
+	@echo "✅ Coverage report generated at coverage/html/index.html"
+	open coverage/html/index.html
+
+# Clean project
+clean:
+	flutter clean
+	@echo "✅ Project cleaned"
+
+# Run app
+run:
+	flutter run
+
 # Full CI pipeline
-ci: doctor deps format analyze test
+ci: doctor deps format analyze test pre-commit
 
 # Everything
 all: ci build-android build-ios build-web
