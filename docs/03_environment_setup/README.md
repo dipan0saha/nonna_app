@@ -17,7 +17,7 @@ This directory contains comprehensive documentation for setting up the developme
 - Flutter doctor validation checklist
 - Channel management (stable, beta, dev)
 - Troubleshooting common installation issues
-- Project-specific setup (Dart SDK ^3.10.1)
+- Project-specific setup (Dart SDK ^3.5.0)
 
 **Target Audience**: All developers joining the project
 
@@ -126,7 +126,7 @@ Before proceeding to development, ensure all items are completed:
 
 ### Flutter Setup
 - [ ] Flutter SDK installed and in PATH
-- [ ] Dart SDK version ≥ 3.10.1
+- [ ] Dart SDK version ≥ 3.5.0
 - [ ] `flutter doctor` passes without critical errors
 - [ ] `flutter pub get` runs successfully in project directory
 

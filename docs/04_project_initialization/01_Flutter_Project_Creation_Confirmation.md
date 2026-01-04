@@ -18,8 +18,8 @@ This document confirms the successful creation and validation of the Nonna App F
 
 - **Project Name**: nonna_app
 - **Package Name**: com.nonna.app
-- **Flutter SDK Version**: ^3.10.1
-- **Dart SDK Version**: ^3.10.1
+- **Flutter SDK Version**: ^3.5.0
+- **Dart SDK Version**: ^3.5.0
 - **Application Version**: 1.0.0+1
 - **Description**: A Flutter application powered by Supabase - a tile-driven family social platform
 
@@ -116,7 +116,7 @@ nonna_app/
 ### 1. pubspec.yaml
 - Package name: `nonna_app`
 - Version: 1.0.0+1
-- SDK constraints: Dart ^3.10.1
+- SDK constraints: Dart ^3.5.0
 - Dependencies: Properly configured with Supabase, Riverpod, and other required packages
 - Dev dependencies: Testing and linting tools included
 

@@ -33,11 +33,11 @@ version: 1.0.0+1
 
 ```yaml
 environment:
-  sdk: ^3.10.1
+  sdk: ^3.5.0
 ```
 
 **Configuration Details**:
-- **sdk**: Dart SDK version constraint (^3.10.1 allows >=3.10.1 <4.0.0)
+- **sdk**: Dart SDK version constraint (^3.5.0 allows >=3.5.0 <4.0.0)
 - Ensures compatibility with latest Dart features
 - Minimum version required for dependencies
 
@@ -525,7 +525,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.1
+  sdk: ^3.5.0
 
 dependencies:
   flutter:
