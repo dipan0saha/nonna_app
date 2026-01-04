@@ -39,7 +39,7 @@ linter:
 
 ### Overview
 
-The project uses `flutter_lints` package (version ^6.0.0), which provides:
+The project uses `flutter_lints` package (version ^4.0.0), which provides:
 - **Core Dart lints**: Essential rules from `package:lints/recommended.yaml`
 - **Flutter-specific lints**: Additional rules for Flutter development
 - **Best practice enforcement**: Industry-standard coding patterns
@@ -632,7 +632,7 @@ linter:
 **Status**: ✅ Implemented and Functional
 
 Code analysis is properly configured with:
-- ✅ Flutter Lints package (v6.0.0)
+- ✅ Flutter Lints package (v4.0.0)
 - ✅ Comprehensive lint rules
 - ✅ Pre-commit hook integration
 - ✅ CI/CD pipeline enforcement

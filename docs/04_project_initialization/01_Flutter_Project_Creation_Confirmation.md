@@ -155,7 +155,7 @@ nonna_app/
 - **flutter_test**: SDK (Testing framework)
 - **integration_test**: SDK (Integration testing)
 - **test**: ^1.24.0 (Dart testing)
-- **flutter_lints**: ^6.0.0 (Linting rules)
+- **flutter_lints**: ^4.0.0 (Linting rules)
 - **mockito**: ^5.4.4 (Mocking framework)
 - **build_runner**: ^2.4.8 (Code generation)
 

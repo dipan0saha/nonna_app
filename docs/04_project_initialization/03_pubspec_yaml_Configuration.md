@@ -259,7 +259,7 @@ build_runner: ^2.4.8
 
 #### Flutter Lints
 ```yaml
-flutter_lints: ^6.0.0
+flutter_lints: ^4.0.0
 ```
 **Purpose**: Recommended linting rules for Flutter  
 **Type**: Essential  
@@ -551,7 +551,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   test: ^1.24.0
-  flutter_lints: ^6.0.0
+  flutter_lints: ^4.0.0
   mockito: ^5.4.4
   build_runner: ^2.4.8
 
