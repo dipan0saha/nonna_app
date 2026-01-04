@@ -100,7 +100,7 @@ The application will have two primary user roles with distinct permissions:
 -   All followers can view, comment on, and "squish" (like) photos. A user can only "squish" a photo once.
 -   The gallery will be sorted by upload date, with the most recent photos at the top.
 -   Followers get a notification when a new photo is added to the gallery. (THIS MIGHT BE TOO MUCH, WE SHOULD DISCUSS)
--   Photos can be tagged with keywords for search
+-   Photos can be tagged with keywords for search (1-5 tags per photo, enabling grouping and timeline display by events, milestones, or themes such as "birthday", "first_steps", "beach_day")
 -   Support bulk upload/delete for Owners.
 -   Tiles display photos based on user role: owners see editable tiles per baby, followers see aggregated tiles from all followed babies.
 
@@ -153,6 +153,48 @@ The application will have two primary user roles with distinct permissions:
 -   Welcome Announcement is visible by all users, comments and baby squishes are allowed by all users.
 -   Welcome Announcement should have a Share in Instagram feature (only available for Profile Owners)
 -   Countdown and announcement tiles are role-driven: owners see per-baby tiles, followers see aggregated tiles from all followed babies.
+
+### 3.14. Email Digest
+
+-   Users (both owners and followers) receive email digests summarizing app activity on a weekly or monthly basis.
+-   Digest frequency is user-configurable (weekly, monthly, or disabled) in notification preferences.
+-   Email digests include summaries of:
+    -   New photos uploaded since last digest
+    -   Upcoming or new calendar events
+    -   Baby registry updates (new items added or items purchased)
+    -   Recent milestone announcements (e.g., baby arrival announcements)
+-   Digests are personalized based on user role (owner vs. follower) and followed baby profiles.
+-   Owners receive digest for all baby profiles they own.
+-   Followers receive digest for all baby profiles they follow.
+-   Email digests are sent via SendGrid and include direct links to relevant content in the app.
+-   Users can opt-out of digests entirely or adjust frequency in notification settings.
+
+### 3.15. Memory Lane
+
+-   A "Memory Lane" tile or screen displays throwback or surprise content to keep users engaged.
+-   Memory Lane shows:
+    -   "On this day" content: Photos or events from the same date in previous years (e.g., "On this day last year")
+    -   Surprise content: Random selection of memorable photos or events from the past
+-   Memory Lane is accessible to both owners and followers.
+-   Content displayed is filtered based on user role and permissions (owners see all content from their baby profiles, followers see only content from profiles they follow).
+-   Memory Lane updates automatically each day with new throwback content.
+-   Users can interact with Memory Lane content (view, comment, squish) just like regular gallery content.
+-   Memory Lane tile appears on the Home screen with a visual indicator for new throwback content.
+
+### 3.16. Storage Limits
+
+-   Free tier users have a storage limit of 15 GB for photos and videos combined per user account.
+-   Paid tier members (subscription-based) have unlimited storage for photos and videos.
+-   Storage limits apply per user account, not per baby profile.
+-   Storage usage is calculated across all baby profiles owned or co-owned by the user.
+-   Users can view their current storage usage and remaining capacity in their account settings.
+-   When a user approaches their storage limit (90% usage), they receive a notification and in-app warning.
+-   When a user reaches their storage limit (100% usage), they cannot upload new photos or videos until they:
+    -   Delete existing content to free up space, or
+    -   Upgrade to the paid tier for unlimited storage
+-   The app displays clear messaging about storage limits during photo/video upload attempts when limit is reached.
+-   Storage usage counter is displayed prominently in user profile/settings with a visual indicator (progress bar or percentage).
+-   Paid tier upgrade option is clearly presented when users reach or approach storage limits.
 
 ## 4. Non-Functional Requirements
 

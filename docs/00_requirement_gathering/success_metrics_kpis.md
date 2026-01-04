@@ -247,6 +247,42 @@ These metrics track how actively users interact with Nonna and adopt key feature
 - **Owner:** Product Manager
 - **Success Threshold:** 30-50% indicates gamification is appealing to many but not all (as intended)
 
+#### KPI 2.12: Photo Tagging Adoption Rate
+- **Definition:** Percentage of photos that have at least one tag added by owners
+- **Target:** 60%+ of uploaded photos tagged
+- **Measurement Method:** `(COUNT(photos with tags > 0) / COUNT(total photos)) * 100`
+- **Data Source:** `photos` table with tags field
+- **Frequency:** Weekly review
+- **Owner:** Product Manager
+- **Success Threshold:** ≥ 60% indicates owners find tagging valuable for organization; < 40% indicates feature needs improvement or promotion
+
+#### KPI 2.13: Email Digest Engagement Rate
+- **Definition:** Percentage of email digest recipients who click through to app from digest links
+- **Target:** 25%+ click-through rate (CTR)
+- **Measurement Method:** `(Unique clicks on digest links / Total digests delivered) * 100` via SendGrid analytics
+- **Data Source:** SendGrid email analytics and app activity tracking
+- **Frequency:** Weekly review after digest sends
+- **Owner:** Marketing Lead
+- **Success Threshold:** ≥ 25% CTR indicates digests are valuable; < 15% suggests content or timing needs optimization
+
+#### KPI 2.14: Memory Lane Interaction Rate
+- **Definition:** Percentage of users who interact with Memory Lane content (view, comment, squish) when available
+- **Target:** 50%+ of users with Memory Lane content interact within 7 days
+- **Measurement Method:** `(COUNT(DISTINCT users with Memory Lane interactions) / COUNT(DISTINCT users with Memory Lane content available)) * 100`
+- **Data Source:** `memory_lane_views` and interaction tables
+- **Frequency:** Weekly review
+- **Owner:** Product Manager
+- **Success Threshold:** ≥ 50% indicates feature drives engagement; < 30% suggests feature discovery or value needs improvement
+
+#### KPI 2.15: Storage Upgrade Conversion Rate
+- **Definition:** Percentage of free tier users who upgrade to paid tier for unlimited storage
+- **Target:** 5%+ of free tier users reaching 90%+ storage utilization
+- **Measurement Method:** `(COUNT(upgraded users) / COUNT(free tier users at 90%+ storage)) * 100`
+- **Data Source:** User subscriptions and storage usage tables
+- **Frequency:** Monthly review
+- **Owner:** Business Lead
+- **Success Threshold:** ≥ 5% conversion indicates pricing and value proposition are competitive; < 2% suggests price or limit adjustments needed
+
 ---
 
 ### Category 3: Technical Performance Metrics

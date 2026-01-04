@@ -32,12 +32,15 @@ This document defines the business objectives, scope, target audience, success c
 - **Invitation System**: Email-based invitations with unique 7-day expiring tokens and relationship labeling (Grandma, Grandpa, Aunt, Uncle, etc.)
 - **Calendar Feature**: Shared calendar for events (ultrasounds, gender reveals, baby showers) with RSVP, comments, and AI-suggested events
 - **Baby Registry**: List of desired baby items with follower purchase marking, AI-suggested items by baby age/stage, and purchaser tracking
-- **Photo Gallery**: JPEG/PNG photo uploads (max 10MB) with captions, comments, "squishing" (likes), tagging, and bulk upload/delete
+- **Photo Gallery**: JPEG/PNG photo uploads (max 10MB) with captions, comments, "squishing" (likes), photo tagging (1-5 tags per photo for categorization), and bulk upload/delete
 - **Gamification**: Voting on predicted birth date, gender, and names; name suggestions (1 per gender per user); activity counters (events attended, items purchased, photos squished, comments)
 - **Notifications**: Push (opt-in) and in-app notifications for content updates, interactions, and follower activities
 - **Tile-Based UI**: Dynamic, role-driven tile system with Supabase-configured tiles for Home, Gallery, Calendar, Registry, Photo Gallery, and Fun screens
 - **Baby Countdown & Announcement**: Countdown for babies arriving within 10 days; birth announcement feature with Instagram sharing
 - **Filtering & Role Toggle**: Filter content by baby profile; toggle between owner and follower roles for users with multiple memberships
+- **Email Digest**: Weekly or monthly email summaries of app activity (new photos, events, registry updates) personalized by role (owner/follower) and followed babies
+- **Memory Lane**: "Memory Lane" feature displaying throwback content (e.g., "On this day last year") or surprise content, accessible to owners and followers with role-based filtering
+- **Storage Management**: 15 GB storage limit for photos/videos combined for free tier users; unlimited storage for paid members (per user account)
 
 **Technical Infrastructure:**
 - **Frontend**: Flutter (cross-platform mobile app for iOS and Android)
@@ -45,7 +48,8 @@ This document defines the business objectives, scope, target audience, success c
 - **Authentication**: JWT-based with Supabase Auth and Row-Level Security (RLS)
 - **Database**: PostgreSQL with comprehensive ERD (24 tables, 45+ relationships, RLS policies)
 - **File Storage**: Supabase Storage with CDN delivery for photos and thumbnails
-- **Third-Party Integrations**: SendGrid (email), OneSignal (push notifications)
+- **Third-Party Integrations**: SendGrid (email, transactional and digest emails), OneSignal (push notifications)
+- **Storage Limits**: 15 GB free tier per user account; unlimited storage for paid tier members
 - **Security**: AES-256 encryption at rest, TLS 1.3 in transit, OAuth 2.0, RBAC with RLS
 - **Performance**: Sub-500ms interaction times, real-time updates within 2 seconds, photo uploads under 5 seconds
 - **DevOps**: GitHub Actions CI/CD, Supabase CLI for migrations, Sentry for monitoring
@@ -55,7 +59,7 @@ This document defines the business objectives, scope, target audience, success c
 - **Public Social Sharing**: No public sharing capabilities; all content remains private to invited users
 - **Welcome Screens/Onboarding**: Deferred to V2 (noted in requirements)
 - **Advanced Analytics Dashboard**: Basic analytics only; comprehensive dashboards post-MVP
-- **Monetization Features**: Premium features, subscriptions, or registry partnerships deferred
+- **Monetization Features**: Basic paid tier with unlimited storage included in MVP; advanced premium features, subscriptions, or registry partnerships deferred
 - **Video Content**: Focus on photos only; video support deferred
 - **Multiple Languages**: English-only for MVP; localization post-MVP
 - **Third-Party Registry Integration**: Manual registry management only; API integrations deferred

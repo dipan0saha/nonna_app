@@ -437,8 +437,11 @@ This competitive analysis was conducted through:
 1. **Nonna's Unique Features**: Calendar, Registry, Gamification, Role-Based Access, Tile UI, Dynamic Config—no competitor has any of these
 2. **Table Stakes**: Photos, comments, likes, push notifications, iOS/Android apps are required minimum; Nonna matches
 3. **Competitive Gaps**: None of the direct competitors offer integrated features beyond photos; huge opportunity for Nonna
-4. **Storage**: FamilyAlbum's unlimited storage is strong differentiator; Nonna's 10MB per photo limit may need revisiting (storage costs a risk)
-5. **Real-Time**: Nonna's <2s real-time updates via Supabase Realtime is technical advantage over competitors
+4. **Storage Strategy**: Nonna's 15GB free tier with unlimited paid upgrade balances FamilyAlbum's unlimited free (hard to monetize) and Tinybeans' limited 1GB (frustrating for users)
+5. **Email Digests**: Nonna matches Tinybeans' proven email digest feature for follower re-engagement
+6. **Memory Lane**: Nonna matches Tinybeans' nostalgia-driven "Memory Lane" feature while integrating it into broader platform
+7. **Photo Organization**: Nonna's photo tagging (1-5 tags) matches Google Photos' organizational capability while staying focused on family use case
+8. **Real-Time**: Nonna's <2s real-time updates via Supabase Realtime is technical advantage over competitors
 
 ---
 
@@ -485,15 +488,18 @@ This competitive analysis was conducted through:
 
 **Free Tier (Nonna Basic):**
 - 2-5 baby profiles
-- 10GB storage (~5,000 photos)
+- 15GB storage (~7,500 photos) - balances user value with conversion incentive
 - Photos, calendar, registry (full feature access)
+- Photo tagging (1-5 tags per photo) for organization
+- Email digest (weekly or monthly summaries)
+- Memory Lane (throwback content)
 - Invite up to 20 followers per baby
 - Standard notifications
 - Ads (non-intrusive, family-friendly) OR no ads initially to drive adoption
 
 **Premium Tier (Nonna Plus): $6.99/month or $59.99/year**
 - Unlimited baby profiles
-- 100GB storage (~50,000 photos)
+- Unlimited storage (no photo/video limits)
 - Ad-free experience
 - Priority support
 - Advanced analytics (engagement dashboard for owners)
