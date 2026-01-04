@@ -17,13 +17,13 @@ class AppInitializationService {
     try {
       // Initialize Supabase
       await _initializeSupabase();
-      
+
       // Initialize Firebase (Analytics, Crashlytics, Performance)
       await _initializeFirebase();
-      
+
       // Initialize OneSignal (Push Notifications)
       await _initializeOneSignal();
-      
+
       debugPrint('✅ All third-party integrations initialized successfully');
     } catch (e, stackTrace) {
       debugPrint('❌ Error initializing third-party integrations: $e');
@@ -50,20 +50,23 @@ class AppInitializationService {
       await Firebase.initializeApp(
         options: FirebaseConfig.currentPlatform,
       );
-      
+
       // Initialize Crashlytics
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(!kDebugMode);
-      
+      await FirebaseCrashlytics.instance
+          .setCrashlyticsCollectionEnabled(!kDebugMode);
+
       // Set up Flutter error handling for Crashlytics
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-      
+      FlutterError.onError =
+          FirebaseCrashlytics.instance.recordFlutterFatalError;
+
       // Catch async errors
       PlatformDispatcher.instance.onError = (error, stack) {
         FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
         return true;
       };
-      
-      debugPrint('✅ Firebase initialized (Analytics, Crashlytics, Performance)');
+
+      debugPrint(
+          '✅ Firebase initialized (Analytics, Crashlytics, Performance)');
     } catch (e) {
       debugPrint('❌ Failed to initialize Firebase: $e');
       // Don't rethrow - Firebase is optional
@@ -87,13 +90,13 @@ class AppInitializationService {
     try {
       // Set user ID for Firebase Analytics
       await FirebaseAnalytics.instance.setUserId(id: userId);
-      
+
       // Set user ID for Crashlytics
       await FirebaseCrashlytics.instance.setUserIdentifier(userId);
-      
+
       // Set external user ID for OneSignal
       await OneSignal.shared.setExternalUserId(userId);
-      
+
       debugPrint('✅ User ID set for all services: $userId');
     } catch (e) {
       debugPrint('❌ Failed to set user ID: $e');
@@ -106,13 +109,13 @@ class AppInitializationService {
     try {
       // Clear Firebase Analytics user ID
       await FirebaseAnalytics.instance.setUserId(id: null);
-      
+
       // Clear Crashlytics user ID
       await FirebaseCrashlytics.instance.setUserIdentifier('');
-      
+
       // Remove external user ID from OneSignal
       await OneSignal.shared.removeExternalUserId();
-      
+
       debugPrint('✅ User ID cleared from all services');
     } catch (e) {
       debugPrint('❌ Failed to clear user ID: $e');

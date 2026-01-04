@@ -140,9 +140,7 @@ class StorageService {
       final storagePath = 'baby_$babyProfileId/$fileName';
 
       // Upload to Supabase Storage
-      await _supabase.storage
-          .from('gallery-photos')
-          .uploadBinary(
+      await _supabase.storage.from('gallery-photos').uploadBinary(
             storagePath,
             imageBytes,
             fileOptions: const FileOptions(
@@ -178,9 +176,7 @@ class StorageService {
       final fileName = '${const Uuid().v4()}.jpg';
       final storagePath = 'user_$userId/$fileName';
 
-      await _supabase.storage
-          .from('user-avatars')
-          .uploadBinary(
+      await _supabase.storage.from('user-avatars').uploadBinary(
             storagePath,
             imageBytes,
             fileOptions: const FileOptions(
@@ -208,9 +204,7 @@ class StorageService {
       final fileName = '${const Uuid().v4()}.jpg';
       final storagePath = 'baby_$babyProfileId/$fileName';
 
-      await _supabase.storage
-          .from('baby-profile-photos')
-          .uploadBinary(
+      await _supabase.storage.from('baby-profile-photos').uploadBinary(
             storagePath,
             imageBytes,
             fileOptions: const FileOptions(
@@ -238,9 +232,7 @@ class StorageService {
       final fileName = '${const Uuid().v4()}.jpg';
       final storagePath = 'baby_$babyProfileId/$fileName';
 
-      await _supabase.storage
-          .from('event-photos')
-          .uploadBinary(
+      await _supabase.storage.from('event-photos').uploadBinary(
             storagePath,
             imageBytes,
             fileOptions: const FileOptions(

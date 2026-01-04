@@ -18,12 +18,15 @@ class OneSignalConfig {
       OneSignal.shared.setAppId(appId);
 
       // Request notification permission (iOS)
-      OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      OneSignal.shared
+          .promptUserForPushNotificationPermission()
+          .then((accepted) {
         debugPrint('OneSignal: User accepted notifications: $accepted');
       });
 
       // Set up notification opened handler
-      OneSignal.shared.setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+      OneSignal.shared
+          .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
         _handleNotificationOpened(result);
       });
 
@@ -45,15 +48,16 @@ class OneSignalConfig {
   /// Handle notification opened event
   static void _handleNotificationOpened(OSNotificationOpenedResult result) {
     final additionalData = result.notification.additionalData;
-    
+
     if (additionalData != null) {
       final type = additionalData['type'];
       final babyProfileId = additionalData['baby_profile_id'];
       final photoId = additionalData['photo_id'];
       final eventId = additionalData['event_id'];
-      
-      debugPrint('Notification opened - Type: $type, Baby Profile: $babyProfileId');
-      
+
+      debugPrint(
+          'Notification opened - Type: $type, Baby Profile: $babyProfileId');
+
       // TODO: Navigate to appropriate screen based on notification type
       // This will be implemented when navigation is set up
       switch (type) {

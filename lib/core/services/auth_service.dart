@@ -9,7 +9,7 @@ import 'analytics_service.dart';
 /// Handles email/password, Google OAuth, and Facebook OAuth
 class AuthService {
   final SupabaseClient _supabase = Supabase.instance.client;
-  
+
   // Google Sign-In configuration
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
@@ -124,14 +124,15 @@ class AuthService {
     try {
       // Trigger Google Sign-In flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         // User cancelled sign-in
         return null;
       }
 
       // Obtain Google Auth credentials
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       if (googleAuth.idToken == null) {
         throw Exception('Failed to get Google ID token');
@@ -202,18 +203,18 @@ class AuthService {
     try {
       // Clear user ID from all services
       await AppInitializationService.clearUserId();
-      
+
       // Sign out from Supabase
       await _supabase.auth.signOut();
-      
+
       // Sign out from Google if signed in
       if (await _googleSignIn.isSignedIn()) {
         await _googleSignIn.signOut();
       }
-      
+
       // Sign out from Facebook if signed in
       await FacebookAuth.instance.logOut();
-      
+
       debugPrint('✅ User signed out successfully');
     } catch (e) {
       debugPrint('Error signing out: $e');

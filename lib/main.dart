@@ -5,11 +5,11 @@ import 'core/router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize all third-party integrations
   // (Supabase, OneSignal, Firebase Analytics)
   await AppInitializationService.initialize();
-  
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
