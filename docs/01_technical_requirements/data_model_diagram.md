@@ -27,12 +27,13 @@ This document is based on and references:
 - `docs/00_requirement_gathering/user_personas_document.md` - Data entities based on user needs
 - `docs/00_requirement_gathering/user_journey_maps.md` - Data flows based on user interactions
 - `docs/01_technical_requirements/functional_requirements_specification.md` - Data requirements from functional specs
-- `discovery/01_discovery/05_draft_design/ERD.md` - Original entity relationship diagram from discovery phase
 - `discovery/01_discovery/02_technology_stack/Technology_Stack.md` - PostgreSQL and Supabase architecture
 
-## Alignment with Discovery Phase ERD
+**Note**: This document consolidates and supersedes all data model information previously documented in the discovery phase. It serves as the single, authoritative source of truth for the Nonna App's technical data model.
 
-**Important Note**: This data model aligns with and builds upon the existing ERD defined in `discovery/01_discovery/05_draft_design/ERD.md`. The structure, tables, relationships, and constraints have been validated and are consistent with the discovery phase design. This document provides additional context, rationale, and business logic details that complement the technical ERD.
+## Data Model Overview
+
+**Single Source of Truth**: This document is the authoritative, comprehensive source for the Nonna App's data model. All information from the discovery phase has been consolidated here. The structure, tables, relationships, and constraints have been validated and finalized for implementation.
 
 ### Schema Statistics
 
@@ -1600,30 +1601,32 @@ supabase
 
 ---
 
-## 7. Deviations and Enhancements from Discovery ERD
+## 7. Complete Data Model Coverage
 
-**Full Alignment**: This data model is fully aligned with `discovery/01_discovery/05_draft_design/ERD.md`. All 28 tables (including gamification and activity tracking), relationships, constraints, and RLS policies match the discovery phase design.
+**Comprehensive Documentation**: This data model provides complete coverage of all 28 tables (including gamification and activity tracking), relationships, constraints, and RLS policies for the Nonna App.
 
-**Enhancements in This Document**:
-1. **Business Logic Detail**: Added comprehensive business rules and rationale
-2. **Trigger Documentation**: Documented database triggers for counters and constraints
-3. **Data Flow Diagrams**: Added end-to-end data flows for key user scenarios including gamification
+**Documentation Features**:
+1. **Business Logic Detail**: Comprehensive business rules and rationale for each entity
+2. **Trigger Documentation**: Database triggers for counters and constraints
+3. **Data Flow Diagrams**: End-to-end data flows for key user scenarios including gamification
 4. **Performance Strategy**: Detailed indexing and query optimization approach
-5. **RLS Policy Summary**: Summarized row-level security policies per table
-6. **Helper Functions**: Documented access control helper functions for RLS policies
-7. **Query Examples**: Added practical SQL examples for owner and follower access patterns
-8. **Storage Organization**: Documented Supabase storage bucket structure
+5. **RLS Policy Summary**: Row-level security policies per table
+6. **Helper Functions**: Access control helper functions for RLS policies
+7. **Query Examples**: Practical SQL examples for owner and follower access patterns
+8. **Storage Organization**: Supabase storage bucket structure
 9. **Real-Time Patterns**: JavaScript examples for real-time subscriptions
-10. **Gamification Tables**: Fully documented votes, name suggestions, and activity events
+10. **Visual ERD**: Complete Mermaid diagram with all relationships
 
-**Tables Included from ERD**:
-- ✅ All 28 tables from discovery phase ERD
-- ✅ `votes` - Gender and birth date predictions
-- ✅ `name_suggestions` - Community name suggestions
-- ✅ `name_suggestion_likes` - Voting on suggested names
-- ✅ `activity_events` - Unified activity feed
-- ✅ `photo_tags` - Alternative tagging implementation
-- ✅ Enhanced `notifications` with baby_profile_id context
+**Complete Table Coverage**:
+- ✅ All 28 tables (1 auth + 27 public schema)
+- ✅ User identity: `profiles`, `user_stats`
+- ✅ Baby profiles: `baby_profiles`, `baby_memberships`, `invitations`
+- ✅ Tile system: `screens`, `tile_definitions`, `tile_configs`, `owner_update_markers`
+- ✅ Calendar: `events`, `event_rsvps`, `event_comments`
+- ✅ Registry: `registry_items`, `registry_purchases`
+- ✅ Photos: `photos`, `photo_squishes`, `photo_comments`, `photo_tags`
+- ✅ Gamification: `votes`, `name_suggestions`, `name_suggestion_likes`
+- ✅ Activity: `notifications`, `activity_events`
 
 **Future Considerations** (Post-MVP):
 - Advanced analytics tables (engagement metrics, trends)
@@ -1658,12 +1661,348 @@ All user-generated content uses soft delete pattern:
 
 ## 9. Entity Relationship Diagram (Visual)
 
-### 9.1 Mermaid ERD
+### 9.1 Legend
 
-The complete visual entity relationship diagram is available in `discovery/01_discovery/05_draft_design/ERD.md`. Key highlights include:
+- 🔐 **auth schema** - Supabase Auth managed tables
+- 📦 **public schema** - Application tables  
+- ⚡ **Realtime enabled** - Tables with real-time subscriptions
+- 🔑 **Primary Key** - PK designation
+- 🔗 **Foreign Key** - FK designation with CASCADE behavior
+- 🎯 **Indexed** - Performance-optimized columns
 
-**Schema Organization**:
-- 🔐 **auth schema** - Supabase Auth managed tables (gray boxes in ERD)
+### 9.2 Complete ERD with Schema Distinction
+
+```mermaid
+erDiagram
+    %% ========================================
+    %% AUTH SCHEMA (Supabase Managed)
+    %% ========================================
+    
+    AUTH_USERS {
+        uuid id PK "🔐 Supabase Auth"
+        text email "Login email"
+        jsonb raw_user_meta_data "OAuth metadata"
+        timestamptz created_at "Account creation"
+        timestamptz last_sign_in_at "Last login"
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - User Identity
+    %% ========================================
+    
+    PROFILES {
+        uuid user_id PK,FK "🔗 auth.users(id) ON DELETE CASCADE"
+        text display_name "User display name"
+        text avatar_url "Profile picture URL"
+        boolean biometric_enabled "Biometric auth preference (default false)"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+        timestamptz updated_at "Auto-updated via trigger"
+    }
+
+    USER_STATS {
+        uuid user_id PK,FK "🔗 auth.users(id) ON DELETE CASCADE"
+        int events_attended_count "⚡ Gamification counter"
+        int items_purchased_count "⚡ Auto-incremented"
+        int photos_squished_count "⚡ Like counter"
+        int comments_added_count "⚡ Engagement counter"
+        timestamptz updated_at "Last stats update"
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - Baby Profiles & Access
+    %% ========================================
+    
+    BABY_PROFILES {
+        uuid id PK "🎯 Tenant boundary"
+        text name "NOT NULL"
+        text default_last_name_source "Father's last name"
+        text profile_photo_url "Storage path"
+        date expected_birth_date "For countdown"
+        text gender "CHECK: male|female|unknown"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    BABY_MEMBERSHIPS {
+        uuid id PK
+        uuid baby_profile_id FK "🔗 CASCADE"
+        uuid user_id FK "🔗 CASCADE"
+        text role "CHECK: owner|follower 🎯"
+        text relationship_label "Grandma, Aunt, etc."
+        timestamptz created_at "NOT NULL DEFAULT now()"
+        timestamptz updated_at "Auto-updated"
+        timestamptz removed_at "Soft delete"
+    }
+
+    INVITATIONS {
+        uuid id PK
+        uuid baby_profile_id FK "🔗 CASCADE ⚡"
+        uuid invited_by_user_id FK "🔗 CASCADE"
+        text invitee_email "Target email"
+        text token_hash "UNIQUE 🎯 Secure token"
+        timestamptz expires_at "7 days from creation"
+        text status "CHECK: pending|accepted|revoked|expired"
+        timestamptz accepted_at "Acceptance timestamp"
+        uuid accepted_by_user_id FK "🔗 SET NULL"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - Tile System
+    %% ========================================
+    
+    SCREENS {
+        uuid id PK
+        text screen_name "UNIQUE 🎯 home, calendar, etc."
+        text description "Screen purpose"
+        bool is_active "Feature flag"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+    }
+
+    TILE_DEFINITIONS {
+        uuid id PK
+        text tile_type "UNIQUE 🎯 PhotoGridTile, etc."
+        text description "Tile widget description"
+        jsonb schema_params "Parameter validation schema"
+        bool is_active "Feature flag"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+    }
+
+    TILE_CONFIGS {
+        uuid id PK
+        uuid screen_id FK "🔗 CASCADE"
+        uuid tile_definition_id FK "🔗 CASCADE"
+        text role "CHECK: owner|follower 🎯"
+        int display_order "Sort order"
+        bool is_visible "Remote show/hide"
+        jsonb params "Tile-specific config"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - Cache Invalidation
+    %% ========================================
+    
+    OWNER_UPDATE_MARKERS {
+        uuid id PK
+        uuid baby_profile_id FK "UNIQUE 🔗 CASCADE ⚡"
+        timestamptz tiles_last_updated_at "Cache key"
+        uuid updated_by_user_id FK "🔗 SET NULL"
+        text reason "photo_uploaded, event_created, etc."
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - Calendar
+    %% ========================================
+    
+    EVENTS {
+        uuid id PK
+        uuid baby_profile_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid created_by_user_id FK "🔗 CASCADE"
+        text title "NOT NULL"
+        timestamptz starts_at "NOT NULL 🎯 Event date/time"
+        timestamptz ends_at "Optional end time"
+        text description "Event details"
+        text location "Physical location"
+        text video_link "Zoom/Meet URL"
+        text cover_photo_url "Storage path"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    EVENT_RSVPS {
+        uuid id PK
+        uuid event_id FK "🔗 CASCADE ⚡"
+        uuid user_id FK "🔗 CASCADE 🎯"
+        text status "CHECK: yes|no|maybe"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    EVENT_COMMENTS {
+        uuid id PK
+        uuid event_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid user_id FK "🔗 CASCADE"
+        text body "NOT NULL Comment text"
+        timestamptz created_at "NOT NULL DEFAULT now() 🎯"
+        timestamptz deleted_at "Soft delete by owner"
+        uuid deleted_by_user_id FK "🔗 SET NULL Moderator"
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - Registry
+    %% ========================================
+    
+    REGISTRY_ITEMS {
+        uuid id PK
+        uuid baby_profile_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid created_by_user_id FK "🔗 CASCADE"
+        text name "NOT NULL Item name"
+        text description "Item details"
+        text link_url "Product URL"
+        int priority "Sort order"
+        timestamptz created_at "NOT NULL DEFAULT now() 🎯"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    REGISTRY_PURCHASES {
+        uuid id PK
+        uuid registry_item_id FK "🔗 CASCADE ⚡"
+        uuid purchased_by_user_id FK "🔗 CASCADE"
+        timestamptz purchased_at "NOT NULL DEFAULT now()"
+        text note "Optional purchaser note"
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - Photos
+    %% ========================================
+    
+    PHOTOS {
+        uuid id PK
+        uuid baby_profile_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid uploaded_by_user_id FK "🔗 CASCADE"
+        text storage_path "NOT NULL Supabase Storage path"
+        text caption "Optional photo caption"
+        timestamptz created_at "NOT NULL DEFAULT now() 🎯"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    PHOTO_SQUISHES {
+        uuid id PK
+        uuid photo_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid user_id FK "🔗 CASCADE 🎯"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+    }
+
+    PHOTO_COMMENTS {
+        uuid id PK
+        uuid photo_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid user_id FK "🔗 CASCADE"
+        text body "NOT NULL Comment text"
+        timestamptz created_at "NOT NULL DEFAULT now() 🎯"
+        timestamptz deleted_at "Soft delete by owner"
+        uuid deleted_by_user_id FK "🔗 SET NULL Moderator"
+    }
+
+    PHOTO_TAGS {
+        uuid id PK
+        uuid photo_id FK "🔗 CASCADE 🎯"
+        text tag "NOT NULL 🎯 GIN indexed"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - Gamification
+    %% ========================================
+    
+    VOTES {
+        uuid id PK
+        uuid baby_profile_id FK "🔗 CASCADE"
+        uuid user_id FK "🔗 CASCADE"
+        text vote_type "CHECK: gender|birthdate"
+        text value_text "For gender votes"
+        date value_date "For birthdate votes"
+        bool is_anonymous "DEFAULT true"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    NAME_SUGGESTIONS {
+        uuid id PK
+        uuid baby_profile_id FK "🔗 CASCADE ⚡"
+        uuid user_id FK "🔗 CASCADE"
+        text gender "CHECK: male|female|unknown"
+        text suggested_name "NOT NULL"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+        timestamptz updated_at "Auto-updated"
+    }
+
+    NAME_SUGGESTION_LIKES {
+        uuid id PK
+        uuid name_suggestion_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid user_id FK "🔗 CASCADE 🎯"
+        timestamptz created_at "NOT NULL DEFAULT now()"
+    }
+
+    %% ========================================
+    %% PUBLIC SCHEMA - Notifications & Activity
+    %% ========================================
+    
+    NOTIFICATIONS {
+        uuid id PK
+        uuid recipient_user_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid baby_profile_id FK "🔗 CASCADE"
+        text type "NOT NULL Notification type"
+        jsonb payload "Deep-link data"
+        timestamptz created_at "NOT NULL DEFAULT now() 🎯"
+        timestamptz read_at "Unread filter 🎯"
+    }
+
+    ACTIVITY_EVENTS {
+        uuid id PK
+        uuid baby_profile_id FK "🔗 CASCADE 🎯 ⚡"
+        uuid actor_user_id FK "🔗 CASCADE"
+        text type "NOT NULL Action type"
+        jsonb payload "Action details"
+        timestamptz created_at "NOT NULL DEFAULT now() 🎯"
+    }
+
+    %% ========================================
+    %% RELATIONSHIPS
+    %% ========================================
+
+    %% Auth Schema Relationships
+    AUTH_USERS ||--|| PROFILES : "1:1 has profile"
+    AUTH_USERS ||--|| USER_STATS : "1:1 has stats"
+    AUTH_USERS ||--o{ BABY_MEMBERSHIPS : "member of"
+    AUTH_USERS ||--o{ INVITATIONS : "sent by"
+    AUTH_USERS ||--o{ INVITATIONS : "accepted by"
+    AUTH_USERS ||--o{ EVENTS : "creates"
+    AUTH_USERS ||--o{ EVENT_RSVPS : "RSVPs to"
+    AUTH_USERS ||--o{ EVENT_COMMENTS : "comments on"
+    AUTH_USERS ||--o{ REGISTRY_ITEMS : "creates"
+    AUTH_USERS ||--o{ REGISTRY_PURCHASES : "purchases"
+    AUTH_USERS ||--o{ PHOTOS : "uploads"
+    AUTH_USERS ||--o{ PHOTO_SQUISHES : "squishes"
+    AUTH_USERS ||--o{ PHOTO_COMMENTS : "comments on"
+    AUTH_USERS ||--o{ VOTES : "votes"
+    AUTH_USERS ||--o{ NAME_SUGGESTIONS : "suggests"
+    AUTH_USERS ||--o{ NAME_SUGGESTION_LIKES : "likes"
+    AUTH_USERS ||--o{ NOTIFICATIONS : "receives"
+    AUTH_USERS ||--o{ ACTIVITY_EVENTS : "acts in"
+    AUTH_USERS ||--o{ OWNER_UPDATE_MARKERS : "updates"
+
+    %% Baby Profile Relationships
+    BABY_PROFILES ||--o{ BABY_MEMBERSHIPS : "has members"
+    BABY_PROFILES ||--o{ INVITATIONS : "invites to"
+    BABY_PROFILES ||--|| OWNER_UPDATE_MARKERS : "has marker"
+    BABY_PROFILES ||--o{ EVENTS : "has events"
+    BABY_PROFILES ||--o{ REGISTRY_ITEMS : "has items"
+    BABY_PROFILES ||--o{ PHOTOS : "has photos"
+    BABY_PROFILES ||--o{ VOTES : "has votes"
+    BABY_PROFILES ||--o{ NAME_SUGGESTIONS : "has suggestions"
+    BABY_PROFILES ||--o{ NOTIFICATIONS : "scoped to"
+    BABY_PROFILES ||--o{ ACTIVITY_EVENTS : "has activity"
+
+    %% Tile System Relationships
+    SCREENS ||--o{ TILE_CONFIGS : "configured with"
+    TILE_DEFINITIONS ||--o{ TILE_CONFIGS : "instantiated as"
+
+    %% Content Relationships
+    EVENTS ||--o{ EVENT_RSVPS : "has RSVPs"
+    EVENTS ||--o{ EVENT_COMMENTS : "has comments"
+    REGISTRY_ITEMS ||--o{ REGISTRY_PURCHASES : "purchased as"
+    PHOTOS ||--o{ PHOTO_SQUISHES : "squished"
+    PHOTOS ||--o{ PHOTO_COMMENTS : "has comments"
+    PHOTOS ||--o{ PHOTO_TAGS : "tagged with"
+    NAME_SUGGESTIONS ||--o{ NAME_SUGGESTION_LIKES : "liked"
+```
+
+### 9.3 Schema Organization
+
+**Schema Structure**:
+- 🔐 **auth schema** - Supabase Auth managed tables
 - 📦 **public schema** - Application tables (28 tables)
 - ⚡ **Realtime enabled** - 15+ tables with real-time subscriptions
 - 🔑 **Primary Keys** - All UUIDs with gen_random_uuid()
@@ -1687,8 +2026,6 @@ The complete visual entity relationship diagram is available in `discovery/01_di
 - All content tables cascade delete from baby_profiles (tenant boundary)
 - All user interactions (squishes, RSVPs, purchases) cascade delete from auth.users
 
-For the complete Mermaid diagram with all relationships visualized, see Section 2 "Complete ERD with Schema Distinction" in `discovery/01_discovery/05_draft_design/ERD.md`.
-
 ---
 
 ## 10. Conclusion
@@ -1706,7 +2043,7 @@ This data model provides a robust, scalable foundation for the Nonna App that:
 9. **Provides Activity Tracking**: Unified activity feed and comprehensive notification system
 10. **Scales Efficiently**: Supports owner-focused and follower-aggregated query patterns
 
-The data model is fully aligned with the discovery phase ERD (`discovery/01_discovery/05_draft_design/ERD.md`) and incorporates all 28 tables, relationships, and constraints defined during discovery. No structural changes are required to proceed with implementation.
+The data model consolidates all information from the discovery phase into this single, authoritative document. It incorporates all 28 tables, relationships, and constraints. No structural changes are required to proceed with implementation.
 
 **Total Coverage**:
 - ✅ 28 tables (1 auth.users reference + 27 public schema tables)
