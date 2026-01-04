@@ -9,7 +9,7 @@ All third-party services are initialized automatically in `lib/core/services/app
 ## Services
 
 ### 1. Authentication Service
-**Location**: `lib/features/auth/services/auth_service.dart`
+**Location**: `lib/core/services/auth_service.dart`
 
 Handles user authentication with Supabase Auth, including:
 - Email/password authentication
@@ -44,7 +44,7 @@ await authService.signOut();
 ```
 
 ### 2. Storage Service
-**Location**: `lib/features/storage/services/storage_service.dart`
+**Location**: `lib/core/services/storage_service.dart`
 
 Manages file uploads/downloads with Supabase Storage, including:
 - Image picking (camera/gallery)
@@ -77,7 +77,7 @@ if (imageFile != null) {
 ```
 
 ### 3. Analytics Service
-**Location**: `lib/features/analytics/services/analytics_service.dart`
+**Location**: `lib/core/services/analytics_service.dart`
 
 Tracks user events with Firebase Analytics, including:
 - Authentication events

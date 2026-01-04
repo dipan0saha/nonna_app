@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
-import '../../analytics/services/analytics_service.dart';
+import 'analytics_service.dart';
 
 /// Storage service for managing file uploads/downloads
 /// Handles photo compression, upload to Supabase Storage, and URL generation

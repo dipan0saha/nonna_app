@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../core/services/app_initialization_service.dart';
-import '../../analytics/services/analytics_service.dart';
+import 'app_initialization_service.dart';
+import 'analytics_service.dart';
 
 /// Authentication service for managing user authentication
 /// Handles email/password, Google OAuth, and Facebook OAuth
