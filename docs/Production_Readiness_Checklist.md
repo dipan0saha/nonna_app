@@ -31,17 +31,17 @@ This comprehensive guide outlines all steps required to develop a production-rea
 - Performance and Scalability Targets Document
 
 ### 1.3 Architecture Design
-- [ ] Choose state management approach (Provider, Bloc, etc.)
-- [ ] Design folder structure and code organization
-- [ ] Plan database schema and data flow
-- [ ] Define security requirements and data privacy measures
+- [x] Choose state management approach (Riverpod selected - see ADR-003)
+- [x] Design folder structure and code organization
+- [x] Plan database schema and data flow
+- [x] Define security requirements and data privacy measures
 
 **Expected Outputs:**
-- System Architecture Diagram
-- State Management Design Document
-- Folder Structure Diagram
-- Database Schema Design
-- Security and Privacy Requirements Document
+- ✅ System Architecture Diagram (`docs/02_architecture_design/system_architecture_diagram.md`)
+- ✅ State Management Design Document (`docs/02_architecture_design/state_management_design.md`)
+- ✅ Folder Structure Diagram (`docs/02_architecture_design/folder_structure_code_organization.md`)
+- ✅ Database Schema Design (`docs/02_architecture_design/database_schema_design.md`)
+- ✅ Security and Privacy Requirements Document (`docs/02_architecture_design/security_privacy_architecture.md`)
 
 ## 2. Development Environment Setup
 
