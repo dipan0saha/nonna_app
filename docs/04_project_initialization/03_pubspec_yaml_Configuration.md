@@ -33,7 +33,7 @@ version: 1.0.0+1
 
 ```yaml
 environment:
-  sdk: ^3.5.0
+  sdk: '>=3.5.0 <4.0.0'
 ```
 
 **Configuration Details**:

@@ -22,18 +22,14 @@ project.evaluationDependsOn(":app")
 subprojects {
     // Workaround for plugins that expect flutter extension properties from legacy Flutter Gradle Plugin
     if (project.name != "app") {
-        afterEvaluate {
-            if (project.extensions.findByName("android") != null) {
-                project.extensions.extraProperties.apply {
-                    if (!has("flutter")) {
-                        set("flutter", mapOf(
-                            "compileSdkVersion" to 34,
-                            "minSdkVersion" to 23,
-                            "targetSdkVersion" to 34,
-                            "ndkVersion" to "25.1.8937393"
-                        ))
-                    }
-                }
+        project.extensions.extraProperties.apply {
+            if (!has("flutter")) {
+                set("flutter", object {
+                    val compileSdkVersion = 34
+                    val minSdkVersion = 23
+                    val targetSdkVersion = 34
+                    val ndkVersion = "25.1.8937393"
+                })
             }
         }
     }
