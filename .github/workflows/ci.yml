@@ -27,8 +27,31 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       
-      - name: Verify formatting
-        run: dart format --set-exit-if-changed .
+      - name: Format code
+        run: dart format .
+      
+      - name: Check for formatting changes
+        id: format-check
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit formatting changes
+        if: steps.format-check.outputs.has_changes == 'true' && github.event_name == 'pull_request'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git commit -m "style: auto-format code with dart format"
+      
+      - name: Push formatting changes
+        if: steps.format-check.outputs.has_changes == 'true' && github.event_name == 'pull_request'
+        run: |
+          git pull --rebase origin ${{ github.head_ref }}
+          git push origin HEAD:${{ github.head_ref }}
       
       - name: Analyze code
         run: flutter analyze --fatal-infos --fatal-warnings
