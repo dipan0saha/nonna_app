@@ -578,7 +578,7 @@ bool validateImageFile(File file) {
 
   // Check file extension
   final extension = path.extension(file.path).toLowerCase();
-  if (!['..jpg', '.jpeg', '.png'].contains(extension)) {
+  if (!['.jpg', '.jpeg', '.png'].contains(extension)) {
     throw Exception('Only JPEG and PNG files are allowed');
   }
 
