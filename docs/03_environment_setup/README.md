@@ -153,19 +153,19 @@ Before proceeding to development, ensure all items are completed:
 ## Common Issues and Solutions
 
 ### Issue: "flutter: command not found"
-**Solution**: Add Flutter to PATH. See `01_Flutter_Installation_Verification_Report.md`, Section 2.
+**Solution**: Add Flutter to PATH. See `01_Flutter_Installation_Verification_Report.md`, Section 2 (Installation Instructions).
 
 ### Issue: "Dart SDK not found" in IDE
-**Solution**: Configure Flutter SDK path in IDE settings. See `02_IDE_Configuration_Document.md`, Section 9.1.
+**Solution**: Configure Flutter SDK path in IDE settings. See `02_IDE_Configuration_Document.md`, Section 9 (Troubleshooting).
 
 ### Issue: Emulator won't start
-**Solution**: Enable hardware acceleration (HAXM/Hypervisor). See `03_Emulator_Simulator_Setup_Guide.md`, Section 2.5.
+**Solution**: Enable hardware acceleration (HAXM/Hypervisor). See `03_Emulator_Simulator_Setup_Guide.md`, Section 2.4 (Android Emulator Performance Optimization).
 
 ### Issue: "fatal: not a git repository"
-**Solution**: Ensure you're in the project directory. See `04_Git_Repository_Initialization_Confirmation.md`, Section 8.1.
+**Solution**: Ensure you're in the project directory. See `04_Git_Repository_Initialization_Confirmation.md`, Section 8 (Git Troubleshooting).
 
 ### Issue: Pre-commit hooks not running
-**Solution**: Run `pre-commit install` in project root. See `04_Git_Repository_Initialization_Confirmation.md`, Section 4.2.
+**Solution**: Run `pre-commit install` in project root. See `04_Git_Repository_Initialization_Confirmation.md`, Section 4 (Pre-Commit Hooks Configuration).
 
 ## Next Steps
 
