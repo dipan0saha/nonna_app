@@ -1,0 +1,96 @@
+name: Web Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Web
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Run tests
+        run: flutter test
+      
+      - name: Build Web (Production)
+        run: flutter build web --release --web-renderer auto
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      
+      - name: Add .nojekyll file
+        run: touch build/web/.nojekyll
+      
+      - name: Upload Web build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-production-build
+          path: build/web
+          retention-days: 30
+      
+      # GitHub Pages Deployment (Optional)
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          cname: nonna.app  # Replace with your custom domain if any
+        continue-on-error: true
+      
+      # Placeholder for other hosting platforms
+      - name: Deployment Information
+        run: |
+          echo "✅ Web build completed successfully"
+          echo ""
+          echo "📦 Build artifacts:"
+          echo "  - Static files ready for deployment"
+          echo "  - Location: build/web/"
+          echo ""
+          echo "🚀 Deployment options:"
+          echo "  1. GitHub Pages: Enabled (if configured)"
+          echo "  2. Firebase Hosting: Add firebase deploy step"
+          echo "  3. Netlify: Add netlify deploy step"
+          echo "  4. Vercel: Add vercel deploy step"
+          echo "  5. AWS S3: Add aws s3 sync step"
+          echo ""
+          echo "To deploy to other platforms, configure:"
+          echo "  - Add hosting platform credentials to secrets"
+          echo "  - Uncomment relevant deployment step below"
+      
+      # Example: Firebase Hosting (uncomment to use)
+      # - name: Deploy to Firebase Hosting
+      #   uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
+      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+      #     channelId: live
+      #     projectId: your-project-id
+      
+      # Example: Netlify (uncomment to use)
+      # - name: Deploy to Netlify
+      #   uses: nwtgck/actions-netlify@v2
+      #   with:
+      #     publish-dir: './build/web'
+      #     production-branch: main
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     deploy-message: "Deploy from GitHub Actions"
+      #   env:
+      #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #     NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

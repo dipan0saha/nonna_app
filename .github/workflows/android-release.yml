@@ -1,0 +1,125 @@
+name: Android Release Build
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build:
+    name: Build Android Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Run tests
+        run: flutter test
+      
+      - name: Build Android App Bundle (Release)
+        run: flutter build appbundle --release
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      
+      - name: Build Android APK (Release)
+        run: flutter build apk --release --split-per-abi
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      
+      - name: Upload App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-app-bundle
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+      
+      - name: Upload APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apks
+          path: build/app/outputs/flutter-apk/*.apk
+          retention-days: 30
+      
+      - name: Create Release Notes
+        run: |
+          echo "# Android Release Build" > release_notes.md
+          echo "" >> release_notes.md
+          echo "## Build Information" >> release_notes.md
+          echo "- Version: ${{ github.ref_name || github.event.inputs.version }}" >> release_notes.md
+          echo "- Build Date: $(date +'%Y-%m-%d %H:%M:%S')" >> release_notes.md
+          echo "- Commit: ${{ github.sha }}" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "## Artifacts" >> release_notes.md
+          echo "- app-release.aab (For Play Store)" >> release_notes.md
+          echo "- app-armeabi-v7a-release.apk (32-bit ARM)" >> release_notes.md
+          echo "- app-arm64-v8a-release.apk (64-bit ARM)" >> release_notes.md
+          echo "- app-x86_64-release.apk (64-bit x86)" >> release_notes.md
+      
+      - name: Upload Release Notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release_notes.md
+          retention-days: 30
+
+  sign-and-publish:
+    name: Sign and Publish (Manual)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download App Bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: android-app-bundle
+          path: build/app/outputs/bundle/release/
+      
+      # Note: Actual signing and publishing would require:
+      # 1. Upload keystore to GitHub secrets
+      # 2. Configure service account for Play Store
+      # 3. Use fastlane or similar tool
+      
+      - name: Placeholder for signing
+        run: |
+          echo "🔐 App bundle downloaded and ready for signing"
+          echo "📦 Manual steps required:"
+          echo "  1. Download app-release.aab artifact"
+          echo "  2. Sign with release keystore"
+          echo "  3. Upload to Google Play Console"
+          echo ""
+          echo "Or configure automated signing:"
+          echo "  - Add KEYSTORE_BASE64 secret"
+          echo "  - Add KEYSTORE_PASSWORD secret"
+          echo "  - Add KEY_ALIAS secret"
+          echo "  - Add KEY_PASSWORD secret"
