@@ -11,6 +11,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";       -- UUID generation
 CREATE EXTENSION IF NOT EXISTS "pg_stat_statements"; -- Performance monitoring
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";         -- Text search optimization
 CREATE EXTENSION IF NOT EXISTS "btree_gin";       -- Multi-column indexing
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";        -- Cryptographic functions
+
+ALTER DATABASE postgres SET timezone TO 'UTC';
 
 -- ============================================================================
 -- SECTION 1: Core User Tables

@@ -25,4 +25,3 @@ supabase migration repair --status reverted 202512240003
 
 ### Push the local migrations and seed data to the database
 supabase db push --include-seed
-

@@ -41,10 +41,7 @@ void main() {
     });
 
     test('map operations work', () {
-      final user = {
-        'name': 'Test User',
-        'email': 'test@example.com',
-      };
+      final user = {'name': 'Test User', 'email': 'test@example.com'};
 
       expect(user['name'], equals('Test User'));
       expect(user['email'], equals('test@example.com'));
@@ -115,10 +112,7 @@ void main() {
     });
 
     test('error handling works', () {
-      expect(
-        () => throw Exception('test error'),
-        throwsException,
-      );
+      expect(() => throw Exception('test error'), throwsException);
 
       expect(
         () => throw ArgumentError('invalid'),

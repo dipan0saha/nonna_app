@@ -15,28 +15,21 @@ class OneSignalConfig {
 
     try {
       // Set OneSignal App ID
-      OneSignal.shared.setAppId(appId);
+      OneSignal.initialize(appId);
 
-      // Request notification permission (iOS)
-      OneSignal.shared
-          .promptUserForPushNotificationPermission()
-          .then((accepted) {
-        debugPrint('OneSignal: User accepted notifications: $accepted');
-      });
+      // Request notification permission
+      await OneSignal.Notifications.requestPermission(true);
 
-      // Set up notification opened handler
-      OneSignal.shared
-          .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-        _handleNotificationOpened(result);
+      // Set up notification clicked handler
+      OneSignal.Notifications.addClickListener((event) {
+        _handleNotificationOpened(event);
       });
 
       // Set up notification will show in foreground handler
-      OneSignal.shared.setNotificationWillShowInForegroundHandler(
-        (OSNotificationReceivedEvent event) {
-          // Display notification even when app is in foreground
-          event.complete(event.notification);
-        },
-      );
+      OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+        // Display notification even when app is in foreground
+        event.notification.display();
+      });
 
       debugPrint('✅ OneSignal initialized successfully');
     } catch (e) {
@@ -46,8 +39,8 @@ class OneSignalConfig {
   }
 
   /// Handle notification opened event
-  static void _handleNotificationOpened(OSNotificationOpenedResult result) {
-    final additionalData = result.notification.additionalData;
+  static void _handleNotificationOpened(OSNotificationClickEvent event) {
+    final additionalData = event.notification.additionalData;
 
     if (additionalData != null) {
       final type = additionalData['type'];
@@ -56,7 +49,8 @@ class OneSignalConfig {
       final eventId = additionalData['event_id'];
 
       debugPrint(
-          'Notification opened - Type: $type, Baby Profile: $babyProfileId');
+        'Notification opened - Type: $type, Baby Profile: $babyProfileId',
+      );
 
       // TODO: Navigate to appropriate screen based on notification type
       // This will be implemented when navigation is set up
@@ -88,7 +82,7 @@ class OneSignalConfig {
   /// Set external user ID (link OneSignal to Supabase user)
   static Future<void> setExternalUserId(String userId) async {
     try {
-      await OneSignal.shared.setExternalUserId(userId);
+      await OneSignal.login(userId);
       debugPrint('✅ OneSignal external user ID set: $userId');
     } catch (e) {
       debugPrint('❌ Error setting OneSignal external user ID: $e');
@@ -98,7 +92,7 @@ class OneSignalConfig {
   /// Remove external user ID (on logout)
   static Future<void> removeExternalUserId() async {
     try {
-      await OneSignal.shared.removeExternalUserId();
+      await OneSignal.logout();
       debugPrint('✅ OneSignal external user ID removed');
     } catch (e) {
       debugPrint('❌ Error removing OneSignal external user ID: $e');
@@ -108,7 +102,10 @@ class OneSignalConfig {
   /// Send tags to OneSignal for user segmentation
   static Future<void> sendTags(Map<String, dynamic> tags) async {
     try {
-      await OneSignal.shared.sendTags(tags);
+      // Convert all values to strings for OneSignal
+      final stringTags =
+          tags.map((key, value) => MapEntry(key, value.toString()));
+      OneSignal.User.addTags(stringTags);
       debugPrint('✅ OneSignal tags sent: $tags');
     } catch (e) {
       debugPrint('❌ Error sending OneSignal tags: $e');
@@ -118,7 +115,7 @@ class OneSignalConfig {
   /// Delete tags from OneSignal
   static Future<void> deleteTags(List<String> keys) async {
     try {
-      await OneSignal.shared.deleteTags(keys);
+      OneSignal.User.removeTags(keys);
       debugPrint('✅ OneSignal tags deleted: $keys');
     } catch (e) {
       debugPrint('❌ Error deleting OneSignal tags: $e');

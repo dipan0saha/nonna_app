@@ -141,10 +141,7 @@ class AnalyticsService {
     try {
       await _analytics.logEvent(
         name: 'photo_viewed',
-        parameters: {
-          'photo_id': photoId,
-          'baby_profile_id': babyProfileId,
-        },
+        parameters: {'photo_id': photoId, 'baby_profile_id': babyProfileId},
       );
     } catch (e) {
       debugPrint('Error logging photo viewed: $e');
@@ -181,10 +178,7 @@ class AnalyticsService {
     try {
       await _analytics.logEvent(
         name: 'photo_squished',
-        parameters: {
-          'photo_id': photoId,
-          'baby_profile_id': babyProfileId,
-        },
+        parameters: {'photo_id': photoId, 'baby_profile_id': babyProfileId},
       );
     } catch (e) {
       debugPrint('Error logging photo squished: $e');

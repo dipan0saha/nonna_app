@@ -1,12 +1,12 @@
-import 'package:flutter/foundation.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import '../config/supabase_config.dart';
-import '../config/onesignal_config.dart';
+
 import '../config/firebase_config.dart';
+import '../config/onesignal_config.dart';
+import '../config/supabase_config.dart';
 
 /// Service responsible for initializing all third-party integrations
 /// This includes Supabase, OneSignal, Firebase Analytics, and Crashlytics
@@ -47,13 +47,12 @@ class AppInitializationService {
   static Future<void> _initializeFirebase() async {
     try {
       // Initialize Firebase Core
-      await Firebase.initializeApp(
-        options: FirebaseConfig.currentPlatform,
-      );
+      await Firebase.initializeApp(options: FirebaseConfig.currentPlatform);
 
       // Initialize Crashlytics
-      await FirebaseCrashlytics.instance
-          .setCrashlyticsCollectionEnabled(!kDebugMode);
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+        !kDebugMode,
+      );
 
       // Set up Flutter error handling for Crashlytics
       FlutterError.onError =
@@ -66,7 +65,8 @@ class AppInitializationService {
       };
 
       debugPrint(
-          '✅ Firebase initialized (Analytics, Crashlytics, Performance)');
+        '✅ Firebase initialized (Analytics, Crashlytics, Performance)',
+      );
     } catch (e) {
       debugPrint('❌ Failed to initialize Firebase: $e');
       // Don't rethrow - Firebase is optional
@@ -95,7 +95,7 @@ class AppInitializationService {
       await FirebaseCrashlytics.instance.setUserIdentifier(userId);
 
       // Set external user ID for OneSignal
-      await OneSignal.shared.setExternalUserId(userId);
+      await OneSignal.login(userId);
 
       debugPrint('✅ User ID set for all services: $userId');
     } catch (e) {
@@ -114,7 +114,7 @@ class AppInitializationService {
       await FirebaseCrashlytics.instance.setUserIdentifier('');
 
       // Remove external user ID from OneSignal
-      await OneSignal.shared.removeExternalUserId();
+      await OneSignal.logout();
 
       debugPrint('✅ User ID cleared from all services');
     } catch (e) {

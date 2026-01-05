@@ -1,0 +1,46 @@
+# Combined Unique Tile List:
+
+- **Upcoming Events**: Shows a list of upcoming family events, such as baby showers or birthdays, to keep everyone informed.
+- **Recent Photos**: Displays the latest photos uploaded by family members, highlighting recent memories.
+- **Registry Highlights**: Features key items from the baby registry, like top gifts or essentials needed.
+- **Notifications**: Lists important alerts, such as new messages or updates from family members.
+- **Invitations Status (owner-only)**: Tracks the status of sent invitations for events, visible only to the event owner.
+- **RSVP Tasks**: Manages responses to event invitations, helping organize attendance.
+- **Due Date Countdown**: Shows a countdown timer to the baby's expected due date.
+- **Recent Purchases**: Lists items recently bought for the baby registry or family needs.
+- **Registry Deals/Recommendations**: Suggests deals and recommendations for registry items based on popularity.
+- **Engagement Recap**: Summarizes recent family interactions and engagements.
+- **Gallery Favorites**: Highlights favorite photos from the family gallery.
+- **Checklist/Onboarding (owner-only)**: Provides a checklist for setting up the app, visible only to the owner.
+- **Storage Usage (owner-only)**: Displays how much storage space is used for photos and data, for the owner.
+- **System Announcements**: Shares important updates or announcements from the app system.
+- **New Followers (owner-only)**: Notifies the owner about new people following the family page.
+- **Add Event**: Allows users to create and add new events to the calendar.
+- **Add Name**: Lets users suggest or add baby name ideas.
+- **Add New Photo**: Enables uploading new photos to the family gallery.
+- **Add item**: Permits adding items to lists, like shopping or registry lists.
+- **AI Suggestions**: Provides AI-generated suggestions for names, items, or events.
+- **Baby Arrival Announcement**: Announces the arrival of the baby with special messaging.
+- **Boy or Girl**: A feature for voting or predicting the baby's gender.
+- **Calendar**: Displays a calendar view of events and important dates.
+- **Countdown**: General countdown timers for various milestones.
+- **Create an Account**: Guides new users through account creation.
+- **Family Insights**: Offers insights into family activities and trends.
+- **Guess the Date**: Allows users to guess or vote on the baby's due date.
+- **Login**: Handles user login to access the app.
+- **Milestone Ideas**: Suggests ideas for celebrating family milestones.
+- **Name Voting**: Enables voting on suggested baby names.
+- **Names/ Predictions**: Combines name suggestions with predictions or polls.
+- **Needed Items**: Lists items still needed for the baby or family.
+- **Next Up**: Shows what's coming next in events or tasks.
+- **Photos**: General view of all photos in the gallery.
+- **Popular Dates**: Highlights popular dates for events or predictions.
+- **Purchased Items**: Tracks items that have been purchased.
+- **Recent Activity**: Summarizes recent app activities and updates.
+- **Recently Added Photos**: Shows photos added most recently.
+- **Shortcuts (Add photo, event, item)**: Quick access buttons to add photos, events, or items.
+- **Suggest Name**: Allows suggesting baby names for consideration.
+- **Upcoming/past Moments**: Displays both upcoming and past memorable moments.
+- **Vote for Baby Names**: A voting system for choosing baby names.
+- **Vote for Gender**: Lets users vote on the predicted gender.
+- **Welcome Announcement**: Welcomes new users or announces app features.

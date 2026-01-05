@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'app_initialization_service.dart';
+
 import 'analytics_service.dart';
+import 'app_initialization_service.dart';
 
 /// Authentication service for managing user authentication
 /// Handles email/password, Google OAuth, and Facebook OAuth
@@ -12,7 +13,10 @@ class AuthService {
 
   // Google Sign-In configuration
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'profile'],
+    scopes: [
+      'email',
+      'profile',
+    ],
   );
 
   /// Get current user
@@ -38,9 +42,7 @@ class AuthService {
       final response = await _supabase.auth.signUp(
         email: email,
         password: password,
-        data: {
-          'display_name': displayName,
-        },
+        data: {'display_name': displayName},
       );
 
       if (response.user != null) {
@@ -179,7 +181,7 @@ class AuthService {
       // Sign in to Supabase with Facebook token
       final response = await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.facebook,
-        idToken: accessToken.tokenString,
+        idToken: accessToken.token,
       );
 
       if (response.user != null) {
@@ -208,8 +210,11 @@ class AuthService {
       await _supabase.auth.signOut();
 
       // Sign out from Google if signed in
-      if (await _googleSignIn.isSignedIn()) {
+      try {
         await _googleSignIn.signOut();
+      } catch (e) {
+        // Ignore errors if not signed in
+        debugPrint('Google sign out: $e');
       }
 
       // Sign out from Facebook if signed in

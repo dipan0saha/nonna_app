@@ -24,11 +24,11 @@ BEGIN
         NOW(),
         NOW()
     );
-    
+
     -- Insert initial user stats
     INSERT INTO public.user_stats (user_id, updated_at)
     VALUES (NEW.id, NOW());
-    
+
     RETURN NEW;
 END;
 $$;
@@ -133,7 +133,7 @@ BEGIN
     -- Create initial marker for new baby profile
     INSERT INTO public.owner_update_markers (baby_profile_id, tiles_last_updated_at, reason)
     VALUES (NEW.id, NOW(), 'baby_profile_created');
-    
+
     RETURN NEW;
 END;
 $$;
@@ -174,14 +174,14 @@ BEGIN
     ELSE
         RETURN NEW;
     END IF;
-    
+
     -- Update marker timestamp
     UPDATE public.owner_update_markers
     SET tiles_last_updated_at = NOW(),
         updated_by_user_id = auth.uid(),
         reason = v_reason
     WHERE baby_profile_id = v_baby_profile_id;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -227,7 +227,7 @@ BEGIN
             updated_at = NOW()
         WHERE user_id = NEW.user_id;
     END IF;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -249,7 +249,7 @@ BEGIN
     SET items_purchased_count = items_purchased_count + 1,
         updated_at = NOW()
     WHERE user_id = NEW.purchased_by_user_id;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -270,7 +270,7 @@ BEGIN
     SET photos_squished_count = photos_squished_count + 1,
         updated_at = NOW()
     WHERE user_id = NEW.user_id;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -291,7 +291,7 @@ BEGIN
     SET comments_added_count = comments_added_count + 1,
         updated_at = NOW()
     WHERE user_id = NEW.user_id;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -331,12 +331,12 @@ BEGIN
         v_baby_profile_id := NEW.baby_profile_id;
         v_type := 'photo_uploaded';
         v_payload := jsonb_build_object('photo_id', NEW.id, 'caption', NEW.caption);
-        
+
     ELSIF TG_TABLE_NAME = 'events' THEN
         v_baby_profile_id := NEW.baby_profile_id;
         v_type := 'event_created';
         v_payload := jsonb_build_object('event_id', NEW.id, 'title', NEW.title);
-        
+
     ELSIF TG_TABLE_NAME = 'registry_purchases' THEN
         -- Get baby_profile_id from registry_items
         SELECT ri.baby_profile_id INTO v_baby_profile_id
@@ -344,7 +344,7 @@ BEGIN
         WHERE ri.id = NEW.registry_item_id;
         v_type := 'item_purchased';
         v_payload := jsonb_build_object('registry_item_id', NEW.registry_item_id);
-        
+
     ELSIF TG_TABLE_NAME = 'event_comments' THEN
         -- Get baby_profile_id from events
         SELECT e.baby_profile_id INTO v_baby_profile_id
@@ -352,7 +352,7 @@ BEGIN
         WHERE e.id = NEW.event_id;
         v_type := 'comment_added';
         v_payload := jsonb_build_object('event_id', NEW.event_id, 'comment_id', NEW.id);
-        
+
     ELSIF TG_TABLE_NAME = 'photo_comments' THEN
         -- Get baby_profile_id from photos
         SELECT p.baby_profile_id INTO v_baby_profile_id
@@ -360,15 +360,15 @@ BEGIN
         WHERE p.id = NEW.photo_id;
         v_type := 'comment_added';
         v_payload := jsonb_build_object('photo_id', NEW.photo_id, 'comment_id', NEW.id);
-        
+
     ELSE
         RETURN NEW;
     END IF;
-    
+
     -- Insert activity event
     INSERT INTO public.activity_events (baby_profile_id, actor_user_id, type, payload)
     VALUES (v_baby_profile_id, auth.uid(), v_type, v_payload);
-    
+
     RETURN NEW;
 END;
 $$;
@@ -433,17 +433,17 @@ BEGIN
         v_baby_profile_id := NEW.baby_profile_id;
         v_type := 'photo_added';
         v_payload := jsonb_build_object('photo_id', NEW.id);
-        
+
     ELSIF TG_TABLE_NAME = 'events' THEN
         v_baby_profile_id := NEW.baby_profile_id;
         v_type := 'event_created';
         v_payload := jsonb_build_object('event_id', NEW.id);
-        
+
     ELSIF TG_TABLE_NAME = 'registry_items' THEN
         v_baby_profile_id := NEW.baby_profile_id;
         v_type := 'registry_item_added';
         v_payload := jsonb_build_object('registry_item_id', NEW.id);
-        
+
     ELSIF TG_TABLE_NAME = 'registry_purchases' THEN
         -- Get baby_profile_id from registry_items
         SELECT ri.baby_profile_id INTO v_baby_profile_id
@@ -451,7 +451,7 @@ BEGIN
         WHERE ri.id = NEW.registry_item_id;
         v_type := 'registry_item_purchased';
         v_payload := jsonb_build_object('registry_item_id', NEW.registry_item_id, 'purchased_by', NEW.purchased_by_user_id);
-        
+
     ELSIF TG_TABLE_NAME = 'event_rsvps' THEN
         -- Get baby_profile_id from events
         SELECT e.baby_profile_id INTO v_baby_profile_id
@@ -459,16 +459,16 @@ BEGIN
         WHERE e.id = NEW.event_id;
         v_type := 'event_rsvp';
         v_payload := jsonb_build_object('event_id', NEW.event_id, 'user_id', NEW.user_id, 'status', NEW.status);
-        
+
     ELSIF TG_TABLE_NAME = 'baby_memberships' AND NEW.removed_at IS NULL THEN
         v_baby_profile_id := NEW.baby_profile_id;
         v_type := 'new_follower';
         v_payload := jsonb_build_object('user_id', NEW.user_id, 'relationship', NEW.relationship_label);
-        
+
     ELSE
         RETURN NEW;
     END IF;
-    
+
     -- Create notifications for all members (excluding actor)
     FOR v_recipient IN
         SELECT DISTINCT user_id
@@ -480,7 +480,7 @@ BEGIN
         INSERT INTO public.notifications (recipient_user_id, baby_profile_id, type, payload)
         VALUES (v_recipient.user_id, v_baby_profile_id, v_type, v_payload);
     END LOOP;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -540,12 +540,12 @@ BEGIN
           AND role = 'owner'
           AND removed_at IS NULL
           AND id != NEW.id; -- Exclude current row for updates
-        
+
         IF v_owner_count >= 2 THEN
             RAISE EXCEPTION 'Maximum 2 owners allowed per baby profile';
         END IF;
     END IF;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -567,7 +567,7 @@ BEGIN
     IF NEW.expires_at < NOW() AND NEW.status = 'pending' THEN
         NEW.status := 'expired';
     END IF;
-    
+
     RETURN NEW;
 END;
 $$;
