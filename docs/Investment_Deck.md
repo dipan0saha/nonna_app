@@ -4,6 +4,10 @@
 
 ---
 
+> **Note to Founders:** This investment deck contains comprehensive content based on existing documentation. Please replace all placeholder content marked with `[Founder Name]`, `[Background]`, `[Previous Experience]`, etc. with actual founder and team information before presenting to investors. Review and customize all sections to reflect your specific situation and story.
+
+---
+
 ## 1. Title Slide
 
 ### Nonna
