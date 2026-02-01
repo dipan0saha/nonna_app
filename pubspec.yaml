@@ -62,6 +62,7 @@ dependencies:
   flutter_image_compress: ^2.1.0
   image_picker: ^1.0.5
   cached_network_image: ^3.3.0
+  shimmer: ^3.0.0
 
   # Push Notifications
   onesignal_flutter: ^5.0.0
