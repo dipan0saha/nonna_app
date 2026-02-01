@@ -1,0 +1,538 @@
+{
+  "@@locale": "es",
+  
+  "appTitle": "Nonna",
+  "@appTitle": {
+    "description": "El título de la aplicación"
+  },
+  
+  "welcome": "Bienvenido",
+  "@welcome": {
+    "description": "Mensaje de bienvenida"
+  },
+  
+  "welcomeBack": "¡Bienvenido de nuevo!",
+  "@welcomeBack": {
+    "description": "Mensaje de bienvenida para usuarios que regresan"
+  },
+  
+  "hello": "Hola",
+  "@hello": {
+    "description": "Saludo general"
+  },
+  
+  "helloUser": "¡Hola, {userName}!",
+  "@helloUser": {
+    "description": "Saludo personalizado con nombre de usuario",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "María"
+      }
+    }
+  },
+  
+  "common_ok": "Aceptar",
+  "@common_ok": {
+    "description": "Etiqueta del botón Aceptar"
+  },
+  
+  "common_cancel": "Cancelar",
+  "@common_cancel": {
+    "description": "Etiqueta del botón Cancelar"
+  },
+  
+  "common_save": "Guardar",
+  "@common_save": {
+    "description": "Etiqueta del botón Guardar"
+  },
+  
+  "common_delete": "Eliminar",
+  "@common_delete": {
+    "description": "Etiqueta del botón Eliminar"
+  },
+  
+  "common_edit": "Editar",
+  "@common_edit": {
+    "description": "Etiqueta del botón Editar"
+  },
+  
+  "common_add": "Añadir",
+  "@common_add": {
+    "description": "Etiqueta del botón Añadir"
+  },
+  
+  "common_remove": "Quitar",
+  "@common_remove": {
+    "description": "Etiqueta del botón Quitar"
+  },
+  
+  "common_close": "Cerrar",
+  "@common_close": {
+    "description": "Etiqueta del botón Cerrar"
+  },
+  
+  "common_done": "Hecho",
+  "@common_done": {
+    "description": "Etiqueta del botón Hecho"
+  },
+  
+  "common_continue": "Continuar",
+  "@common_continue": {
+    "description": "Etiqueta del botón Continuar"
+  },
+  
+  "common_back": "Atrás",
+  "@common_back": {
+    "description": "Etiqueta del botón Atrás"
+  },
+  
+  "common_next": "Siguiente",
+  "@common_next": {
+    "description": "Etiqueta del botón Siguiente"
+  },
+  
+  "common_yes": "Sí",
+  "@common_yes": {
+    "description": "Etiqueta del botón Sí"
+  },
+  
+  "common_no": "No",
+  "@common_no": {
+    "description": "Etiqueta del botón No"
+  },
+  
+  "common_confirm": "Confirmar",
+  "@common_confirm": {
+    "description": "Etiqueta del botón Confirmar"
+  },
+  
+  "common_retry": "Reintentar",
+  "@common_retry": {
+    "description": "Etiqueta del botón Reintentar"
+  },
+  
+  "common_refresh": "Actualizar",
+  "@common_refresh": {
+    "description": "Etiqueta del botón Actualizar"
+  },
+  
+  "common_loading": "Cargando...",
+  "@common_loading": {
+    "description": "Mensaje del indicador de carga"
+  },
+  
+  "common_search": "Buscar",
+  "@common_search": {
+    "description": "Marcador de posición del campo de búsqueda"
+  },
+  
+  "common_filter": "Filtrar",
+  "@common_filter": {
+    "description": "Etiqueta del botón Filtrar"
+  },
+  
+  "common_sort": "Ordenar",
+  "@common_sort": {
+    "description": "Etiqueta del botón Ordenar"
+  },
+  
+  "common_share": "Compartir",
+  "@common_share": {
+    "description": "Etiqueta del botón Compartir"
+  },
+  
+  "common_submit": "Enviar",
+  "@common_submit": {
+    "description": "Etiqueta del botón Enviar"
+  },
+  
+  "error_title": "Error",
+  "@error_title": {
+    "description": "Título de error predeterminado"
+  },
+  
+  "error_generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
+  "@error_generic": {
+    "description": "Mensaje de error genérico"
+  },
+  
+  "error_network": "Error de conexión de red. Por favor, verifica tu conexión a internet.",
+  "@error_network": {
+    "description": "Mensaje de error de red"
+  },
+  
+  "error_timeout": "La solicitud ha caducado. Por favor, inténtalo de nuevo.",
+  "@error_timeout": {
+    "description": "Mensaje de error de tiempo de espera"
+  },
+  
+  "error_server": "Error del servidor. Por favor, inténtalo más tarde.",
+  "@error_server": {
+    "description": "Mensaje de error del servidor"
+  },
+  
+  "error_unauthorized": "No estás autorizado para realizar esta acción.",
+  "@error_unauthorized": {
+    "description": "Mensaje de error de no autorizado"
+  },
+  
+  "error_notFound": "No se encontró el recurso solicitado.",
+  "@error_notFound": {
+    "description": "Mensaje de error de no encontrado"
+  },
+  
+  "error_validation": "Por favor, verifica tu entrada e inténtalo de nuevo.",
+  "@error_validation": {
+    "description": "Mensaje de error de validación"
+  },
+  
+  "error_required_field": "Este campo es obligatorio",
+  "@error_required_field": {
+    "description": "Error de validación de campo obligatorio"
+  },
+  
+  "error_invalid_email": "Por favor, ingresa una dirección de correo válida",
+  "@error_invalid_email": {
+    "description": "Error de validación de correo inválido"
+  },
+  
+  "error_invalid_password": "La contraseña debe tener al menos 8 caracteres",
+  "@error_invalid_password": {
+    "description": "Error de validación de contraseña inválida"
+  },
+  
+  "error_passwords_dont_match": "Las contraseñas no coinciden",
+  "@error_passwords_dont_match": {
+    "description": "Error de validación de contraseñas no coinciden"
+  },
+  
+  "empty_state_no_data": "No hay datos disponibles",
+  "@empty_state_no_data": {
+    "description": "Mensaje de estado vacío predeterminado"
+  },
+  
+  "empty_state_no_results": "No se encontraron resultados",
+  "@empty_state_no_results": {
+    "description": "Estado vacío para resultados de búsqueda"
+  },
+  
+  "empty_state_no_items": "Aún no hay elementos",
+  "@empty_state_no_items": {
+    "description": "Estado vacío para listas vacías"
+  },
+  
+  "empty_state_start_creating": "Comienza creando tu primer elemento",
+  "@empty_state_start_creating": {
+    "description": "Llamada a la acción de estado vacío"
+  },
+  
+  "empty_state_recipes_title": "Aún No Hay Recetas",
+  "@empty_state_recipes_title": {
+    "description": "Título de estado vacío para recetas"
+  },
+  
+  "empty_state_recipes_message": "Comienza a construir tu colección de recetas",
+  "@empty_state_recipes_message": {
+    "description": "Mensaje de estado vacío para recetas"
+  },
+  
+  "empty_state_recipes_action": "Añadir Receta",
+  "@empty_state_recipes_action": {
+    "description": "Botón de acción de estado vacío para recetas"
+  },
+  
+  "empty_state_favorites_title": "Sin Favoritos",
+  "@empty_state_favorites_title": {
+    "description": "Título de estado vacío para favoritos"
+  },
+  
+  "empty_state_favorites_message": "Las recetas que marques como favoritas aparecerán aquí",
+  "@empty_state_favorites_message": {
+    "description": "Mensaje de estado vacío para favoritos"
+  },
+  
+  "nav_home": "Inicio",
+  "@nav_home": {
+    "description": "Etiqueta de navegación de Inicio"
+  },
+  
+  "nav_recipes": "Recetas",
+  "@nav_recipes": {
+    "description": "Etiqueta de navegación de Recetas"
+  },
+  
+  "nav_favorites": "Favoritos",
+  "@nav_favorites": {
+    "description": "Etiqueta de navegación de Favoritos"
+  },
+  
+  "nav_profile": "Perfil",
+  "@nav_profile": {
+    "description": "Etiqueta de navegación de Perfil"
+  },
+  
+  "nav_settings": "Configuración",
+  "@nav_settings": {
+    "description": "Etiqueta de navegación de Configuración"
+  },
+  
+  "auth_login": "Iniciar Sesión",
+  "@auth_login": {
+    "description": "Etiqueta del botón de iniciar sesión"
+  },
+  
+  "auth_logout": "Cerrar Sesión",
+  "@auth_logout": {
+    "description": "Etiqueta del botón de cerrar sesión"
+  },
+  
+  "auth_signup": "Registrarse",
+  "@auth_signup": {
+    "description": "Etiqueta del botón de registrarse"
+  },
+  
+  "auth_email": "Correo Electrónico",
+  "@auth_email": {
+    "description": "Etiqueta del campo de correo"
+  },
+  
+  "auth_password": "Contraseña",
+  "@auth_password": {
+    "description": "Etiqueta del campo de contraseña"
+  },
+  
+  "auth_confirm_password": "Confirmar Contraseña",
+  "@auth_confirm_password": {
+    "description": "Etiqueta del campo de confirmar contraseña"
+  },
+  
+  "auth_forgot_password": "¿Olvidaste tu Contraseña?",
+  "@auth_forgot_password": {
+    "description": "Enlace de olvidé mi contraseña"
+  },
+  
+  "auth_reset_password": "Restablecer Contraseña",
+  "@auth_reset_password": {
+    "description": "Etiqueta del botón de restablecer contraseña"
+  },
+  
+  "auth_create_account": "Crear Cuenta",
+  "@auth_create_account": {
+    "description": "Etiqueta del botón de crear cuenta"
+  },
+  
+  "auth_already_have_account": "¿Ya tienes una cuenta?",
+  "@auth_already_have_account": {
+    "description": "Mensaje de ya tengo cuenta"
+  },
+  
+  "auth_dont_have_account": "¿No tienes una cuenta?",
+  "@auth_dont_have_account": {
+    "description": "Mensaje de no tengo cuenta"
+  },
+  
+  "auth_or_continue_with": "O continúa con",
+  "@auth_or_continue_with": {
+    "description": "Texto separador de inicio de sesión social"
+  },
+  
+  "settings_language": "Idioma",
+  "@settings_language": {
+    "description": "Etiqueta de configuración de idioma"
+  },
+  
+  "settings_theme": "Tema",
+  "@settings_theme": {
+    "description": "Etiqueta de configuración de tema"
+  },
+  
+  "settings_notifications": "Notificaciones",
+  "@settings_notifications": {
+    "description": "Etiqueta de configuración de notificaciones"
+  },
+  
+  "settings_privacy": "Privacidad",
+  "@settings_privacy": {
+    "description": "Etiqueta de configuración de privacidad"
+  },
+  
+  "settings_about": "Acerca de",
+  "@settings_about": {
+    "description": "Etiqueta de configuración de acerca de"
+  },
+  
+  "settings_help": "Ayuda y Soporte",
+  "@settings_help": {
+    "description": "Etiqueta de configuración de ayuda y soporte"
+  },
+  
+  "settings_terms": "Términos de Servicio",
+  "@settings_terms": {
+    "description": "Etiqueta de términos de servicio"
+  },
+  
+  "settings_privacy_policy": "Política de Privacidad",
+  "@settings_privacy_policy": {
+    "description": "Etiqueta de política de privacidad"
+  },
+  
+  "recipe_title": "Receta",
+  "@recipe_title": {
+    "description": "Título de pantalla de receta"
+  },
+  
+  "recipe_ingredients": "Ingredientes",
+  "@recipe_ingredients": {
+    "description": "Sección de ingredientes de receta"
+  },
+  
+  "recipe_instructions": "Instrucciones",
+  "@recipe_instructions": {
+    "description": "Sección de instrucciones de receta"
+  },
+  
+  "recipe_prep_time": "Tiempo de Preparación",
+  "@recipe_prep_time": {
+    "description": "Etiqueta de tiempo de preparación de receta"
+  },
+  
+  "recipe_cook_time": "Tiempo de Cocción",
+  "@recipe_cook_time": {
+    "description": "Etiqueta de tiempo de cocción de receta"
+  },
+  
+  "recipe_servings": "Porciones",
+  "@recipe_servings": {
+    "description": "Etiqueta de porciones de receta"
+  },
+  
+  "recipe_difficulty": "Dificultad",
+  "@recipe_difficulty": {
+    "description": "Etiqueta de dificultad de receta"
+  },
+  
+  "recipe_difficulty_easy": "Fácil",
+  "@recipe_difficulty_easy": {
+    "description": "Nivel de dificultad fácil"
+  },
+  
+  "recipe_difficulty_medium": "Media",
+  "@recipe_difficulty_medium": {
+    "description": "Nivel de dificultad media"
+  },
+  
+  "recipe_difficulty_hard": "Difícil",
+  "@recipe_difficulty_hard": {
+    "description": "Nivel de dificultad difícil"
+  },
+  
+  "recipe_add_to_favorites": "Añadir a Favoritos",
+  "@recipe_add_to_favorites": {
+    "description": "Botón para añadir receta a favoritos"
+  },
+  
+  "recipe_remove_from_favorites": "Quitar de Favoritos",
+  "@recipe_remove_from_favorites": {
+    "description": "Botón para quitar receta de favoritos"
+  },
+  
+  "plurals_items": "{count, plural, =0{Sin elementos} =1{1 elemento} other{{count} elementos}}",
+  "@plurals_items": {
+    "description": "Forma plural para conteo de elementos",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  
+  "plurals_recipes": "{count, plural, =0{Sin recetas} =1{1 receta} other{{count} recetas}}",
+  "@plurals_recipes": {
+    "description": "Forma plural para conteo de recetas",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  
+  "plurals_minutes": "{count, plural, =1{1 minuto} other{{count} minutos}}",
+  "@plurals_minutes": {
+    "description": "Forma plural para minutos",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  
+  "plurals_hours": "{count, plural, =1{1 hora} other{{count} horas}}",
+  "@plurals_hours": {
+    "description": "Forma plural para horas",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  
+  "date_today": "Hoy",
+  "@date_today": {
+    "description": "Etiqueta de fecha de hoy"
+  },
+  
+  "date_yesterday": "Ayer",
+  "@date_yesterday": {
+    "description": "Etiqueta de fecha de ayer"
+  },
+  
+  "date_tomorrow": "Mañana",
+  "@date_tomorrow": {
+    "description": "Etiqueta de fecha de mañana"
+  },
+  
+  "success_saved": "Guardado exitosamente",
+  "@success_saved": {
+    "description": "Mensaje de éxito para acción de guardar"
+  },
+  
+  "success_deleted": "Eliminado exitosamente",
+  "@success_deleted": {
+    "description": "Mensaje de éxito para acción de eliminar"
+  },
+  
+  "success_updated": "Actualizado exitosamente",
+  "@success_updated": {
+    "description": "Mensaje de éxito para acción de actualizar"
+  },
+  
+  "success_added": "Añadido exitosamente",
+  "@success_added": {
+    "description": "Mensaje de éxito para acción de añadir"
+  },
+  
+  "confirm_delete_title": "Eliminar Elemento",
+  "@confirm_delete_title": {
+    "description": "Título del diálogo de confirmación de eliminación"
+  },
+  
+  "confirm_delete_message": "¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.",
+  "@confirm_delete_message": {
+    "description": "Mensaje del diálogo de confirmación de eliminación"
+  },
+  
+  "confirm_logout_title": "Cerrar Sesión",
+  "@confirm_logout_title": {
+    "description": "Título del diálogo de confirmación de cerrar sesión"
+  },
+  
+  "confirm_logout_message": "¿Estás seguro de que deseas cerrar sesión?",
+  "@confirm_logout_message": {
+    "description": "Mensaje del diálogo de confirmación de cerrar sesión"
+  }
+}
