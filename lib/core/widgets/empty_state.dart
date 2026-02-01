@@ -85,13 +85,13 @@ class EmptyState extends StatelessWidget {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: onAction,
-                child: Text(actionLabel!),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 12,
                   ),
                 ),
+                child: Text(actionLabel!),
               ),
             ],
           ],
