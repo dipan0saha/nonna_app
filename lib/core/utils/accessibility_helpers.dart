@@ -69,6 +69,7 @@ class AccessibilityHelpers {
       hint: hint,
       link: true,
       onTap: onTap,
+      excludeSemantics: true,
       child: child,
     );
   }
@@ -82,6 +83,7 @@ class AccessibilityHelpers {
     return Semantics(
       label: label,
       header: header,
+      excludeSemantics: true,
       child: child,
     );
   }
@@ -229,6 +231,7 @@ class AccessibilityHelpers {
     return Semantics(
       label: label,
       expanded: expanded,
+      excludeSemantics: true,
       child: child,
     );
   }
@@ -242,6 +245,7 @@ class AccessibilityHelpers {
     return Semantics(
       label: label,
       selected: selected,
+      excludeSemantics: true,
       child: child,
     );
   }
@@ -317,14 +321,18 @@ class AccessibilityHelpers {
       hint: hint,
       button: true,
       onTap: onTap,
-      child: InkWell(
-        onTap: onTap,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: minSize,
-            minHeight: minSize,
+      excludeSemantics: true,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: minSize,
+              minHeight: minSize,
+            ),
+            child: child,
           ),
-          child: child,
         ),
       ),
     );
@@ -345,6 +353,7 @@ class AccessibilityHelpers {
     return Semantics(
       label: label,
       liveRegion: liveRegion,
+      excludeSemantics: true,
       child: child,
     );
   }
@@ -363,6 +372,7 @@ class AccessibilityHelpers {
       label: label,
       container: true,
       scopesRoute: scopesRoute,
+      excludeSemantics: true,
       child: child,
     );
   }
@@ -440,6 +450,7 @@ class AccessibilityHelpers {
     return Semantics(
       label: 'Error: $message',
       liveRegion: true,
+      excludeSemantics: true,
       child: child ?? Text(message),
     );
   }
@@ -452,6 +463,7 @@ class AccessibilityHelpers {
     return Semantics(
       label: 'Success: $message',
       liveRegion: true,
+      excludeSemantics: true,
       child: child ?? Text(message),
     );
   }
