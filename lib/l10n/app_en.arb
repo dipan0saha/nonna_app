@@ -1,4 +1,538 @@
 {
-  "appTitle": "nonna_app",
-  "welcome": "Welcome"
+  "@@locale": "en",
+  
+  "appTitle": "Nonna",
+  "@appTitle": {
+    "description": "The application title"
+  },
+  
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  
+  "welcomeBack": "Welcome back!",
+  "@welcomeBack": {
+    "description": "Welcome back message for returning users"
+  },
+  
+  "hello": "Hello",
+  "@hello": {
+    "description": "General greeting"
+  },
+  
+  "helloUser": "Hello, {userName}!",
+  "@helloUser": {
+    "description": "Personalized greeting with user name",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "Maria"
+      }
+    }
+  },
+  
+  "common_ok": "OK",
+  "@common_ok": {
+    "description": "OK button label"
+  },
+  
+  "common_cancel": "Cancel",
+  "@common_cancel": {
+    "description": "Cancel button label"
+  },
+  
+  "common_save": "Save",
+  "@common_save": {
+    "description": "Save button label"
+  },
+  
+  "common_delete": "Delete",
+  "@common_delete": {
+    "description": "Delete button label"
+  },
+  
+  "common_edit": "Edit",
+  "@common_edit": {
+    "description": "Edit button label"
+  },
+  
+  "common_add": "Add",
+  "@common_add": {
+    "description": "Add button label"
+  },
+  
+  "common_remove": "Remove",
+  "@common_remove": {
+    "description": "Remove button label"
+  },
+  
+  "common_close": "Close",
+  "@common_close": {
+    "description": "Close button label"
+  },
+  
+  "common_done": "Done",
+  "@common_done": {
+    "description": "Done button label"
+  },
+  
+  "common_continue": "Continue",
+  "@common_continue": {
+    "description": "Continue button label"
+  },
+  
+  "common_back": "Back",
+  "@common_back": {
+    "description": "Back button label"
+  },
+  
+  "common_next": "Next",
+  "@common_next": {
+    "description": "Next button label"
+  },
+  
+  "common_yes": "Yes",
+  "@common_yes": {
+    "description": "Yes button label"
+  },
+  
+  "common_no": "No",
+  "@common_no": {
+    "description": "No button label"
+  },
+  
+  "common_confirm": "Confirm",
+  "@common_confirm": {
+    "description": "Confirm button label"
+  },
+  
+  "common_retry": "Retry",
+  "@common_retry": {
+    "description": "Retry button label"
+  },
+  
+  "common_refresh": "Refresh",
+  "@common_refresh": {
+    "description": "Refresh button label"
+  },
+  
+  "common_loading": "Loading...",
+  "@common_loading": {
+    "description": "Loading indicator message"
+  },
+  
+  "common_search": "Search",
+  "@common_search": {
+    "description": "Search field placeholder"
+  },
+  
+  "common_filter": "Filter",
+  "@common_filter": {
+    "description": "Filter button label"
+  },
+  
+  "common_sort": "Sort",
+  "@common_sort": {
+    "description": "Sort button label"
+  },
+  
+  "common_share": "Share",
+  "@common_share": {
+    "description": "Share button label"
+  },
+  
+  "common_submit": "Submit",
+  "@common_submit": {
+    "description": "Submit button label"
+  },
+  
+  "error_title": "Error",
+  "@error_title": {
+    "description": "Default error title"
+  },
+  
+  "error_generic": "Something went wrong. Please try again.",
+  "@error_generic": {
+    "description": "Generic error message"
+  },
+  
+  "error_network": "Network connection error. Please check your internet connection.",
+  "@error_network": {
+    "description": "Network error message"
+  },
+  
+  "error_timeout": "Request timed out. Please try again.",
+  "@error_timeout": {
+    "description": "Timeout error message"
+  },
+  
+  "error_server": "Server error. Please try again later.",
+  "@error_server": {
+    "description": "Server error message"
+  },
+  
+  "error_unauthorized": "You are not authorized to perform this action.",
+  "@error_unauthorized": {
+    "description": "Unauthorized error message"
+  },
+  
+  "error_notFound": "The requested resource was not found.",
+  "@error_notFound": {
+    "description": "Not found error message"
+  },
+  
+  "error_validation": "Please check your input and try again.",
+  "@error_validation": {
+    "description": "Validation error message"
+  },
+  
+  "error_required_field": "This field is required",
+  "@error_required_field": {
+    "description": "Required field validation error"
+  },
+  
+  "error_invalid_email": "Please enter a valid email address",
+  "@error_invalid_email": {
+    "description": "Invalid email validation error"
+  },
+  
+  "error_invalid_password": "Password must be at least 8 characters",
+  "@error_invalid_password": {
+    "description": "Invalid password validation error"
+  },
+  
+  "error_passwords_dont_match": "Passwords do not match",
+  "@error_passwords_dont_match": {
+    "description": "Password mismatch validation error"
+  },
+  
+  "empty_state_no_data": "No data available",
+  "@empty_state_no_data": {
+    "description": "Default empty state message"
+  },
+  
+  "empty_state_no_results": "No results found",
+  "@empty_state_no_results": {
+    "description": "Empty state for search results"
+  },
+  
+  "empty_state_no_items": "No items yet",
+  "@empty_state_no_items": {
+    "description": "Empty state for empty lists"
+  },
+  
+  "empty_state_start_creating": "Start by creating your first item",
+  "@empty_state_start_creating": {
+    "description": "Empty state call to action"
+  },
+  
+  "empty_state_recipes_title": "No Recipes Yet",
+  "@empty_state_recipes_title": {
+    "description": "Empty state title for recipes"
+  },
+  
+  "empty_state_recipes_message": "Start building your recipe collection",
+  "@empty_state_recipes_message": {
+    "description": "Empty state message for recipes"
+  },
+  
+  "empty_state_recipes_action": "Add Recipe",
+  "@empty_state_recipes_action": {
+    "description": "Empty state action button for recipes"
+  },
+  
+  "empty_state_favorites_title": "No Favorites",
+  "@empty_state_favorites_title": {
+    "description": "Empty state title for favorites"
+  },
+  
+  "empty_state_favorites_message": "Recipes you favorite will appear here",
+  "@empty_state_favorites_message": {
+    "description": "Empty state message for favorites"
+  },
+  
+  "nav_home": "Home",
+  "@nav_home": {
+    "description": "Home navigation label"
+  },
+  
+  "nav_recipes": "Recipes",
+  "@nav_recipes": {
+    "description": "Recipes navigation label"
+  },
+  
+  "nav_favorites": "Favorites",
+  "@nav_favorites": {
+    "description": "Favorites navigation label"
+  },
+  
+  "nav_profile": "Profile",
+  "@nav_profile": {
+    "description": "Profile navigation label"
+  },
+  
+  "nav_settings": "Settings",
+  "@nav_settings": {
+    "description": "Settings navigation label"
+  },
+  
+  "auth_login": "Log In",
+  "@auth_login": {
+    "description": "Login button label"
+  },
+  
+  "auth_logout": "Log Out",
+  "@auth_logout": {
+    "description": "Logout button label"
+  },
+  
+  "auth_signup": "Sign Up",
+  "@auth_signup": {
+    "description": "Sign up button label"
+  },
+  
+  "auth_email": "Email",
+  "@auth_email": {
+    "description": "Email field label"
+  },
+  
+  "auth_password": "Password",
+  "@auth_password": {
+    "description": "Password field label"
+  },
+  
+  "auth_confirm_password": "Confirm Password",
+  "@auth_confirm_password": {
+    "description": "Confirm password field label"
+  },
+  
+  "auth_forgot_password": "Forgot Password?",
+  "@auth_forgot_password": {
+    "description": "Forgot password link"
+  },
+  
+  "auth_reset_password": "Reset Password",
+  "@auth_reset_password": {
+    "description": "Reset password button label"
+  },
+  
+  "auth_create_account": "Create Account",
+  "@auth_create_account": {
+    "description": "Create account button label"
+  },
+  
+  "auth_already_have_account": "Already have an account?",
+  "@auth_already_have_account": {
+    "description": "Already have account message"
+  },
+  
+  "auth_dont_have_account": "Don't have an account?",
+  "@auth_dont_have_account": {
+    "description": "Don't have account message"
+  },
+  
+  "auth_or_continue_with": "Or continue with",
+  "@auth_or_continue_with": {
+    "description": "Social login separator text"
+  },
+  
+  "settings_language": "Language",
+  "@settings_language": {
+    "description": "Language settings label"
+  },
+  
+  "settings_theme": "Theme",
+  "@settings_theme": {
+    "description": "Theme settings label"
+  },
+  
+  "settings_notifications": "Notifications",
+  "@settings_notifications": {
+    "description": "Notifications settings label"
+  },
+  
+  "settings_privacy": "Privacy",
+  "@settings_privacy": {
+    "description": "Privacy settings label"
+  },
+  
+  "settings_about": "About",
+  "@settings_about": {
+    "description": "About settings label"
+  },
+  
+  "settings_help": "Help & Support",
+  "@settings_help": {
+    "description": "Help and support settings label"
+  },
+  
+  "settings_terms": "Terms of Service",
+  "@settings_terms": {
+    "description": "Terms of service label"
+  },
+  
+  "settings_privacy_policy": "Privacy Policy",
+  "@settings_privacy_policy": {
+    "description": "Privacy policy label"
+  },
+  
+  "recipe_title": "Recipe",
+  "@recipe_title": {
+    "description": "Recipe screen title"
+  },
+  
+  "recipe_ingredients": "Ingredients",
+  "@recipe_ingredients": {
+    "description": "Recipe ingredients section"
+  },
+  
+  "recipe_instructions": "Instructions",
+  "@recipe_instructions": {
+    "description": "Recipe instructions section"
+  },
+  
+  "recipe_prep_time": "Prep Time",
+  "@recipe_prep_time": {
+    "description": "Recipe preparation time label"
+  },
+  
+  "recipe_cook_time": "Cook Time",
+  "@recipe_cook_time": {
+    "description": "Recipe cooking time label"
+  },
+  
+  "recipe_servings": "Servings",
+  "@recipe_servings": {
+    "description": "Recipe servings label"
+  },
+  
+  "recipe_difficulty": "Difficulty",
+  "@recipe_difficulty": {
+    "description": "Recipe difficulty label"
+  },
+  
+  "recipe_difficulty_easy": "Easy",
+  "@recipe_difficulty_easy": {
+    "description": "Easy difficulty level"
+  },
+  
+  "recipe_difficulty_medium": "Medium",
+  "@recipe_difficulty_medium": {
+    "description": "Medium difficulty level"
+  },
+  
+  "recipe_difficulty_hard": "Hard",
+  "@recipe_difficulty_hard": {
+    "description": "Hard difficulty level"
+  },
+  
+  "recipe_add_to_favorites": "Add to Favorites",
+  "@recipe_add_to_favorites": {
+    "description": "Add recipe to favorites button"
+  },
+  
+  "recipe_remove_from_favorites": "Remove from Favorites",
+  "@recipe_remove_from_favorites": {
+    "description": "Remove recipe from favorites button"
+  },
+  
+  "plurals_items": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
+  "@plurals_items": {
+    "description": "Plural form for items count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  
+  "plurals_recipes": "{count, plural, =0{No recipes} =1{1 recipe} other{{count} recipes}}",
+  "@plurals_recipes": {
+    "description": "Plural form for recipes count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  
+  "plurals_minutes": "{count, plural, =1{1 minute} other{{count} minutes}}",
+  "@plurals_minutes": {
+    "description": "Plural form for minutes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  
+  "plurals_hours": "{count, plural, =1{1 hour} other{{count} hours}}",
+  "@plurals_hours": {
+    "description": "Plural form for hours",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  
+  "date_today": "Today",
+  "@date_today": {
+    "description": "Today date label"
+  },
+  
+  "date_yesterday": "Yesterday",
+  "@date_yesterday": {
+    "description": "Yesterday date label"
+  },
+  
+  "date_tomorrow": "Tomorrow",
+  "@date_tomorrow": {
+    "description": "Tomorrow date label"
+  },
+  
+  "success_saved": "Saved successfully",
+  "@success_saved": {
+    "description": "Success message for save action"
+  },
+  
+  "success_deleted": "Deleted successfully",
+  "@success_deleted": {
+    "description": "Success message for delete action"
+  },
+  
+  "success_updated": "Updated successfully",
+  "@success_updated": {
+    "description": "Success message for update action"
+  },
+  
+  "success_added": "Added successfully",
+  "@success_added": {
+    "description": "Success message for add action"
+  },
+  
+  "confirm_delete_title": "Delete Item",
+  "@confirm_delete_title": {
+    "description": "Delete confirmation dialog title"
+  },
+  
+  "confirm_delete_message": "Are you sure you want to delete this item? This action cannot be undone.",
+  "@confirm_delete_message": {
+    "description": "Delete confirmation dialog message"
+  },
+  
+  "confirm_logout_title": "Log Out",
+  "@confirm_logout_title": {
+    "description": "Logout confirmation dialog title"
+  },
+  
+  "confirm_logout_message": "Are you sure you want to log out?",
+  "@confirm_logout_message": {
+    "description": "Logout confirmation dialog message"
+  }
 }
