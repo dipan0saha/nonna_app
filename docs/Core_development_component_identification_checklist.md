@@ -127,45 +127,45 @@
 ## 3.3 Utils & Helpers
 
 ### 3.3.1 Date/Time Helpers
-- [ ] Date Helpers (`lib/core/utils/date_helpers.dart`)
-- [ ] Date Extensions (`lib/core/extensions/date_extensions.dart`)
+- [x] Date Helpers (`lib/core/utils/date_helpers.dart`)
+- [x] Date Extensions (`lib/core/extensions/date_extensions.dart`)
 
 ### 3.3.2 Formatters
-- [ ] Text Formatters (`lib/core/utils/formatters.dart`)
-- [ ] String Extensions (`lib/core/extensions/string_extensions.dart`)
+- [x] Text Formatters (`lib/core/utils/formatters.dart`)
+- [x] String Extensions (`lib/core/extensions/string_extensions.dart`)
 
 ### 3.3.3 Validators
-- [ ] Input Validators (`lib/core/utils/validators.dart`)
-- [ ] Input Sanitization (`lib/core/utils/sanitizers.dart`)
+- [x] Input Validators (`lib/core/utils/validators.dart`)
+- [x] Input Sanitization (`lib/core/utils/sanitizers.dart`)
 
 ### 3.3.4 Image Helpers
-- [ ] Image Helpers (`lib/core/utils/image_helpers.dart`)
+- [x] Image Helpers (`lib/core/utils/image_helpers.dart`)
 
 ### 3.3.5 Role & Permission Helpers
-- [ ] Role Helpers (`lib/core/utils/role_helpers.dart`)
-- [ ] Share Helpers (`lib/core/utils/share_helpers.dart`)
+- [x] Role Helpers (`lib/core/utils/role_helpers.dart`)
+- [x] Share Helpers (`lib/core/utils/share_helpers.dart`)
 
 ### 3.3.6 Extensions
-- [ ] Context Extensions (`lib/core/extensions/context_extensions.dart`)
-- [ ] List Extensions (`lib/core/extensions/list_extensions.dart`)
+- [x] Context Extensions (`lib/core/extensions/context_extensions.dart`)
+- [x] List Extensions (`lib/core/extensions/list_extensions.dart`)
 
 ### 3.3.7 Constants
-- [ ] App Strings (`lib/core/constants/strings.dart`)
-- [ ] Supabase Tables (`lib/core/constants/supabase_tables.dart`)
-- [ ] Performance Limits (`lib/core/constants/performance_limits.dart`)
+- [x] App Strings (`lib/core/constants/strings.dart`)
+- [x] Supabase Tables (`lib/core/constants/supabase_tables.dart`)
+- [x] Performance Limits (`lib/core/constants/performance_limits.dart`)
 
 ### 3.3.8 Mixins
-- [ ] Role Aware Mixin (`lib/core/mixins/role_aware_mixin.dart`)
-- [ ] Validation Mixin (`lib/core/mixins/validation_mixin.dart`)
-- [ ] Loading Mixin (`lib/core/mixins/loading_mixin.dart`)
+- [x] Role Aware Mixin (`lib/core/mixins/role_aware_mixin.dart`)
+- [x] Validation Mixin (`lib/core/mixins/validation_mixin.dart`)
+- [x] Loading Mixin (`lib/core/mixins/loading_mixin.dart`)
 
 ### 3.3.9 Enums & Type Definitions
-- [ ] User Role Enum (`lib/core/enums/user_role.dart`)
-- [ ] Tile Type Enum (`lib/core/enums/tile_type.dart`)
-- [ ] Screen Name Enum (`lib/core/enums/screen_name.dart`)
-- [ ] Notification Type Enum (`lib/core/enums/notification_type.dart`)
-- [ ] Event Status Enum (`lib/core/enums/event_status.dart`)
-- [ ] Callbacks TypeDef (`lib/core/typedefs/callbacks.dart`)
+- [x] User Role Enum (`lib/core/enums/user_role.dart`)
+- [x] Tile Type Enum (`lib/core/enums/tile_type.dart`)
+- [x] Screen Name Enum (`lib/core/enums/screen_name.dart`)
+- [x] Notification Type Enum (`lib/core/enums/notification_type.dart`)
+- [x] Event Status Enum (`lib/core/enums/event_status.dart`)
+- [x] Callbacks TypeDef (`lib/core/typedefs/callbacks.dart`)
 
 ---
 
