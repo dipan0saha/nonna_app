@@ -48,10 +48,10 @@ Nonna is your **private family hub** where you can share your baby's entire jour
 
 **Why families love Nonna:**
 
-✅ **Private by design:** Invite-only. Your photos never leave your family circle.  
-✅ **All in one place:** Stop juggling Google Photos, email threads, and Amazon links.  
-✅ **Real-time:** Grandma sees new photos in under 2 seconds—faster than any competitor.  
-✅ **Built for everyone:** Simple enough for your 70-year-old parents, beautiful enough for you.  
+✅ **Private by design:** Invite-only. Your photos never leave your family circle.
+✅ **All in one place:** Stop juggling Google Photos, email threads, and Amazon links.
+✅ **Real-time:** Grandma sees new photos in under 2 seconds—faster than any competitor.
+✅ **Built for everyone:** Simple enough for your 70-year-old parents, beautiful enough for you.
 ✅ **Free to start:** 15GB storage and all features free. Premium is just $6.99/month for unlimited storage.
 
 Whether you're expecting, just brought baby home, or celebrating their second birthday, Nonna keeps your family connected—no matter how far apart you live.
@@ -79,6 +79,6 @@ Whether you're expecting, just brought baby home, or celebrating their second bi
 
 *These elevator pitches are aligned with the Nonna Investment Deck (v1.0, January 2026). For detailed information, see `docs/Investment_Deck.md`.*
 
-**Document Version:** 1.0  
-**Last Updated:** January 9, 2026  
+**Document Version:** 1.0
+**Last Updated:** January 9, 2026
 **Status:** Final

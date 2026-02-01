@@ -897,10 +897,10 @@ Based on Nonna's profile, stage, and differentiation, prioritize these 10 invest
 
 ## Document Information
 
-**Document Version**: 1.0  
-**Last Updated**: January 10, 2026  
-**Author**: Nonna Founding Team  
-**Status**: Active Fundraising  
+**Document Version**: 1.0
+**Last Updated**: January 10, 2026
+**Author**: Nonna Founding Team
+**Status**: Active Fundraising
 **Related Documents**:
 - `docs/Investment_Deck.md` - Full investment deck for presentations
 - `docs/Elevator_Pitch.md` - Concise pitches for investors and users
@@ -909,9 +909,9 @@ Based on Nonna's profile, stage, and differentiation, prioritize these 10 invest
 
 ---
 
-**Questions or Updates?**  
-Contact: founders@nonna.app | invest@nonna.app  
-Website: nonna.app  
+**Questions or Updates?**
+Contact: founders@nonna.app | invest@nonna.app
+Website: nonna.app
 LinkedIn: linkedin.com/company/nonna-app
 
 ---

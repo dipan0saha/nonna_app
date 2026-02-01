@@ -2,10 +2,10 @@
 
 ## Document Information
 
-**Document Version**: 1.0  
-**Last Updated**: January 4, 2026  
-**Author**: Technical Lead  
-**Status**: Implemented  
+**Document Version**: 1.0
+**Last Updated**: January 25, 2026
+**Author**: Technical Lead
+**Status**: Implemented
 **Section**: 2.2 - Project Initialization
 
 ## Executive Summary
@@ -55,7 +55,7 @@ Ensures code quality, runs tests, and validates builds for every code change.
 ### Jobs Overview
 
 #### 1.1 Code Analysis Job
-**Duration**: ~3-5 minutes  
+**Duration**: ~3-5 minutes
 **Purpose**: Static code analysis and formatting checks
 
 **Steps**:
@@ -72,7 +72,7 @@ Ensures code quality, runs tests, and validates builds for every code change.
 - ✅ Awareness of outdated packages
 
 #### 1.2 Unit & Widget Tests Job
-**Duration**: ~5-10 minutes  
+**Duration**: ~5-10 minutes
 **Purpose**: Run all unit and widget tests with coverage reporting
 
 **Dependencies**: Requires `analyze` job to pass
@@ -81,8 +81,8 @@ Ensures code quality, runs tests, and validates builds for every code change.
 1. Checkout code
 2. Setup Flutter environment
 3. Install dependencies
-4. Run tests with coverage (`flutter test --coverage --reporter expanded`)
-5. Upload coverage to Codecov
+4. Run tests with coverage (`flutter test --coverage --reporter expanded --reporter=json > test-results.json`)
+5. Post test results and coverage to PR comments using dorny/test-reporter
 6. Generate HTML coverage report
 7. Upload coverage artifacts
 
@@ -97,7 +97,7 @@ Ensures code quality, runs tests, and validates builds for every code change.
 - Coverage report (HTML) - Available for 7 days
 
 #### 1.3 Integration Tests Job
-**Duration**: ~10-15 minutes  
+**Duration**: ~10-15 minutes
 **Purpose**: Run end-to-end integration tests
 
 **Dependencies**: Requires `test` job to pass
@@ -113,7 +113,7 @@ Ensures code quality, runs tests, and validates builds for every code change.
 - ✅ Skips gracefully if no integration tests exist
 
 #### 1.4 Build Android Job
-**Duration**: ~10-15 minutes  
+**Duration**: ~10-15 minutes
 **Purpose**: Validate Android build process
 
 **Dependencies**: Requires `test` job to pass
@@ -130,7 +130,7 @@ Ensures code quality, runs tests, and validates builds for every code change.
 - Android debug APK - Available for 7 days
 
 #### 1.5 Build iOS Job
-**Duration**: ~20-25 minutes  
+**Duration**: ~20-25 minutes
 **Purpose**: Validate iOS build process (simulator only)
 
 **Runner**: macOS-latest (required for iOS builds)
@@ -149,7 +149,7 @@ Ensures code quality, runs tests, and validates builds for every code change.
 - iOS simulator build (ZIP) - Available for 7 days
 
 #### 1.6 Build Web Job
-**Duration**: ~8-12 minutes  
+**Duration**: ~8-12 minutes
 **Purpose**: Validate web build process
 
 **Dependencies**: Requires `test` job to pass
@@ -165,7 +165,7 @@ Ensures code quality, runs tests, and validates builds for every code change.
 - Web build artifacts - Available for 7 days
 
 #### 1.7 Security Scan Job
-**Duration**: ~5-8 minutes  
+**Duration**: ~5-8 minutes
 **Purpose**: Security vulnerability scanning
 
 **Dependencies**: Requires `analyze` job to pass
@@ -183,7 +183,7 @@ Ensures code quality, runs tests, and validates builds for every code change.
 - Audits dependencies for vulnerabilities
 
 #### 1.8 Report Status Job
-**Duration**: <1 minute  
+**Duration**: <1 minute
 **Purpose**: Aggregate and report overall CI status
 
 **Dependencies**: Requires all previous jobs
@@ -207,7 +207,7 @@ Build production-ready Android applications for Google Play Store distribution.
 ### Jobs Overview
 
 #### 2.1 Build Job
-**Duration**: ~15-20 minutes  
+**Duration**: ~15-20 minutes
 **Runner**: ubuntu-latest
 
 **Steps**:
@@ -261,7 +261,7 @@ Build production-ready iOS applications for Apple App Store distribution.
 ### Jobs Overview
 
 #### 3.1 Build Job
-**Duration**: ~25-35 minutes  
+**Duration**: ~25-35 minutes
 **Runner**: macos-latest (required for iOS builds)
 
 **Steps**:
@@ -310,7 +310,7 @@ Build and deploy web application to hosting platforms.
 ### Jobs Overview
 
 #### 4.1 Build and Deploy Job
-**Duration**: ~10-15 minutes  
+**Duration**: ~10-15 minutes
 **Runner**: ubuntu-latest
 
 **Steps**:
@@ -357,7 +357,6 @@ Build and deploy web application to hosting platforms.
 **Required Secrets** (configure in GitHub repository settings):
 - `SUPABASE_URL`: Supabase project URL
 - `SUPABASE_ANON_KEY`: Supabase anonymous key
-- `CODECOV_TOKEN`: Codecov upload token (optional)
 
 **Future Secrets** (for full automation):
 - Android signing: `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`
@@ -465,35 +464,35 @@ Add notification step to workflows:
 ### Common Issues
 
 #### Issue 1: Flutter Version Mismatch
-**Symptom**: Build fails with SDK version errors  
+**Symptom**: Build fails with SDK version errors
 **Solution**: Update Flutter version in workflow files
 ```yaml
 flutter-version: '3.24.0'  # Update to match local development
 ```
 
 #### Issue 2: Dependency Resolution Failures
-**Symptom**: `flutter pub get` fails  
+**Symptom**: `flutter pub get` fails
 **Solution**:
 1. Check pubspec.yaml for invalid dependencies
 2. Clear cache and retry workflow
 3. Update dependency versions
 
 #### Issue 3: Android Build Fails
-**Symptom**: Gradle build errors  
+**Symptom**: Gradle build errors
 **Solution**:
 1. Check Java version (must be 17)
 2. Verify Android SDK versions in build.gradle.kts
 3. Clear Gradle cache in workflow
 
 #### Issue 4: iOS Build Fails
-**Symptom**: CocoaPods or Xcode errors  
+**Symptom**: CocoaPods or Xcode errors
 **Solution**:
 1. Update CocoaPods: `cd ios && pod update`
 2. Check Podfile.lock compatibility
 3. Verify Xcode version in runner
 
 #### Issue 5: Test Failures in CI
-**Symptom**: Tests pass locally but fail in CI  
+**Symptom**: Tests pass locally but fail in CI
 **Solution**:
 1. Check for environment-dependent code
 2. Verify test fixtures are committed
@@ -519,7 +518,7 @@ flutter-version: '3.24.0'  # Update to match local development
 
 ### Current Optimizations
 - ✅ Flutter SDK caching enabled
-- ✅ Gradle caching enabled  
+- ✅ Gradle caching enabled
 - ✅ Parallel job execution
 - ✅ Conditional job execution
 - ✅ Artifact compression
@@ -615,5 +614,5 @@ The CI/CD pipeline is fully configured and operational. All workflows are:
 
 ---
 
-**Document Maintained By**: DevOps Team / Technical Lead  
+**Document Maintained By**: DevOps Team / Technical Lead
 **Review Frequency**: Monthly or on pipeline changes

@@ -17,8 +17,8 @@
 
 ---
 
-**Founded:** 2025  
-**Headquarters:** United States  
+**Founded:** 2025
+**Headquarters:** United States
 **Stage:** Seed Fundraising
 
 **Founders:**
@@ -129,11 +129,11 @@ Nonna is a **mobile-first platform** that combines **photo sharing, event calend
 
 #### What Makes Nonna Different
 
-✅ **All-in-One**: Photos + Calendar + Registry in one platform (competitors only do photos)  
-✅ **Private by Design**: Invite-only access with AES-256 encryption and GDPR compliance  
-✅ **Real-Time Connection**: <2 second updates via WebSocket technology (vs. competitors' 5-30 second delays)  
-✅ **Multi-Generational UX**: Simple enough for 70-year-old grandparents, modern enough for tech-savvy parents  
-✅ **Engagement-Focused**: Meaningful interactions beyond passive viewing  
+✅ **All-in-One**: Photos + Calendar + Registry in one platform (competitors only do photos)
+✅ **Private by Design**: Invite-only access with AES-256 encryption and GDPR compliance
+✅ **Real-Time Connection**: <2 second updates via WebSocket technology (vs. competitors' 5-30 second delays)
+✅ **Multi-Generational UX**: Simple enough for 70-year-old grandparents, modern enough for tech-savvy parents
+✅ **Engagement-Focused**: Meaningful interactions beyond passive viewing
 ✅ **Mobile-First**: Built with Flutter for seamless iOS and Android experiences
 
 **Nonna doesn't replace social media—it replaces the fragmented, frustrating experience of managing family communication across multiple platforms.**
@@ -538,7 +538,7 @@ Nonna is a **mobile-first platform** that combines **photo sharing, event calend
 - App store ratings target: 4.5+ stars through beta user satisfaction
 
 **2. Content Marketing & SEO**
-- Blog posts on nonna.app: 
+- Blog posts on nonna.app:
   - "Why We Stopped Posting Baby Photos on Facebook"
   - "The Ultimate Baby Registry Checklist (and How to Share It Easily)"
   - "How to Keep Long-Distance Grandparents Connected to Baby"
@@ -823,7 +823,7 @@ Nonna is a **mobile-first platform** that combines **photo sharing, event calend
 
 **Raising:** $500,000 - $750,000
 
-**Valuation:** $3M - $4M pre-money valuation  
+**Valuation:** $3M - $4M pre-money valuation
 *(Seed stage SaaS companies at product-building phase typically valued at 5-10x capital raised)*
 
 **Use of Funds:** 18-24 month runway to achieve product-market fit and scale to Series A milestones
@@ -1001,8 +1001,8 @@ We're raising **$500K-750K in seed funding** to:
 - [Founder Name 1] - CEO: [email@nonna.app]
 - [Founder Name 2] - CTO: [email@nonna.app]
 
-**Website:** nonna.app  
-**Email:** invest@nonna.app  
+**Website:** nonna.app
+**Email:** invest@nonna.app
 **LinkedIn:** linkedin.com/company/nonna-app
 
 **We'd love to discuss how Nonna can transform family communication and why now is the time to invest.**
@@ -1022,6 +1022,6 @@ We're raising **$500K-750K in seed funding** to:
 
 *This investment deck is confidential and intended solely for prospective investors. It contains forward-looking statements based on current assumptions and market research. Actual results may vary.*
 
-**Document Version:** 1.0  
-**Last Updated:** January 9, 2026  
+**Document Version:** 1.0
+**Last Updated:** January 9, 2026
 **Status:** Final

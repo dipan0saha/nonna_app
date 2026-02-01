@@ -20,7 +20,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.1'
+          flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
 
@@ -72,7 +72,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.1'
+          flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
 
@@ -80,15 +80,25 @@ jobs:
         run: flutter pub get
 
       - name: Run tests with coverage
-        run: flutter test --coverage --reporter expanded
+        run: flutter test --coverage --reporter expanded --reporter=json > test-results.json
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
         with:
-          files: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
+          name: Test Results
+          path: 'test-results.json'
+          reporter: flutter-json
+          fail-on-error: true
+
+      - name: Coverage Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Coverage Report
+          path: 'coverage/lcov.info'
+          reporter: lcov
+          fail-on-error: false
 
       - name: Generate coverage report
         if: always()
@@ -118,7 +128,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.1'
+          flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
 
@@ -153,7 +163,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.1'
+          flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
 
@@ -183,7 +193,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.1'
+          flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
 
@@ -218,7 +228,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.1'
+          flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
 
@@ -248,7 +258,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.1'
+          flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
 
@@ -269,7 +279,7 @@ jobs:
   report-status:
     name: Report CI Status
     runs-on: ubuntu-latest
-    needs: [analyze, test, integration-test, build-android, build-web, security-scan]
+    needs: [analyze, test, integration-test, build-android, build-web, security-scan, build-ios]
     if: always()
 
     steps:
