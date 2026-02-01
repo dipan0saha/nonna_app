@@ -21,7 +21,7 @@ void main() {
     group('sanitizeHtml', () {
       test('strips tags and encodes special characters', () {
         expect(Sanitizers.sanitizeHtml('<script>alert("xss")</script>'), 
-            '&lt;scriptalert(&quot;xss&quot;)&lt;&#x2F;script');
+            'alert(&quot;xss&quot;)');
       });
     });
 

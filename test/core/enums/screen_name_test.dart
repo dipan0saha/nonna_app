@@ -25,7 +25,7 @@ void main() {
 
       test('fromJson is case insensitive', () {
         expect(ScreenName.fromJson('HOME'), ScreenName.home);
-        expect(ScreenName.fromJson('Calendar'), ScreenName.home);
+        expect(ScreenName.fromJson('Calendar'), ScreenName.calendar);
       });
 
       test('fromJson defaults to home for invalid input', () {

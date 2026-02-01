@@ -190,7 +190,7 @@ void main() {
         const white = Color(0xFFFFFFFF);
         
         final description = ColorContrastValidator.describeContrast(lightGray, white);
-        expect(description, contains('Poor'));
+        expect(description, contains('Very poor'));
       });
     });
 
