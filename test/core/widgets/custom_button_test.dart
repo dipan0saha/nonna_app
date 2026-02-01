@@ -165,7 +165,8 @@ void main() {
     });
 
     group('Loading state', () {
-      testWidgets('shows loading indicator when isLoading is true', (tester) async {
+      testWidgets('shows loading indicator when isLoading is true',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -275,7 +276,8 @@ void main() {
     });
 
     group('Full width', () {
-      testWidgets('expands to full width when fullWidth is true', (tester) async {
+      testWidgets('expands to full width when fullWidth is true',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -289,10 +291,12 @@ void main() {
         );
 
         final sizedBox = tester.widget<SizedBox>(
-          find.ancestor(
-            of: find.byType(ElevatedButton),
-            matching: find.byType(SizedBox),
-          ).first,
+          find
+              .ancestor(
+                of: find.byType(ElevatedButton),
+                matching: find.byType(SizedBox),
+              )
+              .first,
         );
 
         expect(sizedBox.width, equals(double.infinity));
@@ -312,10 +316,12 @@ void main() {
         );
 
         final sizedBox = tester.widget<SizedBox>(
-          find.ancestor(
-            of: find.byType(ElevatedButton),
-            matching: find.byType(SizedBox),
-          ).first,
+          find
+              .ancestor(
+                of: find.byType(ElevatedButton),
+                matching: find.byType(SizedBox),
+              )
+              .first,
         );
 
         expect(sizedBox.width, isNull);
@@ -474,7 +480,8 @@ void main() {
       expect(button.color, equals(customColor));
     });
 
-    testWidgets('uses theme primary color when color not specified', (tester) async {
+    testWidgets('uses theme primary color when color not specified',
+        (tester) async {
       const primaryColor = Colors.purple;
 
       await tester.pumpWidget(

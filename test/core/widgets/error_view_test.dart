@@ -161,10 +161,11 @@ void main() {
         ),
       );
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Retry'));
+      // Tap on the retry text (which is inside the button)
+      await tester.tap(find.text('Retry'));
       expect(callCount, equals(1));
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Retry'));
+      await tester.tap(find.text('Retry'));
       expect(callCount, equals(2));
     });
   });

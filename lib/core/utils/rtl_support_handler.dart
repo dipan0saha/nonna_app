@@ -93,9 +93,7 @@ class RTLSupportHandler {
   ///
   /// [languageCode] The language code
   static TextDirection getTextDirectionFromLanguage(String languageCode) {
-    return isRTLLanguage(languageCode)
-        ? TextDirection.rtl
-        : TextDirection.ltr;
+    return isRTLLanguage(languageCode) ? TextDirection.rtl : TextDirection.ltr;
   }
 
   /// Get the text align based on text direction
@@ -431,7 +429,7 @@ class RTLSupportHandler {
 
     // Mirror border radius if present
     BorderRadiusGeometry? mirroredBorderRadius;
-    if (decoration.borderRadius != null && 
+    if (decoration.borderRadius != null &&
         decoration.borderRadius is BorderRadius) {
       mirroredBorderRadius = mirrorBorderRadius(
         context,

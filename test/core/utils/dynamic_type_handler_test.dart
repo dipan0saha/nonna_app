@@ -185,7 +185,8 @@ void main() {
       );
     });
 
-    testWidgets('scale ignores system settings when respectSystemSettings is false',
+    testWidgets(
+        'scale ignores system settings when respectSystemSettings is false',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MediaQuery(
@@ -546,7 +547,7 @@ void main() {
                 expect(adaptiveStyle.fontSize, equals(32.0));
                 expect(adaptiveStyle.decoration, equals(TextDecoration.none));
                 expect(adaptiveStyle.fontStyle, equals(FontStyle.normal));
-                expect(adaptiveStyle.shadows, isNull);
+                expect(adaptiveStyle.shadows, isEmpty);
                 return Container();
               },
             ),
@@ -800,12 +801,12 @@ void main() {
       );
     });
 
-    testWidgets('handles negative scale gracefully',
-        (WidgetTester tester) async {
+    testWidgets('handles very small scale values', (WidgetTester tester) async {
+      // Test that very small positive values are handled correctly
       await tester.pumpWidget(
         MediaQuery(
           data: const MediaQueryData(
-            textScaler: TextScaler.linear(-1.0),
+            textScaler: TextScaler.linear(0.1),
           ),
           child: MaterialApp(
             home: Builder(

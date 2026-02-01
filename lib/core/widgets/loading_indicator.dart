@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 /// A consistent loading indicator with circular progress indicator.
-/// 
+///
 /// Provides a customizable loading spinner that can be used throughout
 /// the application to indicate loading states.
 class LoadingIndicator extends StatelessWidget {
   /// Creates a loading indicator.
-  /// 
+  ///
   /// The [size] determines the diameter of the circular progress indicator.
   /// The [color] can be customized to match different themes.
   /// The [strokeWidth] controls the thickness of the spinner line.
@@ -44,11 +44,11 @@ class LoadingIndicator extends StatelessWidget {
 }
 
 /// A loading overlay that can be displayed over content.
-/// 
+///
 /// Shows a semi-transparent backdrop with a loading indicator in the center.
 class LoadingOverlay extends StatelessWidget {
   /// Creates a loading overlay.
-  /// 
+  ///
   /// The [isLoading] parameter controls whether the overlay is visible.
   /// The [child] is the widget to display behind the overlay.
   const LoadingOverlay({
@@ -78,7 +78,7 @@ class LoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             child: LoadingIndicator(
               size: size,
               color: color,

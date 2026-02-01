@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:nonna_app/l10n/l10n.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:nonna_app/l10n/l10n.dart';
 
 void main() {
   group('L10n', () {
@@ -42,19 +42,14 @@ void main() {
     });
 
     group('localeResolutionCallback', () {
-      test('should return fallback when no locales provided', () {
+      test('should return fallback when no locale provided', () {
         final result = L10n.localeResolutionCallback(null, L10n.all);
-        expect(result, equals(L10n.fallback));
-      });
-
-      test('should return fallback when empty locales list', () {
-        final result = L10n.localeResolutionCallback([], L10n.all);
         expect(result, equals(L10n.fallback));
       });
 
       test('should return exact match when available', () {
         final result = L10n.localeResolutionCallback(
-          [const Locale('es', 'ES')],
+          const Locale('es', 'ES'),
           [const Locale('en'), const Locale('es', 'ES')],
         );
         expect(result, equals(const Locale('es', 'ES')));
@@ -62,7 +57,7 @@ void main() {
 
       test('should return language match when country code differs', () {
         final result = L10n.localeResolutionCallback(
-          [const Locale('es', 'MX')],
+          const Locale('es', 'MX'),
           [const Locale('en'), const Locale('es')],
         );
         expect(result, equals(const Locale('es')));
@@ -70,18 +65,10 @@ void main() {
 
       test('should return fallback for unsupported locale', () {
         final result = L10n.localeResolutionCallback(
-          [const Locale('fr')],
+          const Locale('fr'),
           L10n.all,
         );
         expect(result, equals(L10n.fallback));
-      });
-
-      test('should prioritize first matching locale', () {
-        final result = L10n.localeResolutionCallback(
-          [const Locale('es'), const Locale('en')],
-          L10n.all,
-        );
-        expect(result, equals(const Locale('es')));
       });
     });
   });
@@ -91,7 +78,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -115,7 +102,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('es'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -135,11 +122,12 @@ void main() {
       expect(find.text('Bienvenido'), findsOneWidget);
     });
 
-    testWidgets('should have all common translations in English', (tester) async {
+    testWidgets('should have all common translations in English',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -171,11 +159,12 @@ void main() {
       expect(find.text('Retry'), findsOneWidget);
     });
 
-    testWidgets('should have all common translations in Spanish', (tester) async {
+    testWidgets('should have all common translations in Spanish',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('es'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -211,7 +200,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -231,11 +220,12 @@ void main() {
       expect(find.text('Hello, Maria!'), findsOneWidget);
     });
 
-    testWidgets('should handle parametrized messages in Spanish', (tester) async {
+    testWidgets('should handle parametrized messages in Spanish',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('es'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -259,7 +249,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -291,7 +281,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('es'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -324,7 +314,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             locale: locale,
-            localizationsDelegates: const [
+            localizationsDelegates: [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -347,18 +337,19 @@ void main() {
         );
 
         await tester.pumpAndSettle();
-        
+
         // Verify that error translations exist (not checking exact text)
         expect(find.byType(Text), findsNWidgets(3));
       }
     });
 
-    testWidgets('should have navigation labels in both locales', (tester) async {
+    testWidgets('should have navigation labels in both locales',
+        (tester) async {
       for (final locale in L10n.all) {
         await tester.pumpWidget(
           MaterialApp(
             locale: locale,
-            localizationsDelegates: const [
+            localizationsDelegates: [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -383,7 +374,7 @@ void main() {
         );
 
         await tester.pumpAndSettle();
-        
+
         // Verify that navigation translations exist
         expect(find.byType(Text), findsNWidgets(5));
       }
@@ -394,7 +385,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             locale: locale,
-            localizationsDelegates: const [
+            localizationsDelegates: [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -418,7 +409,7 @@ void main() {
         );
 
         await tester.pumpAndSettle();
-        
+
         // Verify that auth translations exist
         expect(find.byType(Text), findsNWidgets(4));
       }
@@ -433,7 +424,7 @@ void main() {
           builder: (context, locale, child) {
             return MaterialApp(
               locale: locale,
-              localizationsDelegates: const [
+              localizationsDelegates: [
                 AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
@@ -478,7 +469,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -509,7 +500,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -539,7 +530,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,

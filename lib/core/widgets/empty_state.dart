@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 /// A reusable empty state widget for displaying when there's no data.
-/// 
+///
 /// This widget provides a consistent way to show empty states throughout
 /// the application with an icon, message, and optional call-to-action button.
 class EmptyState extends StatelessWidget {
   /// Creates an empty state widget.
-  /// 
+  ///
   /// The [message] is the main message to display.
   /// The [icon] is the icon to show above the message.
   /// The [onAction] callback is invoked when the action button is pressed.
@@ -41,7 +41,7 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -51,7 +51,7 @@ class EmptyState extends StatelessWidget {
             Icon(
               icon,
               size: 80,
-              color: theme.colorScheme.onSurface.withOpacity(0.3),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 16),
             if (title != null) ...[
@@ -67,7 +67,7 @@ class EmptyState extends StatelessWidget {
             Text(
               message,
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -76,7 +76,7 @@ class EmptyState extends StatelessWidget {
               Text(
                 description!,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.5),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -119,7 +119,7 @@ class CompactEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -129,13 +129,13 @@ class CompactEmptyState extends StatelessWidget {
             Icon(
               icon,
               size: 48,
-              color: theme.colorScheme.onSurface.withOpacity(0.3),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 8),
             Text(
               message,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.5),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
               ),
               textAlign: TextAlign.center,
             ),

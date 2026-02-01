@@ -174,7 +174,7 @@ class DynamicTypeHandler {
     }
 
     final scaleFactor = getClampedTextScaleFactor(context);
-    
+
     // Use square root for more subtle padding scaling
     final paddingScale = (scaleFactor - 1.0) * 0.5 + 1.0;
 
@@ -232,7 +232,7 @@ class DynamicTypeHandler {
   }) {
     final scaleFactor = getClampedTextScaleFactor(context);
     final scaledSize = baseSize * scaleFactor;
-    
+
     // Never go below WCAG minimum
     return scaledSize < 44.0 ? 44.0 : scaledSize;
   }
@@ -263,7 +263,7 @@ class DynamicTypeHandler {
       return scaledStyle.copyWith(
         decoration: TextDecoration.none,
         fontStyle: FontStyle.normal,
-        shadows: null,
+        shadows: const [],
       );
     }
 
@@ -285,7 +285,7 @@ class DynamicTypeHandler {
   }) {
     final scaleFactor = getClampedTextScaleFactor(context);
     final scaledSize = baseIconSize * scaleFactor;
-    
+
     return scaledSize.clamp(baseIconSize, maxIconSize);
   }
 

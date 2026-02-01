@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// A shimmer loading placeholder with customizable shapes and sizes.
-/// 
+///
 /// Provides skeleton loading screens with shimmer animation for
 /// better user experience during data loading.
 class ShimmerPlaceholder extends StatelessWidget {
   /// Creates a shimmer placeholder.
-  /// 
+  ///
   /// The [width] and [height] define the size of the placeholder.
   /// The [shape] determines whether it's rectangular or circular.
   const ShimmerPlaceholder({
@@ -34,14 +34,10 @@ class ShimmerPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Shimmer.fromColors(
-      baseColor: isDark
-          ? Colors.grey[800]!
-          : Colors.grey[300]!,
-      highlightColor: isDark
-          ? Colors.grey[700]!
-          : Colors.grey[100]!,
+      baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+      highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
       child: Container(
         width: width,
         height: height,
@@ -83,7 +79,8 @@ class ShimmerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding:
+          padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

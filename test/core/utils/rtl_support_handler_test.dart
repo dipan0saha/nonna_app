@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/utils/rtl_support_handler.dart';
 
@@ -43,9 +44,9 @@ void main() {
     testWidgets('isRTL returns true for Arabic locale',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(RTLSupportHandler.isRTL(context), isTrue);
             },
@@ -57,9 +58,9 @@ void main() {
     testWidgets('isRTL returns false for English locale',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('en'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('en'),
+          _TestWidget(
             callback: (context) {
               expect(RTLSupportHandler.isRTL(context), isFalse);
             },
@@ -71,9 +72,9 @@ void main() {
     testWidgets('isRTL returns true for Hebrew locale',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('he'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('he'),
+          _TestWidget(
             callback: (context) {
               expect(RTLSupportHandler.isRTL(context), isTrue);
             },
@@ -87,9 +88,9 @@ void main() {
     testWidgets('getTextDirection returns RTL for Arabic',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getTextDirection(context),
@@ -104,9 +105,9 @@ void main() {
     testWidgets('getTextDirection returns LTR for English',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('en'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('en'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getTextDirection(context),
@@ -156,9 +157,9 @@ void main() {
     testWidgets('getTextAlign returns correct alignment for RTL start',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getTextAlign(
@@ -176,9 +177,9 @@ void main() {
     testWidgets('getTextAlign returns correct alignment for RTL end',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getTextAlign(
@@ -196,9 +197,9 @@ void main() {
     testWidgets('getTextAlign returns correct alignment for LTR start',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('en'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('en'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getTextAlign(
@@ -216,9 +217,9 @@ void main() {
     testWidgets('getTextAlign preserves center alignment',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getTextAlign(
@@ -237,9 +238,9 @@ void main() {
   group('RTLSupportHandler - Mirror Value Tests', () {
     testWidgets('mirror negates value for RTL', (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(RTLSupportHandler.mirror(context, 10.0), equals(-10.0));
             },
@@ -248,12 +249,11 @@ void main() {
       );
     });
 
-    testWidgets('mirror preserves value for LTR',
-        (WidgetTester tester) async {
+    testWidgets('mirror preserves value for LTR', (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('en'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('en'),
+          _TestWidget(
             callback: (context) {
               expect(RTLSupportHandler.mirror(context, 10.0), equals(10.0));
             },
@@ -269,9 +269,9 @@ void main() {
       const insets = EdgeInsets.only(left: 10, top: 20, right: 30, bottom: 40);
 
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final mirrored = RTLSupportHandler.mirrorEdgeInsets(
                 context,
@@ -292,9 +292,9 @@ void main() {
       const insets = EdgeInsets.only(left: 10, top: 20, right: 30, bottom: 40);
 
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('en'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('en'),
+          _TestWidget(
             callback: (context) {
               final mirrored = RTLSupportHandler.mirrorEdgeInsets(
                 context,
@@ -317,15 +317,16 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final resolved = RTLSupportHandler.mirrorEdgeInsetsDirectional(
                 context,
                 insets,
               );
-              expect(resolved.right, equals(10.0)); // start becomes right in RTL
+              expect(
+                  resolved.right, equals(10.0)); // start becomes right in RTL
               expect(resolved.left, equals(30.0)); // end becomes left in RTL
               expect(resolved.top, equals(20.0));
               expect(resolved.bottom, equals(40.0));
@@ -342,9 +343,9 @@ void main() {
       const alignment = Alignment(0.5, 0.3);
 
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final mirrored = RTLSupportHandler.getAlignment(
                 context,
@@ -362,9 +363,9 @@ void main() {
       const alignment = Alignment(0.5, 0.3);
 
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('en'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('en'),
+          _TestWidget(
             callback: (context) {
               final result = RTLSupportHandler.getAlignment(
                 context,
@@ -377,13 +378,14 @@ void main() {
       );
     });
 
-    testWidgets('resolveAlignment works correctly', (WidgetTester tester) async {
+    testWidgets('resolveAlignment works correctly',
+        (WidgetTester tester) async {
       const alignment = AlignmentDirectional.centerStart;
 
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final resolved = RTLSupportHandler.resolveAlignment(
                 context,
@@ -399,9 +401,9 @@ void main() {
     testWidgets('getStartAlignment returns correct value for RTL',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getStartAlignment(context),
@@ -416,9 +418,9 @@ void main() {
     testWidgets('getEndAlignment returns correct value for RTL',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getEndAlignment(context),
@@ -455,9 +457,9 @@ void main() {
     testWidgets('mirrorIconIfNeeded returns same icon',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final result = RTLSupportHandler.mirrorIconIfNeeded(
                 context,
@@ -475,9 +477,9 @@ void main() {
     testWidgets('mirrorInRTL creates Transform for RTL',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('ar'),
-          home: Builder(
+        _buildApp(
+          const Locale('ar'),
+          Builder(
             builder: (context) {
               return RTLSupportHandler.mirrorInRTL(
                 context: context,
@@ -488,15 +490,20 @@ void main() {
         ),
       );
 
-      expect(find.byType(Transform), findsOneWidget);
+      // Should wrap in Transform for RTL
+      final transform = find.ancestor(
+        of: find.byType(Icon),
+        matching: find.byType(Transform),
+      );
+      expect(transform, findsOneWidget);
     });
 
     testWidgets('mirrorInRTL returns child directly for LTR',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('en'),
-          home: Builder(
+        _buildApp(
+          const Locale('en'),
+          Builder(
             builder: (context) {
               return RTLSupportHandler.mirrorInRTL(
                 context: context,
@@ -514,9 +521,9 @@ void main() {
     testWidgets('mirrorInRTL respects shouldMirror flag',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('ar'),
-          home: Builder(
+        _buildApp(
+          const Locale('ar'),
+          Builder(
             builder: (context) {
               return RTLSupportHandler.mirrorInRTL(
                 context: context,
@@ -536,9 +543,9 @@ void main() {
     testWidgets('withDirectionality creates Directionality widget',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('ar'),
-          home: Builder(
+        _buildApp(
+          const Locale('ar'),
+          Builder(
             builder: (context) {
               return RTLSupportHandler.withDirectionality(
                 context: context,
@@ -549,15 +556,20 @@ void main() {
         ),
       );
 
-      expect(find.byType(Directionality), findsOneWidget);
+      // Should find Directionality wrapping the Text widget
+      final directionality = find.ancestor(
+        of: find.text('Test'),
+        matching: find.byType(Directionality),
+      );
+      expect(directionality, findsWidgets);
     });
 
     testWidgets('withDirectionality respects override direction',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('ar'),
-          home: Builder(
+        _buildApp(
+          const Locale('ar'),
+          Builder(
             builder: (context) {
               return RTLSupportHandler.withDirectionality(
                 context: context,
@@ -569,8 +581,17 @@ void main() {
         ),
       );
 
-      final directionality =
-          tester.widget<Directionality>(find.byType(Directionality));
+      // Find the Directionality widget wrapping the Text
+      final directionalityFinder = find.ancestor(
+        of: find.text('Test'),
+        matching: find.byType(Directionality),
+      );
+      expect(directionalityFinder, findsWidgets);
+
+      // Get the first Directionality ancestor of the Text widget
+      final directionality = tester.widget<Directionality>(
+        directionalityFinder.first,
+      );
       expect(directionality.textDirection, equals(TextDirection.ltr));
     });
   });
@@ -579,9 +600,9 @@ void main() {
     testWidgets('getCrossAxisAlignment returns correct value for RTL start',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getCrossAxisAlignment(
@@ -599,9 +620,9 @@ void main() {
     testWidgets('getMainAxisAlignment returns correct value for RTL end',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getMainAxisAlignment(
@@ -619,9 +640,9 @@ void main() {
     testWidgets('getCrossAxisAlignment preserves center',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               expect(
                 RTLSupportHandler.getCrossAxisAlignment(
@@ -648,9 +669,9 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final mirrored = RTLSupportHandler.mirrorBorderRadius(
                 context,
@@ -679,9 +700,9 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final mirrored = RTLSupportHandler.mirrorDecoration(
                 context,
@@ -701,9 +722,9 @@ void main() {
     testWidgets('wrapWithDirectionalMarkers adds RTL markers',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final wrapped = RTLSupportHandler.wrapWithDirectionalMarkers(
                 context,
@@ -720,9 +741,9 @@ void main() {
     testWidgets('wrapWithDirectionalMarkers adds LTR markers',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('en'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('en'),
+          _TestWidget(
             callback: (context) {
               final wrapped = RTLSupportHandler.wrapWithDirectionalMarkers(
                 context,
@@ -739,9 +760,9 @@ void main() {
     testWidgets('wrapWithDirectionalMarkers handles forceLTR',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          locale: Locale('ar'),
-          home: _TestWidget(
+        _buildApp(
+          const Locale('ar'),
+          _TestWidget(
             callback: (context) {
               final wrapped = RTLSupportHandler.wrapWithDirectionalMarkers(
                 context,
@@ -813,6 +834,26 @@ void main() {
       expect(RTLSupportHandler.rtlLanguages, isNot(contains('es')));
     });
   });
+}
+
+// Helper function to create MaterialApp with proper localization
+Widget _buildApp(Locale locale, Widget home) {
+  return MaterialApp(
+    locale: locale,
+    localizationsDelegates: const [
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: const [
+      Locale('en'),
+      Locale('ar'),
+      Locale('he'),
+      Locale('fa'),
+      Locale('ur'),
+    ],
+    home: home,
+  );
 }
 
 // Helper widget for testing context-dependent methods

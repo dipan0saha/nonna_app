@@ -5,7 +5,7 @@ import '../core/widgets/empty_state.dart';
 import '../core/widgets/error_view.dart';
 
 /// Example widget demonstrating localization usage with Phase 1 widgets.
-/// 
+///
 /// This example shows how to use the AppLocalizations class to access
 /// localized strings throughout your app.
 class LocalizationExampleScreen extends StatelessWidget {
@@ -15,7 +15,7 @@ class LocalizationExampleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Access localized strings
     final l10n = AppLocalizations.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.appTitle),
@@ -33,7 +33,7 @@ class LocalizationExampleScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(l10n.helloUser('Maria')),
             const SizedBox(height: 24),
-            
+
             // Common buttons with localization
             Text(
               'Common Buttons:',
@@ -62,7 +62,7 @@ class LocalizationExampleScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            
+
             // Empty state example
             Text(
               'Empty State Example:',
@@ -80,7 +80,7 @@ class LocalizationExampleScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Error view example
             Text(
               'Error View Example:',
@@ -96,7 +96,7 @@ class LocalizationExampleScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Plural forms example
             Text(
               'Plural Forms:',
@@ -115,7 +115,7 @@ class LocalizationExampleScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            
+
             // Authentication strings
             Text(
               'Authentication:',
@@ -148,7 +148,7 @@ class LocalizationExampleScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            
+
             // Navigation labels
             Text(
               'Navigation:',
@@ -185,7 +185,7 @@ class LocalizationExampleScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            
+
             // Recipe details
             Text(
               'Recipe Details:',
@@ -207,7 +207,8 @@ class LocalizationExampleScreen extends StatelessWidget {
                       children: [
                         const Icon(Icons.timer, size: 16),
                         const SizedBox(width: 4),
-                        Text('${l10n.recipe_prep_time}: ${l10n.plurals_minutes(15)}'),
+                        Text(
+                            '${l10n.recipe_prep_time}: ${l10n.plurals_minutes(15)}'),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -223,7 +224,8 @@ class LocalizationExampleScreen extends StatelessWidget {
                       children: [
                         const Icon(Icons.trending_up, size: 16),
                         const SizedBox(width: 4),
-                        Text('${l10n.recipe_difficulty}: ${l10n.recipe_difficulty_easy}'),
+                        Text(
+                            '${l10n.recipe_difficulty}: ${l10n.recipe_difficulty_easy}'),
                       ],
                     ),
                   ],
@@ -250,7 +252,7 @@ class LocaleSwitcher extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final currentLocale = Localizations.localeOf(context);
-    
+
     return PopupMenuButton<Locale>(
       icon: const Icon(Icons.language),
       tooltip: l10n.settings_language,

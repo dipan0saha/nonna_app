@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Supported locales for the application.
-/// 
+///
 /// This class contains the list of locales that the application supports
 /// and provides helper methods for locale management.
 class L10n {
@@ -47,31 +47,27 @@ class L10n {
   }
 
   /// Get the best matching locale from the supported locales
-  /// based on the user's preferred locales
+  /// based on the user's preferred locale
   static Locale? localeResolutionCallback(
-    List<Locale>? locales,
+    Locale? locale,
     Iterable<Locale> supportedLocales,
   ) {
-    if (locales == null || locales.isEmpty) {
+    if (locale == null) {
       return fallback;
     }
 
     // Try to find an exact match
-    for (final locale in locales) {
-      for (final supportedLocale in supportedLocales) {
-        if (supportedLocale.languageCode == locale.languageCode &&
-            supportedLocale.countryCode == locale.countryCode) {
-          return supportedLocale;
-        }
+    for (final supportedLocale in supportedLocales) {
+      if (supportedLocale.languageCode == locale.languageCode &&
+          supportedLocale.countryCode == locale.countryCode) {
+        return supportedLocale;
       }
     }
 
     // Try to find a language match (ignoring country)
-    for (final locale in locales) {
-      for (final supportedLocale in supportedLocales) {
-        if (supportedLocale.languageCode == locale.languageCode) {
-          return supportedLocale;
-        }
+    for (final supportedLocale in supportedLocales) {
+      if (supportedLocale.languageCode == locale.languageCode) {
+        return supportedLocale;
       }
     }
 
@@ -82,7 +78,7 @@ class L10n {
   /// Get locale from language code string
   static Locale? fromLanguageCode(String? code) {
     if (code == null) return null;
-    
+
     try {
       return all.firstWhere(
         (locale) => locale.languageCode == code,

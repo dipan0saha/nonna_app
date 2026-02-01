@@ -26,10 +26,12 @@ void main() {
       );
 
       final sizedBox = tester.widget<SizedBox>(
-        find.ancestor(
-          of: find.byType(CircularProgressIndicator),
-          matching: find.byType(SizedBox),
-        ).first,
+        find
+            .ancestor(
+              of: find.byType(CircularProgressIndicator),
+              matching: find.byType(SizedBox),
+            )
+            .first,
       );
 
       expect(sizedBox.width, equals(40.0));
@@ -48,10 +50,12 @@ void main() {
       );
 
       final sizedBox = tester.widget<SizedBox>(
-        find.ancestor(
-          of: find.byType(CircularProgressIndicator),
-          matching: find.byType(SizedBox),
-        ).first,
+        find
+            .ancestor(
+              of: find.byType(CircularProgressIndicator),
+              matching: find.byType(SizedBox),
+            )
+            .first,
       );
 
       expect(sizedBox.width, equals(customSize));
@@ -73,11 +77,13 @@ void main() {
         find.byType(CircularProgressIndicator),
       );
 
-      final valueColor = progressIndicator.valueColor as AlwaysStoppedAnimation<Color>;
+      final valueColor =
+          progressIndicator.valueColor as AlwaysStoppedAnimation<Color>;
       expect(valueColor.value, equals(customColor));
     });
 
-    testWidgets('uses theme primary color when color not specified', (tester) async {
+    testWidgets('uses theme primary color when color not specified',
+        (tester) async {
       const primaryColor = Colors.blue;
 
       await tester.pumpWidget(
@@ -95,7 +101,8 @@ void main() {
         find.byType(CircularProgressIndicator),
       );
 
-      final valueColor = progressIndicator.valueColor as AlwaysStoppedAnimation<Color>;
+      final valueColor =
+          progressIndicator.valueColor as AlwaysStoppedAnimation<Color>;
       expect(valueColor.value, equals(primaryColor));
     });
 
@@ -154,7 +161,8 @@ void main() {
       expect(find.text(childText), findsOneWidget);
     });
 
-    testWidgets('shows loading indicator when isLoading is true', (tester) async {
+    testWidgets('shows loading indicator when isLoading is true',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -170,7 +178,8 @@ void main() {
       expect(find.byType(Container), findsWidgets);
     });
 
-    testWidgets('hides loading indicator when isLoading is false', (tester) async {
+    testWidgets('hides loading indicator when isLoading is false',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -185,7 +194,8 @@ void main() {
       expect(find.byType(LoadingIndicator), findsNothing);
     });
 
-    testWidgets('displays overlay with semi-transparent background', (tester) async {
+    testWidgets('displays overlay with semi-transparent background',
+        (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -198,14 +208,16 @@ void main() {
       );
 
       final container = tester.widget<Container>(
-        find.ancestor(
-          of: find.byType(LoadingIndicator),
-          matching: find.byType(Container),
-        ).first,
+        find
+            .ancestor(
+              of: find.byType(LoadingIndicator),
+              matching: find.byType(Container),
+            )
+            .first,
       );
 
       final color = container.color as Color;
-      expect(color.alpha, lessThan(255));
+      expect((color.a * 255.0).round().clamp(0, 255), lessThan(255));
     });
 
     testWidgets('uses custom size for loading indicator', (tester) async {
@@ -264,7 +276,12 @@ void main() {
         ),
       );
 
-      expect(find.byType(Stack), findsOneWidget);
+      // Should have a Stack that contains both the child and the loading indicator
+      final stack = find.ancestor(
+        of: find.text('Content'),
+        matching: find.byType(Stack),
+      );
+      expect(stack, findsOneWidget);
     });
   });
 }

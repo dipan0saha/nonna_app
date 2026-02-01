@@ -94,7 +94,8 @@ void main() {
       expect(find.text(description), findsOneWidget);
     });
 
-    testWidgets('displays action button when onAction and actionLabel provided', (tester) async {
+    testWidgets('displays action button when onAction and actionLabel provided',
+        (tester) async {
       const actionLabel = 'Add Item';
       var actionTapped = false;
 

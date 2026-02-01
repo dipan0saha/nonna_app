@@ -4,21 +4,21 @@ import 'package:flutter/material.dart';
 enum ButtonVariant {
   /// Primary button with filled background
   primary,
-  
+
   /// Secondary button with outlined style
   secondary,
-  
+
   /// Tertiary button with text style
   tertiary,
 }
 
 /// A custom branded button component with multiple variants.
-/// 
+///
 /// Supports primary, secondary, and tertiary styles, loading states,
 /// disabled states, and optional icons.
 class CustomButton extends StatelessWidget {
   /// Creates a custom button.
-  /// 
+  ///
   /// The [onPressed] callback is invoked when the button is tapped.
   /// The [label] is the text displayed on the button.
   const CustomButton({
@@ -57,7 +57,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDisabled = onPressed == null || isLoading;
-    
+
     Widget buttonChild = isLoading
         ? SizedBox(
             width: 20,
@@ -81,8 +81,8 @@ class CustomButton extends StatelessWidget {
             ],
           );
 
-    final effectivePadding = padding ??
-        const EdgeInsets.symmetric(horizontal: 24, vertical: 12);
+    final effectivePadding =
+        padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 12);
 
     switch (variant) {
       case ButtonVariant.primary:
@@ -94,8 +94,10 @@ class CustomButton extends StatelessWidget {
               padding: effectivePadding,
               backgroundColor: theme.colorScheme.primary,
               foregroundColor: theme.colorScheme.onPrimary,
-              disabledBackgroundColor: theme.colorScheme.onSurface.withOpacity(0.12),
-              disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+              disabledBackgroundColor:
+                  theme.colorScheme.onSurface.withValues(alpha: 0.12),
+              disabledForegroundColor:
+                  theme.colorScheme.onSurface.withValues(alpha: 0.38),
             ),
             child: buttonChild,
           ),
@@ -111,10 +113,11 @@ class CustomButton extends StatelessWidget {
               foregroundColor: theme.colorScheme.primary,
               side: BorderSide(
                 color: isDisabled
-                    ? theme.colorScheme.onSurface.withOpacity(0.12)
+                    ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
                     : theme.colorScheme.primary,
               ),
-              disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+              disabledForegroundColor:
+                  theme.colorScheme.onSurface.withValues(alpha: 0.38),
             ),
             child: buttonChild,
           ),
@@ -128,7 +131,8 @@ class CustomButton extends StatelessWidget {
             style: TextButton.styleFrom(
               padding: effectivePadding,
               foregroundColor: theme.colorScheme.primary,
-              disabledForegroundColor: theme.colorScheme.onSurface.withOpacity(0.38),
+              disabledForegroundColor:
+                  theme.colorScheme.onSurface.withValues(alpha: 0.38),
             ),
             child: buttonChild,
           ),
@@ -138,9 +142,9 @@ class CustomButton extends StatelessWidget {
 
   Color _getTextColor(ThemeData theme, bool isDisabled) {
     if (isDisabled) {
-      return theme.colorScheme.onSurface.withOpacity(0.38);
+      return theme.colorScheme.onSurface.withValues(alpha: 0.38);
     }
-    
+
     switch (variant) {
       case ButtonVariant.primary:
         return theme.colorScheme.onPrimary;

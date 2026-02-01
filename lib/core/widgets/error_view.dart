@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 /// A reusable error view widget that displays error messages with a retry button.
-/// 
+///
 /// This widget provides a consistent way to display errors throughout the application,
 /// with an error icon, message, and optional retry functionality.
 class ErrorView extends StatelessWidget {
   /// Creates an error view.
-  /// 
+  ///
   /// The [message] is the error message to display.
   /// The [onRetry] callback is invoked when the user taps the retry button.
   /// If [onRetry] is null, the retry button will not be shown.
@@ -33,7 +33,7 @@ class ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -57,7 +57,7 @@ class ErrorView extends StatelessWidget {
             Text(
               message,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -100,14 +100,14 @@ class InlineErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: theme.colorScheme.error.withOpacity(0.1),
+        color: theme.colorScheme.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: theme.colorScheme.error.withOpacity(0.3),
+          color: theme.colorScheme.error.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
