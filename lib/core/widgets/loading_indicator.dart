@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:nonna_app/core/extensions/context_extensions.dart';
+
 /// A consistent loading indicator with circular progress indicator.
 ///
 /// Provides a customizable loading spinner that can be used throughout
@@ -35,7 +37,7 @@ class LoadingIndicator extends StatelessWidget {
         child: CircularProgressIndicator(
           strokeWidth: strokeWidth,
           valueColor: AlwaysStoppedAnimation<Color>(
-            color ?? Theme.of(context).colorScheme.primary,
+            color ?? context.colorScheme.primary,
           ),
         ),
       ),

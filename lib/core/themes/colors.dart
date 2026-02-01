@@ -250,4 +250,46 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  // ============================================================
+  // Surface Opacity Helper Methods
+  // ============================================================
+  // These helpers provide consistent opacity values for onSurface colors
+  // following Material Design standards for disabled/hint/secondary text
+
+  /// Get onSurface color with disabled opacity (38% - Material Design standard)
+  ///
+  /// Use for disabled text, icons, and UI elements
+  static Color onSurfaceDisabled(ColorScheme colorScheme) =>
+      colorScheme.onSurface.withValues(alpha: 0.38);
+
+  /// Get onSurface color with hint opacity (50%)
+  ///
+  /// Use for hint text, placeholder text, and subtle labels
+  static Color onSurfaceHint(ColorScheme colorScheme) =>
+      colorScheme.onSurface.withValues(alpha: 0.5);
+
+  /// Get onSurface color with secondary text opacity (70%)
+  ///
+  /// Use for secondary/supporting text that's less prominent than primary text
+  static Color onSurfaceSecondary(ColorScheme colorScheme) =>
+      colorScheme.onSurface.withValues(alpha: 0.7);
+
+  /// Get onSurface color with subtle opacity (30%)
+  ///
+  /// Use for very subtle UI elements, borders, or backgrounds
+  static Color onSurfaceSubtle(ColorScheme colorScheme) =>
+      colorScheme.onSurface.withValues(alpha: 0.3);
+
+  /// Get onSurface color with medium opacity (60%)
+  ///
+  /// Use for medium emphasis elements
+  static Color onSurfaceMedium(ColorScheme colorScheme) =>
+      colorScheme.onSurface.withValues(alpha: 0.6);
+
+  /// Get disabled background color (12% - Material Design standard)
+  ///
+  /// Use for disabled button backgrounds and inactive elements
+  static Color disabledBackground(ColorScheme colorScheme) =>
+      colorScheme.onSurface.withValues(alpha: 0.12);
 }
