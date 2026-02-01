@@ -483,4 +483,45 @@ class AccessibilityHelpers {
       child: child,
     );
   }
+
+  // ============================================================
+  // State-Specific Semantic Patterns
+  // ============================================================
+
+  /// Create semantic wrapper for error view with retry action
+  /// 
+  /// Provides accessible error messaging and retry functionality.
+  static Widget errorSemantics({
+    required Widget child,
+    required String errorMessage,
+    VoidCallback? onRetry,
+  }) {
+    return Semantics(
+      label: 'Error occurred',
+      value: errorMessage,
+      liveRegion: true,
+      button: onRetry != null,
+      onTap: onRetry,
+      hint: onRetry != null ? 'Tap to retry' : null,
+      child: child,
+    );
+  }
+
+  /// Create semantic wrapper for empty state view
+  /// 
+  /// Provides accessible empty state messaging.
+  static Widget emptyStateSemantics({
+    required Widget child,
+    required String message,
+    VoidCallback? onAction,
+  }) {
+    return Semantics(
+      label: 'No data available',
+      value: message,
+      button: onAction != null,
+      onTap: onAction,
+      hint: onAction != null ? 'Tap to take action' : null,
+      child: child,
+    );
+  }
 }

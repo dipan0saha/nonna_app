@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/extensions/context_extensions.dart';
+
 /// A shimmer loading placeholder with customizable shapes and sizes.
 ///
 /// Provides skeleton loading screens with shimmer animation for
@@ -32,8 +35,7 @@ class ShimmerPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = context.isDarkMode;
 
     return Shimmer.fromColors(
       baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
@@ -45,7 +47,7 @@ class ShimmerPlaceholder extends StatelessWidget {
           color: Colors.white,
           shape: shape,
           borderRadius: shape == BoxShape.rectangle
-              ? (borderRadius ?? BorderRadius.circular(4))
+              ? (borderRadius ?? BorderRadius.circular(AppSpacing.xs / 2))
               : null,
         ),
       ),
@@ -79,8 +81,7 @@ class ShimmerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: padding ?? AppSpacing.horizontalPadding.add(AppSpacing.verticalPadding / 2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -90,7 +91,7 @@ class ShimmerListTile extends StatelessWidget {
               height: 48,
               shape: BoxShape.circle,
             ),
-            const SizedBox(width: 16),
+            AppSpacing.horizontalGapM,
           ],
           Expanded(
             child: Column(
@@ -99,21 +100,21 @@ class ShimmerListTile extends StatelessWidget {
                 const ShimmerPlaceholder(
                   width: double.infinity,
                   height: 16,
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                  borderRadius: BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
                 ),
                 if (hasSubtitle) ...[
-                  const SizedBox(height: 8),
+                  AppSpacing.verticalGapXS,
                   ShimmerPlaceholder(
-                    width: MediaQuery.of(context).size.width * 0.6,
+                    width: context.screenWidth * 0.6,
                     height: 14,
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
+                    borderRadius: const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
                   ),
                 ],
               ],
             ),
           ),
           if (hasTrailing) ...[
-            const SizedBox(width: 16),
+            AppSpacing.horizontalGapM,
             const ShimmerPlaceholder(
               width: 24,
               height: 24,
@@ -161,7 +162,7 @@ class ShimmerCard extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      margin: margin ?? const EdgeInsets.all(8),
+      margin: margin ?? const EdgeInsets.all(AppSpacing.xs),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -171,12 +172,12 @@ class ShimmerCard extends StatelessWidget {
                 width: width ?? double.infinity,
                 height: double.infinity,
                 borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(8),
+                  top: Radius.circular(AppSpacing.xs),
                 ),
               ),
             ),
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: AppSpacing.compactPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -184,14 +185,14 @@ class ShimmerCard extends StatelessWidget {
                   ShimmerPlaceholder(
                     width: width != null ? width! * 0.7 : 200,
                     height: 16,
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
+                    borderRadius: const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
                   ),
                 if (hasSubtitle) ...[
-                  const SizedBox(height: 8),
+                  AppSpacing.verticalGapXS,
                   ShimmerPlaceholder(
                     width: width != null ? width! * 0.5 : 150,
                     height: 14,
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
+                    borderRadius: const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
                   ),
                 ],
               ],
@@ -237,7 +238,7 @@ class ShimmerText extends StatelessWidget {
           child: ShimmerPlaceholder(
             width: index == lines - 1 ? width * 0.7 : width,
             height: height,
-            borderRadius: const BorderRadius.all(Radius.circular(4)),
+            borderRadius: const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
           ),
         ),
       ),

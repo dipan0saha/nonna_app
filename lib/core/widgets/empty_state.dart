@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/utils/accessibility_helpers.dart';
+
 /// A reusable empty state widget for displaying when there's no data.
 ///
 /// This widget provides a consistent way to show empty states throughout
@@ -40,61 +45,62 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 80,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-            ),
-            const SizedBox(height: 16),
-            if (title != null) ...[
-              Text(
-                title!,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
+    return AccessibilityHelpers.emptyStateSemantics(
+      message: message,
+      child: Center(
+        child: Padding(
+          padding: AppSpacing.screenPadding,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 80,
+                color: AppColors.onSurfaceSubtle(context.colorScheme),
               ),
-              const SizedBox(height: 8),
-            ],
-            Text(
-              message,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (description != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                description!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-            if (onAction != null && actionLabel != null) ...[
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: onAction,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
+              AppSpacing.verticalGapM,
+              if (title != null) ...[
+                Text(
+                  title!,
+                  style: context.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                child: Text(actionLabel!),
+                AppSpacing.verticalGapXS,
+              ],
+              Text(
+                message,
+                style: context.textTheme.bodyLarge?.copyWith(
+                  color: AppColors.onSurfaceSecondary(context.colorScheme),
+                ),
+                textAlign: TextAlign.center,
               ),
+              if (description != null) ...[
+                AppSpacing.verticalGapXS,
+                Text(
+                  description!,
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.onSurfaceHint(context.colorScheme),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              if (onAction != null && actionLabel != null) ...[
+                AppSpacing.verticalGapL,
+                ElevatedButton(
+                  onPressed: onAction,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.l,
+                      vertical: AppSpacing.s,
+                    ),
+                  ),
+                  child: Text(actionLabel!),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -118,24 +124,22 @@ class CompactEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppSpacing.cardPadding,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
               size: 48,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+              color: AppColors.onSurfaceSubtle(context.colorScheme),
             ),
-            const SizedBox(height: 8),
+            AppSpacing.verticalGapXS,
             Text(
               message,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: AppColors.onSurfaceHint(context.colorScheme),
               ),
               textAlign: TextAlign.center,
             ),

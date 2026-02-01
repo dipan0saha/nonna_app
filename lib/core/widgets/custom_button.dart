@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/core/themes/colors.dart';
+
 /// Button style variants
 enum ButtonVariant {
   /// Primary button with filled background
@@ -55,7 +59,6 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final isDisabled = onPressed == null || isLoading;
 
     Widget buttonChild = isLoading
@@ -65,7 +68,7 @@ class CustomButton extends StatelessWidget {
             child: CircularProgressIndicator(
               strokeWidth: 2,
               valueColor: AlwaysStoppedAnimation<Color>(
-                _getTextColor(theme, isDisabled),
+                _getTextColor(context, isDisabled),
               ),
             ),
           )
@@ -75,14 +78,14 @@ class CustomButton extends StatelessWidget {
             children: [
               if (icon != null) ...[
                 Icon(icon, size: 20),
-                const SizedBox(width: 8),
+                AppSpacing.horizontalGapXS,
               ],
               Text(label),
             ],
           );
 
     final effectivePadding =
-        padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 12);
+        padding ?? const EdgeInsets.symmetric(horizontal: AppSpacing.l, vertical: AppSpacing.s);
 
     switch (variant) {
       case ButtonVariant.primary:
@@ -92,12 +95,10 @@ class CustomButton extends StatelessWidget {
             onPressed: isDisabled ? null : onPressed,
             style: ElevatedButton.styleFrom(
               padding: effectivePadding,
-              backgroundColor: theme.colorScheme.primary,
-              foregroundColor: theme.colorScheme.onPrimary,
-              disabledBackgroundColor:
-                  theme.colorScheme.onSurface.withValues(alpha: 0.12),
-              disabledForegroundColor:
-                  theme.colorScheme.onSurface.withValues(alpha: 0.38),
+              backgroundColor: context.colorScheme.primary,
+              foregroundColor: context.colorScheme.onPrimary,
+              disabledBackgroundColor: AppColors.disabledBackground(context.colorScheme),
+              disabledForegroundColor: AppColors.onSurfaceDisabled(context.colorScheme),
             ),
             child: buttonChild,
           ),
@@ -110,14 +111,13 @@ class CustomButton extends StatelessWidget {
             onPressed: isDisabled ? null : onPressed,
             style: OutlinedButton.styleFrom(
               padding: effectivePadding,
-              foregroundColor: theme.colorScheme.primary,
+              foregroundColor: context.colorScheme.primary,
               side: BorderSide(
                 color: isDisabled
-                    ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
-                    : theme.colorScheme.primary,
+                    ? AppColors.disabledBackground(context.colorScheme)
+                    : context.colorScheme.primary,
               ),
-              disabledForegroundColor:
-                  theme.colorScheme.onSurface.withValues(alpha: 0.38),
+              disabledForegroundColor: AppColors.onSurfaceDisabled(context.colorScheme),
             ),
             child: buttonChild,
           ),
@@ -130,9 +130,8 @@ class CustomButton extends StatelessWidget {
             onPressed: isDisabled ? null : onPressed,
             style: TextButton.styleFrom(
               padding: effectivePadding,
-              foregroundColor: theme.colorScheme.primary,
-              disabledForegroundColor:
-                  theme.colorScheme.onSurface.withValues(alpha: 0.38),
+              foregroundColor: context.colorScheme.primary,
+              disabledForegroundColor: AppColors.onSurfaceDisabled(context.colorScheme),
             ),
             child: buttonChild,
           ),
@@ -140,17 +139,17 @@ class CustomButton extends StatelessWidget {
     }
   }
 
-  Color _getTextColor(ThemeData theme, bool isDisabled) {
+  Color _getTextColor(BuildContext context, bool isDisabled) {
     if (isDisabled) {
-      return theme.colorScheme.onSurface.withValues(alpha: 0.38);
+      return AppColors.onSurfaceDisabled(context.colorScheme);
     }
 
     switch (variant) {
       case ButtonVariant.primary:
-        return theme.colorScheme.onPrimary;
+        return context.colorScheme.onPrimary;
       case ButtonVariant.secondary:
       case ButtonVariant.tertiary:
-        return theme.colorScheme.primary;
+        return context.colorScheme.primary;
     }
   }
 }
@@ -187,7 +186,7 @@ class CustomIconButton extends StatelessWidget {
     final button = IconButton(
       icon: Icon(icon, size: size),
       onPressed: onPressed,
-      color: color ?? Theme.of(context).colorScheme.primary,
+      color: color ?? context.colorScheme.primary,
     );
 
     if (tooltip != null) {
