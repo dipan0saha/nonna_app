@@ -1,0 +1,4 @@
+Downloading flutter_patched_sdk tools...                            65ms
+Downloading flutter_patched_sdk tools...                             8ms
+Failed to download https://storage.googleapis.com/flutter_infra_release/flutter/587c18f873b8ab57330422bce09047420d9c7f42/flutter_patched_sdk.zip. Ensure you have network connectivity and then try again.
+Exception: 403
