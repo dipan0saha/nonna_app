@@ -172,10 +172,10 @@
 ## 3.4 Theme & Styling
 
 ### 3.4.1 Core Theme
-- [ ] App Theme (`lib/core/themes/app_theme.dart`)
-- [ ] Colors (`lib/core/themes/colors.dart`)
-- [ ] Text Styles (`lib/core/themes/text_styles.dart`)
-- [ ] Tile Styles (`lib/core/themes/tile_styles.dart`)
+- [x] App Theme (`lib/core/themes/app_theme.dart`)
+- [x] Colors (`lib/core/themes/colors.dart`)
+- [x] Text Styles (`lib/core/themes/text_styles.dart`)
+- [x] Tile Styles (`lib/core/themes/tile_styles.dart`)
 
 ### 3.4.2 Reusable UI Components
 - [x] Loading Indicator (`lib/core/widgets/loading_indicator.dart`)
@@ -185,8 +185,8 @@
 - [x] Shimmer Placeholder (`lib/core/widgets/shimmer_placeholder.dart`)
 
 ### 3.4.3 Responsive Design
-- [ ] Responsive Layout (`lib/core/widgets/responsive_layout.dart`)
-- [ ] Screen Size Utilities (`lib/core/utils/screen_size_utils.dart`)
+- [x] Responsive Layout (`lib/core/widgets/responsive_layout.dart`)
+- [x] Screen Size Utilities (`lib/core/utils/screen_size_utils.dart`)
 
 ### 3.4.4 Localization (i18n)
 - [x] English Localization (`lib/l10n/app_en.arb`)
@@ -194,9 +194,9 @@
 - [x] Localization Configuration (`lib/l10n/l10n.dart`)
 
 ### 3.4.5 Accessibility
-- [ ] Accessibility Helpers (`lib/core/utils/accessibility_helpers.dart`)
-- [ ] Color Contrast Validator (`lib/core/utils/color_contrast_validator.dart`)
-- [ ] Accessibility Widget Tests (`test/accessibility/`)
+- [x] Accessibility Helpers (`lib/core/utils/accessibility_helpers.dart`)
+- [x] Color Contrast Validator (`lib/core/utils/color_contrast_validator.dart`)
+- [x] Accessibility Widget Tests (`test/accessibility/`)
 
 ### 3.4.6 Dynamic Type & RTL Support
 - [x] Dynamic Type Handler (`lib/core/utils/dynamic_type_handler.dart`)
