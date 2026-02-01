@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 /// Validation mixin for forms
 ///
 /// Provides form validation utilities and error message generation.

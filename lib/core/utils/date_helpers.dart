@@ -203,7 +203,6 @@ class DateHelpers {
 
   /// Get formatted age string (e.g., "2 years, 3 months")
   static String getAgeString(DateTime birthDate) {
-    final now = DateTime.now();
     final years = calculateAgeYears(birthDate);
     final months = calculateAgeMonths(birthDate) % 12;
 

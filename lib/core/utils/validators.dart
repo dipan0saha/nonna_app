@@ -49,7 +49,6 @@ class Validators {
     final domain = parts[1];
 
     // Check for common typos in popular domains
-    final commonDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
     final similarDomains = {
       'gmial.com': 'gmail.com',
       'gmai.com': 'gmail.com',
