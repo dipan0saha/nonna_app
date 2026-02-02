@@ -2,8 +2,25 @@ import 'package:flutter/widgets.dart';
 
 /// App-wide spacing constants for consistent layout
 ///
+/// **Functional Requirements**: Section 3.3.7 - Constants
+/// Reference: docs/Core_development_component_identification.md
+///
 /// Provides a systematic spacing scale to ensure visual consistency
 /// across all screens and components. Based on an 8px base unit.
+///
+/// Spacing scale:
+/// - xs: 8px (tight spacing between related elements)
+/// - s: 12px (compact layouts, dense lists)
+/// - m: 16px (standard padding, general spacing - default)
+/// - l: 24px (section spacing, screen padding)
+/// - xl: 32px (major section breaks, screen top/bottom padding)
+/// - xxl: 48px (significant visual separation)
+///
+/// Presets:
+/// - EdgeInsets presets (screenPadding, cardPadding, horizontalPadding, etc.)
+/// - SizedBox presets (verticalGapXS through verticalGapXL, horizontalGapXS through horizontalGapXL)
+///
+/// Eliminates hardcoded spacing values throughout the codebase.
 ///
 /// Usage:
 /// ```dart
@@ -12,6 +29,8 @@ import 'package:flutter/widgets.dart';
 ///   child: ...
 /// )
 /// ```
+///
+/// Dependencies: None
 class AppSpacing {
   // Prevent instantiation
   AppSpacing._();

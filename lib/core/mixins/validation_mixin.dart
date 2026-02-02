@@ -1,6 +1,22 @@
 /// Validation mixin for forms
 ///
-/// Provides form validation utilities and error message generation.
+/// **Functional Requirements**: Section 3.3.8 - Mixins
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides form validation utilities and error message generation:
+/// - Form state management (getFieldError, hasFieldError, clearFieldError, hasErrors)
+/// - Required field validation (validateRequired, validateRequiredBool)
+/// - Email validation (validateEmail)
+/// - Password validation (validatePassword, validatePasswordMatch)
+/// - Length validation (validateMinLength, validateMaxLength)
+/// - Numeric validation (validateNumeric, validateInteger, validatePositive)
+/// - URL validation (validateUrl)
+/// - Phone number validation (validatePhoneNumber)
+/// - Date validation (validateNotFuture, validateNotPast)
+/// - Composite validation (combineValidators, validateForm)
+/// - Error message helpers (getFirstError, getAllErrors, formatErrors)
+///
+/// Dependencies: None
 mixin ValidationMixin {
   // ============================================================
   // Form State Management

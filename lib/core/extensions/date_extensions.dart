@@ -2,7 +2,15 @@ import 'package:intl/intl.dart';
 
 /// Extension methods for DateTime
 ///
-/// Provides convenient methods for date manipulation and checking.
+/// **Functional Requirements**: Section 3.3.1 - Date/Time Helpers
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides extension methods on DateTime:
+/// - isToday, isFuture, isPast checks
+/// - add/subtract helpers
+/// - format shortcuts
+///
+/// No external dependencies
 extension DateTimeExtensions on DateTime {
   // ============================================================
   // Date Comparison

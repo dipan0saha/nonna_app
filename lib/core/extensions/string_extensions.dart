@@ -1,6 +1,20 @@
 /// Extension methods for String
 ///
-/// Provides convenient methods for string manipulation and validation.
+/// **Functional Requirements**: Section 3.3.2 - Formatters
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides convenient extension methods for string manipulation and validation
+/// including:
+/// - Capitalization helpers (capitalize, capitalizeWords, toTitleCase, toSentenceCase)
+/// - Truncation methods (truncate, truncateWords)
+/// - Validation helpers (isEmail, isUrl, isPhoneNumber, isNumeric, isAlphabetic)
+/// - Cleaning & trimming (removeWhitespace, removeExtraWhitespace)
+/// - Null safety helpers (isNullOrEmpty, isNullOrWhitespace, orElse)
+/// - Parsing utilities (toIntOrNull, toDoubleOrNull, toBoolOrNull)
+/// - Case conversions (toSnakeCase, toKebabCase, toCamelCase, toPascalCase)
+/// - Formatting methods (mask, formatPhoneNumber, pluralize)
+///
+/// Dependencies: None
 extension StringExtensions on String {
   // ============================================================
   // Capitalization

@@ -1,6 +1,18 @@
 /// Vote type enumeration
 ///
-/// Defines the type of prediction vote in the Nonna app.
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Defines the type of prediction vote in the Nonna app's gamification features.
+///
+/// Vote types:
+/// - gender: Vote for baby's gender prediction
+/// - birthdate: Vote for baby's birthdate prediction
+///
+/// Used in the Fun section for community predictions and engagement.
+/// Includes string conversion and display names.
+///
+/// Dependencies: None
 enum VoteType {
   /// Vote for baby's gender
   gender,

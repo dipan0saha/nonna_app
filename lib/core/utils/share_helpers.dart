@@ -1,7 +1,16 @@
 /// Social sharing and deep linking utilities
 ///
-/// Provides helper functions for sharing content and creating deep links.
-/// Note: Requires share_plus package for full functionality
+/// **Functional Requirements**: Section 3.3.5 - Role & Permission Helpers
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides helpers for:
+/// - Social sharing utilities
+/// - Deep link generation
+/// - Invitation link creation
+/// - Share sheet integration
+///
+/// Dependencies: share_plus package (to be integrated)
+/// Note: Currently has stub implementations with UnimplementedError
 class ShareHelpers {
   // Prevent instantiation
   ShareHelpers._();

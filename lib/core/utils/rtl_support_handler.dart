@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 /// Handles right-to-left (RTL) layout support and bidirectional text.
 ///
+/// **Functional Requirements**: Section 3.4.6 - Dynamic Type & RTL Support
+/// Reference: docs/Core_development_component_identification.md
+///
 /// This utility provides comprehensive RTL support for applications that need
 /// to support languages like Arabic, Hebrew, Persian, and Urdu. It handles
 /// layout direction, text direction, and UI mirroring automatically.
@@ -12,6 +15,9 @@ import 'package:flutter/material.dart';
 /// - Icon mirroring for RTL layouts
 /// - Edge insets adjustment for RTL
 /// - Alignment adaptation
+/// - Border radius mirroring
+/// - Gradient and decoration mirroring
+/// - Unicode directional markers
 ///
 /// Example:
 /// ```dart
@@ -29,6 +35,8 @@ import 'package:flutter/material.dart';
 ///   Icons.arrow_forward,
 /// );
 /// ```
+///
+/// Dependencies: None
 class RTLSupportHandler {
   /// Private constructor to prevent instantiation
   RTLSupportHandler._();

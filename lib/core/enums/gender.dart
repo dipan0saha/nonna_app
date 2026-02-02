@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 
 /// Gender enumeration
 ///
-/// Defines gender options for baby profiles and predictions.
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Defines gender options for baby profiles and predictions in the Nonna app.
+///
+/// Gender options:
+/// - male: Male
+/// - female: Female
+/// - unknown: Unknown or not yet determined
+///
+/// Used for baby profile information and prediction/voting features.
+/// Includes string conversion, display names, and icon mapping.
+///
+/// Dependencies: None
 enum Gender {
   /// Male
   male,

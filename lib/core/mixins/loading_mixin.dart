@@ -2,8 +2,22 @@ import 'package:flutter/material.dart';
 
 /// Loading state mixin
 ///
+/// **Functional Requirements**: Section 3.3.8 - Mixins
+/// Reference: docs/Core_development_component_identification.md
+///
 /// Provides loading state management and loading indicators
-/// for async operations.
+/// for async operations:
+/// - Loading state management (isLoading, isLoadingFor, setLoadingFor, clearAllLoading)
+/// - Async operation helpers (withLoading, withLoadingFor, withLoadingAndError)
+/// - Widget helpers (buildWithLoading, buildLoadingAware, buildLoadingButton)
+/// - Operation-specific buttons (buildOperationButton)
+/// - Conditional actions (executeIfNotLoading, executeOperationIfNotLoading)
+/// - Loading indicators (showLoadingDialog, hideLoadingDialog)
+///
+/// Enables widgets to easily manage loading states during async operations
+/// with proper UI feedback and error handling.
+///
+/// Dependencies: None
 mixin LoadingMixin<T extends StatefulWidget> on State<T> {
   // Loading state
   bool _isLoading = false;

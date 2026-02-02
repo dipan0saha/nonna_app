@@ -1,7 +1,24 @@
 /// Activity event type enumeration
 ///
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
 /// Defines different types of activity events in the Nonna app.
-/// Activity events track user actions within a baby profile.
+/// Activity events track user actions within a baby profile for the
+/// activity feed and engagement metrics.
+///
+/// Activity types:
+/// - photoUploaded: Photo uploaded
+/// - commentAdded: Comment added
+/// - rsvpYes/rsvpNo/rsvpMaybe: RSVP responses
+/// - itemPurchased: Registry item purchased
+/// - eventCreated/eventUpdated: Event management
+/// - photoSquished: Photo liked
+/// - nameSuggested: Name suggestion added
+/// - voteCast: Prediction vote cast
+/// - followerAdded: New follower joined
+///
+/// Dependencies: None
 enum ActivityEventType {
   /// Photo uploaded
   photoUploaded,

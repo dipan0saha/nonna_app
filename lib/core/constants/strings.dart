@@ -1,7 +1,24 @@
 /// App-wide string constants
 ///
+/// **Functional Requirements**: Section 3.3.7 - Constants
+/// Reference: docs/Core_development_component_identification.md
+///
 /// Centralizes string literals to prevent typos and improve maintainability.
-/// Includes error messages, validation messages, and default values.
+/// Includes:
+/// - App information (appName, appTagline)
+/// - Error messages (errorGeneric, errorNetwork, errorUnauthorized, etc.)
+/// - Authentication errors (errorInvalidEmail, errorWeakPassword, errorSessionExpired)
+/// - File upload errors (errorFileTooLarge, errorInvalidFileType, errorUploadFailed)
+/// - Permission errors (errorPermissionDenied, errorCameraPermission, etc.)
+/// - Validation messages (validationRequired, validationEmailInvalid, etc.)
+/// - Success messages (successSaved, successDeleted, successUpdated, etc.)
+/// - Confirmation messages (confirmDelete, confirmDeletePermanent, confirmLeave)
+/// - Empty state messages (emptyEvents, emptyPhotos, emptyNotifications, etc.)
+/// - Loading messages (loadingGeneric, uploading, processing, etc.)
+/// - Button labels (buttonOk, buttonCancel, buttonSave, etc.)
+/// - Default values (defaultUsername, defaultBabyName, defaultProfileImage)
+///
+/// Dependencies: None
 class AppStrings {
   // Prevent instantiation
   AppStrings._();

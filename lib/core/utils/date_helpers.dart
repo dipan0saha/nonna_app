@@ -2,7 +2,18 @@ import 'package:intl/intl.dart';
 
 /// Date and time helper functions
 ///
-/// Provides utilities for date formatting, calculations, and timezone handling.
+/// **Functional Requirements**: Section 3.3.1 - Date/Time Helpers
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides utilities for:
+/// - Date formatting (relative, absolute)
+/// - Due date calculations
+/// - Age calculations
+/// - Timezone handling
+/// - Date range utilities
+/// - Countdown logic
+///
+/// Dependencies: intl package
 class DateHelpers {
   // Prevent instantiation
   DateHelpers._();

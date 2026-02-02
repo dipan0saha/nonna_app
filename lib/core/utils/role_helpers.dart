@@ -2,8 +2,19 @@ import 'package:nonna_app/core/enums/user_role.dart';
 
 /// Role checking and permission utilities
 ///
-/// Provides helper functions for role-based access control
-/// and permission checking.
+/// **Functional Requirements**: Section 3.3.5 - Role & Permission Helpers
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides helper functions for role-based access control and permission checking:
+/// - Role checking (isOwner, isFollower, hasRole, hasAnyRole)
+/// - Permission calculations (canEdit, canDelete, canCreate, canView, canInvite)
+/// - Feature permissions (canManageProfile, canManageEvents, canManageRegistry)
+/// - Dual-role handling (hasDualRoles, getPrimaryRole)
+/// - Role-specific UI helpers (getAvailableFeatures, hasFeature)
+/// - Navigation helpers (getHomeScreenConfig, canAccessScreen)
+/// - Validation helpers (validateRoleForAction, getUnauthorizedMessage)
+///
+/// Dependencies: None
 class RoleHelpers {
   // Prevent instantiation
   RoleHelpers._();

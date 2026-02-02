@@ -1,7 +1,22 @@
 /// Tile type enumeration for the dynamic tile system
 ///
-/// Defines all tile types available in the Nonna app.
-/// Each tile type corresponds to a specific tile implementation.
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Defines all tile types available in the Nonna app's dynamic tile system.
+/// Each tile type corresponds to a specific tile implementation and matches
+/// the cases handled by TileFactory.
+///
+/// Tile categories:
+/// - Event tiles (upcomingEvents, rsvpTasks)
+/// - Photo tiles (recentPhotos, galleryFavorites)
+/// - Registry tiles (registryHighlights, recentPurchases, registryDeals)
+/// - Notification tiles (notifications, systemAnnouncements)
+/// - Status tiles (invitesStatus, dueDateCountdown, storageUsage)
+/// - Engagement tiles (engagementRecap, newFollowers)
+/// - Utility tiles (checklist)
+///
+/// Dependencies: None
 enum TileType {
   /// Upcoming events tile - shows calendar events
   upcomingEvents,

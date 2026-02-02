@@ -1,7 +1,25 @@
 /// Screen name enumeration for navigation and routing
 ///
-/// Defines all main screens in the Nonna app.
-/// Used for type-safe navigation and route mapping.
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Defines all main screens in the Nonna app for type-safe navigation
+/// and route mapping.
+///
+/// Main screens:
+/// - home: Dashboard with dynamic tiles
+/// - calendar: Event calendar and management
+/// - gallery: Photo gallery
+/// - registry: Baby registry
+/// - fun: Gamification features (voting, name suggestions)
+/// - profile: User profile
+/// - babyProfile: Baby profile management
+/// - settings: App settings
+/// - notifications: Notification center
+///
+/// Includes route path mapping for each screen.
+///
+/// Dependencies: None
 enum ScreenName {
   /// Home screen - dashboard with dynamic tiles
   home,
