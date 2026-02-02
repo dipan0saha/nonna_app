@@ -14,7 +14,7 @@ Widget build(BuildContext context) {
   final isDisabled = onPressed == null || isLoading;
 
   // ... widget code ...
-  
+
   style: ElevatedButton.styleFrom(
     padding: effectivePadding,
     backgroundColor: theme.colorScheme.primary,
@@ -47,7 +47,7 @@ Widget build(BuildContext context) {
   final isDisabled = onPressed == null || isLoading;
 
   // ... widget code ...
-  
+
   style: ElevatedButton.styleFrom(
     padding: effectivePadding,
     backgroundColor: context.colorScheme.primary,
@@ -290,7 +290,7 @@ class AppSpacing {
   static const screenPadding = EdgeInsets.all(l);        // 24px
   static const cardPadding = EdgeInsets.all(m);          // 16px
   static const compactPadding = EdgeInsets.all(s);       // 12px
-  
+
   static const verticalGapXS = SizedBox(height: xs);     // 8px
   static const verticalGapM = SizedBox(height: m);       // 16px
   static const verticalGapL = SizedBox(height: l);       // 24px
@@ -425,11 +425,11 @@ color: AppColors.onSurfaceDisabled(context.colorScheme),
 
 ### Code Quality
 
-✅ **DRY Principle**: No duplication  
-✅ **Single Responsibility**: Each utility has one job  
-✅ **Open/Closed**: Easy to extend  
-✅ **Semantic Naming**: Intent is clear  
-✅ **Type Safety**: Compile-time checking  
+✅ **DRY Principle**: No duplication
+✅ **Single Responsibility**: Each utility has one job
+✅ **Open/Closed**: Easy to extend
+✅ **Semantic Naming**: Intent is clear
+✅ **Type Safety**: Compile-time checking
 ✅ **Accessibility**: WCAG 2.1 Level AA compliant
 
 ---

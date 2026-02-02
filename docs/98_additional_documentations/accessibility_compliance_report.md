@@ -1,8 +1,8 @@
 # Accessibility Compliance Report
 
-**Project**: Nonna App  
-**Date**: February 1, 2026  
-**Standard**: WCAG 2.1 Level AA  
+**Project**: Nonna App
+**Date**: February 1, 2026
+**Standard**: WCAG 2.1 Level AA
 **Status**: ✅ Compliant
 
 ---
@@ -318,7 +318,7 @@ print(report.passesAANormalText); // true/false
 - Features: Text scaling, responsive sizing, layout adaptation
 
 ### Responsive Design
-- Files: 
+- Files:
   - `lib/core/utils/screen_size_utils.dart`
   - `lib/core/widgets/responsive_layout.dart`
 - Features: Breakpoints, adaptive layouts, device detection
@@ -342,6 +342,6 @@ All 268 automated tests pass, validating:
 
 ---
 
-**Prepared by**: GitHub Copilot Agent  
-**Review Date**: February 1, 2026  
+**Prepared by**: GitHub Copilot Agent
+**Review Date**: February 1, 2026
 **Next Review**: Before each major release
