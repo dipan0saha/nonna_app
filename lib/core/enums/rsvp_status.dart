@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 
 /// RSVP status enumeration
 ///
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
 /// Defines the possible responses to an event invitation.
+///
+/// RSVP options:
+/// - yes: User confirmed attendance
+/// - no: User declined attendance
+/// - maybe: User is uncertain about attendance
+///
+/// Used for event RSVP tracking and attendance management.
+/// Includes string conversion, display names, icon mapping, and color mapping.
+///
+/// Dependencies: None
 enum RsvpStatus {
   /// User confirmed attendance
   yes,

@@ -4,8 +4,19 @@ import 'package:image/image.dart' as img;
 
 /// Image manipulation helpers
 ///
-/// Provides utilities for image compression, thumbnail generation,
-/// format conversion, and validation.
+/// **Functional Requirements**: Section 3.3.4 - Image Helpers
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides utilities for image processing and manipulation including:
+/// - File size validation (isValidSize, getFileSizeMB, formatFileSize)
+/// - Format validation (isValidImageFormat, getImageFormat)
+/// - Image compression (compressImage, compressToSize)
+/// - Thumbnail generation (generateThumbnail, generateSquareThumbnail)
+/// - Format conversion (convertToJpeg, convertToPng)
+/// - Aspect ratio calculations (calculateAspectRatio, calculateDimensions)
+/// - Cropping utilities (cropImage, cropToSquare)
+///
+/// Dependencies: image package
 class ImageHelpers {
   // Prevent instantiation
   ImageHelpers._();

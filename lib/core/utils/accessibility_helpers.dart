@@ -3,14 +3,23 @@ import 'package:flutter/semantics.dart';
 
 /// Accessibility helpers for WCAG 2.1 Level AA compliance
 ///
-/// Provides utilities for:
-/// - Semantic labels
-/// - Screen reader support
-/// - Keyboard navigation
-/// - Focus management
-/// - Accessibility announcements
+/// **Functional Requirements**: Section 3.4.5 - Accessibility
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides utilities for creating accessible Flutter applications following
+/// WCAG 2.1 Level AA guidelines including:
+/// - Semantic labels (imageSemantics, buttonSemantics, headingSemantics, textFieldSemantics)
+/// - Screen reader announcements (announce, announcePolite, announceAssertive)
+/// - Focus management (requestFocus, unfocus, focusNext, focusPrevious)
+/// - Keyboard navigation (keyboardButton, focusable)
+/// - ARIA-like attributes (expandableSemantics, selectableSemantics, checkableSemantics)
+/// - Touch target helpers (ensureTouchTarget, touchTarget, minimumTouchTarget)
+/// - Live regions (liveRegion for dynamic content)
+/// - Error/empty state semantic wrappers (errorSemantics, emptyStateSemantics)
 ///
 /// All helpers follow WCAG 2.1 Level AA guidelines.
+///
+/// Dependencies: Flutter SDK
 class AccessibilityHelpers {
   // Prevent instantiation
   AccessibilityHelpers._();

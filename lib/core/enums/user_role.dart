@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 
 /// User role enumeration for the Nonna app
 ///
-/// Defines the two primary roles:
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Defines the two primary user roles in the Nonna app:
 /// - owner: The primary caregiver/parent creating baby profiles
 /// - follower: Family and friends who follow and engage with baby profiles
+///
+/// Each role has different permissions and access levels throughout the app.
+/// Includes string conversion, display names, icons, and descriptions.
+///
+/// Dependencies: None
 enum UserRole {
   /// The owner role - creates and manages baby profiles
   owner,

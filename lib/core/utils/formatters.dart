@@ -1,7 +1,17 @@
 /// Text formatting utilities
 ///
-/// Provides functions for formatting phone numbers, emails, URLs,
-/// names, and other text content.
+/// **Functional Requirements**: Section 3.3.2 - Formatters
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides formatters for:
+/// - Phone number formatting
+/// - Email validation
+/// - URL formatting
+/// - Name capitalization
+/// - Text truncation
+/// - Pluralization helpers
+///
+/// No external dependencies
 class Formatters {
   // Prevent instantiation
   Formatters._();

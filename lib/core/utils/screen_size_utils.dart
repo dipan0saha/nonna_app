@@ -2,17 +2,26 @@ import 'package:flutter/material.dart';
 
 /// Screen size utilities for responsive design
 ///
-/// Provides:
-/// - Device type detection (mobile, tablet, desktop)
-/// - Breakpoint constants
-/// - Orientation helpers
-/// - Safe area calculations
-/// - Responsive value selection
+/// **Functional Requirements**: Section 3.4.3 - Responsive Design
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides utilities for creating responsive layouts that adapt to different
+/// screen sizes and device types:
+/// - Device type detection (isMobile, isTablet, isDesktop, isLargeDesktop)
+/// - Breakpoint constants (mobileBreakpoint, tabletBreakpoint, desktopBreakpoint)
+/// - Orientation helpers (isPortrait, isLandscape)
+/// - Safe area calculations (getTopPadding, getBottomPadding, getSafePadding)
+/// - Responsive value selection (responsive, responsiveValue)
+/// - Grid column calculations (getGridColumns, calculateColumns)
+/// - Padding & spacing helpers (getHorizontalPadding, getVerticalPadding, getSpacing)
+/// - Content width constraints (getMaxContentWidth, getContentConstraints)
 ///
 /// Follows common breakpoint conventions:
 /// - Mobile: < 600dp
 /// - Tablet: 600dp - 1024dp
 /// - Desktop: >= 1024dp
+///
+/// Dependencies: None
 class ScreenSizeUtils {
   // Prevent instantiation
   ScreenSizeUtils._();

@@ -1,7 +1,16 @@
 /// Input sanitization utilities
 ///
-/// Provides functions to clean and sanitize user input to prevent
-/// security vulnerabilities like XSS, SQL injection, and other attacks.
+/// **Functional Requirements**: Section 3.3.3 - Validators
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides sanitization for:
+/// - XSS prevention
+/// - SQL injection prevention
+/// - HTML entity encoding
+/// - Whitespace trimming
+/// - Special character handling
+///
+/// No external dependencies
 class Sanitizers {
   // Prevent instantiation
   Sanitizers._();

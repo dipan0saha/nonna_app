@@ -1,7 +1,18 @@
+import 'package:nonna_app/core/config/app_config.dart';
+
 /// Social sharing and deep linking utilities
 ///
-/// Provides helper functions for sharing content and creating deep links.
-/// Note: Requires share_plus package for full functionality
+/// **Functional Requirements**: Section 3.3.5 - Role & Permission Helpers
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides helpers for:
+/// - Social sharing utilities
+/// - Deep link generation
+/// - Invitation link creation
+/// - Share sheet integration
+///
+/// Dependencies: share_plus package (to be integrated)
+/// Note: Currently has stub implementations with UnimplementedError
 class ShareHelpers {
   // Prevent instantiation
   ShareHelpers._();
@@ -12,33 +23,27 @@ class ShareHelpers {
 
   /// Generate deep link for baby profile
   static String generateProfileLink(String profileId) {
-    // TODO: Replace with actual domain
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/profile/$profileId';
+    return AppConfig.getFullUrl('/profile/$profileId');
   }
 
   /// Generate deep link for event
   static String generateEventLink(String profileId, String eventId) {
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/profile/$profileId/event/$eventId';
+    return AppConfig.getFullUrl('/profile/$profileId/event/$eventId');
   }
 
   /// Generate deep link for photo
   static String generatePhotoLink(String profileId, String photoId) {
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/profile/$profileId/photo/$photoId';
+    return AppConfig.getFullUrl('/profile/$profileId/photo/$photoId');
   }
 
   /// Generate deep link for registry item
   static String generateRegistryItemLink(String profileId, String itemId) {
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/profile/$profileId/registry/$itemId';
+    return AppConfig.getFullUrl('/profile/$profileId/registry/$itemId');
   }
 
   /// Generate invitation link
   static String generateInvitationLink(String invitationCode) {
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/invite/$invitationCode';
+    return AppConfig.getFullUrl('/invite/$invitationCode');
   }
 
   // ============================================================

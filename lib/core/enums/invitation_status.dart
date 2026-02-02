@@ -1,6 +1,20 @@
 /// Invitation status enumeration
 ///
-/// Defines the lifecycle states of invitations.
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Defines the lifecycle states of invitations in the Nonna app.
+///
+/// Invitation lifecycle:
+/// - pending: Invitation sent but not yet responded to
+/// - accepted: Invitation accepted (user joined as follower)
+/// - revoked: Invitation revoked by the sender
+/// - expired: Invitation expired (7 days timeout)
+///
+/// Used to track invitation status and manage follower access.
+/// Includes string conversion and display names.
+///
+/// Dependencies: None
 enum InvitationStatus {
   /// Invitation has been sent but not yet responded to
   pending,

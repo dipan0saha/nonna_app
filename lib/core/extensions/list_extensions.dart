@@ -1,6 +1,19 @@
 /// Extension methods for List
 ///
-/// Provides utility methods for list manipulation and querying.
+/// **Functional Requirements**: Section 3.3.6 - Extensions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides utility methods for list manipulation and querying including:
+/// - Safe access (getOrNull, getOrDefault, firstOrNull, lastOrNull)
+/// - Filtering (filterMap, skipFirst, skipLast, chunk, unique, uniqueBy)
+/// - Grouping (groupBy, partition)
+/// - Sorting (sortedBy, sortedByDescending)
+/// - Aggregation (sumBy, averageBy, minBy, maxBy)
+/// - List manipulation (rotateLeft, rotateRight, interleave, slice)
+/// - Searching (indexWhereOrNull, all, none, count)
+/// - Conversion (toMapBy)
+///
+/// Dependencies: None
 extension ListExtensions<T> on List<T> {
   // ============================================================
   // Safe Access

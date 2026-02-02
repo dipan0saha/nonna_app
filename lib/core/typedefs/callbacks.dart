@@ -1,6 +1,20 @@
 /// Common callback type definitions for the Nonna app
 ///
-/// Provides type-safe callback definitions for common use cases.
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides type-safe callback definitions for common use cases throughout the app:
+/// - Basic callbacks (VoidCallback, ValueCallback, TwoValueCallback, ThreeValueCallback)
+/// - Boolean callbacks (BoolCallback, BoolValueCallback)
+/// - Value getters/transformers (ValueGetter, ValueTransformer)
+/// - Async callbacks (AsyncCallback, AsyncValueCallback, AsyncValueGetter, AsyncValueTransformer)
+/// - Error handling (ErrorCallback, SuccessCallback)
+/// - User interaction (ConfirmCallback)
+///
+/// These type definitions provide consistency and type safety for callback
+/// parameters and return values across the codebase.
+///
+/// Dependencies: None
 
 /// Callback with no parameters and no return value
 typedef VoidCallback = void Function();

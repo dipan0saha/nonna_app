@@ -3,7 +3,21 @@ import 'package:nonna_app/core/enums/user_role.dart';
 
 /// Role-aware mixin for widgets
 ///
-/// Provides role-based behavior and rendering helpers for widgets.
+/// **Functional Requirements**: Section 3.3.8 - Mixins
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides role-based behavior and rendering helpers for widgets:
+/// - Role checks (isOwner, isFollower, hasRole)
+/// - Permission checks (canEdit, canDelete, canCreate, canInvite, canManageSettings)
+/// - Conditional rendering (ownerOnly, followerOnly, roleBasedWidget, showIf)
+/// - Role-based styling (getRoleColor, getRoleIcon)
+/// - Navigation helpers (canAccessScreen, navigateIfAllowed)
+/// - Action helpers (executeIfAllowed, executeWithRoleCheck)
+///
+/// Enables widgets to adapt their behavior and appearance based on the
+/// current user's role (owner vs follower) for role-based access control.
+///
+/// Dependencies: None
 mixin RoleAwareMixin<T extends StatefulWidget> on State<T> {
   // Override this in the widget to provide the current user's role
   UserRole get currentRole;

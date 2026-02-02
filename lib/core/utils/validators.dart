@@ -1,6 +1,17 @@
 /// Input validation utilities
 ///
-/// Provides validation rules for forms and user input.
+/// **Functional Requirements**: Section 3.3.3 - Validators
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides validation rules for:
+/// - Email validation
+/// - Password strength
+/// - Required field checks
+/// - Length validators
+/// - URL validation
+/// - Date range validation
+///
+/// No external dependencies
 class Validators {
   // Prevent instantiation
   Validators._();

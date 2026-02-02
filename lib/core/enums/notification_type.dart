@@ -2,8 +2,27 @@ import 'package:flutter/material.dart';
 
 /// Notification type enumeration
 ///
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
 /// Defines different categories of notifications in the Nonna app.
 /// Each type has associated icon and color for visual differentiation.
+///
+/// Notification categories:
+/// - system: General system notifications
+/// - event: New event notifications
+/// - photo: New photo uploaded
+/// - registryPurchase: Registry item purchased
+/// - comment: Comment added
+/// - like: Like received
+/// - follower: New follower
+/// - invitation: Invitation sent/received
+/// - reminder: Event or task reminder
+/// - announcement: Important announcement
+///
+/// Includes icon mapping and color mapping for each type.
+///
+/// Dependencies: None
 enum NotificationType {
   /// General system notification
   system,

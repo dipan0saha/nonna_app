@@ -2,8 +2,22 @@ import 'package:flutter/material.dart';
 
 /// Event status enumeration
 ///
+/// **Functional Requirements**: Section 3.3.9 - Enums & Type Definitions
+/// Reference: docs/Core_development_component_identification.md
+///
 /// Defines the lifecycle states of calendar events.
 /// Each status has associated color for visual differentiation.
+///
+/// Event lifecycle:
+/// - scheduled: Event is upcoming/scheduled
+/// - ongoing: Event is currently happening
+/// - completed: Event has been completed
+/// - cancelled: Event has been cancelled
+/// - draft: Event is in draft state
+///
+/// Includes string conversion and color mapping for each status.
+///
+/// Dependencies: None
 enum EventStatus {
   /// Event is upcoming/scheduled
   scheduled,

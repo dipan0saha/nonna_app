@@ -3,16 +3,23 @@ import 'package:flutter/material.dart';
 
 /// Color contrast validator for WCAG 2.1 compliance
 ///
-/// Provides utilities for:
-/// - WCAG contrast ratio calculations
-/// - Color pair validation
-/// - Accessible color suggestions
-/// - Contrast checking for text and UI elements
+/// **Functional Requirements**: Section 3.4.5 - Accessibility
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides utilities for ensuring color contrast meets WCAG standards:
+/// - WCAG contrast ratio calculations (contrastRatio, relativeLuminance)
+/// - Color pair validation (isValidNormalText, isValidLargeText, isValidUI)
+/// - Contrast level classification (getContrastLevel, describeContrast)
+/// - Accessible color suggestions (darkenToMeetContrast, lightenToMeetContrast)
+/// - Color adjustment (getAccessibleTextColor, suggestAccessibleColor)
+/// - Debugging & testing (analyzeContrast, ContrastReport)
 ///
 /// Follows WCAG 2.1 Level AA requirements:
 /// - Normal text: minimum contrast ratio of 4.5:1
 /// - Large text: minimum contrast ratio of 3:1
 /// - UI components: minimum contrast ratio of 3:1
+///
+/// Dependencies: None
 class ColorContrastValidator {
   // Prevent instantiation
   ColorContrastValidator._();

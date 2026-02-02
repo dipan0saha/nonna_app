@@ -1,7 +1,20 @@
 /// Performance limits and thresholds
 ///
-/// Defines cache TTL values, query limits, pagination sizes,
-/// timeout durations, and batch sizes for optimal performance.
+/// **Functional Requirements**: Section 3.3.7 - Constants
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Defines performance-related constants to optimize app behavior:
+/// - Cache TTL values (userProfileCacheDuration, babyProfileCacheDuration, etc.)
+/// - Query limits (defaultQueryLimit, maxQueryLimit, notificationQueryLimit, etc.)
+/// - Pagination sizes (defaultPageSize, galleryPageSize, eventPageSize, etc.)
+/// - Timeout durations (defaultTimeout, imageUploadTimeout, authTimeout, etc.)
+/// - Batch sizes (defaultBatchSize, imageUploadBatchSize, notificationBatchSize)
+/// - File size limits (maxImageSizeBytes, maxVideoSizeBytes, thumbnailMaxWidth, etc.)
+/// - Rate limiting (maxRequestsPerMinute, maxUploadsPerHour, minRequestDelayMs)
+/// - UI performance (maxListRenderItems, searchDebounceDelay, animationDuration)
+/// - Retry configuration (maxRetryAttempts, initialRetryDelay, retryBackoffMultiplier)
+///
+/// Dependencies: None
 class PerformanceLimits {
   // Prevent instantiation
   PerformanceLimits._();

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 /// Handles dynamic type scaling and text size adaptation.
 ///
+/// **Functional Requirements**: Section 3.4.6 - Dynamic Type & RTL Support
+/// Reference: docs/Core_development_component_identification.md
+///
 /// This utility provides comprehensive support for system font scaling,
 /// ensuring text remains readable across all accessibility settings while
 /// maintaining layout integrity. It follows WCAG 2.1 Level AA guidelines.
@@ -12,6 +15,8 @@ import 'package:flutter/material.dart';
 /// - Layout reflow handling
 /// - Accessibility-aware text sizing
 /// - Performance-optimized caching
+/// - Touch target size adaptation for scaled UI
+/// - Adaptive text styles that simplify at large scales
 ///
 /// Example:
 /// ```dart
@@ -25,6 +30,8 @@ import 'package:flutter/material.dart';
 ///   baseStyle: TextStyle(fontSize: 16.0),
 /// );
 /// ```
+///
+/// Dependencies: None
 class DynamicTypeHandler {
   /// Private constructor to prevent instantiation
   DynamicTypeHandler._();

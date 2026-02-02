@@ -2,8 +2,20 @@ import 'package:flutter/material.dart';
 
 /// Extension methods for BuildContext
 ///
-/// Provides convenient shortcuts for accessing theme, MediaQuery,
-/// Navigator, and ScaffoldMessenger from context.
+/// **Functional Requirements**: Section 3.3.6 - Extensions
+/// Reference: docs/Core_development_component_identification.md
+///
+/// Provides BuildContext shortcuts for accessing common Flutter functionality:
+/// - Theme access (theme, textTheme, colorScheme, primaryColor, isDarkMode)
+/// - MediaQuery shortcuts (screenSize, screenWidth, screenHeight, orientation)
+/// - Navigator shortcuts (push, pushNamed, pop, canPop, pushReplacement)
+/// - ScaffoldMessenger helpers (showSnackBar, showErrorSnackBar, showSuccessSnackBar)
+/// - Focus management (requestFocus, unfocus, hasFocus)
+/// - Dialog shortcuts (showDialogCustom, showBottomSheetCustom, showAlertDialog)
+/// - Responsive helpers (isMobile, isTablet, isDesktop, responsive)
+/// - Localization shortcuts (locale, languageCode)
+///
+/// Dependencies: Flutter SDK
 extension ContextExtensions on BuildContext {
   // ============================================================
   // Theme Access

@@ -1,7 +1,30 @@
 /// Supabase table and column name constants
 ///
+/// **Functional Requirements**: Section 3.3.7 - Constants
+/// Reference: docs/Core_development_component_identification.md
+///
 /// Prevents typos and makes refactoring easier by centralizing
 /// all database table and column names.
+///
+/// Table groups:
+/// - User-related tables (users, userProfiles, userStats)
+/// - Baby profile tables (babyProfiles, babyMemberships, invitations)
+/// - Tile system tables (tileConfigs, screenConfigs)
+/// - Calendar and events tables (events, eventRsvps, eventComments)
+/// - Registry tables (registryItems, registryPurchases)
+/// - Photo gallery tables (photos, photoSquishes, photoComments, photoTags)
+/// - Gamification tables (votes, nameSuggestions, nameSuggestionLikes)
+/// - Notifications and activity tables (notifications, activityEvents)
+/// - Supporting tables (ownerUpdateMarkers)
+///
+/// Column categories:
+/// - Primary keys and foreign keys (id, userId, babyProfileId, etc.)
+/// - Timestamps (createdAt, updatedAt, deletedAt)
+/// - Common fields (name, email, role, status, type, description, imageUrl)
+/// - Entity-specific columns for users, babies, events, photos, registry, notifications
+/// - Storage buckets (profilePhotos, babyPhotos, galleryPhotos, etc.)
+///
+/// Dependencies: None
 class SupabaseTables {
   // Prevent instantiation
   SupabaseTables._();
