@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 /// App-wide spacing constants for consistent layout
 ///
 /// Provides a systematic spacing scale to ensure visual consistency

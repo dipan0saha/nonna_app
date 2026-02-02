@@ -134,14 +134,12 @@ void main() {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(
-              body: LoadingIndicator(
-                message: 'Loading content',
-              ),
+              body: LoadingIndicator(),
             ),
           ),
         );
 
-        expect(find.text('Loading content'), findsOneWidget);
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
       });
 
       testWidgets('LoadingIndicator announces loading state', (tester) async {

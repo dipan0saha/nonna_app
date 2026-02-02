@@ -164,10 +164,10 @@ extension DateTimeExtensions on DateTime {
       final futureDifference = difference.abs();
       if (futureDifference.inDays > 365) {
         final years = (futureDifference.inDays / 365).floor();
-        return 'in ${years} ${years == 1 ? 'year' : 'years'}';
+        return 'in $years ${years == 1 ? 'year' : 'years'}';
       } else if (futureDifference.inDays > 30) {
         final months = (futureDifference.inDays / 30).floor();
-        return 'in ${months} ${months == 1 ? 'month' : 'months'}';
+        return 'in $months ${months == 1 ? 'month' : 'months'}';
       } else if (futureDifference.inDays > 0) {
         return 'in ${futureDifference.inDays} ${futureDifference.inDays == 1 ? 'day' : 'days'}';
       } else if (futureDifference.inHours > 0) {
@@ -181,10 +181,10 @@ extension DateTimeExtensions on DateTime {
       // Past date
       if (difference.inDays > 365) {
         final years = (difference.inDays / 365).floor();
-        return '${years} ${years == 1 ? 'year' : 'years'} ago';
+        return '$years ${years == 1 ? 'year' : 'years'} ago';
       } else if (difference.inDays > 30) {
         final months = (difference.inDays / 30).floor();
-        return '${months} ${months == 1 ? 'month' : 'months'} ago';
+        return '$months ${months == 1 ? 'month' : 'months'} ago';
       } else if (difference.inDays > 0) {
         return '${difference.inDays} ${difference.inDays == 1 ? 'day' : 'days'} ago';
       } else if (difference.inHours > 0) {

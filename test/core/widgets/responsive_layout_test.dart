@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/widgets/responsive_layout.dart';
-import 'package:nonna_app/core/utils/screen_size_utils.dart';
 
 void main() {
   group('ResponsiveLayout', () {

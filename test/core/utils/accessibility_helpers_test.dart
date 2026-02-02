@@ -70,14 +70,19 @@ void main() {
       testWidgets('ensureTouchTarget enforces minimum size', (tester) async {
         await tester.pumpWidget(
           MaterialApp(
-            home: AccessibilityHelpers.ensureTouchTarget(
-              child: const SizedBox(width: 10, height: 10),
+            home: Scaffold(
+              body: AccessibilityHelpers.ensureTouchTarget(
+                child: const SizedBox(width: 10, height: 10),
+              ),
             ),
           ),
         );
 
-        final constrainedBox = tester.widget<ConstrainedBox>(
+        final constrainedBox = tester.widgetList<ConstrainedBox>(
           find.byType(ConstrainedBox),
+        ).firstWhere((box) => 
+          box.constraints.minWidth == 44.0 && 
+          box.constraints.minHeight == 44.0
         );
         
         expect(constrainedBox.constraints.minWidth, 44.0);
@@ -229,15 +234,25 @@ void main() {
       });
 
       testWidgets('hideFromSemantics excludes decorative elements', (tester) async {
+        const testIcon = Icon(Icons.star);
         await tester.pumpWidget(
           MaterialApp(
-            home: AccessibilityHelpers.hideFromSemantics(
-              const Icon(Icons.star),
+            home: Scaffold(
+              body: AccessibilityHelpers.hideFromSemantics(
+                testIcon,
+              ),
             ),
           ),
         );
 
-        expect(find.byType(ExcludeSemantics), findsOneWidget);
+        // Find ExcludeSemantics that wraps the Icon
+        final excludeSemantics = tester.widget<ExcludeSemantics>(
+          find.ancestor(
+            of: find.byWidget(testIcon),
+            matching: find.byType(ExcludeSemantics),
+          ),
+        );
+        expect(excludeSemantics.excluding, true);
       });
 
       testWidgets('mergeSemantics combines child semantics', (tester) async {
@@ -315,17 +330,27 @@ void main() {
     group('Focus Management', () {
       testWidgets('focusable wraps widget with Focus', (tester) async {
         final focusNode = FocusNode();
+        const testText = Text('Focusable');
         
         await tester.pumpWidget(
           MaterialApp(
-            home: AccessibilityHelpers.focusable(
-              focusNode: focusNode,
-              child: const Text('Focusable'),
+            home: Scaffold(
+              body: AccessibilityHelpers.focusable(
+                focusNode: focusNode,
+                child: testText,
+              ),
             ),
           ),
         );
 
-        expect(find.byType(Focus), findsOneWidget);
+        // Find Focus widget that wraps our test text
+        final focus = tester.widget<Focus>(
+          find.ancestor(
+            of: find.byWidget(testText),
+            matching: find.byType(Focus),
+          ),
+        );
+        expect(focus.focusNode, focusNode);
       });
     });
 

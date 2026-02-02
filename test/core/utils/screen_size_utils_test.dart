@@ -295,7 +295,7 @@ void main() {
               builder: (context) {
                 final constraints = ScreenSizeUtils.getContentConstraints(context);
                 expect(constraints, isA<BoxConstraints>());
-                expect(constraints.maxWidth, isFinite);
+                expect(constraints.maxWidth.isFinite, true);
                 return const SizedBox();
               },
             ),

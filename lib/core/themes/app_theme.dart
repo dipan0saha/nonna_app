@@ -265,7 +265,7 @@ class AppTheme {
   // Card Themes
   // ============================================================
 
-  static final CardTheme _cardTheme = CardTheme(
+  static final CardThemeData _cardTheme = CardThemeData(
     elevation: 2,
     shadowColor: AppColors.shadow,
     surfaceTintColor: Colors.transparent,
@@ -276,7 +276,7 @@ class AppTheme {
     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
   );
 
-  static final CardTheme _darkCardTheme = CardTheme(
+  static final CardThemeData _darkCardTheme = CardThemeData(
     elevation: 2,
     shadowColor: AppColors.shadow,
     surfaceTintColor: Colors.transparent,
@@ -482,7 +482,7 @@ class AppTheme {
     ),
   );
 
-  static final DialogTheme _dialogTheme = DialogTheme(
+  static final DialogThemeData _dialogTheme = DialogThemeData(
     backgroundColor: AppColors.surface,
     elevation: 8,
     shape: RoundedRectangleBorder(
@@ -491,7 +491,7 @@ class AppTheme {
     titleTextStyle: AppTextStyles.h4,
   );
 
-  static final DialogTheme _darkDialogTheme = DialogTheme(
+  static final DialogThemeData _darkDialogTheme = DialogThemeData(
     backgroundColor: AppColors.gray800,
     elevation: 8,
     shape: RoundedRectangleBorder(
@@ -607,14 +607,14 @@ class AppTheme {
     ),
   );
 
-  static const TabBarTheme _tabBarTheme = TabBarTheme(
+  static const TabBarThemeData _tabBarTheme = TabBarThemeData(
     labelColor: AppColors.primary,
     unselectedLabelColor: AppColors.textSecondary,
     indicatorSize: TabBarIndicatorSize.tab,
     dividerColor: AppColors.divider,
   );
 
-  static const TabBarTheme _darkTabBarTheme = TabBarTheme(
+  static const TabBarThemeData _darkTabBarTheme = TabBarThemeData(
     labelColor: AppColors.primary,
     unselectedLabelColor: AppColors.gray400,
     indicatorSize: TabBarIndicatorSize.tab,
