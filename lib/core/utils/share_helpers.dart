@@ -1,3 +1,5 @@
+import 'package:nonna_app/core/config/app_config.dart';
+
 /// Social sharing and deep linking utilities
 ///
 /// **Functional Requirements**: Section 3.3.5 - Role & Permission Helpers
@@ -21,33 +23,27 @@ class ShareHelpers {
 
   /// Generate deep link for baby profile
   static String generateProfileLink(String profileId) {
-    // TODO: Replace with actual domain
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/profile/$profileId';
+    return AppConfig.getFullUrl('/profile/$profileId');
   }
 
   /// Generate deep link for event
   static String generateEventLink(String profileId, String eventId) {
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/profile/$profileId/event/$eventId';
+    return AppConfig.getFullUrl('/profile/$profileId/event/$eventId');
   }
 
   /// Generate deep link for photo
   static String generatePhotoLink(String profileId, String photoId) {
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/profile/$profileId/photo/$photoId';
+    return AppConfig.getFullUrl('/profile/$profileId/photo/$photoId');
   }
 
   /// Generate deep link for registry item
   static String generateRegistryItemLink(String profileId, String itemId) {
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/profile/$profileId/registry/$itemId';
+    return AppConfig.getFullUrl('/profile/$profileId/registry/$itemId');
   }
 
   /// Generate invitation link
   static String generateInvitationLink(String invitationCode) {
-    const baseUrl = 'https://nonna.app';
-    return '$baseUrl/invite/$invitationCode';
+    return AppConfig.getFullUrl('/invite/$invitationCode');
   }
 
   // ============================================================
