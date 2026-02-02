@@ -10,20 +10,20 @@
 ## 3.1 Models Development
 
 ### 3.1.1 User Identity Models
-- [ ] User Profile Model (`lib/core/models/user.dart`)
-- [ ] User Stats Model (`lib/core/models/user_stats.dart`)
+- [x] User Profile Model (`lib/core/models/user.dart`) - ✨ Created Feb 2026
+- [x] User Stats Model (`lib/core/models/user_stats.dart`) - ✨ Created Feb 2026
 
 ### 3.1.2 Baby Profile Models
-- [ ] Baby Profile Model (`lib/core/models/baby_profile.dart`)
-- [ ] Baby Membership Model (`lib/core/models/baby_membership.dart`)
-- [ ] Invitation Model (`lib/core/models/invitation.dart`)
+- [x] Baby Profile Model (`lib/core/models/baby_profile.dart`) - ✨ Created Feb 2026
+- [x] Baby Membership Model (`lib/core/models/baby_membership.dart`) - ✨ Created Feb 2026
+- [x] Invitation Model (`lib/core/models/invitation.dart`) - ✨ Created Feb 2026
 
 ### 3.1.3 Tile System Models
-- [ ] Tile Config Model (`lib/core/models/tile_config.dart`)
-- [ ] Screen Config Model (`lib/core/models/screen_config.dart`)
-- [ ] Tile Definition Model (`lib/tiles/core/models/tile_definition.dart`)
-- [ ] Tile Params Model (`lib/tiles/core/models/tile_params.dart`)
-- [ ] Tile State Model (`lib/tiles/core/models/tile_state.dart`)
+- [x] Tile Config Model (`lib/core/models/tile_config.dart`) - ✨ Created Feb 2026
+- [x] Screen Config Model (`lib/core/models/screen_config.dart`) - ✨ Created Feb 2026
+- [x] Tile Definition Model (`lib/tiles/core/models/tile_definition.dart`) - ✨ Created Feb 2026
+- [x] Tile Params Model (`lib/tiles/core/models/tile_params.dart`) - ✨ Created Feb 2026
+- [x] Tile State Model (`lib/tiles/core/models/tile_state.dart`) - ✨ Created Feb 2026
 
 ### 3.1.4 Calendar & Events Models
 - [ ] Event Model (`lib/core/models/event.dart`)
@@ -166,6 +166,9 @@
 - [x] Screen Name Enum (`lib/core/enums/screen_name.dart`)
 - [x] Notification Type Enum (`lib/core/enums/notification_type.dart`)
 - [x] Event Status Enum (`lib/core/enums/event_status.dart`)
+- [x] Invitation Status Enum (`lib/core/enums/invitation_status.dart`) - ✨ Created Feb 2026
+- [x] RSVP Status Enum (`lib/core/enums/rsvp_status.dart`) - ✨ Created Feb 2026
+- [x] Gender Enum (`lib/core/enums/gender.dart`) - ✨ Created Feb 2026
 - [x] Callbacks TypeDef (`lib/core/typedefs/callbacks.dart`)
 
 ---
