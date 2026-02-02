@@ -26,19 +26,19 @@
 - [x] Tile State Model (`lib/tiles/core/models/tile_state.dart`) - ✨ Created Feb 2026
 
 ### 3.1.4 Calendar & Events Models
-- [ ] Event Model (`lib/core/models/event.dart`)
-- [ ] Event RSVP Model (`lib/core/models/event_rsvp.dart`)
-- [ ] Event Comment Model (`lib/core/models/event_comment.dart`)
+- [x] Event Model (`lib/core/models/event.dart`) - ✨ Created Feb 2026
+- [x] Event RSVP Model (`lib/core/models/event_rsvp.dart`) - ✨ Created Feb 2026
+- [x] Event Comment Model (`lib/core/models/event_comment.dart`) - ✨ Created Feb 2026
 
 ### 3.1.5 Registry Models
-- [ ] Registry Item Model (`lib/core/models/registry_item.dart`)
-- [ ] Registry Purchase Model (`lib/core/models/registry_purchase.dart`)
+- [x] Registry Item Model (`lib/core/models/registry_item.dart`) - ✨ Created Feb 2026
+- [x] Registry Purchase Model (`lib/core/models/registry_purchase.dart`) - ✨ Created Feb 2026
 
 ### 3.1.6 Photo Gallery Models
-- [ ] Photo Model (`lib/core/models/photo.dart`)
-- [ ] Photo Squish Model (`lib/core/models/photo_squish.dart`)
-- [ ] Photo Comment Model (`lib/core/models/photo_comment.dart`)
-- [ ] Photo Tag Model (`lib/core/models/photo_tag.dart`)
+- [x] Photo Model (`lib/core/models/photo.dart`) - ✨ Created Feb 2026
+- [x] Photo Squish Model (`lib/core/models/photo_squish.dart`) - ✨ Created Feb 2026
+- [x] Photo Comment Model (`lib/core/models/photo_comment.dart`) - ✨ Created Feb 2026
+- [x] Photo Tag Model (`lib/core/models/photo_tag.dart`) - ✨ Created Feb 2026
 
 ### 3.1.7 Gamification Models
 - [ ] Vote Model (`lib/core/models/vote.dart`)
