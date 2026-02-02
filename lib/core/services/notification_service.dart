@@ -46,8 +46,12 @@ class NotificationService {
         await _localStorage.initialize();
       }
 
-      // Set log level for debugging
-      OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+      // Set log level for debugging (only in debug mode)
+      if (kDebugMode) {
+        OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+      } else {
+        OneSignal.Debug.setLogLevel(OSLogLevel.info);
+      }
 
       // Initialize OneSignal
       OneSignal.initialize(appId);

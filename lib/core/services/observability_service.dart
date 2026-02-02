@@ -49,13 +49,15 @@ class ObservabilityService {
           // Send default PII (Personally Identifiable Information)
           options.sendDefaultPii = false;
           
-          // Debug mode in development
+          // Debug mode only in development
           options.debug = kDebugMode;
           
-          // Release version
+          // Release version - should match pubspec.yaml version
+          // TODO: Extract from pubspec.yaml or pass as parameter
           options.release = 'nonna_app@1.0.0';
           
-          // Distribution identifier
+          // Distribution identifier - should be based on build environment
+          // TODO: Extract from environment or build configuration
           options.dist = '1';
           
           // Before send callback for filtering events
