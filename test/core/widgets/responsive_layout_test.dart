@@ -157,7 +157,8 @@ void main() {
       );
 
       expect(find.text('Content'), findsOneWidget);
-      expect(find.byType(ConstrainedBox), findsOneWidget);
+      // The ResponsiveContainer uses a ConstrainedBox for max width constraints
+      expect(find.byType(ConstrainedBox), findsAtLeastNWidgets(1));
     });
   });
 

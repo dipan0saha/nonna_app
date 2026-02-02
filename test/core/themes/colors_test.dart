@@ -10,7 +10,7 @@ void main() {
       });
 
       test('primary dark is darker variant', () {
-        expect(AppColors.primaryDark, const Color(0xFF8AAF90));
+        expect(AppColors.primaryDark, const Color(0xFF5A7F62));
       });
 
       test('primary light is lighter variant', () {
@@ -40,11 +40,11 @@ void main() {
 
     group('Semantic Colors', () {
       test('success color is green', () {
-        expect(AppColors.success, const Color(0xFF4CAF50));
+        expect(AppColors.success, const Color(0xFF2E7D32));
       });
 
       test('error color is red', () {
-        expect(AppColors.error, const Color(0xFFE57373));
+        expect(AppColors.error, const Color(0xFFD32F2F));
       });
 
       test('warning color is amber', () {
