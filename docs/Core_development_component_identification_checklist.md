@@ -41,16 +41,18 @@
 - [x] Photo Tag Model (`lib/core/models/photo_tag.dart`) - ✨ Created Feb 2026
 
 ### 3.1.7 Gamification Models
-- [ ] Vote Model (`lib/core/models/vote.dart`)
-- [ ] Name Suggestion Model (`lib/core/models/name_suggestion.dart`)
-- [ ] Name Suggestion Like Model (`lib/core/models/name_suggestion_like.dart`)
+- [x] Vote Model (`lib/core/models/vote.dart`) - ✨ Created Feb 2026
+- [x] Vote Type Enum (`lib/core/enums/vote_type.dart`) - ✨ Created Feb 2026
+- [x] Name Suggestion Model (`lib/core/models/name_suggestion.dart`) - ✨ Created Feb 2026
+- [x] Name Suggestion Like Model (`lib/core/models/name_suggestion_like.dart`) - ✨ Created Feb 2026
 
 ### 3.1.8 Notifications & Activity Models
-- [ ] Notification Model (`lib/core/models/notification.dart`)
-- [ ] Activity Event Model (`lib/core/models/activity_event.dart`)
+- [x] Notification Model (`lib/core/models/notification.dart`) - ✨ Created Feb 2026
+- [x] Activity Event Model (`lib/core/models/activity_event.dart`) - ✨ Created Feb 2026
+- [x] Activity Event Type Enum (`lib/core/enums/activity_event_type.dart`) - ✨ Created Feb 2026
 
 ### 3.1.9 Supporting Models
-- [ ] Owner Update Marker Model (`lib/core/models/owner_update_marker.dart`)
+- [x] Owner Update Marker Model (`lib/core/models/owner_update_marker.dart`) - ✨ Created Feb 2026
 
 ---
 
