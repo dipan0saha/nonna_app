@@ -25,7 +25,7 @@ class CacheManager {
 
   /// Cache eviction policies
   static const String lruEviction = 'lru'; // Least Recently Used
-  static const String lfu Eviction = 'lfu'; // Least Frequently Used
+  static const String lfuEviction = 'lfu'; // Least Frequently Used
   static const String fifoEviction = 'fifo'; // First In First Out
 
   /// Cache TTL presets (in minutes)
