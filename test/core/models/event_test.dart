@@ -204,7 +204,16 @@ void main() {
       });
 
       test('duration returns null when endsAt is not set', () {
-        final eventWithoutEnd = event.copyWith(endsAt: null);
+        final eventWithoutEnd = Event(
+          id: event.id,
+          babyProfileId: event.babyProfileId,
+          createdByUserId: event.createdByUserId,
+          title: event.title,
+          startsAt: event.startsAt,
+          endsAt: null,
+          createdAt: event.createdAt,
+          updatedAt: event.updatedAt,
+        );
         expect(eventWithoutEnd.duration, null);
       });
     });

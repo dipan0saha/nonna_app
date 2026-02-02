@@ -170,7 +170,15 @@ void main() {
       });
 
       test('hasCaption returns false when caption is null', () {
-        final photoWithoutCaption = photo.copyWith(caption: null);
+        final photoWithoutCaption = Photo(
+          id: photo.id,
+          babyProfileId: photo.babyProfileId,
+          uploadedByUserId: photo.uploadedByUserId,
+          storagePath: photo.storagePath,
+          caption: null,
+          createdAt: photo.createdAt,
+          updatedAt: photo.updatedAt,
+        );
         expect(photoWithoutCaption.hasCaption, false);
       });
 

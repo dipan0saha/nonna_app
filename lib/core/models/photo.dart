@@ -168,7 +168,7 @@ class Photo {
         storagePath.hashCode ^
         thumbnailPath.hashCode ^
         caption.hashCode ^
-        tags.hashCode ^
+        Object.hashAll(tags) ^
         createdAt.hashCode ^
         updatedAt.hashCode ^
         deletedAt.hashCode;
