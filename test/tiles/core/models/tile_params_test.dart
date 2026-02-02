@@ -95,6 +95,39 @@ void main() {
       });
     });
 
+    group('validate', () {
+      test('returns null for valid params', () {
+        expect(tileParams.validate(), null);
+      });
+
+      test('returns null for params with valid date range', () {
+        expect(tileParamsWithDates.validate(), null);
+      });
+
+      test('returns error when end date is before start date', () {
+        final params = TileParams(
+          startDate: endDate,
+          endDate: startDate,
+        );
+        expect(params.validate(), contains('End date must be after start date'));
+      });
+
+      test('returns error for negative limit', () {
+        const params = TileParams(limit: -1);
+        expect(params.validate(), contains('Limit must be 0 or greater'));
+      });
+
+      test('returns error for negative offset', () {
+        const params = TileParams(offset: -5);
+        expect(params.validate(), contains('Offset must be 0 or greater'));
+      });
+
+      test('returns null for zero limit and offset', () {
+        const params = TileParams(limit: 0, offset: 0);
+        expect(params.validate(), null);
+      });
+    });
+
     group('copyWith', () {
       test('creates a copy with updated fields', () {
         final updated = tileParams.copyWith(
@@ -154,6 +187,29 @@ void main() {
         );
 
         expect(params1, isNot(params2));
+      });
+
+      test('params with different customParams are not equal', () {
+        const params1 = TileParams(
+          customParams: {'filter': 'active'},
+        );
+        const params2 = TileParams(
+          customParams: {'filter': 'inactive'},
+        );
+
+        expect(params1, isNot(params2));
+      });
+
+      test('params with same customParams are equal', () {
+        const params1 = TileParams(
+          customParams: {'filter': 'active', 'count': '5'},
+        );
+        const params2 = TileParams(
+          customParams: {'filter': 'active', 'count': '5'},
+        );
+
+        expect(params1, params2);
+        expect(params1.hashCode, params2.hashCode);
       });
     });
 

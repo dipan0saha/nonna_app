@@ -154,6 +154,49 @@ void main() {
 
         expect(def1, isNot(def2));
       });
+
+      test('definitions with different schemaParams are not equal', () {
+        final def1 = TileDefinition(
+          id: 'tile-def-123',
+          tileType: TileType.upcomingEvents,
+          description: 'Upcoming events',
+          schemaParams: {'maxItems': 5},
+          createdAt: now,
+          updatedAt: now,
+        );
+        final def2 = TileDefinition(
+          id: 'tile-def-123',
+          tileType: TileType.upcomingEvents,
+          description: 'Upcoming events',
+          schemaParams: {'maxItems': 10},
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        expect(def1, isNot(def2));
+      });
+
+      test('definitions with same schemaParams are equal', () {
+        final def1 = TileDefinition(
+          id: 'tile-def-123',
+          tileType: TileType.upcomingEvents,
+          description: 'Upcoming events',
+          schemaParams: {'maxItems': 5, 'sortBy': 'date'},
+          createdAt: now,
+          updatedAt: now,
+        );
+        final def2 = TileDefinition(
+          id: 'tile-def-123',
+          tileType: TileType.upcomingEvents,
+          description: 'Upcoming events',
+          schemaParams: {'maxItems': 5, 'sortBy': 'date'},
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        expect(def1, def2);
+        expect(def1.hashCode, def2.hashCode);
+      });
     });
   });
 }
