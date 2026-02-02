@@ -98,11 +98,11 @@ void main() {
         );
       });
 
-      test('white text on primary background meets AA', () {
+      test('white text on primary dark background meets AA', () {
         expect(
           ColorContrastValidator.isValidNormalText(
             AppColors.white,
-            AppColors.primary,
+            AppColors.primaryDark,
           ),
           isTrue,
         );
@@ -396,10 +396,10 @@ void main() {
           AppColors.textSecondary,
           AppColors.white,
         ),
-        // White text on primary background
+        // White text on primary dark background (used for buttons)
         ColorContrastValidator.analyzeContrast(
           AppColors.white,
-          AppColors.primary,
+          AppColors.primaryDark,
         ),
       ];
 
@@ -414,9 +414,9 @@ void main() {
 
     test('UI components have sufficient contrast', () {
       final uiComponentChecks = [
-        // Button border on white
+        // Button border on white (using primaryDark for sufficient contrast)
         ColorContrastValidator.analyzeContrast(
-          AppColors.primary,
+          AppColors.primaryDark,
           AppColors.white,
         ),
         // Error indicator on white

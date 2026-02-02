@@ -80,7 +80,14 @@ class CustomButton extends StatelessWidget {
                 Icon(icon, size: 20),
                 AppSpacing.horizontalGapXS,
               ],
-              Text(label),
+              Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+              ),
             ],
           );
 

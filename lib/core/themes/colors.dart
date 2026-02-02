@@ -21,8 +21,9 @@ class AppColors {
   /// Primary brand color - Sage green as seen in demo
   static const Color primary = Color(0xFFA8C5AD);
 
-  /// Darker variant of primary color for hover/pressed states
-  static const Color primaryDark = Color(0xFF8AAF90);
+  /// Darker variant of primary color for hover/pressed states and backgrounds where white text is needed
+  /// Updated to meet WCAG AA contrast requirements for white text (4.5:1)
+  static const Color primaryDark = Color(0xFF5A7F62);
 
   /// Lighter variant of primary color for backgrounds
   static const Color primaryLight = Color(0xFFD4E4D6);
@@ -84,19 +85,21 @@ class AppColors {
   // ============================================================
 
   /// Success color - green for positive actions
-  static const Color success = Color(0xFF4CAF50);
+  /// Updated to meet WCAG AA contrast requirements (4.5:1 on white)
+  static const Color success = Color(0xFF2E7D32);
 
   /// Success dark variant
-  static const Color successDark = Color(0xFF388E3C);
+  static const Color successDark = Color(0xFF1B5E20);
 
   /// Success light variant
   static const Color successLight = Color(0xFFC8E6C9);
 
   /// Error color - red for errors and destructive actions
-  static const Color error = Color(0xFFE57373);
+  /// Updated to meet WCAG AA contrast requirements (4.5:1 on white)
+  static const Color error = Color(0xFFD32F2F);
 
   /// Error dark variant
-  static const Color errorDark = Color(0xFFD32F2F);
+  static const Color errorDark = Color(0xFFC62828);
 
   /// Error light variant
   static const Color errorLight = Color(0xFFFFCDD2);

@@ -32,9 +32,9 @@ void main() {
       });
 
       test('gray scale has correct values', () {
-        expect(AppColors.gray50.value, lessThan(AppColors.gray100.value));
-        expect(AppColors.gray100.value, lessThan(AppColors.gray200.value));
-        expect(AppColors.gray200.value, lessThan(AppColors.gray300.value));
+        expect(AppColors.gray50.value, greaterThan(AppColors.gray100.value));
+        expect(AppColors.gray100.value, greaterThan(AppColors.gray200.value));
+        expect(AppColors.gray200.value, greaterThan(AppColors.gray300.value));
       });
     });
 
