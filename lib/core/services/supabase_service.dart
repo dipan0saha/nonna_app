@@ -52,9 +52,9 @@ class SupabaseService {
   // Storage Operations
   // ==========================================
 
-  /// Get a storage bucket reference
+  /// Get the Supabase storage client
   /// 
-  /// [bucketId] The ID of the storage bucket
+  /// Returns a [SupabaseStorageClient] for interacting with storage buckets.
   SupabaseStorageClient storage() {
     return client.storage;
   }

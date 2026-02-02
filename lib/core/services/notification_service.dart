@@ -184,7 +184,8 @@ class NotificationService {
   /// Disable push notifications
   static Future<void> disableNotifications() async {
     try {
-      OneSignal.Notifications.requestPermission(false);
+      // Use OneSignal opt-out instead of permission revocation
+      OneSignal.User.pushSubscription.optOut();
       await _localStorage.setNotificationsEnabled(false);
       
       // Track analytics
@@ -317,8 +318,11 @@ class NotificationService {
   // ==========================================
 
   /// Dispose the notification service
+  /// 
+  /// Note: Does not close the static notification click stream controller
+  /// as it is a process-lifetime stream. Closing it would cause errors
+  /// if notifications are handled after dispose() is called.
   static Future<void> dispose() async {
-    await _notificationClickController.close();
     _isInitialized = false;
     debugPrint('✅ NotificationService disposed');
   }

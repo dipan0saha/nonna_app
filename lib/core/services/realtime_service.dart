@@ -85,13 +85,13 @@ class RealtimeService {
   /// 
   /// [table] The table name
   /// [channelName] Unique channel name
-  /// [filters] Optional filters (e.g., {'baby_profile_id': 'eq.123'})
-  /// [event] Event type ('INSERT', 'UPDATE', 'DELETE', or '*')
+  /// [filter] Optional filter with column and value (e.g., {'column': 'baby_profile_id', 'value': '123'})
+  /// [event] Event type to listen for
   Stream<dynamic> subscribe({
     required String table,
     required String channelName,
-    Map<String, String>? filters,
-    String event = '*',
+    Map<String, String>? filter,
+    PostgresChangeEvent event = PostgresChangeEvent.all,
   }) {
     try {
       // Check if channel already exists
@@ -107,26 +107,26 @@ class RealtimeService {
       // Create channel
       final channel = _client.channel(channelName);
 
-      // Build filter string
-      String? filterString;
-      if (filters != null && filters.isNotEmpty) {
-        filterString = filters.entries
-            .map((e) => '${e.key}=${e.value}')
-            .join(',');
+      // Build filter if provided
+      PostgresChangeFilter? changeFilter;
+      if (filter != null && filter.isNotEmpty) {
+        final column = filter['column'];
+        final value = filter['value'];
+        if (column != null && value != null) {
+          changeFilter = PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: column,
+            value: value,
+          );
+        }
       }
 
       // Subscribe to postgres changes
       channel.onPostgresChanges(
-        event: PostgresChangeEvent.all,
+        event: event,
         schema: 'public',
         table: table,
-        filter: filterString != null
-            ? PostgresChangeFilter(
-                type: PostgresChangeFilterType.eq,
-                column: filters!.keys.first,
-                value: filters.values.first,
-              )
-            : null,
+        filter: changeFilter,
         callback: (payload) {
           debugPrint('📨 Received realtime event for $table: ${payload.eventType}');
           controller.add(payload);
@@ -192,7 +192,7 @@ class RealtimeService {
     return subscribe(
       table: SupabaseTables.photos,
       channelName: 'photos_$babyProfileId',
-      filters: {'baby_profile_id': 'eq.$babyProfileId'},
+      filter: {'column': 'baby_profile_id', 'value': babyProfileId},
     );
   }
 
@@ -201,7 +201,7 @@ class RealtimeService {
     return subscribe(
       table: SupabaseTables.events,
       channelName: 'events_$babyProfileId',
-      filters: {'baby_profile_id': 'eq.$babyProfileId'},
+      filter: {'column': 'baby_profile_id', 'value': babyProfileId},
     );
   }
 
@@ -210,7 +210,7 @@ class RealtimeService {
     return subscribe(
       table: SupabaseTables.notifications,
       channelName: 'notifications_$userId',
-      filters: {'recipient_user_id': 'eq.$userId'},
+      filter: {'column': 'recipient_user_id', 'value': userId},
     );
   }
 
@@ -219,7 +219,7 @@ class RealtimeService {
     return subscribe(
       table: SupabaseTables.nameSuggestions,
       channelName: 'name_suggestions_$babyProfileId',
-      filters: {'baby_profile_id': 'eq.$babyProfileId'},
+      filter: {'column': 'baby_profile_id', 'value': babyProfileId},
     );
   }
 
@@ -228,7 +228,7 @@ class RealtimeService {
     return subscribe(
       table: SupabaseTables.registryItems,
       channelName: 'registry_items_$babyProfileId',
-      filters: {'baby_profile_id': 'eq.$babyProfileId'},
+      filter: {'column': 'baby_profile_id', 'value': babyProfileId},
     );
   }
 
@@ -237,7 +237,7 @@ class RealtimeService {
     return subscribe(
       table: SupabaseTables.activityEvents,
       channelName: 'activity_events_$babyProfileId',
-      filters: {'baby_profile_id': 'eq.$babyProfileId'},
+      filter: {'column': 'baby_profile_id', 'value': babyProfileId},
     );
   }
 

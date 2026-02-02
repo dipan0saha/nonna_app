@@ -328,11 +328,16 @@ class StorageService {
 
     for (var i = 0; i < imageFiles.length; i++) {
       try {
+        final String? captionForImage =
+            (captions != null && i < captions.length) ? captions[i] : null;
+        final List<String>? tagsForImage =
+            (tags != null && i < tags.length) ? tags[i] : null;
+
         final path = await uploadGalleryPhoto(
           imageFile: imageFiles[i],
           babyProfileId: babyProfileId,
-          caption: captions?[i],
-          tags: tags?[i],
+          caption: captionForImage,
+          tags: tagsForImage,
         );
         uploadedPaths.add(path);
       } catch (e) {

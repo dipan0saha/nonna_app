@@ -28,12 +28,10 @@ class DatabaseService {
   /// 
   /// [table] The table name
   /// [data] The data to insert
-  /// [upsert] Whether to perform an upsert (default: false)
   Future<List<Map<String, dynamic>>> insert(
     String table,
-    Map<String, dynamic> data, {
-    bool upsert = false,
-  }) async {
+    Map<String, dynamic> data,
+  ) async {
     try {
       final response = await _client
           .from(table)
@@ -51,12 +49,10 @@ class DatabaseService {
   /// 
   /// [table] The table name
   /// [data] List of data objects to insert
-  /// [upsert] Whether to perform an upsert (default: false)
   Future<List<Map<String, dynamic>>> insertMany(
     String table,
-    List<Map<String, dynamic>> data, {
-    bool upsert = false,
-  }) async {
+    List<Map<String, dynamic>> data,
+  ) async {
     try {
       final response = await _client
           .from(table)
@@ -93,7 +89,9 @@ class DatabaseService {
     String? onConflict,
   }) async {
     try {
-      final query = _client.from(table).upsert(data);
+      final query = onConflict != null
+          ? _client.from(table).upsert(data, onConflict: onConflict)
+          : _client.from(table).upsert(data);
       
       final response = await query.select();
       
@@ -115,7 +113,9 @@ class DatabaseService {
     String? onConflict,
   }) async {
     try {
-      final query = _client.from(table).upsert(data);
+      final query = onConflict != null
+          ? _client.from(table).upsert(data, onConflict: onConflict)
+          : _client.from(table).upsert(data);
       
       final response = await query.select();
       

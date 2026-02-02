@@ -48,7 +48,7 @@ Wrapper service for Supabase operations with centralized error handling.
 final supabaseService = SupabaseService();
 
 // Database query
-final data = await supabaseService.from('profiles').select().execute();
+final data = await supabaseService.from('profiles').select();
 
 // RPC call
 final result = await supabaseService.rpc('my_function', params: {'id': 123});
