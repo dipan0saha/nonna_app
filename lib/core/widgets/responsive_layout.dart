@@ -230,12 +230,14 @@ class ResponsiveContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding ?? ScreenSizeUtils.getContentPadding(context),
+    return Align(
       alignment: alignment,
-      child: ConstrainedBox(
-        constraints: ScreenSizeUtils.getContentConstraints(context),
-        child: child,
+      child: Padding(
+        padding: padding ?? ScreenSizeUtils.getContentPadding(context),
+        child: ConstrainedBox(
+          constraints: ScreenSizeUtils.getContentConstraints(context),
+          child: child,
+        ),
       ),
     );
   }

@@ -46,6 +46,7 @@ class AccessibilityHelpers {
     String? hint,
     VoidCallback? onTap,
     bool enabled = true,
+    bool excludeSemantics = true,
   }) {
     return Semantics(
       label: label,
@@ -53,6 +54,7 @@ class AccessibilityHelpers {
       button: true,
       enabled: enabled,
       onTap: onTap,
+      excludeSemantics: excludeSemantics,
       child: child,
     );
   }
