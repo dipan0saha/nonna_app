@@ -166,6 +166,57 @@ void main() {
 
         expect(config1, isNot(config2));
       });
+
+      test('configs with different params are not equal', () {
+        final config1 = TileConfig(
+          id: 'config-123',
+          screenId: 'screen-456',
+          tileDefinitionId: 'tile-def-789',
+          role: UserRole.owner,
+          displayOrder: 1,
+          params: {'key': 'value1'},
+          createdAt: now,
+          updatedAt: now,
+        );
+        final config2 = TileConfig(
+          id: 'config-123',
+          screenId: 'screen-456',
+          tileDefinitionId: 'tile-def-789',
+          role: UserRole.owner,
+          displayOrder: 1,
+          params: {'key': 'value2'},
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        expect(config1, isNot(config2));
+      });
+
+      test('configs with same params are equal', () {
+        final config1 = TileConfig(
+          id: 'config-123',
+          screenId: 'screen-456',
+          tileDefinitionId: 'tile-def-789',
+          role: UserRole.owner,
+          displayOrder: 1,
+          params: {'key': 'value', 'count': '5'},
+          createdAt: now,
+          updatedAt: now,
+        );
+        final config2 = TileConfig(
+          id: 'config-123',
+          screenId: 'screen-456',
+          tileDefinitionId: 'tile-def-789',
+          role: UserRole.owner,
+          displayOrder: 1,
+          params: {'key': 'value', 'count': '5'},
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        expect(config1, config2);
+        expect(config1.hashCode, config2.hashCode);
+      });
     });
   });
 }

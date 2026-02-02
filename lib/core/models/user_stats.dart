@@ -53,6 +53,40 @@ class UserStats {
   /// Checks if the user has any activity
   bool get hasActivity => totalActivityCount > 0;
 
+  /// Validates the user stats data
+  ///
+  /// Returns an error message if validation fails, null otherwise.
+  String? validate() {
+    if (eventsAttendedCount < 0) {
+      return 'Events attended count cannot be negative';
+    }
+    if (itemsPurchasedCount < 0) {
+      return 'Items purchased count cannot be negative';
+    }
+    if (photosSquishedCount < 0) {
+      return 'Photos squished count cannot be negative';
+    }
+    if (commentsAddedCount < 0) {
+      return 'Comments added count cannot be negative';
+    }
+    return null;
+  }
+
+  /// Creates a copy of this UserStats with the specified fields replaced
+  UserStats copyWith({
+    int? eventsAttendedCount,
+    int? itemsPurchasedCount,
+    int? photosSquishedCount,
+    int? commentsAddedCount,
+  }) {
+    return UserStats(
+      eventsAttendedCount: eventsAttendedCount ?? this.eventsAttendedCount,
+      itemsPurchasedCount: itemsPurchasedCount ?? this.itemsPurchasedCount,
+      photosSquishedCount: photosSquishedCount ?? this.photosSquishedCount,
+      commentsAddedCount: commentsAddedCount ?? this.commentsAddedCount,
+    );
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

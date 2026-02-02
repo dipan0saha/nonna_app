@@ -86,6 +86,22 @@ class TileParams {
     return !endDate!.isBefore(startDate!);
   }
 
+  /// Validates the tile params data
+  ///
+  /// Returns an error message if validation fails, null otherwise.
+  String? validate() {
+    if (startDate != null && endDate != null && endDate!.isBefore(startDate!)) {
+      return 'End date must be after start date';
+    }
+    if (limit != null && limit! < 0) {
+      return 'Limit must be 0 or greater';
+    }
+    if (offset != null && offset! < 0) {
+      return 'Offset must be 0 or greater';
+    }
+    return null;
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -95,7 +111,8 @@ class TileParams {
         other.startDate == startDate &&
         other.endDate == endDate &&
         other.limit == limit &&
-        other.offset == offset;
+        other.offset == offset &&
+        _mapEquals(other.customParams, customParams);
   }
 
   @override
@@ -104,7 +121,8 @@ class TileParams {
         startDate.hashCode ^
         endDate.hashCode ^
         limit.hashCode ^
-        offset.hashCode;
+        offset.hashCode ^
+        (customParams != null ? Object.hashAll(customParams!.entries) : 0);
   }
 
   @override
@@ -119,6 +137,17 @@ class TileParams {
     if (a.length != b.length) return false;
     for (int i = 0; i < a.length; i++) {
       if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
+  /// Helper method to compare two maps for equality
+  bool _mapEquals<K, V>(Map<K, V>? a, Map<K, V>? b) {
+    if (identical(a, b)) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+    for (final key in a.keys) {
+      if (!b.containsKey(key) || a[key] != b[key]) return false;
     }
     return true;
   }

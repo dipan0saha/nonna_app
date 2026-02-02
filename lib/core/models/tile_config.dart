@@ -121,6 +121,7 @@ class TileConfig {
         other.role == role &&
         other.displayOrder == displayOrder &&
         other.isVisible == isVisible &&
+        _mapEquals(other.params, params) &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt;
   }
@@ -133,6 +134,7 @@ class TileConfig {
         role.hashCode ^
         displayOrder.hashCode ^
         isVisible.hashCode ^
+        (params != null ? Object.hashAll(params!.entries) : 0) ^
         createdAt.hashCode ^
         updatedAt.hashCode;
   }
@@ -140,5 +142,16 @@ class TileConfig {
   @override
   String toString() {
     return 'TileConfig(id: $id, tileDefinitionId: $tileDefinitionId, role: $role, displayOrder: $displayOrder, isVisible: $isVisible)';
+  }
+
+  /// Helper method to compare two maps for equality
+  bool _mapEquals<K, V>(Map<K, V>? a, Map<K, V>? b) {
+    if (identical(a, b)) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+    for (final key in a.keys) {
+      if (!b.containsKey(key) || a[key] != b[key]) return false;
+    }
+    return true;
   }
 }

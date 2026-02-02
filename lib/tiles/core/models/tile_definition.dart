@@ -105,6 +105,7 @@ class TileDefinition {
         other.id == id &&
         other.tileType == tileType &&
         other.description == description &&
+        _mapEquals(other.schemaParams, schemaParams) &&
         other.isActive == isActive &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt;
@@ -115,6 +116,7 @@ class TileDefinition {
     return id.hashCode ^
         tileType.hashCode ^
         description.hashCode ^
+        (schemaParams != null ? Object.hashAll(schemaParams!.entries) : 0) ^
         isActive.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode;
@@ -123,5 +125,16 @@ class TileDefinition {
   @override
   String toString() {
     return 'TileDefinition(id: $id, tileType: $tileType, isActive: $isActive)';
+  }
+
+  /// Helper method to compare two maps for equality
+  bool _mapEquals<K, V>(Map<K, V>? a, Map<K, V>? b) {
+    if (identical(a, b)) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+    for (final key in a.keys) {
+      if (!b.containsKey(key) || a[key] != b[key]) return false;
+    }
+    return true;
   }
 }

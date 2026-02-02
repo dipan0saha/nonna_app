@@ -72,6 +72,69 @@ void main() {
       });
     });
 
+    group('validate', () {
+      test('returns null for valid stats', () {
+        expect(userStats.validate(), null);
+      });
+
+      test('returns null for zero counts', () {
+        const zeroStats = UserStats();
+        expect(zeroStats.validate(), null);
+      });
+
+      test('returns error for negative events count', () {
+        const negativeStats = UserStats(eventsAttendedCount: -1);
+        expect(negativeStats.validate(), contains('Events attended count'));
+      });
+
+      test('returns error for negative items purchased count', () {
+        const negativeStats = UserStats(itemsPurchasedCount: -1);
+        expect(negativeStats.validate(), contains('Items purchased count'));
+      });
+
+      test('returns error for negative photos squished count', () {
+        const negativeStats = UserStats(photosSquishedCount: -1);
+        expect(negativeStats.validate(), contains('Photos squished count'));
+      });
+
+      test('returns error for negative comments count', () {
+        const negativeStats = UserStats(commentsAddedCount: -1);
+        expect(negativeStats.validate(), contains('Comments added count'));
+      });
+    });
+
+    group('copyWith', () {
+      test('creates a copy with all fields unchanged when no params provided', () {
+        final copy = userStats.copyWith();
+        expect(copy, userStats);
+      });
+
+      test('updates eventsAttendedCount only', () {
+        final copy = userStats.copyWith(eventsAttendedCount: 10);
+        expect(copy.eventsAttendedCount, 10);
+        expect(copy.itemsPurchasedCount, userStats.itemsPurchasedCount);
+        expect(copy.photosSquishedCount, userStats.photosSquishedCount);
+        expect(copy.commentsAddedCount, userStats.commentsAddedCount);
+      });
+
+      test('updates itemsPurchasedCount only', () {
+        final copy = userStats.copyWith(itemsPurchasedCount: 7);
+        expect(copy.itemsPurchasedCount, 7);
+        expect(copy.eventsAttendedCount, userStats.eventsAttendedCount);
+      });
+
+      test('updates multiple fields', () {
+        final copy = userStats.copyWith(
+          eventsAttendedCount: 1,
+          photosSquishedCount: 2,
+        );
+        expect(copy.eventsAttendedCount, 1);
+        expect(copy.photosSquishedCount, 2);
+        expect(copy.itemsPurchasedCount, userStats.itemsPurchasedCount);
+        expect(copy.commentsAddedCount, userStats.commentsAddedCount);
+      });
+    });
+
     group('equality', () {
       test('equal stats are equal', () {
         const stats1 = UserStats(
