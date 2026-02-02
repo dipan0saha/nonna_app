@@ -1,0 +1,330 @@
+import 'package:flutter/foundation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../network/supabase_client.dart';
+
+/// Database service for typed query execution and transaction support
+/// 
+/// Provides query builder wrapper, pagination helpers, and error mapping
+class DatabaseService {
+  final SupabaseClient _client = SupabaseClientManager.instance;
+
+  // ==========================================
+  // Query Operations
+  // ==========================================
+
+  /// Select data from a table
+  /// 
+  /// [table] The table name
+  /// [columns] Optional columns to select (default: '*')
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> select(
+    String table, {
+    String columns = '*',
+  }) {
+    return _client.from(table).select(columns);
+  }
+
+  /// Insert data into a table
+  /// 
+  /// [table] The table name
+  /// [data] The data to insert
+  /// [upsert] Whether to perform an upsert (default: false)
+  Future<List<Map<String, dynamic>>> insert(
+    String table,
+    Map<String, dynamic> data, {
+    bool upsert = false,
+  }) async {
+    try {
+      final response = await _client
+          .from(table)
+          .insert(data)
+          .select();
+      
+      return response as List<Map<String, dynamic>>;
+    } catch (e) {
+      debugPrint('❌ Error inserting into $table: $e');
+      rethrow;
+    }
+  }
+
+  /// Insert multiple rows into a table
+  /// 
+  /// [table] The table name
+  /// [data] List of data objects to insert
+  /// [upsert] Whether to perform an upsert (default: false)
+  Future<List<Map<String, dynamic>>> insertMany(
+    String table,
+    List<Map<String, dynamic>> data, {
+    bool upsert = false,
+  }) async {
+    try {
+      final response = await _client
+          .from(table)
+          .insert(data)
+          .select();
+      
+      return response as List<Map<String, dynamic>>;
+    } catch (e) {
+      debugPrint('❌ Error inserting multiple rows into $table: $e');
+      rethrow;
+    }
+  }
+
+  /// Update data in a table
+  /// 
+  /// [table] The table name
+  /// [data] The data to update
+  /// Returns a [PostgrestFilterBuilder] for adding WHERE conditions
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> update(
+    String table,
+    Map<String, dynamic> data,
+  ) {
+    return _client.from(table).update(data);
+  }
+
+  /// Upsert data into a table
+  /// 
+  /// [table] The table name
+  /// [data] The data to upsert
+  /// [onConflict] Optional conflict target columns
+  Future<List<Map<String, dynamic>>> upsert(
+    String table,
+    Map<String, dynamic> data, {
+    String? onConflict,
+  }) async {
+    try {
+      final query = _client.from(table).upsert(data);
+      
+      final response = await query.select();
+      
+      return response as List<Map<String, dynamic>>;
+    } catch (e) {
+      debugPrint('❌ Error upserting into $table: $e');
+      rethrow;
+    }
+  }
+
+  /// Upsert multiple rows into a table
+  /// 
+  /// [table] The table name
+  /// [data] List of data objects to upsert
+  /// [onConflict] Optional conflict target columns
+  Future<List<Map<String, dynamic>>> upsertMany(
+    String table,
+    List<Map<String, dynamic>> data, {
+    String? onConflict,
+  }) async {
+    try {
+      final query = _client.from(table).upsert(data);
+      
+      final response = await query.select();
+      
+      return response as List<Map<String, dynamic>>;
+    } catch (e) {
+      debugPrint('❌ Error upserting multiple rows into $table: $e');
+      rethrow;
+    }
+  }
+
+  /// Delete data from a table
+  /// 
+  /// [table] The table name
+  /// Returns a [PostgrestFilterBuilder] for adding WHERE conditions
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> delete(String table) {
+    return _client.from(table).delete();
+  }
+
+  // ==========================================
+  // RPC (Remote Procedure Call)
+  // ==========================================
+
+  /// Execute a PostgreSQL function
+  /// 
+  /// [functionName] The name of the function
+  /// [params] Optional parameters
+  Future<dynamic> rpc(
+    String functionName, {
+    Map<String, dynamic>? params,
+  }) async {
+    try {
+      return await _client.rpc(functionName, params: params);
+    } catch (e) {
+      debugPrint('❌ Error executing RPC $functionName: $e');
+      rethrow;
+    }
+  }
+
+  // ==========================================
+  // Pagination Helpers
+  // ==========================================
+
+  /// Get paginated data from a table
+  /// 
+  /// [table] The table name
+  /// [page] The page number (0-indexed)
+  /// [pageSize] Number of items per page
+  /// [columns] Optional columns to select
+  /// [orderBy] Optional column to order by
+  /// [ascending] Sort order (default: true)
+  Future<PaginatedResult> getPaginated(
+    String table, {
+    required int page,
+    required int pageSize,
+    String columns = '*',
+    String? orderBy,
+    bool ascending = true,
+  }) async {
+    try {
+      final from = page * pageSize;
+      final to = from + pageSize - 1;
+
+      var query = _client.from(table).select(columns);
+
+      if (orderBy != null) {
+        query = query.order(orderBy, ascending: ascending);
+      }
+
+      final response = await query.range(from, to);
+      
+      // Get total count for pagination metadata
+      final countQuery = await _client
+          .from(table)
+          .select('*', const FetchOptions(count: CountOption.exact, head: true));
+      
+      final totalCount = countQuery.count ?? 0;
+      
+      return PaginatedResult(
+        data: response as List<Map<String, dynamic>>,
+        page: page,
+        pageSize: pageSize,
+        totalCount: totalCount,
+        totalPages: (totalCount / pageSize).ceil(),
+      );
+    } catch (e) {
+      debugPrint('❌ Error getting paginated data from $table: $e');
+      rethrow;
+    }
+  }
+
+  // ==========================================
+  // Transaction Support (via RPC)
+  // ==========================================
+
+  /// Begin a transaction (requires PostgreSQL function)
+  /// 
+  /// Note: Supabase doesn't support explicit transactions via REST API.
+  /// Use PostgreSQL functions for complex transactions.
+  Future<void> executeTransaction(
+    String transactionFunctionName, {
+    Map<String, dynamic>? params,
+  }) async {
+    try {
+      await _client.rpc(transactionFunctionName, params: params);
+    } catch (e) {
+      debugPrint('❌ Error executing transaction: $e');
+      rethrow;
+    }
+  }
+
+  // ==========================================
+  // Batch Operations
+  // ==========================================
+
+  /// Perform a batch insert with better error handling
+  /// 
+  /// [table] The table name
+  /// [data] List of data objects
+  /// [batchSize] Number of items per batch (default: 100)
+  Future<void> batchInsert(
+    String table,
+    List<Map<String, dynamic>> data, {
+    int batchSize = 100,
+  }) async {
+    try {
+      for (var i = 0; i < data.length; i += batchSize) {
+        final end = (i + batchSize < data.length) ? i + batchSize : data.length;
+        final batch = data.sublist(i, end);
+        
+        await _client.from(table).insert(batch);
+        
+        debugPrint('✅ Inserted batch ${i ~/ batchSize + 1} (${batch.length} items)');
+      }
+    } catch (e) {
+      debugPrint('❌ Error in batch insert: $e');
+      rethrow;
+    }
+  }
+
+  // ==========================================
+  // Helper Methods
+  // ==========================================
+
+  /// Check if a record exists
+  /// 
+  /// [table] The table name
+  /// [column] The column to check
+  /// [value] The value to match
+  Future<bool> exists(
+    String table, {
+    required String column,
+    required dynamic value,
+  }) async {
+    try {
+      final response = await _client
+          .from(table)
+          .select('id')
+          .eq(column, value)
+          .limit(1);
+      
+      return (response as List).isNotEmpty;
+    } catch (e) {
+      debugPrint('❌ Error checking existence in $table: $e');
+      rethrow;
+    }
+  }
+
+  /// Count records in a table
+  /// 
+  /// [table] The table name
+  Future<int> count(String table) async {
+    try {
+      final response = await _client
+          .from(table)
+          .select('*', const FetchOptions(count: CountOption.exact, head: true));
+      
+      return response.count ?? 0;
+    } catch (e) {
+      debugPrint('❌ Error counting records in $table: $e');
+      rethrow;
+    }
+  }
+}
+
+/// Paginated result data class
+class PaginatedResult {
+  final List<Map<String, dynamic>> data;
+  final int page;
+  final int pageSize;
+  final int totalCount;
+  final int totalPages;
+
+  PaginatedResult({
+    required this.data,
+    required this.page,
+    required this.pageSize,
+    required this.totalCount,
+    required this.totalPages,
+  });
+
+  /// Check if there is a next page
+  bool get hasNextPage => page < totalPages - 1;
+
+  /// Check if there is a previous page
+  bool get hasPreviousPage => page > 0;
+
+  /// Get the next page number
+  int? get nextPage => hasNextPage ? page + 1 : null;
+
+  /// Get the previous page number
+  int? get previousPage => hasPreviousPage ? page - 1 : null;
+}

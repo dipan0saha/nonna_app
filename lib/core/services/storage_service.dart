@@ -303,6 +303,151 @@ class StorageService {
     }
   }
 
+  /// Delete multiple files from storage
+  Future<void> deleteFiles(String bucketName, List<String> paths) async {
+    try {
+      await _supabase.storage.from(bucketName).remove(paths);
+    } catch (e) {
+      debugPrint('Error deleting files: $e');
+      rethrow;
+    }
+  }
+
+  // ==========================================
+  // Batch Operations
+  // ==========================================
+
+  /// Upload multiple photos in batch
+  Future<List<String>> batchUploadPhotos({
+    required List<File> imageFiles,
+    required String babyProfileId,
+    List<String>? captions,
+    List<List<String>>? tags,
+  }) async {
+    final uploadedPaths = <String>[];
+
+    for (var i = 0; i < imageFiles.length; i++) {
+      try {
+        final path = await uploadGalleryPhoto(
+          imageFile: imageFiles[i],
+          babyProfileId: babyProfileId,
+          caption: captions?[i],
+          tags: tags?[i],
+        );
+        uploadedPaths.add(path);
+      } catch (e) {
+        debugPrint('Error uploading photo $i: $e');
+        // Continue with next photo even if one fails
+      }
+    }
+
+    return uploadedPaths;
+  }
+
+  // ==========================================
+  // Thumbnail Generation
+  // ==========================================
+
+  /// Generate thumbnail for image
+  Future<File> generateThumbnail(
+    File imageFile, {
+    int maxWidth = 200,
+    int maxHeight = 200,
+    int quality = 60,
+  }) async {
+    try {
+      return await _compressImage(
+        imageFile,
+        quality: quality,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
+      );
+    } catch (e) {
+      debugPrint('Error generating thumbnail: $e');
+      rethrow;
+    }
+  }
+
+  /// Upload photo with thumbnail
+  Future<Map<String, String>> uploadPhotoWithThumbnail({
+    required File imageFile,
+    required String babyProfileId,
+    String? caption,
+    List<String>? tags,
+  }) async {
+    try {
+      // Upload main photo
+      final photoPath = await uploadGalleryPhoto(
+        imageFile: imageFile,
+        babyProfileId: babyProfileId,
+        caption: caption,
+        tags: tags,
+      );
+
+      // Generate and upload thumbnail
+      final thumbnail = await generateThumbnail(imageFile);
+      final thumbnailBytes = await thumbnail.readAsBytes();
+      final thumbnailFileName = '${const Uuid().v4()}_thumb.jpg';
+      final thumbnailPath = 'baby_$babyProfileId/$thumbnailFileName';
+
+      await _supabase.storage.from('gallery-photos').uploadBinary(
+            thumbnailPath,
+            thumbnailBytes,
+            fileOptions: const FileOptions(
+              contentType: 'image/jpeg',
+              upsert: false,
+            ),
+          );
+
+      return {
+        'photo_path': photoPath,
+        'thumbnail_path': thumbnailPath,
+      };
+    } catch (e) {
+      debugPrint('Error uploading photo with thumbnail: $e');
+      rethrow;
+    }
+  }
+
+  // ==========================================
+  // Storage Quota Management
+  // ==========================================
+
+  /// Get storage usage for a baby profile
+  Future<int> getStorageUsage(String babyProfileId) async {
+    try {
+      final files = await _supabase.storage
+          .from('gallery-photos')
+          .list(path: 'baby_$babyProfileId');
+
+      int totalSize = 0;
+      for (final file in files) {
+        totalSize += file.metadata?['size'] as int? ?? 0;
+      }
+
+      return totalSize;
+    } catch (e) {
+      debugPrint('Error getting storage usage: $e');
+      return 0;
+    }
+  }
+
+  /// Check if storage quota is available
+  Future<bool> hasStorageQuota(
+    String babyProfileId, {
+    int maxStorageMb = 500,
+  }) async {
+    try {
+      final usageBytes = await getStorageUsage(babyProfileId);
+      final usageMb = usageBytes / (1024 * 1024);
+
+      return usageMb < maxStorageMb;
+    } catch (e) {
+      debugPrint('Error checking storage quota: $e');
+      return true; // Allow upload if quota check fails
+    }
+  }
+
   // ==========================================
   // Validation
   // ==========================================
