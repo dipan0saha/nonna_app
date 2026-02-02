@@ -348,7 +348,7 @@ void main() {
           find.ancestor(
             of: find.byWidget(testText),
             matching: find.byType(Focus),
-          ),
+          ).first,
         );
         expect(focus.focusNode, focusNode);
       });
