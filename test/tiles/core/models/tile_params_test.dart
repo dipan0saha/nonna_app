@@ -105,9 +105,11 @@ void main() {
       });
 
       test('returns error when end date is before start date', () {
+        final laterDate = DateTime(2024, 12, 31);
+        final earlierDate = DateTime(2024, 1, 1);
         final params = TileParams(
-          startDate: endDate,
-          endDate: startDate,
+          startDate: laterDate,
+          endDate: earlierDate,
         );
         expect(params.validate(), contains('End date must be after start date'));
       });
