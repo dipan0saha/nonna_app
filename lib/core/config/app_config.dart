@@ -1,6 +1,6 @@
 /// Application configuration
 ///
-/// **Functional Requirements**: Section 3.3.5 - Share Helpers Configuration
+/// **Functional Requirements**: Section 3.3 - Configuration Management for Utils & Helpers
 /// Reference: docs/Core_development_component_identification.md
 ///
 /// Provides environment-specific configuration:
