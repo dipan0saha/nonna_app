@@ -15,7 +15,8 @@ void main() {
       });
 
       test('large border radius is greater than default', () {
-        expect(TileStyles.borderRadiusLarge, greaterThan(TileStyles.borderRadius));
+        expect(
+            TileStyles.borderRadiusLarge, greaterThan(TileStyles.borderRadius));
       });
     });
 
@@ -25,11 +26,13 @@ void main() {
       });
 
       test('compact padding is less than default', () {
-        expect(TileStyles.compactPadding.left, lessThan(TileStyles.defaultPadding.left));
+        expect(TileStyles.compactPadding.left,
+            lessThan(TileStyles.defaultPadding.left));
       });
 
       test('expanded padding is greater than default', () {
-        expect(TileStyles.expandedPadding.left, greaterThan(TileStyles.defaultPadding.left));
+        expect(TileStyles.expandedPadding.left,
+            greaterThan(TileStyles.defaultPadding.left));
       });
 
       test('header padding has asymmetric values', () {
@@ -68,7 +71,8 @@ void main() {
       });
 
       test('prominent elevation is greatest', () {
-        expect(TileStyles.elevationProminent, greaterThan(TileStyles.elevationHover));
+        expect(TileStyles.elevationProminent,
+            greaterThan(TileStyles.elevationHover));
       });
 
       test('default shadow has one shadow', () {
@@ -188,7 +192,8 @@ void main() {
       });
 
       test('decorationWithGradient creates decoration with gradient', () {
-        final gradient = const LinearGradient(colors: [Colors.red, Colors.blue]);
+        final gradient =
+            const LinearGradient(colors: [Colors.red, Colors.blue]);
         final decoration = TileStyles.decorationWithGradient(gradient);
         expect(decoration.gradient, gradient);
       });

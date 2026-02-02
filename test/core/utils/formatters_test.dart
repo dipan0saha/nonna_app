@@ -10,14 +10,16 @@ void main() {
       });
 
       test('formats 11-digit numbers with country code', () {
-        expect(Formatters.formatPhoneNumber('15551234567'), '+1 (555) 123-4567');
+        expect(
+            Formatters.formatPhoneNumber('15551234567'), '+1 (555) 123-4567');
       });
     });
 
     group('formatEmail', () {
       test('trims and lowercases email', () {
         expect(Formatters.formatEmail('Test@Example.Com'), 'test@example.com');
-        expect(Formatters.formatEmail('  user@domain.com  '), 'user@domain.com');
+        expect(
+            Formatters.formatEmail('  user@domain.com  '), 'user@domain.com');
       });
     });
 
@@ -34,19 +36,24 @@ void main() {
 
     group('ensureUrlProtocol', () {
       test('adds https:// to URLs without protocol', () {
-        expect(Formatters.ensureUrlProtocol('example.com'), 'https://example.com');
+        expect(
+            Formatters.ensureUrlProtocol('example.com'), 'https://example.com');
       });
 
       test('keeps existing protocol', () {
-        expect(Formatters.ensureUrlProtocol('http://example.com'), 'http://example.com');
-        expect(Formatters.ensureUrlProtocol('https://example.com'), 'https://example.com');
+        expect(Formatters.ensureUrlProtocol('http://example.com'),
+            'http://example.com');
+        expect(Formatters.ensureUrlProtocol('https://example.com'),
+            'https://example.com');
       });
     });
 
     group('formatUrlForDisplay', () {
       test('removes protocol and www', () {
-        expect(Formatters.formatUrlForDisplay('https://www.example.com'), 'example.com');
-        expect(Formatters.formatUrlForDisplay('http://example.com'), 'example.com');
+        expect(Formatters.formatUrlForDisplay('https://www.example.com'),
+            'example.com');
+        expect(Formatters.formatUrlForDisplay('http://example.com'),
+            'example.com');
       });
     });
 
@@ -64,7 +71,8 @@ void main() {
       });
 
       test('limits initials to maxInitials', () {
-        expect(Formatters.getInitials('Alice Bob Charlie', maxInitials: 3), 'ABC');
+        expect(
+            Formatters.getInitials('Alice Bob Charlie', maxInitials: 3), 'ABC');
       });
     });
 
@@ -78,7 +86,8 @@ void main() {
       });
 
       test('uses custom ellipsis', () {
-        expect(Formatters.truncate('hello world', 8, ellipsis: '>>'), 'hello >>');
+        expect(
+            Formatters.truncate('hello world', 8, ellipsis: '>>'), 'hello >>');
       });
     });
 
@@ -89,7 +98,8 @@ void main() {
       });
 
       test('handles decimal places', () {
-        expect(Formatters.formatNumber(1234.5678, decimalPlaces: 2), '1,234.57');
+        expect(
+            Formatters.formatNumber(1234.5678, decimalPlaces: 2), '1,234.57');
       });
     });
 
@@ -156,7 +166,8 @@ void main() {
       });
 
       test('uses custom plural', () {
-        expect(Formatters.pluralize('child', 2, plural: 'children'), 'children');
+        expect(
+            Formatters.pluralize('child', 2, plural: 'children'), 'children');
       });
     });
 
@@ -169,7 +180,8 @@ void main() {
 
     group('maskCreditCard', () {
       test('masks credit card number', () {
-        expect(Formatters.maskCreditCard('1234567890123456'), '**** **** **** 3456');
+        expect(Formatters.maskCreditCard('1234567890123456'),
+            '**** **** **** 3456');
       });
     });
 
@@ -183,7 +195,8 @@ void main() {
       });
 
       test('formats multiple items', () {
-        expect(Formatters.formatList(['apple', 'banana', 'cherry']), 'apple, banana, and cherry');
+        expect(Formatters.formatList(['apple', 'banana', 'cherry']),
+            'apple, banana, and cherry');
       });
     });
   });

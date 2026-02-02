@@ -86,7 +86,8 @@ class RoleHelpers {
   }
 
   /// Check if user can manage baby profile
-  static bool canManageProfile(UserRole role, String? profileOwnerId, String? userId) {
+  static bool canManageProfile(
+      UserRole role, String? profileOwnerId, String? userId) {
     // Only the owner of the profile can manage it
     return isOwner(role) && profileOwnerId == userId;
   }

@@ -53,8 +53,7 @@ extension ContextExtensions on BuildContext {
   double get devicePixelRatio => MediaQuery.of(this).devicePixelRatio;
 
   /// Get text scale factor
-  double get textScaleFactor =>
-      MediaQuery.of(this).textScaler.scale(1.0);
+  double get textScaleFactor => MediaQuery.of(this).textScaler.scale(1.0);
 
   /// Get screen orientation
   Orientation get orientation => MediaQuery.of(this).orientation;

@@ -117,7 +117,7 @@ void main() {
                 tablet: 2,
                 desktop: 3,
               ).value(context);
-              
+
               return Text('Value: $value');
             },
           ),
@@ -281,7 +281,8 @@ void main() {
       expect(find.text('Landscape'), findsOneWidget);
     });
 
-    testWidgets('falls back to portrait when landscape is null', (tester) async {
+    testWidgets('falls back to portrait when landscape is null',
+        (tester) async {
       tester.view.physicalSize = const Size(800, 400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);

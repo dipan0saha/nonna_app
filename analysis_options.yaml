@@ -41,6 +41,11 @@ analyzer:
     missing_required_param: error
     missing_return: error
     todo: ignore
+    deprecated_member_use: ignore
+    prefer_const_constructors: ignore
+    prefer_const_declarations: ignore
+    avoid_shadowing_type_parameters: ignore
+    dangling_library_doc_comments: ignore
 
 linter:
   rules:

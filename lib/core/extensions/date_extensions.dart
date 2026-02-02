@@ -107,8 +107,7 @@ extension DateTimeExtensions on DateTime {
   DateTime get endOfDay => DateTime(year, month, day, 23, 59, 59, 999);
 
   /// Get the start of the week (Monday)
-  DateTime get startOfWeek =>
-      subtract(Duration(days: weekday - 1)).startOfDay;
+  DateTime get startOfWeek => subtract(Duration(days: weekday - 1)).startOfDay;
 
   /// Get the end of the week (Sunday)
   DateTime get endOfWeek => add(Duration(days: 7 - weekday)).endOfDay;

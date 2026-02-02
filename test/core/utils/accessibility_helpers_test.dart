@@ -78,20 +78,21 @@ void main() {
           ),
         );
 
-        final constrainedBox = tester.widgetList<ConstrainedBox>(
-          find.byType(ConstrainedBox),
-        ).firstWhere((box) => 
-          box.constraints.minWidth == 44.0 && 
-          box.constraints.minHeight == 44.0
-        );
-        
+        final constrainedBox = tester
+            .widgetList<ConstrainedBox>(
+              find.byType(ConstrainedBox),
+            )
+            .firstWhere((box) =>
+                box.constraints.minWidth == 44.0 &&
+                box.constraints.minHeight == 44.0);
+
         expect(constrainedBox.constraints.minWidth, 44.0);
         expect(constrainedBox.constraints.minHeight, 44.0);
       });
 
       testWidgets('touchTarget creates accessible button', (tester) async {
         var tapped = false;
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: AccessibilityHelpers.touchTarget(
@@ -104,7 +105,7 @@ void main() {
 
         await tester.tap(find.byType(Icon));
         expect(tapped, isTrue);
-        
+
         final semantics = tester.getSemantics(find.byType(Icon));
         expect(semantics.label, 'Delete item');
       });
@@ -182,7 +183,8 @@ void main() {
         );
 
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
-        final semantics = tester.getSemantics(find.byType(CircularProgressIndicator));
+        final semantics =
+            tester.getSemantics(find.byType(CircularProgressIndicator));
         expect(semantics.label, 'Loading data');
       });
 
@@ -233,7 +235,8 @@ void main() {
         expect(semantics.label, 'User settings');
       });
 
-      testWidgets('hideFromSemantics excludes decorative elements', (tester) async {
+      testWidgets('hideFromSemantics excludes decorative elements',
+          (tester) async {
         const testIcon = Icon(Icons.star);
         await tester.pumpWidget(
           MaterialApp(
@@ -275,7 +278,8 @@ void main() {
           MaterialApp(
             home: Builder(
               builder: (context) {
-                final enabled = AccessibilityHelpers.isScreenReaderEnabled(context);
+                final enabled =
+                    AccessibilityHelpers.isScreenReaderEnabled(context);
                 expect(enabled, isA<bool>());
                 return const SizedBox();
               },
@@ -303,7 +307,8 @@ void main() {
           MaterialApp(
             home: Builder(
               builder: (context) {
-                final disabled = AccessibilityHelpers.shouldDisableAnimations(context);
+                final disabled =
+                    AccessibilityHelpers.shouldDisableAnimations(context);
                 expect(disabled, isA<bool>());
                 return const SizedBox();
               },
@@ -312,12 +317,14 @@ void main() {
         );
       });
 
-      testWidgets('getAccessibilityTextScale returns scale factor', (tester) async {
+      testWidgets('getAccessibilityTextScale returns scale factor',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Builder(
               builder: (context) {
-                final scale = AccessibilityHelpers.getAccessibilityTextScale(context);
+                final scale =
+                    AccessibilityHelpers.getAccessibilityTextScale(context);
                 expect(scale, greaterThan(0));
                 return const SizedBox();
               },
@@ -331,7 +338,7 @@ void main() {
       testWidgets('focusable wraps widget with Focus', (tester) async {
         final focusNode = FocusNode();
         const testText = Text('Focusable');
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -345,10 +352,12 @@ void main() {
 
         // Find Focus widget that wraps our test text
         final focus = tester.widget<Focus>(
-          find.ancestor(
-            of: find.byWidget(testText),
-            matching: find.byType(Focus),
-          ).first,
+          find
+              .ancestor(
+                of: find.byWidget(testText),
+                matching: find.byType(Focus),
+              )
+              .first,
         );
         expect(focus.focusNode, focusNode);
       });
@@ -379,7 +388,8 @@ void main() {
           ),
         );
 
-        final semantics = tester.getSemantics(find.byType(LinearProgressIndicator));
+        final semantics =
+            tester.getSemantics(find.byType(LinearProgressIndicator));
         expect(semantics.value, contains('75'));
       });
     });

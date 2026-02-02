@@ -20,7 +20,7 @@ class AccessibilityHelpers {
   // ============================================================
 
   /// Create a semantic label for an image
-  /// 
+  ///
   /// Provides descriptive text for screen readers when displaying images.
   static Semantics imageSemantics({
     required Widget child,
@@ -38,7 +38,7 @@ class AccessibilityHelpers {
   }
 
   /// Create a semantic label for a button
-  /// 
+  ///
   /// Provides clear button descriptions for screen readers.
   static Semantics buttonSemantics({
     required Widget child,
@@ -115,7 +115,7 @@ class AccessibilityHelpers {
   // ============================================================
 
   /// Announce a message to screen readers
-  /// 
+  ///
   /// Use for important state changes or notifications.
   static void announce(
     BuildContext context,
@@ -136,7 +136,7 @@ class AccessibilityHelpers {
   }
 
   /// Announce an assertive message (interrupting)
-  /// 
+  ///
   /// Use sparingly for critical information only.
   static void announceAssertive(BuildContext context, String message) {
     announce(context, message, assertiveness: Assertiveness.assertive);
@@ -181,7 +181,7 @@ class AccessibilityHelpers {
   // ============================================================
 
   /// Create a keyboard-accessible button
-  /// 
+  ///
   /// Ensures buttons can be activated with Enter/Space keys.
   static Widget keyboardButton({
     required Widget child,
@@ -295,7 +295,7 @@ class AccessibilityHelpers {
   static const double minimumTouchTarget = 44.0;
 
   /// Ensure a widget meets minimum touch target size
-  /// 
+  ///
   /// Wraps a widget with padding/sizing to meet accessibility requirements.
   static Widget ensureTouchTarget({
     required Widget child,
@@ -345,7 +345,7 @@ class AccessibilityHelpers {
   // ============================================================
 
   /// Create a live region for dynamic content announcements
-  /// 
+  ///
   /// Screen readers will announce changes to content in this region.
   static Semantics liveRegion({
     required Widget child,
@@ -503,7 +503,7 @@ class AccessibilityHelpers {
   // ============================================================
 
   /// Create semantic wrapper for error view with retry action
-  /// 
+  ///
   /// Provides accessible error messaging and retry functionality.
   static Widget errorSemantics({
     required Widget child,
@@ -522,7 +522,7 @@ class AccessibilityHelpers {
   }
 
   /// Create semantic wrapper for empty state view
-  /// 
+  ///
   /// Provides accessible empty state messaging.
   static Widget emptyStateSemantics({
     required Widget child,

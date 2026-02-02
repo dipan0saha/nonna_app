@@ -294,7 +294,10 @@ mixin ValidationMixin {
 
   /// Get all error messages
   List<String> getAllErrors(Map<String, String?> errors) {
-    return errors.values.where((error) => error != null).cast<String>().toList();
+    return errors.values
+        .where((error) => error != null)
+        .cast<String>()
+        .toList();
   }
 
   /// Format error messages for display

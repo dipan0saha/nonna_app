@@ -62,7 +62,7 @@ class ImageHelpers {
       // Read image file
       final bytes = await imageFile.readAsBytes();
       final image = img.decodeImage(bytes);
-      
+
       if (image == null) return null;
 
       // Resize if dimensions are specified
@@ -87,23 +87,23 @@ class ImageHelpers {
     try {
       final bytes = await imageFile.readAsBytes();
       final image = img.decodeImage(bytes);
-      
+
       if (image == null) return null;
 
       int quality = 90;
       Uint8List? result;
-      
+
       for (int i = 0; i < maxIterations; i++) {
         result = Uint8List.fromList(img.encodeJpg(image, quality: quality));
-        
+
         if (result.length <= targetSizeBytes || quality <= 10) {
           break;
         }
-        
+
         // Reduce quality for next iteration
         quality = (quality * 0.8).round();
       }
-      
+
       return result;
     } catch (e) {
       return null;
@@ -124,7 +124,7 @@ class ImageHelpers {
     try {
       final bytes = await imageFile.readAsBytes();
       final image = img.decodeImage(bytes);
-      
+
       if (image == null) return null;
 
       // Create thumbnail with aspect ratio maintained
@@ -150,12 +150,12 @@ class ImageHelpers {
     try {
       final bytes = await imageFile.readAsBytes();
       final image = img.decodeImage(bytes);
-      
+
       if (image == null) return null;
 
       // Crop to square from center
       final squareImage = _cropToSquare(image);
-      
+
       // Resize to target size
       final thumbnail = img.copyResize(
         squareImage,
@@ -182,7 +182,7 @@ class ImageHelpers {
     try {
       final bytes = await imageFile.readAsBytes();
       final image = img.decodeImage(bytes);
-      
+
       if (image == null) return null;
 
       return Uint8List.fromList(img.encodeJpg(image, quality: quality));
@@ -196,7 +196,7 @@ class ImageHelpers {
     try {
       final bytes = await imageFile.readAsBytes();
       final image = img.decodeImage(bytes);
-      
+
       if (image == null) return null;
 
       return Uint8List.fromList(img.encodePng(image));
@@ -222,7 +222,7 @@ class ImageHelpers {
     int? targetHeight,
   }) {
     final aspectRatio = calculateAspectRatio(originalWidth, originalHeight);
-    
+
     if (targetWidth != null && targetHeight != null) {
       return (width: targetWidth, height: targetHeight);
     } else if (targetWidth != null) {
@@ -270,10 +270,11 @@ class ImageHelpers {
     try {
       final bytes = await imageFile.readAsBytes();
       final image = img.decodeImage(bytes);
-      
+
       if (image == null) return null;
 
-      final cropped = img.copyCrop(image, x: x, y: y, width: width, height: height);
+      final cropped =
+          img.copyCrop(image, x: x, y: y, width: width, height: height);
 
       return Uint8List.fromList(img.encodeJpg(cropped));
     } catch (e) {
@@ -286,11 +287,12 @@ class ImageHelpers {
   // ============================================================
 
   /// Get image dimensions
-  static Future<({int width, int height})?> getImageDimensions(File imageFile) async {
+  static Future<({int width, int height})?> getImageDimensions(
+      File imageFile) async {
     try {
       final bytes = await imageFile.readAsBytes();
       final image = img.decodeImage(bytes);
-      
+
       if (image == null) return null;
 
       return (width: image.width, height: image.height);
@@ -312,15 +314,15 @@ class ImageHelpers {
     if (maxWidth == null && maxHeight == null) return image;
 
     final aspectRatio = image.width / image.height;
-    
+
     int targetWidth = image.width;
     int targetHeight = image.height;
-    
+
     if (maxWidth != null && image.width > maxWidth) {
       targetWidth = maxWidth;
       targetHeight = (maxWidth / aspectRatio).round();
     }
-    
+
     if (maxHeight != null && targetHeight > maxHeight) {
       targetHeight = maxHeight;
       targetWidth = (maxHeight * aspectRatio).round();
@@ -339,7 +341,7 @@ class ImageHelpers {
     final size = image.width < image.height ? image.width : image.height;
     final x = (image.width - size) ~/ 2;
     final y = (image.height - size) ~/ 2;
-    
+
     return img.copyCrop(image, x: x, y: y, width: size, height: size);
   }
 }

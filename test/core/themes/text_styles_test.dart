@@ -22,11 +22,16 @@ void main() {
       });
 
       test('headings decrease in size h1 > h2 > h3 > h4 > h5 > h6', () {
-        expect(AppTextStyles.h1.fontSize, greaterThan(AppTextStyles.h2.fontSize!));
-        expect(AppTextStyles.h2.fontSize, greaterThan(AppTextStyles.h3.fontSize!));
-        expect(AppTextStyles.h3.fontSize, greaterThan(AppTextStyles.h4.fontSize!));
-        expect(AppTextStyles.h4.fontSize, greaterThan(AppTextStyles.h5.fontSize!));
-        expect(AppTextStyles.h5.fontSize, greaterThan(AppTextStyles.h6.fontSize!));
+        expect(
+            AppTextStyles.h1.fontSize, greaterThan(AppTextStyles.h2.fontSize!));
+        expect(
+            AppTextStyles.h2.fontSize, greaterThan(AppTextStyles.h3.fontSize!));
+        expect(
+            AppTextStyles.h3.fontSize, greaterThan(AppTextStyles.h4.fontSize!));
+        expect(
+            AppTextStyles.h4.fontSize, greaterThan(AppTextStyles.h5.fontSize!));
+        expect(
+            AppTextStyles.h5.fontSize, greaterThan(AppTextStyles.h6.fontSize!));
       });
 
       test('all headings have primary text color', () {
@@ -157,7 +162,7 @@ void main() {
     group('Text Theme', () {
       test('textTheme includes all Material text styles', () {
         final textTheme = AppTextStyles.textTheme;
-        
+
         expect(textTheme.displayLarge, isNotNull);
         expect(textTheme.displayMedium, isNotNull);
         expect(textTheme.displaySmall, isNotNull);
@@ -169,7 +174,8 @@ void main() {
 
     group('Utility Methods', () {
       test('withColor changes text color', () {
-        final style = AppTextStyles.withColor(AppTextStyles.bodyMedium, Colors.red);
+        final style =
+            AppTextStyles.withColor(AppTextStyles.bodyMedium, Colors.red);
         expect(style.color, Colors.red);
         expect(style.fontSize, AppTextStyles.bodyMedium.fontSize);
       });
@@ -218,7 +224,7 @@ void main() {
       test('line heights are reasonable (between 1.2 and 1.6)', () {
         expect(AppTextStyles.h1.height, greaterThanOrEqualTo(1.2));
         expect(AppTextStyles.h1.height, lessThanOrEqualTo(1.6));
-        
+
         expect(AppTextStyles.bodyMedium.height, greaterThanOrEqualTo(1.2));
         expect(AppTextStyles.bodyMedium.height, lessThanOrEqualTo(1.6));
       });

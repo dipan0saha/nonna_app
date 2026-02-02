@@ -33,18 +33,29 @@ class Sanitizers {
 
   /// Remove script tags and their content
   static String removeScriptTags(String input) {
-    return input.replaceAll(RegExp(r'<script[^>]*>.*?<\/script>', caseSensitive: false, multiLine: true), '');
+    return input.replaceAll(
+        RegExp(r'<script[^>]*>.*?<\/script>',
+            caseSensitive: false, multiLine: true),
+        '');
   }
 
   /// Remove potentially dangerous HTML attributes
   static String removeDangerousAttributes(String input) {
-    final dangerousAttrs = ['onclick', 'onload', 'onerror', 'onmouseover', 'onfocus', 'onblur'];
+    final dangerousAttrs = [
+      'onclick',
+      'onload',
+      'onerror',
+      'onmouseover',
+      'onfocus',
+      'onblur'
+    ];
     var sanitized = input;
-    
+
     for (final attr in dangerousAttrs) {
-      sanitized = sanitized.replaceAll(RegExp('$attr\\s*=\\s*["\'][^"\']*["\']', caseSensitive: false), '');
+      sanitized = sanitized.replaceAll(
+          RegExp('$attr\\s*=\\s*["\'][^"\']*["\']', caseSensitive: false), '');
     }
-    
+
     return sanitized;
   }
 
@@ -61,16 +72,34 @@ class Sanitizers {
   /// Remove SQL keywords that could be used for injection
   static String sanitizeSql(String input) {
     final sqlKeywords = [
-      'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER',
-      'EXEC', 'EXECUTE', 'UNION', 'WHERE', 'FROM', 'TABLE', 'DATABASE',
-      '--', ';', '/*', '*/', 'xp_', 'sp_'
+      'SELECT',
+      'INSERT',
+      'UPDATE',
+      'DELETE',
+      'DROP',
+      'CREATE',
+      'ALTER',
+      'EXEC',
+      'EXECUTE',
+      'UNION',
+      'WHERE',
+      'FROM',
+      'TABLE',
+      'DATABASE',
+      '--',
+      ';',
+      '/*',
+      '*/',
+      'xp_',
+      'sp_'
     ];
-    
+
     var sanitized = input;
     for (final keyword in sqlKeywords) {
-      sanitized = sanitized.replaceAll(RegExp(keyword, caseSensitive: false), '');
+      sanitized =
+          sanitized.replaceAll(RegExp(keyword, caseSensitive: false), '');
     }
-    
+
     return sanitized.trim();
   }
 
@@ -125,7 +154,7 @@ class Sanitizers {
   /// Sanitize URL to prevent javascript: and data: schemes
   static String sanitizeUrl(String url) {
     final trimmed = url.trim().toLowerCase();
-    
+
     // Block dangerous schemes
     final dangerousSchemes = ['javascript:', 'data:', 'vbscript:', 'file:'];
     for (final scheme in dangerousSchemes) {
@@ -133,14 +162,14 @@ class Sanitizers {
         return ''; // Return empty string for dangerous URLs
       }
     }
-    
+
     // Ensure URL starts with http:// or https:// or is relative
-    if (!trimmed.startsWith('http://') && 
-        !trimmed.startsWith('https://') && 
+    if (!trimmed.startsWith('http://') &&
+        !trimmed.startsWith('https://') &&
         !trimmed.startsWith('/')) {
       return 'https://$url';
     }
-    
+
     return url;
   }
 
@@ -157,10 +186,10 @@ class Sanitizers {
   static String sanitizeEmail(String email) {
     // Trim and convert to lowercase
     var sanitized = email.trim().toLowerCase();
-    
+
     // Remove any potentially dangerous characters
     sanitized = sanitized.replaceAll(RegExp(r'[^a-z0-9@._+-]'), '');
-    
+
     return sanitized;
   }
 
@@ -172,13 +201,13 @@ class Sanitizers {
   static String sanitizeFileName(String fileName) {
     // Remove path separators and dangerous characters
     var sanitized = fileName.replaceAll(RegExp(r'[/\\:*?"<>|]'), '');
-    
+
     // Remove leading dots (hidden files)
     sanitized = sanitized.replaceAll(RegExp(r'^\.+'), '');
-    
+
     // Remove path traversal attempts
     sanitized = sanitized.replaceAll('..', '');
-    
+
     return sanitized.trim();
   }
 
@@ -186,10 +215,10 @@ class Sanitizers {
   static String sanitizeFilePath(String path) {
     // Remove path traversal attempts
     var sanitized = path.replaceAll('..', '');
-    
+
     // Remove null bytes
     sanitized = sanitized.replaceAll('\x00', '');
-    
+
     return sanitized.trim();
   }
 
@@ -219,12 +248,12 @@ class Sanitizers {
   /// Format and sanitize phone number
   static String sanitizePhoneNumberFormatted(String phoneNumber) {
     final digits = sanitizePhoneNumber(phoneNumber);
-    
+
     // Keep only valid length phone numbers
     if (digits.length < 10 || digits.length > 15) {
       return '';
     }
-    
+
     return digits;
   }
 
@@ -242,30 +271,31 @@ class Sanitizers {
   // ============================================================
 
   /// General purpose text sanitization
-  static String sanitizeText(String input, {
+  static String sanitizeText(
+    String input, {
     bool trimWhitespace = true,
     bool removeExtraSpaces = true,
     bool encodeHtmlChars = false,
     bool removeControlChars = true,
   }) {
     var sanitized = input;
-    
+
     if (removeControlChars) {
       sanitized = removeControlCharacters(sanitized);
     }
-    
+
     if (trimWhitespace) {
       sanitized = sanitized.trim();
     }
-    
+
     if (removeExtraSpaces) {
       sanitized = removeExtraWhitespace(sanitized);
     }
-    
+
     if (encodeHtmlChars) {
       sanitized = encodeHtml(sanitized);
     }
-    
+
     return sanitized;
   }
 

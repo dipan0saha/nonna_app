@@ -163,7 +163,7 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
     bool? enabled,
   }) {
     final isEnabled = (enabled ?? true) && !isLoading;
-    
+
     return ElevatedButton(
       onPressed: isEnabled ? onPressed : null,
       child: isLoading
@@ -188,7 +188,7 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
   }) {
     final isOperationLoading = isLoadingFor(operation);
     final isEnabled = (enabled ?? true) && !isOperationLoading;
-    
+
     return ElevatedButton(
       onPressed: isEnabled ? onPressed : null,
       child: isOperationLoading
@@ -229,7 +229,7 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
   /// Show loading dialog
   void showLoadingDialog({String? message}) {
     if (!mounted) return;
-    
+
     showDialog(
       context: context,
       barrierDismissible: false,

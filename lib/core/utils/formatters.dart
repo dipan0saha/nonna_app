@@ -25,7 +25,8 @@ class Formatters {
   }
 
   /// Format phone number for international display
-  static String formatInternationalPhone(String phoneNumber, String countryCode) {
+  static String formatInternationalPhone(
+      String phoneNumber, String countryCode) {
     final digits = phoneNumber.replaceAll(RegExp(r'\D'), '');
     return '+$countryCode $digits';
   }
@@ -42,15 +43,15 @@ class Formatters {
   /// Mask email for privacy (e.g., j***@example.com)
   static String maskEmail(String email) {
     if (!email.contains('@')) return email;
-    
+
     final parts = email.split('@');
     final username = parts[0];
     final domain = parts[1];
-    
+
     if (username.length <= 2) {
       return '$username***@$domain';
     }
-    
+
     final visibleChars = username[0];
     final maskedChars = '*' * (username.length - 1);
     return '$visibleChars$maskedChars@$domain';
@@ -93,10 +94,12 @@ class Formatters {
   /// Capitalize first letter of each word
   static String capitalizeName(String name) {
     if (name.isEmpty) return name;
-    
+
     return name
         .split(' ')
-        .map((word) => word.isEmpty ? '' : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}')
+        .map((word) => word.isEmpty
+            ? ''
+            : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}')
         .join(' ');
   }
 
@@ -117,7 +120,8 @@ class Formatters {
   /// Get initials from name
   static String getInitials(String name, {int maxInitials = 2}) {
     final words = name.trim().split(' ').where((word) => word.isNotEmpty);
-    final initials = words.take(maxInitials).map((word) => word[0].toUpperCase());
+    final initials =
+        words.take(maxInitials).map((word) => word[0].toUpperCase());
     return initials.join();
   }
 
@@ -126,20 +130,23 @@ class Formatters {
   // ============================================================
 
   /// Truncate text to maximum length with ellipsis
-  static String truncate(String text, int maxLength, {String ellipsis = '...'}) {
+  static String truncate(String text, int maxLength,
+      {String ellipsis = '...'}) {
     if (text.length <= maxLength) return text;
     return '${text.substring(0, maxLength - ellipsis.length)}$ellipsis';
   }
 
   /// Truncate at word boundary
-  static String truncateWords(String text, int maxWords, {String ellipsis = '...'}) {
+  static String truncateWords(String text, int maxWords,
+      {String ellipsis = '...'}) {
     final words = text.split(' ');
     if (words.length <= maxWords) return text;
     return '${words.take(maxWords).join(' ')}$ellipsis';
   }
 
   /// Smart truncate - tries to break at sentence or word
-  static String smartTruncate(String text, int maxLength, {String ellipsis = '...'}) {
+  static String smartTruncate(String text, int maxLength,
+      {String ellipsis = '...'}) {
     if (text.length <= maxLength) return text;
 
     // Try to find a sentence break
@@ -182,7 +189,8 @@ class Formatters {
   }
 
   /// Format currency
-  static String formatCurrency(num amount, {String symbol = '\$', int decimalPlaces = 2}) {
+  static String formatCurrency(num amount,
+      {String symbol = '\$', int decimalPlaces = 2}) {
     return '$symbol${formatNumber(amount, decimalPlaces: decimalPlaces)}';
   }
 
@@ -241,14 +249,14 @@ class Formatters {
   static String formatCreditCard(String cardNumber) {
     final digits = cardNumber.replaceAll(RegExp(r'\D'), '');
     final buffer = StringBuffer();
-    
+
     for (int i = 0; i < digits.length; i++) {
       if (i > 0 && i % 4 == 0) {
         buffer.write(' ');
       }
       buffer.write(digits[i]);
     }
-    
+
     return buffer.toString();
   }
 
@@ -256,7 +264,7 @@ class Formatters {
   static String maskCreditCard(String cardNumber) {
     final digits = cardNumber.replaceAll(RegExp(r'\D'), '');
     if (digits.length < 4) return cardNumber;
-    
+
     final last4 = digits.substring(digits.length - 4);
     return '**** **** **** $last4';
   }
@@ -269,7 +277,7 @@ class Formatters {
   static String formatDuration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
-    
+
     if (hours > 0 && minutes > 0) {
       return '${hours}h ${minutes}m';
     } else if (hours > 0) {
@@ -284,12 +292,12 @@ class Formatters {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
     final seconds = duration.inSeconds.remainder(60);
-    
+
     final parts = <String>[];
     if (hours > 0) parts.add(formatCount(hours, 'hour'));
     if (minutes > 0) parts.add(formatCount(minutes, 'minute'));
     if (seconds > 0 && hours == 0) parts.add(formatCount(seconds, 'second'));
-    
+
     return parts.join(', ');
   }
 
@@ -302,7 +310,7 @@ class Formatters {
     if (items.isEmpty) return '';
     if (items.length == 1) return items[0];
     if (items.length == 2) return '${items[0]} $separator ${items[1]}';
-    
+
     final allButLast = items.sublist(0, items.length - 1).join(', ');
     return '$allButLast, $separator ${items.last}';
   }

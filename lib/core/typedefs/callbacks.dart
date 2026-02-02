@@ -12,7 +12,8 @@ typedef ValueCallback<T> = void Function(T value);
 typedef TwoValueCallback<T1, T2> = void Function(T1 value1, T2 value2);
 
 /// Callback with three parameters and no return value
-typedef ThreeValueCallback<T1, T2, T3> = void Function(T1 value1, T2 value2, T3 value3);
+typedef ThreeValueCallback<T1, T2, T3> = void Function(
+    T1 value1, T2 value2, T3 value3);
 
 /// Callback that returns a boolean
 typedef BoolCallback = bool Function();

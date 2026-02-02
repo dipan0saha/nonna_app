@@ -135,15 +135,13 @@ extension ListExtensions<T> on List<T> {
   /// Find minimum element by selector
   T? minBy<K extends Comparable>(K Function(T) selector) {
     if (isEmpty) return null;
-    return reduce((a, b) =>
-        selector(a).compareTo(selector(b)) <= 0 ? a : b);
+    return reduce((a, b) => selector(a).compareTo(selector(b)) <= 0 ? a : b);
   }
 
   /// Find maximum element by selector
   T? maxBy<K extends Comparable>(K Function(T) selector) {
     if (isEmpty) return null;
-    return reduce((a, b) =>
-        selector(a).compareTo(selector(b)) >= 0 ? a : b);
+    return reduce((a, b) => selector(a).compareTo(selector(b)) >= 0 ? a : b);
   }
 
   // ============================================================

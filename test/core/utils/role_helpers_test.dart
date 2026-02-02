@@ -21,8 +21,12 @@ void main() {
       });
 
       test('hasAnyRole checks multiple roles', () {
-        expect(RoleHelpers.hasAnyRole(UserRole.owner, [UserRole.owner, UserRole.follower]), true);
-        expect(RoleHelpers.hasAnyRole(UserRole.owner, [UserRole.follower]), false);
+        expect(
+            RoleHelpers.hasAnyRole(
+                UserRole.owner, [UserRole.owner, UserRole.follower]),
+            true);
+        expect(
+            RoleHelpers.hasAnyRole(UserRole.owner, [UserRole.follower]), false);
       });
     });
 
@@ -36,7 +40,8 @@ void main() {
       test('canDelete checks ownership', () {
         expect(RoleHelpers.canDelete(UserRole.owner, 'user1', 'user1'), true);
         expect(RoleHelpers.canDelete(UserRole.owner, 'user1', 'user2'), false);
-        expect(RoleHelpers.canDelete(UserRole.follower, 'user1', 'user1'), false);
+        expect(
+            RoleHelpers.canDelete(UserRole.follower, 'user1', 'user1'), false);
       });
 
       test('canCreate allows all users', () {
@@ -50,9 +55,13 @@ void main() {
       });
 
       test('canManageProfile checks ownership', () {
-        expect(RoleHelpers.canManageProfile(UserRole.owner, 'user1', 'user1'), true);
-        expect(RoleHelpers.canManageProfile(UserRole.owner, 'user1', 'user2'), false);
-        expect(RoleHelpers.canManageProfile(UserRole.follower, 'user1', 'user1'), false);
+        expect(RoleHelpers.canManageProfile(UserRole.owner, 'user1', 'user1'),
+            true);
+        expect(RoleHelpers.canManageProfile(UserRole.owner, 'user1', 'user2'),
+            false);
+        expect(
+            RoleHelpers.canManageProfile(UserRole.follower, 'user1', 'user1'),
+            false);
       });
 
       test('canManageEvents allows only owners', () {
@@ -68,21 +77,25 @@ void main() {
 
     group('dual roles', () {
       test('hasDualRoles checks for both roles', () {
-        expect(RoleHelpers.hasDualRoles([UserRole.owner, UserRole.follower]), true);
+        expect(RoleHelpers.hasDualRoles([UserRole.owner, UserRole.follower]),
+            true);
         expect(RoleHelpers.hasDualRoles([UserRole.owner]), false);
         expect(RoleHelpers.hasDualRoles([UserRole.follower]), false);
       });
 
       test('getPrimaryRole returns owner if present', () {
-        expect(RoleHelpers.getPrimaryRole([UserRole.owner, UserRole.follower]), UserRole.owner);
-        expect(RoleHelpers.getPrimaryRole([UserRole.follower]), UserRole.follower);
+        expect(RoleHelpers.getPrimaryRole([UserRole.owner, UserRole.follower]),
+            UserRole.owner);
+        expect(
+            RoleHelpers.getPrimaryRole([UserRole.follower]), UserRole.follower);
       });
     });
 
     group('features', () {
       test('getAvailableFeatures returns features for role', () {
         final ownerFeatures = RoleHelpers.getAvailableFeatures(UserRole.owner);
-        final followerFeatures = RoleHelpers.getAvailableFeatures(UserRole.follower);
+        final followerFeatures =
+            RoleHelpers.getAvailableFeatures(UserRole.follower);
 
         expect(ownerFeatures.length, greaterThan(followerFeatures.length));
         expect(ownerFeatures.contains('invite_users'), true);
@@ -91,7 +104,8 @@ void main() {
 
       test('hasFeature checks feature availability', () {
         expect(RoleHelpers.hasFeature(UserRole.owner, 'invite_users'), true);
-        expect(RoleHelpers.hasFeature(UserRole.follower, 'invite_users'), false);
+        expect(
+            RoleHelpers.hasFeature(UserRole.follower, 'invite_users'), false);
         expect(RoleHelpers.hasFeature(UserRole.follower, 'view_content'), true);
       });
     });
@@ -113,25 +127,32 @@ void main() {
     group('accessible screens', () {
       test('owner has more accessible screens', () {
         final ownerScreens = RoleHelpers.getAccessibleScreens(UserRole.owner);
-        final followerScreens = RoleHelpers.getAccessibleScreens(UserRole.follower);
+        final followerScreens =
+            RoleHelpers.getAccessibleScreens(UserRole.follower);
 
         expect(ownerScreens.length, greaterThan(followerScreens.length));
       });
 
       test('canAccessScreen checks screen accessibility', () {
-        expect(RoleHelpers.canAccessScreen(UserRole.owner, 'profile_settings'), true);
-        expect(RoleHelpers.canAccessScreen(UserRole.follower, 'profile_settings'), false);
+        expect(RoleHelpers.canAccessScreen(UserRole.owner, 'profile_settings'),
+            true);
+        expect(
+            RoleHelpers.canAccessScreen(UserRole.follower, 'profile_settings'),
+            false);
       });
     });
 
     group('validation', () {
       test('validateRoleForAction checks role permissions', () {
-        expect(RoleHelpers.validateRoleForAction(UserRole.owner, 'invite'), true);
-        expect(RoleHelpers.validateRoleForAction(UserRole.follower, 'invite'), false);
+        expect(
+            RoleHelpers.validateRoleForAction(UserRole.owner, 'invite'), true);
+        expect(RoleHelpers.validateRoleForAction(UserRole.follower, 'invite'),
+            false);
       });
 
       test('getUnauthorizedMessage returns error message', () {
-        final message = RoleHelpers.getUnauthorizedMessage(UserRole.follower, 'invite');
+        final message =
+            RoleHelpers.getUnauthorizedMessage(UserRole.follower, 'invite');
         expect(message.contains('Follower'), true);
         expect(message.contains('invite'), true);
       });

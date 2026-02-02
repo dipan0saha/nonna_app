@@ -156,8 +156,9 @@ Sent from Nonna App
   }
 
   /// Format share content for social media
-  static String formatForSocial(String text, String link, {List<String>? hashtags}) {
-    final hashtagText = hashtags != null && hashtags.isNotEmpty 
+  static String formatForSocial(String text, String link,
+      {List<String>? hashtags}) {
+    final hashtagText = hashtags != null && hashtags.isNotEmpty
         ? ' ${hashtags.map((tag) => '#$tag').join(' ')}'
         : '';
     return '$text\n\n$link$hashtagText';
@@ -185,7 +186,8 @@ Sent from Nonna App
       'personalMessage': personalMessage,
       'invitationCode': _generateInvitationCode(),
       'createdAt': DateTime.now().toIso8601String(),
-      'expiresAt': DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+      'expiresAt':
+          DateTime.now().add(const Duration(days: 30)).toIso8601String(),
     };
   }
 
@@ -235,16 +237,16 @@ Sent from Nonna App
     try {
       final uri = Uri.parse(url);
       final pathSegments = uri.pathSegments;
-      
+
       if (pathSegments.isEmpty) return null;
 
       final params = <String, String>{};
-      
+
       // Extract path parameters
       if (pathSegments.contains('profile') && pathSegments.length > 1) {
         final profileIndex = pathSegments.indexOf('profile');
         params['profileId'] = pathSegments[profileIndex + 1];
-        
+
         if (pathSegments.length > profileIndex + 2) {
           params['contentType'] = pathSegments[profileIndex + 2];
           if (pathSegments.length > profileIndex + 3) {
@@ -255,10 +257,10 @@ Sent from Nonna App
         final inviteIndex = pathSegments.indexOf('invite');
         params['invitationCode'] = pathSegments[inviteIndex + 1];
       }
-      
+
       // Extract query parameters
       params.addAll(uri.queryParameters);
-      
+
       return params.isEmpty ? null : params;
     } catch (e) {
       return null;

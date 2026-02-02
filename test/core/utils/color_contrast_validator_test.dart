@@ -30,14 +30,14 @@ void main() {
       test('black on white has maximum contrast', () {
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
+
         final ratio = ColorContrastValidator.contrastRatio(black, white);
         expect(ratio, closeTo(21.0, 0.1));
       });
 
       test('white on white has minimum contrast', () {
         const white = Color(0xFFFFFFFF);
-        
+
         final ratio = ColorContrastValidator.contrastRatio(white, white);
         expect(ratio, closeTo(1.0, 0.01));
       });
@@ -45,17 +45,17 @@ void main() {
       test('contrast ratio is symmetric', () {
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
+
         final ratio1 = ColorContrastValidator.contrastRatio(black, white);
         final ratio2 = ColorContrastValidator.contrastRatio(white, black);
-        
+
         expect(ratio1, equals(ratio2));
       });
 
       test('gray has intermediate contrast with white', () {
         const gray = Color(0xFF808080);
         const white = Color(0xFFFFFFFF);
-        
+
         final ratio = ColorContrastValidator.contrastRatio(gray, white);
         expect(ratio, greaterThan(1.0));
         expect(ratio, lessThan(21.0));
@@ -66,7 +66,7 @@ void main() {
       test('black on white passes normal text test', () {
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
+
         expect(
           ColorContrastValidator.isValidNormalText(black, white),
           isTrue,
@@ -76,7 +76,7 @@ void main() {
       test('light gray on white fails normal text test', () {
         const lightGray = Color(0xFFCCCCCC);
         const white = Color(0xFFFFFFFF);
-        
+
         expect(
           ColorContrastValidator.isValidNormalText(lightGray, white),
           isFalse,
@@ -86,7 +86,7 @@ void main() {
       test('medium gray on white passes large text test', () {
         const gray = Color(0xFF767676);
         const white = Color(0xFFFFFFFF);
-        
+
         expect(
           ColorContrastValidator.isValidLargeText(gray, white),
           isTrue,
@@ -96,7 +96,7 @@ void main() {
       test('black on white passes AAA requirements', () {
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
+
         expect(
           ColorContrastValidator.isValidNormalTextAAA(black, white),
           isTrue,
@@ -110,7 +110,7 @@ void main() {
       test('isValidUI checks 3:1 ratio', () {
         const darkGray = Color(0xFF595959);
         const white = Color(0xFFFFFFFF);
-        
+
         expect(
           ColorContrastValidator.isValidUI(darkGray, white),
           isTrue,
@@ -123,7 +123,7 @@ void main() {
         const textStyle = TextStyle(fontSize: 16.0);
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
+
         expect(
           ColorContrastValidator.isValidTextStyle(
             textStyle: textStyle,
@@ -138,7 +138,7 @@ void main() {
         const textStyle = TextStyle(fontSize: 20.0);
         const gray = Color(0xFF767676);
         const white = Color(0xFFFFFFFF);
-        
+
         expect(
           ColorContrastValidator.isValidTextStyle(
             textStyle: textStyle,
@@ -156,7 +156,7 @@ void main() {
         );
         const gray = Color(0xFF767676);
         const white = Color(0xFFFFFFFF);
-        
+
         expect(
           ColorContrastValidator.isValidTextStyle(
             textStyle: textStyle,
@@ -172,7 +172,7 @@ void main() {
       test('black on white is AAA level', () {
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
+
         final level = ColorContrastValidator.getContrastLevel(black, white);
         expect(level, ContrastLevel.aaa);
       });
@@ -180,16 +180,18 @@ void main() {
       test('describes excellent contrast', () {
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
-        final description = ColorContrastValidator.describeContrast(black, white);
+
+        final description =
+            ColorContrastValidator.describeContrast(black, white);
         expect(description, contains('Excellent'));
       });
 
       test('describes poor contrast', () {
         const lightGray = Color(0xFFCCCCCC);
         const white = Color(0xFFFFFFFF);
-        
-        final description = ColorContrastValidator.describeContrast(lightGray, white);
+
+        final description =
+            ColorContrastValidator.describeContrast(lightGray, white);
         expect(description, contains('Very poor'));
       });
     });
@@ -198,12 +200,12 @@ void main() {
       test('darkenToMeetContrast makes color darker', () {
         const lightGray = Color(0xFFCCCCCC);
         const white = Color(0xFFFFFFFF);
-        
+
         final darkened = ColorContrastValidator.darkenToMeetContrast(
           lightGray,
           white,
         );
-        
+
         expect(darkened, isNotNull);
         if (darkened != null) {
           expect(darkened.red, lessThanOrEqualTo(lightGray.red));
@@ -215,12 +217,12 @@ void main() {
       test('lightenToMeetContrast makes color lighter', () {
         const darkGray = Color(0xFF333333);
         const black = Color(0xFF000000);
-        
+
         final lightened = ColorContrastValidator.lightenToMeetContrast(
           darkGray,
           black,
         );
-        
+
         expect(lightened, isNotNull);
         if (lightened != null) {
           expect(lightened.red, greaterThanOrEqualTo(darkGray.red));
@@ -231,21 +233,24 @@ void main() {
 
       test('getAccessibleTextColor returns black or white', () {
         const lightGray = Color(0xFFCCCCCC);
-        
-        final textColor = ColorContrastValidator.getAccessibleTextColor(lightGray);
-        expect(textColor == const Color(0xFF000000) || 
-               textColor == const Color(0xFFFFFFFF), isTrue);
+
+        final textColor =
+            ColorContrastValidator.getAccessibleTextColor(lightGray);
+        expect(
+            textColor == const Color(0xFF000000) ||
+                textColor == const Color(0xFFFFFFFF),
+            isTrue);
       });
 
       test('suggestAccessibleColor meets contrast requirements', () {
         const lightGray = Color(0xFFCCCCCC);
         const white = Color(0xFFFFFFFF);
-        
+
         final suggested = ColorContrastValidator.suggestAccessibleColor(
           lightGray,
           white,
         );
-        
+
         final ratio = ColorContrastValidator.contrastRatio(suggested, white);
         expect(ratio, greaterThanOrEqualTo(4.5));
       });
@@ -260,7 +265,7 @@ void main() {
       test('isLightColor identifies light colors', () {
         const white = Color(0xFFFFFFFF);
         const lightGray = Color(0xFFCCCCCC);
-        
+
         expect(ColorContrastValidator.isLightColor(white), isTrue);
         expect(ColorContrastValidator.isLightColor(lightGray), isTrue);
       });
@@ -268,14 +273,14 @@ void main() {
       test('isDarkColor identifies dark colors', () {
         const black = Color(0xFF000000);
         const darkGray = Color(0xFF333333);
-        
+
         expect(ColorContrastValidator.isDarkColor(black), isTrue);
         expect(ColorContrastValidator.isDarkColor(darkGray), isTrue);
       });
 
       test('getPerceivedBrightness returns value between 0-255', () {
         const gray = Color(0xFF808080);
-        
+
         final brightness = ColorContrastValidator.getPerceivedBrightness(gray);
         expect(brightness, greaterThanOrEqualTo(0));
         expect(brightness, lessThanOrEqualTo(255));
@@ -286,9 +291,9 @@ void main() {
       test('analyzeContrast generates complete report', () {
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
+
         final report = ColorContrastValidator.analyzeContrast(black, white);
-        
+
         expect(report.ratio, closeTo(21.0, 0.1));
         expect(report.level, ContrastLevel.aaa);
         expect(report.passesAANormalText, isTrue);
@@ -300,10 +305,10 @@ void main() {
       test('report toString includes all information', () {
         const black = Color(0xFF000000);
         const white = Color(0xFFFFFFFF);
-        
+
         final report = ColorContrastValidator.analyzeContrast(black, white);
         final reportString = report.toString();
-        
+
         expect(reportString, contains('ratio'));
         expect(reportString, contains('level'));
         expect(reportString, contains('AA Normal'));

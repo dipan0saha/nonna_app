@@ -91,8 +91,9 @@ class CustomButton extends StatelessWidget {
             ],
           );
 
-    final effectivePadding =
-        padding ?? const EdgeInsets.symmetric(horizontal: AppSpacing.l, vertical: AppSpacing.s);
+    final effectivePadding = padding ??
+        const EdgeInsets.symmetric(
+            horizontal: AppSpacing.l, vertical: AppSpacing.s);
 
     switch (variant) {
       case ButtonVariant.primary:
@@ -104,8 +105,10 @@ class CustomButton extends StatelessWidget {
               padding: effectivePadding,
               backgroundColor: context.colorScheme.primary,
               foregroundColor: context.colorScheme.onPrimary,
-              disabledBackgroundColor: AppColors.disabledBackground(context.colorScheme),
-              disabledForegroundColor: AppColors.onSurfaceDisabled(context.colorScheme),
+              disabledBackgroundColor:
+                  AppColors.disabledBackground(context.colorScheme),
+              disabledForegroundColor:
+                  AppColors.onSurfaceDisabled(context.colorScheme),
             ),
             child: buttonChild,
           ),
@@ -124,7 +127,8 @@ class CustomButton extends StatelessWidget {
                     ? AppColors.disabledBackground(context.colorScheme)
                     : context.colorScheme.primary,
               ),
-              disabledForegroundColor: AppColors.onSurfaceDisabled(context.colorScheme),
+              disabledForegroundColor:
+                  AppColors.onSurfaceDisabled(context.colorScheme),
             ),
             child: buttonChild,
           ),
@@ -138,7 +142,8 @@ class CustomButton extends StatelessWidget {
             style: TextButton.styleFrom(
               padding: effectivePadding,
               foregroundColor: context.colorScheme.primary,
-              disabledForegroundColor: AppColors.onSurfaceDisabled(context.colorScheme),
+              disabledForegroundColor:
+                  AppColors.onSurfaceDisabled(context.colorScheme),
             ),
             child: buttonChild,
           ),

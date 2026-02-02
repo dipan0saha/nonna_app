@@ -177,7 +177,8 @@ void main() {
 
       test('FAB has rounded corners', () {
         final theme = AppTheme.lightTheme;
-        final shape = theme.floatingActionButtonTheme.shape as RoundedRectangleBorder?;
+        final shape =
+            theme.floatingActionButtonTheme.shape as RoundedRectangleBorder?;
         expect(shape, isNotNull);
       });
 

@@ -20,8 +20,10 @@ void main() {
       });
 
       test('min is less than default and max', () {
-        expect(PerformanceLimits.minQueryLimit, lessThan(PerformanceLimits.defaultQueryLimit));
-        expect(PerformanceLimits.defaultQueryLimit, lessThan(PerformanceLimits.maxQueryLimit));
+        expect(PerformanceLimits.minQueryLimit,
+            lessThan(PerformanceLimits.defaultQueryLimit));
+        expect(PerformanceLimits.defaultQueryLimit,
+            lessThan(PerformanceLimits.maxQueryLimit));
       });
     });
 
@@ -46,11 +48,13 @@ void main() {
       });
 
       test('short timeout is less than default', () {
-        expect(PerformanceLimits.shortTimeout, lessThan(PerformanceLimits.defaultTimeout));
+        expect(PerformanceLimits.shortTimeout,
+            lessThan(PerformanceLimits.defaultTimeout));
       });
 
       test('long timeout is greater than default', () {
-        expect(PerformanceLimits.longTimeout, greaterThan(PerformanceLimits.defaultTimeout));
+        expect(PerformanceLimits.longTimeout,
+            greaterThan(PerformanceLimits.defaultTimeout));
       });
     });
 
@@ -61,7 +65,8 @@ void main() {
       });
 
       test('default is less than max', () {
-        expect(PerformanceLimits.defaultBatchSize, lessThan(PerformanceLimits.maxBatchSize));
+        expect(PerformanceLimits.defaultBatchSize,
+            lessThan(PerformanceLimits.maxBatchSize));
       });
     });
 
@@ -105,7 +110,8 @@ void main() {
       });
 
       test('retry delay increases', () {
-        expect(PerformanceLimits.initialRetryDelay, lessThan(PerformanceLimits.maxRetryDelay));
+        expect(PerformanceLimits.initialRetryDelay,
+            lessThan(PerformanceLimits.maxRetryDelay));
       });
     });
   });

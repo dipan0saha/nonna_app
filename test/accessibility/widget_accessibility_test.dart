@@ -32,7 +32,8 @@ void main() {
         expect(semantics.label, contains('Submit'));
       });
 
-      testWidgets('CustomButton meets minimum touch target size', (tester) async {
+      testWidgets('CustomButton meets minimum touch target size',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             theme: AppTheme.lightTheme,
@@ -62,7 +63,8 @@ void main() {
           ),
         );
 
-        final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+        final button =
+            tester.widget<ElevatedButton>(find.byType(ElevatedButton));
         expect(button.onPressed, isNull);
       });
     });

@@ -92,7 +92,8 @@ void main() {
           MaterialApp(
             home: Builder(
               builder: (context) {
-                expect(ScreenSizeUtils.getDeviceType(context), DeviceType.mobile);
+                expect(
+                    ScreenSizeUtils.getDeviceType(context), DeviceType.mobile);
                 return const SizedBox();
               },
             ),
@@ -288,12 +289,14 @@ void main() {
         );
       });
 
-      testWidgets('getContentConstraints returns BoxConstraints', (tester) async {
+      testWidgets('getContentConstraints returns BoxConstraints',
+          (tester) async {
         await tester.pumpWidget(
           MaterialApp(
             home: Builder(
               builder: (context) {
-                final constraints = ScreenSizeUtils.getContentConstraints(context);
+                final constraints =
+                    ScreenSizeUtils.getContentConstraints(context);
                 expect(constraints, isA<BoxConstraints>());
                 expect(constraints.maxWidth.isFinite, true);
                 return const SizedBox();

@@ -121,7 +121,8 @@ mixin RoleAwareMixin<T extends StatefulWidget> on State<T> {
     Object? arguments,
   }) async {
     if (canAccessScreen(routeName)) {
-      return Navigator.of(context).pushNamed<T>(routeName, arguments: arguments);
+      return Navigator.of(context)
+          .pushNamed<T>(routeName, arguments: arguments);
     } else {
       // Show unauthorized message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -152,7 +153,8 @@ mixin RoleAwareMixin<T extends StatefulWidget> on State<T> {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('You do not have permission to perform this action.'),
+              content:
+                  Text('You do not have permission to perform this action.'),
             ),
           );
         }

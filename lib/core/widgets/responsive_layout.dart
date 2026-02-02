@@ -90,7 +90,7 @@ class ResponsiveBuilder extends StatelessWidget {
       builder: (context, constraints) {
         final deviceType = ScreenSizeUtils.getDeviceType(context);
         final screenWidth = ScreenSizeUtils.getScreenWidth(context);
-        
+
         return builder(context, deviceType, screenWidth);
       },
     );
@@ -399,7 +399,7 @@ class AdaptiveColumns extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shouldStack = ScreenSizeUtils.getScreenWidth(context) < 
+    final shouldStack = ScreenSizeUtils.getScreenWidth(context) <
         (breakpoint ?? ScreenSizeUtils.tabletBreakpoint);
 
     if (shouldStack) {

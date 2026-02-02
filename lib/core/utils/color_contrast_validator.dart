@@ -47,7 +47,7 @@ class ColorContrastValidator {
   // ============================================================
 
   /// Calculate the relative luminance of a color
-  /// 
+  ///
   /// Based on WCAG 2.1 formula:
   /// https://www.w3.org/WAI/GL/wiki/Relative_luminance
   static double _relativeLuminance(Color color) {
@@ -70,11 +70,11 @@ class ColorContrastValidator {
   }
 
   /// Calculate contrast ratio between two colors
-  /// 
+  ///
   /// Returns a value between 1:1 and 21:1, where:
   /// - 1:1 means no contrast (same color)
   /// - 21:1 means maximum contrast (black on white)
-  /// 
+  ///
   /// Formula: (L1 + 0.05) / (L2 + 0.05)
   /// where L1 is the lighter color and L2 is the darker color
   static double contrastRatio(Color color1, Color color2) {
@@ -117,7 +117,7 @@ class ColorContrastValidator {
   }
 
   /// Check if a text style meets contrast requirements
-  /// 
+  ///
   /// Automatically determines if text is "large" based on font size and weight.
   static bool isValidTextStyle({
     required TextStyle textStyle,
@@ -127,10 +127,10 @@ class ColorContrastValidator {
   }) {
     final fontSize = textStyle.fontSize ?? 14.0;
     final fontWeight = textStyle.fontWeight ?? FontWeight.normal;
-    
+
     final isLargeText = fontSize >= largeTextSizeThreshold ||
-        (fontSize >= largeBoldTextSizeThreshold && 
-         fontWeight.index >= FontWeight.w700.index);
+        (fontSize >= largeBoldTextSizeThreshold &&
+            fontWeight.index >= FontWeight.w700.index);
 
     if (requireAAA) {
       return isLargeText
@@ -165,7 +165,7 @@ class ColorContrastValidator {
   /// Get a human-readable description of contrast quality
   static String describeContrast(Color foreground, Color background) {
     final ratio = contrastRatio(foreground, background);
-    
+
     if (ratio >= 7.0) {
       return 'Excellent (AAA)';
     } else if (ratio >= 4.5) {
@@ -184,7 +184,7 @@ class ColorContrastValidator {
   // ============================================================
 
   /// Darken a color to meet minimum contrast ratio
-  /// 
+  ///
   /// Returns a darker version of the color that meets the target ratio
   /// against the background, or null if not possible.
   static Color? darkenToMeetContrast(
@@ -222,7 +222,7 @@ class ColorContrastValidator {
   }
 
   /// Lighten a color to meet minimum contrast ratio
-  /// 
+  ///
   /// Returns a lighter version of the color that meets the target ratio
   /// against the background, or null if not possible.
   static Color? lightenToMeetContrast(
@@ -243,13 +243,14 @@ class ColorContrastValidator {
       testColor = Color.fromARGB(
         testColor.alpha,
         math.min(255, (testColor.red + (255 - testColor.red) * 0.05).round()),
-        math.min(255, (testColor.green + (255 - testColor.green) * 0.05).round()),
+        math.min(
+            255, (testColor.green + (255 - testColor.green) * 0.05).round()),
         math.min(255, (testColor.blue + (255 - testColor.blue) * 0.05).round()),
       );
 
       // If we've reached pure white, we can't go lighter
-      if (testColor.red == 255 && 
-          testColor.green == 255 && 
+      if (testColor.red == 255 &&
+          testColor.green == 255 &&
           testColor.blue == 255) {
         break;
       }
@@ -262,7 +263,7 @@ class ColorContrastValidator {
   }
 
   /// Get an accessible text color for a given background
-  /// 
+  ///
   /// Returns either black or white, whichever has better contrast.
   static Color getAccessibleTextColor(Color background) {
     const black = Color(0xFF000000);
@@ -275,7 +276,7 @@ class ColorContrastValidator {
   }
 
   /// Suggest an accessible alternative color
-  /// 
+  ///
   /// Attempts to find a color that meets contrast requirements by
   /// trying both darkening and lightening.
   static Color suggestAccessibleColor(
@@ -332,7 +333,7 @@ class ColorContrastValidator {
   }
 
   /// Get the perceived brightness of a color (0-255)
-  /// 
+  ///
   /// Uses the YIQ color space formula for perceived brightness.
   static double getPerceivedBrightness(Color color) {
     return (color.red * 299 + color.green * 587 + color.blue * 114) / 1000;

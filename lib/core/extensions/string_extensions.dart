@@ -275,8 +275,7 @@ extension NullableStringExtensions on String? {
   bool get isNullOrEmpty => this == null || this!.isEmpty;
 
   /// Check if string is null, empty, or contains only whitespace
-  bool get isNullOrWhitespace =>
-      this == null || this!.trim().isEmpty;
+  bool get isNullOrWhitespace => this == null || this!.trim().isEmpty;
 
   /// Return string or default value if null or empty
   String orDefault(String defaultValue) {

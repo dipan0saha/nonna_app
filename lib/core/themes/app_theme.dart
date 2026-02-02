@@ -26,76 +26,76 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      
+
       // Color scheme
       colorScheme: _lightColorScheme,
-      
+
       // Typography
       textTheme: AppTextStyles.textTheme,
-      
+
       // Scaffold
       scaffoldBackgroundColor: AppColors.background,
-      
+
       // App bar theme
       appBarTheme: _lightAppBarTheme,
-      
+
       // Card theme
       cardTheme: _cardTheme,
-      
+
       // Elevated button theme
       elevatedButtonTheme: _elevatedButtonTheme,
-      
+
       // Outlined button theme
       outlinedButtonTheme: _outlinedButtonTheme,
-      
+
       // Text button theme
       textButtonTheme: _textButtonTheme,
-      
+
       // Icon button theme
       iconButtonTheme: _iconButtonTheme,
-      
+
       // Input decoration theme
       inputDecorationTheme: _lightInputDecorationTheme,
-      
+
       // Floating action button theme
       floatingActionButtonTheme: _fabTheme,
-      
+
       // Bottom navigation bar theme
       bottomNavigationBarTheme: _bottomNavBarTheme,
-      
+
       // Chip theme
       chipTheme: _chipTheme,
-      
+
       // Dialog theme
       dialogTheme: _dialogTheme,
-      
+
       // Divider theme
       dividerTheme: _dividerTheme,
-      
+
       // List tile theme
       listTileTheme: _listTileTheme,
-      
+
       // Switch theme
       switchTheme: _switchTheme,
-      
+
       // Checkbox theme
       checkboxTheme: _checkboxTheme,
-      
+
       // Radio theme
       radioTheme: _radioTheme,
-      
+
       // Slider theme
       sliderTheme: _sliderTheme,
-      
+
       // Snackbar theme
       snackBarTheme: _snackBarTheme,
-      
+
       // Tab bar theme
       tabBarTheme: _tabBarTheme,
-      
+
       // Tooltip theme
       tooltipTheme: _tooltipTheme,
-      
+
       // Icon theme
       iconTheme: const IconThemeData(
         color: AppColors.gray700,
@@ -117,76 +117,76 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      
+
       // Color scheme
       colorScheme: _darkColorScheme,
-      
+
       // Typography
       textTheme: _darkTextTheme,
-      
+
       // Scaffold
       scaffoldBackgroundColor: AppColors.gray900,
-      
+
       // App bar theme
       appBarTheme: _darkAppBarTheme,
-      
+
       // Card theme
       cardTheme: _darkCardTheme,
-      
+
       // Elevated button theme
       elevatedButtonTheme: _elevatedButtonTheme,
-      
+
       // Outlined button theme
       outlinedButtonTheme: _outlinedButtonTheme,
-      
+
       // Text button theme
       textButtonTheme: _textButtonTheme,
-      
+
       // Icon button theme
       iconButtonTheme: _iconButtonTheme,
-      
+
       // Input decoration theme
       inputDecorationTheme: _darkInputDecorationTheme,
-      
+
       // Floating action button theme
       floatingActionButtonTheme: _fabTheme,
-      
+
       // Bottom navigation bar theme
       bottomNavigationBarTheme: _darkBottomNavBarTheme,
-      
+
       // Chip theme
       chipTheme: _darkChipTheme,
-      
+
       // Dialog theme
       dialogTheme: _darkDialogTheme,
-      
+
       // Divider theme
       dividerTheme: _darkDividerTheme,
-      
+
       // List tile theme
       listTileTheme: _darkListTileTheme,
-      
+
       // Switch theme
       switchTheme: _switchTheme,
-      
+
       // Checkbox theme
       checkboxTheme: _checkboxTheme,
-      
+
       // Radio theme
       radioTheme: _radioTheme,
-      
+
       // Slider theme
       sliderTheme: _sliderTheme,
-      
+
       // Snackbar theme
       snackBarTheme: _darkSnackBarTheme,
-      
+
       // Tab bar theme
       tabBarTheme: _darkTabBarTheme,
-      
+
       // Tooltip theme
       tooltipTheme: _tooltipTheme,
-      
+
       // Icon theme
       iconTheme: const IconThemeData(
         color: AppColors.gray300,

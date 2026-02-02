@@ -81,7 +81,8 @@ class ShimmerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? AppSpacing.horizontalPadding.add(AppSpacing.verticalPadding / 2),
+      padding: padding ??
+          AppSpacing.horizontalPadding.add(AppSpacing.verticalPadding / 2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -100,14 +101,16 @@ class ShimmerListTile extends StatelessWidget {
                 const ShimmerPlaceholder(
                   width: double.infinity,
                   height: 16,
-                  borderRadius: BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
                 ),
                 if (hasSubtitle) ...[
                   AppSpacing.verticalGapXS,
                   ShimmerPlaceholder(
                     width: context.screenWidth * 0.6,
                     height: 14,
-                    borderRadius: const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(AppSpacing.xs / 2)),
                   ),
                 ],
               ],
@@ -185,14 +188,16 @@ class ShimmerCard extends StatelessWidget {
                   ShimmerPlaceholder(
                     width: width != null ? width! * 0.7 : 200,
                     height: 16,
-                    borderRadius: const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(AppSpacing.xs / 2)),
                   ),
                 if (hasSubtitle) ...[
                   AppSpacing.verticalGapXS,
                   ShimmerPlaceholder(
                     width: width != null ? width! * 0.5 : 150,
                     height: 14,
-                    borderRadius: const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(AppSpacing.xs / 2)),
                   ),
                 ],
               ],
@@ -238,7 +243,8 @@ class ShimmerText extends StatelessWidget {
           child: ShimmerPlaceholder(
             width: index == lines - 1 ? width * 0.7 : width,
             height: height,
-            borderRadius: const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
+            borderRadius:
+                const BorderRadius.all(Radius.circular(AppSpacing.xs / 2)),
           ),
         ),
       ),

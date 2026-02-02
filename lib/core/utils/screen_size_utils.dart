@@ -105,7 +105,7 @@ class ScreenSizeUtils {
   /// Get the current device type
   static DeviceType getDeviceType(BuildContext context) {
     final width = getScreenWidth(context);
-    
+
     if (width >= largeDesktopBreakpoint) {
       return DeviceType.largeDesktop;
     } else if (width >= tabletBreakpoint) {
@@ -175,7 +175,7 @@ class ScreenSizeUtils {
   // ============================================================
 
   /// Select a value based on device type
-  /// 
+  ///
   /// Provides different values for mobile, tablet, and desktop devices.
   /// If tablet or desktop values are not provided, falls back to mobile value.
   static T responsive<T>({
@@ -186,7 +186,7 @@ class ScreenSizeUtils {
     T? largeDesktop,
   }) {
     final deviceType = getDeviceType(context);
-    
+
     switch (deviceType) {
       case DeviceType.mobile:
         return mobile;
@@ -200,7 +200,7 @@ class ScreenSizeUtils {
   }
 
   /// Select a value based on screen width breakpoints
-  /// 
+  ///
   /// Similar to responsive() but allows custom breakpoint thresholds.
   static T responsiveValue<T>({
     required BuildContext context,
@@ -215,13 +215,13 @@ class ScreenSizeUtils {
     double? extraLargeBreakpoint,
   }) {
     final width = getScreenWidth(context);
-    
+
     // Use provided breakpoints or defaults
     final smallBp = smallBreakpoint ?? mobileBreakpoint;
     final mediumBp = mediumBreakpoint ?? tabletBreakpoint;
     final largeBp = largeBreakpoint ?? desktopBreakpoint;
     final extraLargeBp = extraLargeBreakpoint ?? largeDesktopBreakpoint;
-    
+
     if (extraLarge != null && width >= extraLargeBp) {
       return extraLarge;
     } else if (large != null && width >= largeBp) {
@@ -231,7 +231,7 @@ class ScreenSizeUtils {
     } else if (small != null && width >= smallBp) {
       return small;
     }
-    
+
     return defaultValue;
   }
 
@@ -240,7 +240,8 @@ class ScreenSizeUtils {
   // ============================================================
 
   /// Get the recommended number of columns for a grid layout
-  static int getGridColumns(BuildContext context, {
+  static int getGridColumns(
+    BuildContext context, {
     int mobileColumns = 2,
     int tabletColumns = 3,
     int desktopColumns = 4,
@@ -256,7 +257,7 @@ class ScreenSizeUtils {
   }
 
   /// Calculate optimal column count based on item width
-  /// 
+  ///
   /// Automatically determines how many columns can fit given a
   /// desired item width and spacing.
   static int calculateColumns(
@@ -267,10 +268,11 @@ class ScreenSizeUtils {
   }) {
     final screenWidth = getScreenWidth(context);
     final availableWidth = screenWidth - horizontalPadding;
-    
+
     // Calculate how many items fit with spacing
-    final columns = ((availableWidth + spacing) / (itemWidth + spacing)).floor();
-    
+    final columns =
+        ((availableWidth + spacing) / (itemWidth + spacing)).floor();
+
     // Ensure at least 1 column
     return columns < 1 ? 1 : columns;
   }
@@ -325,7 +327,7 @@ class ScreenSizeUtils {
   // ============================================================
 
   /// Get maximum content width for centered layouts
-  /// 
+  ///
   /// Prevents content from becoming too wide on large screens.
   static double getMaxContentWidth(BuildContext context) {
     return responsive(
@@ -338,7 +340,7 @@ class ScreenSizeUtils {
   }
 
   /// Get a constrained width for content
-  /// 
+  ///
   /// Useful for creating centered, max-width containers.
   static BoxConstraints getContentConstraints(BuildContext context) {
     return BoxConstraints(
@@ -395,13 +397,13 @@ class ScreenSizeUtils {
 enum DeviceType {
   /// Mobile phone (< 600dp)
   mobile,
-  
+
   /// Tablet (600dp - 1024dp)
   tablet,
-  
+
   /// Desktop (1024dp - 1920dp)
   desktop,
-  
+
   /// Large desktop (>= 1920dp)
   largeDesktop,
 }

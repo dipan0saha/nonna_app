@@ -100,7 +100,8 @@ class Validators {
   }
 
   /// Validate password confirmation matches
-  static String? passwordConfirm(String? value, String? originalPassword, {String? message}) {
+  static String? passwordConfirm(String? value, String? originalPassword,
+      {String? message}) {
     if (value == null || value.isEmpty) return null;
 
     if (value != originalPassword) {
@@ -137,7 +138,8 @@ class Validators {
   }
 
   /// Validate length range
-  static String? lengthRange(String? value, int min, int max, {String? message}) {
+  static String? lengthRange(String? value, int min, int max,
+      {String? message}) {
     if (value == null || value.isEmpty) return null;
 
     if (value.length < min || value.length > max) {
@@ -258,7 +260,8 @@ class Validators {
   }
 
   /// Validate value range
-  static String? valueRange(String? value, num min, num max, {String? message}) {
+  static String? valueRange(String? value, num min, num max,
+      {String? message}) {
     if (value == null || value.isEmpty) return null;
 
     final number = num.tryParse(value);
@@ -320,13 +323,15 @@ class Validators {
   }
 
   /// Validate date range
-  static String? dateRange(String? value, DateTime start, DateTime end, {String? message}) {
+  static String? dateRange(String? value, DateTime start, DateTime end,
+      {String? message}) {
     if (value == null || value.isEmpty) return null;
 
     try {
       final date = DateTime.parse(value);
       if (date.isBefore(start) || date.isAfter(end)) {
-        return message ?? 'Date must be between ${start.toString().split(' ')[0]} and ${end.toString().split(' ')[0]}';
+        return message ??
+            'Date must be between ${start.toString().split(' ')[0]} and ${end.toString().split(' ')[0]}';
       }
       return null;
     } catch (e) {
@@ -352,12 +357,14 @@ class Validators {
 
   /// Validate alphabetic only
   static String? alphabetic(String? value, {String? message}) {
-    return pattern(value, r'^[a-zA-Z]+$', message: message ?? 'Only letters are allowed');
+    return pattern(value, r'^[a-zA-Z]+$',
+        message: message ?? 'Only letters are allowed');
   }
 
   /// Validate alphanumeric only
   static String? alphanumeric(String? value, {String? message}) {
-    return pattern(value, r'^[a-zA-Z0-9]+$', message: message ?? 'Only letters and numbers are allowed');
+    return pattern(value, r'^[a-zA-Z0-9]+$',
+        message: message ?? 'Only letters and numbers are allowed');
   }
 
   // ============================================================
@@ -365,7 +372,8 @@ class Validators {
   // ============================================================
 
   /// Combine multiple validators
-  static String? Function(String?) combine(List<String? Function(String?)> validators) {
+  static String? Function(String?) combine(
+      List<String? Function(String?)> validators) {
     return (String? value) {
       for (final validator in validators) {
         final result = validator(value);

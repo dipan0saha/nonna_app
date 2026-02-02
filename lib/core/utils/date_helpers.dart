@@ -153,7 +153,7 @@ class DateHelpers {
   /// Get countdown string for due date
   static String getCountdown(DateTime dueDate) {
     final days = daysUntil(dueDate);
-    
+
     if (days < 0) {
       return 'Overdue by ${-days} ${-days == 1 ? 'day' : 'days'}';
     } else if (days == 0) {
@@ -189,7 +189,8 @@ class DateHelpers {
   /// Calculate age in months from birth date
   static int calculateAgeMonths(DateTime birthDate) {
     final now = DateTime.now();
-    int months = (now.year - birthDate.year) * 12 + (now.month - birthDate.month);
+    int months =
+        (now.year - birthDate.year) * 12 + (now.month - birthDate.month);
     if (now.day < birthDate.day) {
       months--;
     }

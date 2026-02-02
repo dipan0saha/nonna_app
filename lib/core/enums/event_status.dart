@@ -64,8 +64,10 @@ enum EventStatus {
   }
 
   /// Check if the event is active (scheduled or ongoing)
-  bool get isActive => this == EventStatus.scheduled || this == EventStatus.ongoing;
+  bool get isActive =>
+      this == EventStatus.scheduled || this == EventStatus.ongoing;
 
   /// Check if the event is finished (completed or cancelled)
-  bool get isFinished => this == EventStatus.completed || this == EventStatus.cancelled;
+  bool get isFinished =>
+      this == EventStatus.completed || this == EventStatus.cancelled;
 }

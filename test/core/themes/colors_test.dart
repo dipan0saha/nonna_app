@@ -115,7 +115,8 @@ void main() {
     group('Gradients', () {
       test('primary gradient uses primary colors', () {
         expect(AppColors.primaryGradient.colors, contains(AppColors.primary));
-        expect(AppColors.primaryGradient.colors, contains(AppColors.primaryDark));
+        expect(
+            AppColors.primaryGradient.colors, contains(AppColors.primaryDark));
       });
 
       test('shimmer gradient has three stops', () {

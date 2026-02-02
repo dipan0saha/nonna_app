@@ -20,7 +20,7 @@ void main() {
 
     group('sanitizeHtml', () {
       test('strips tags and encodes special characters', () {
-        expect(Sanitizers.sanitizeHtml('<script>alert("xss")</script>'), 
+        expect(Sanitizers.sanitizeHtml('<script>alert("xss")</script>'),
             'alert(&quot;xss&quot;)');
       });
     });
@@ -41,7 +41,8 @@ void main() {
 
     group('removeExtraWhitespace', () {
       test('removes extra whitespace', () {
-        expect(Sanitizers.removeExtraWhitespace('hello    world'), 'hello world');
+        expect(
+            Sanitizers.removeExtraWhitespace('hello    world'), 'hello world');
         expect(Sanitizers.removeExtraWhitespace('  a  b  c  '), 'a b c');
       });
     });
@@ -55,7 +56,8 @@ void main() {
 
     group('removeSpecialCharacters', () {
       test('removes special characters', () {
-        expect(Sanitizers.removeSpecialCharacters('hello!@#world'), 'helloworld');
+        expect(
+            Sanitizers.removeSpecialCharacters('hello!@#world'), 'helloworld');
         expect(Sanitizers.removeSpecialCharacters('test-123'), 'test123');
       });
     });
@@ -67,8 +69,10 @@ void main() {
       });
 
       test('allows safe URLs', () {
-        expect(Sanitizers.sanitizeUrl('https://example.com'), 'https://example.com');
-        expect(Sanitizers.sanitizeUrl('http://example.com'), 'http://example.com');
+        expect(Sanitizers.sanitizeUrl('https://example.com'),
+            'https://example.com');
+        expect(
+            Sanitizers.sanitizeUrl('http://example.com'), 'http://example.com');
       });
 
       test('adds https:// to URLs without protocol', () {
@@ -78,12 +82,15 @@ void main() {
 
     group('sanitizeEmail', () {
       test('sanitizes email addresses', () {
-        expect(Sanitizers.sanitizeEmail('Test@Example.Com'), 'test@example.com');
-        expect(Sanitizers.sanitizeEmail('  user@domain.com  '), 'user@domain.com');
+        expect(
+            Sanitizers.sanitizeEmail('Test@Example.Com'), 'test@example.com');
+        expect(
+            Sanitizers.sanitizeEmail('  user@domain.com  '), 'user@domain.com');
       });
 
       test('removes dangerous characters', () {
-        expect(Sanitizers.sanitizeEmail('test;@example.com'), 'test@example.com');
+        expect(
+            Sanitizers.sanitizeEmail('test;@example.com'), 'test@example.com');
       });
     });
 
@@ -107,14 +114,17 @@ void main() {
     group('sanitizePhoneNumber', () {
       test('removes non-digit characters', () {
         expect(Sanitizers.sanitizePhoneNumber('(555) 123-4567'), '5551234567');
-        expect(Sanitizers.sanitizePhoneNumber('+1-555-123-4567'), '15551234567');
+        expect(
+            Sanitizers.sanitizePhoneNumber('+1-555-123-4567'), '15551234567');
       });
     });
 
     group('sanitizeCreditCard', () {
       test('removes non-digit characters', () {
-        expect(Sanitizers.sanitizeCreditCard('1234-5678-9012-3456'), '1234567890123456');
-        expect(Sanitizers.sanitizeCreditCard('1234 5678 9012 3456'), '1234567890123456');
+        expect(Sanitizers.sanitizeCreditCard('1234-5678-9012-3456'),
+            '1234567890123456');
+        expect(Sanitizers.sanitizeCreditCard('1234 5678 9012 3456'),
+            '1234567890123456');
       });
     });
 
