@@ -270,8 +270,13 @@ void main() {
         final row = tester.widget<Row>(find.byType(Row).first);
         final children = row.children;
 
+        // Icon should be first
         expect(children.first, isA<Icon>());
-        expect(children.last, isA<Text>());
+        // Text is wrapped in a Flexible widget for overflow handling
+        expect(children.last, isA<Flexible>());
+        // Verify the Flexible contains a Text widget
+        final flexible = children.last as Flexible;
+        expect(flexible.child, isA<Text>());
       });
     });
 
