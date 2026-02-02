@@ -1,4 +1,4 @@
-import '../../enums/tile_type.dart';
+import 'package:nonna_app/core/enums/tile_type.dart';
 
 /// Tile definition model representing available tile types
 ///

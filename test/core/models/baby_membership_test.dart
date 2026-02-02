@@ -5,15 +5,8 @@ import 'package:nonna_app/core/models/baby_membership.dart';
 void main() {
   group('BabyMembership', () {
     final now = DateTime.now();
-    const membership = BabyMembership(
-      babyProfileId: 'baby-123',
-      userId: 'user-456',
-      role: UserRole.owner,
-      relationshipLabel: 'Mother',
-      createdAt: const Duration(days: 1),
-    );
 
-    final membershipWithDates = BabyMembership(
+    final membership = BabyMembership(
       babyProfileId: 'baby-123',
       userId: 'user-456',
       role: UserRole.owner,
@@ -73,7 +66,7 @@ void main() {
 
     group('toJson', () {
       test('converts BabyMembership to JSON', () {
-        final json = membershipWithDates.toJson();
+        final json = membership.toJson();
 
         expect(json['baby_profile_id'], 'baby-123');
         expect(json['user_id'], 'user-456');
@@ -86,11 +79,11 @@ void main() {
 
     group('validate', () {
       test('returns null for valid membership', () {
-        expect(membershipWithDates.validate(), null);
+        expect(membership.validate(), null);
       });
 
       test('returns error for relationship label exceeding 50 characters', () {
-        final invalid = membershipWithDates.copyWith(
+        final invalid = membership.copyWith(
           relationshipLabel: 'a' * 51,
         );
         expect(
@@ -100,42 +93,42 @@ void main() {
       });
 
       test('returns null for null relationship label', () {
-        final valid = membershipWithDates.copyWith(relationshipLabel: null);
+        final valid = membership.copyWith(relationshipLabel: null);
         expect(valid.validate(), null);
       });
     });
 
     group('isActive', () {
       test('returns true when removedAt is null', () {
-        expect(membershipWithDates.isActive, true);
+        expect(membership.isActive, true);
       });
 
       test('returns false when removedAt is set', () {
-        final removed = membershipWithDates.copyWith(removedAt: DateTime.now());
+        final removed = membership.copyWith(removedAt: DateTime.now());
         expect(removed.isActive, false);
       });
     });
 
     group('isRemoved', () {
       test('returns false when removedAt is null', () {
-        expect(membershipWithDates.isRemoved, false);
+        expect(membership.isRemoved, false);
       });
 
       test('returns true when removedAt is set', () {
-        final removed = membershipWithDates.copyWith(removedAt: DateTime.now());
+        final removed = membership.copyWith(removedAt: DateTime.now());
         expect(removed.isRemoved, true);
       });
     });
 
     group('copyWith', () {
       test('creates a copy with updated fields', () {
-        final updated = membershipWithDates.copyWith(
+        final updated = membership.copyWith(
           role: UserRole.follower,
           relationshipLabel: 'Aunt',
         );
 
-        expect(updated.babyProfileId, membershipWithDates.babyProfileId);
-        expect(updated.userId, membershipWithDates.userId);
+        expect(updated.babyProfileId, membership.babyProfileId);
+        expect(updated.userId, membership.userId);
         expect(updated.role, UserRole.follower);
         expect(updated.relationshipLabel, 'Aunt');
       });
