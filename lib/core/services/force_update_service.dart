@@ -11,7 +11,11 @@ class ForceUpdateService {
 
   ForceUpdateService({
     DatabaseService? databaseService,
-  }) : _databaseService = databaseService ?? DatabaseService();
+  }) : _databaseService = databaseService ?? DatabaseService() {
+    if (databaseService == null) {
+      debugPrint('⚠️  ForceUpdateService: Creating new DatabaseService instance. Consider using dependency injection.');
+    }
+  }
 
   // ==========================================
   // Version Checking

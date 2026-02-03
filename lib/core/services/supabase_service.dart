@@ -117,57 +117,7 @@ class SupabaseService {
     return client.realtime.connState;
   }
 
-  // ==========================================
-  // Error Handling
-  // ==========================================
 
-  /// Handle Supabase errors and convert to user-friendly messages
-  /// 
-  /// [error] The error object
-  /// Returns a user-friendly error message
-  String handleError(dynamic error) {
-    if (error is AuthException) {
-      return _handleAuthError(error);
-    } else if (error is PostgrestException) {
-      return _handlePostgrestError(error);
-    } else if (error is StorageException) {
-      return _handleStorageError(error);
-    } else {
-      return 'An unexpected error occurred. Please try again.';
-    }
-  }
-
-  String _handleAuthError(AuthException error) {
-    switch (error.statusCode) {
-      case '400':
-        return 'Invalid request. Please check your input.';
-      case '401':
-        return 'Authentication failed. Please sign in again.';
-      case '422':
-        return 'Invalid credentials. Please check your email and password.';
-      default:
-        return error.message;
-    }
-  }
-
-  String _handlePostgrestError(PostgrestException error) {
-    if (error.code == 'PGRST301') {
-      return 'Access denied. You do not have permission to perform this action.';
-    } else if (error.code?.startsWith('23') ?? false) {
-      // PostgreSQL constraint violations
-      return 'Data validation error. Please check your input.';
-    }
-    return error.message;
-  }
-
-  String _handleStorageError(StorageException error) {
-    if (error.statusCode == '404') {
-      return 'File not found.';
-    } else if (error.statusCode == '413') {
-      return 'File is too large. Please choose a smaller file.';
-    }
-    return error.message;
-  }
 
   // ==========================================
   // Health Check
