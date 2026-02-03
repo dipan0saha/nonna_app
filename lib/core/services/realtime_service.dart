@@ -16,13 +16,13 @@ class RealtimeService {
   final Map<String, StreamController<dynamic>> _streamControllers = {};
   
   bool _isConnected = false;
-  StreamSubscription<RealtimeConnectionState>? _connectionStatusSubscription;
+  StreamSubscription<RealtimeState>? _connectionStatusSubscription;
 
   /// Check if realtime is connected
   bool get isConnected => _isConnected;
 
   /// Get connection status stream
-  Stream<RealtimeConnectionState> get connectionStatusStream {
+  Stream<RealtimeState> get connectionStatusStream {
     return _client.realtime.connState;
   }
 
@@ -35,12 +35,12 @@ class RealtimeService {
     try {
       // Monitor connection status
       _connectionStatusSubscription = connectionStatusStream.listen((status) {
-        _isConnected = status == RealtimeConnectionState.subscribed;
+        _isConnected = status == RealtimeState.subscribed;
         debugPrint('📡 Realtime connection status: $status');
         
-        if (status == RealtimeConnectionState.subscribed) {
+        if (status == RealtimeState.subscribed) {
           debugPrint('✅ Realtime connected');
-        } else if (status == RealtimeConnectionState.closed) {
+        } else if (status == RealtimeState.closed) {
           debugPrint('⚠️  Realtime connection closed');
           _handleDisconnection();
         }

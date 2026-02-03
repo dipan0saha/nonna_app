@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
-import 'analytics_service.dart';
 import 'local_storage_service.dart';
 
 /// Notification service for managing push notifications via OneSignal
