@@ -237,7 +237,7 @@ class DatabaseService {
         final from = page * pageSize;
         final to = from + pageSize - 1;
 
-        var query = _client.from(table).select(columns);
+        dynamic query = _client.from(table).select(columns);
 
         if (orderBy != null) {
           query = query.order(orderBy, ascending: ascending);
@@ -245,13 +245,10 @@ class DatabaseService {
 
         final response = await query.range(from, to);
         
-        // Get total count for pagination metadata
-        // Count query returns the count directly in Supabase 2.x
-        final countResponse = await _client
+        // Get total count for pagination metadata using the count() method
+        final totalCount = await _client
             .from(table)
             .count();
-        
-        final totalCount = countResponse;
         
         return PaginatedResult(
           data: response,
