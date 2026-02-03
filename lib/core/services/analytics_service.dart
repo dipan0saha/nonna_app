@@ -1,63 +1,75 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 
+import 'observability_service.dart';
+
 /// Analytics service wrapper for Firebase Analytics
 /// Provides methods to track user events and properties
 class AnalyticsService {
-  static final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
-  static bool _isEnabled = false;
+  static final AnalyticsService _instance = AnalyticsService._internal();
+  factory AnalyticsService() => _instance;
+  AnalyticsService._internal();
+
+  static AnalyticsService get instance => _instance;
+
+  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
+  bool _isEnabled = false;
 
   /// Get Firebase Analytics observer for navigation tracking
-  static FirebaseAnalyticsObserver get observer {
+  FirebaseAnalyticsObserver get observer {
     return FirebaseAnalyticsObserver(analytics: _analytics);
   }
 
   /// Enable analytics collection (with user consent)
-  static Future<void> enable() async {
+  Future<void> enable() async {
     try {
       await _analytics.setAnalyticsCollectionEnabled(true);
       _isEnabled = true;
       debugPrint('✅ Analytics enabled');
     } catch (e) {
       debugPrint('❌ Error enabling analytics: $e');
+      await ObservabilityService.captureException(e, hint: 'Failed to enable analytics - check Firebase configuration and permissions');
     }
   }
 
   /// Disable analytics collection (user opt-out)
-  static Future<void> disable() async {
+  Future<void> disable() async {
     try {
       await _analytics.setAnalyticsCollectionEnabled(false);
       _isEnabled = false;
       debugPrint('✅ Analytics disabled');
     } catch (e) {
       debugPrint('❌ Error disabling analytics: $e');
+      await ObservabilityService.captureException(e, hint: 'Failed to disable analytics - possible state conflict or API limitation');
     }
   }
 
   /// Check if analytics is enabled
-  static bool get isEnabled => _isEnabled;
+  bool get isEnabled => _isEnabled;
 
   // ==========================================
   // Authentication Events
   // ==========================================
 
   /// Log user signup event
-  static Future<void> logSignUp({required String signUpMethod}) async {
+  Future<void> logSignUp({required String signUpMethod}) async {
     if (!_isEnabled) return;
     try {
       await _analytics.logSignUp(signUpMethod: signUpMethod);
     } catch (e) {
-      debugPrint('Error logging signup: $e');
+      debugPrint('❌ Error logging signup: $e');
+      await ObservabilityService.captureException(e, hint: 'Failed to log signup event for method: $signUpMethod');
     }
   }
 
   /// Log user login event
-  static Future<void> logLogin({required String loginMethod}) async {
+  Future<void> logLogin({required String loginMethod}) async {
     if (!_isEnabled) return;
     try {
       await _analytics.logLogin(loginMethod: loginMethod);
     } catch (e) {
-      debugPrint('Error logging login: $e');
+      debugPrint('❌ Error logging login: $e');
+      await ObservabilityService.captureException(e, hint: 'Failed to log login event for method: $loginMethod');
     }
   }
 
@@ -66,7 +78,7 @@ class AnalyticsService {
   // ==========================================
 
   /// Log baby profile created event
-  static Future<void> logBabyProfileCreated({
+  Future<void> logBabyProfileCreated({
     required String babyProfileId,
     required bool hasPhoto,
     String? gender,
@@ -82,12 +94,12 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging baby profile created: $e');
+      debugPrint('❌ Error logging baby profile created: $e');
     }
   }
 
   /// Log baby profile followed event
-  static Future<void> logBabyProfileFollowed({
+  Future<void> logBabyProfileFollowed({
     required String babyProfileId,
     required String invitationMethod,
   }) async {
@@ -101,7 +113,7 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging baby profile followed: $e');
+      debugPrint('❌ Error logging baby profile followed: $e');
     }
   }
 
@@ -110,7 +122,7 @@ class AnalyticsService {
   // ==========================================
 
   /// Log photo uploaded event
-  static Future<void> logPhotoUploaded({
+  Future<void> logPhotoUploaded({
     required String babyProfileId,
     required bool hasCaption,
     required bool hasTags,
@@ -128,12 +140,12 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging photo uploaded: $e');
+      debugPrint('❌ Error logging photo uploaded: $e');
     }
   }
 
   /// Log photo viewed event
-  static Future<void> logPhotoViewed({
+  Future<void> logPhotoViewed({
     required String photoId,
     required String babyProfileId,
   }) async {
@@ -144,12 +156,12 @@ class AnalyticsService {
         parameters: {'photo_id': photoId, 'baby_profile_id': babyProfileId},
       );
     } catch (e) {
-      debugPrint('Error logging photo viewed: $e');
+      debugPrint('❌ Error logging photo viewed: $e');
     }
   }
 
   /// Log photo commented event
-  static Future<void> logPhotoCommented({
+  Future<void> logPhotoCommented({
     required String photoId,
     required String babyProfileId,
     required int commentLength,
@@ -165,12 +177,12 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging photo commented: $e');
+      debugPrint('❌ Error logging photo commented: $e');
     }
   }
 
   /// Log photo squished (liked) event
-  static Future<void> logPhotoSquished({
+  Future<void> logPhotoSquished({
     required String photoId,
     required String babyProfileId,
   }) async {
@@ -181,7 +193,7 @@ class AnalyticsService {
         parameters: {'photo_id': photoId, 'baby_profile_id': babyProfileId},
       );
     } catch (e) {
-      debugPrint('Error logging photo squished: $e');
+      debugPrint('❌ Error logging photo squished: $e');
     }
   }
 
@@ -190,7 +202,7 @@ class AnalyticsService {
   // ==========================================
 
   /// Log event created
-  static Future<void> logEventCreated({
+  Future<void> logEventCreated({
     required String eventId,
     required String babyProfileId,
     required bool hasLocation,
@@ -208,12 +220,12 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging event created: $e');
+      debugPrint('❌ Error logging event created: $e');
     }
   }
 
   /// Log event RSVP
-  static Future<void> logEventRsvp({
+  Future<void> logEventRsvp({
     required String eventId,
     required String babyProfileId,
     required String rsvpStatus,
@@ -229,7 +241,7 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging event RSVP: $e');
+      debugPrint('❌ Error logging event RSVP: $e');
     }
   }
 
@@ -238,7 +250,7 @@ class AnalyticsService {
   // ==========================================
 
   /// Log registry item added
-  static Future<void> logRegistryItemAdded({
+  Future<void> logRegistryItemAdded({
     required String itemId,
     required String babyProfileId,
     required bool hasUrl,
@@ -256,12 +268,12 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging registry item added: $e');
+      debugPrint('❌ Error logging registry item added: $e');
     }
   }
 
   /// Log registry item purchased
-  static Future<void> logRegistryItemPurchased({
+  Future<void> logRegistryItemPurchased({
     required String itemId,
     required String babyProfileId,
     required int quantity,
@@ -277,7 +289,7 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging registry item purchased: $e');
+      debugPrint('❌ Error logging registry item purchased: $e');
     }
   }
 
@@ -286,7 +298,7 @@ class AnalyticsService {
   // ==========================================
 
   /// Log invitation sent
-  static Future<void> logInvitationSent({
+  Future<void> logInvitationSent({
     required String babyProfileId,
     required String relationshipType,
   }) async {
@@ -300,12 +312,12 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging invitation sent: $e');
+      debugPrint('❌ Error logging invitation sent: $e');
     }
   }
 
   /// Log invitation accepted
-  static Future<void> logInvitationAccepted({
+  Future<void> logInvitationAccepted({
     required String babyProfileId,
     required int timeToAcceptHours,
   }) async {
@@ -319,7 +331,7 @@ class AnalyticsService {
         },
       );
     } catch (e) {
-      debugPrint('Error logging invitation accepted: $e');
+      debugPrint('❌ Error logging invitation accepted: $e');
     }
   }
 
@@ -328,17 +340,17 @@ class AnalyticsService {
   // ==========================================
 
   /// Set user ID
-  static Future<void> setUserId(String userId) async {
+  Future<void> setUserId(String userId) async {
     if (!_isEnabled) return;
     try {
       await _analytics.setUserId(id: userId);
     } catch (e) {
-      debugPrint('Error setting user ID: $e');
+      debugPrint('❌ Error setting user ID: $e');
     }
   }
 
   /// Set user property
-  static Future<void> setUserProperty({
+  Future<void> setUserProperty({
     required String name,
     required String value,
   }) async {
@@ -346,7 +358,7 @@ class AnalyticsService {
     try {
       await _analytics.setUserProperty(name: name, value: value);
     } catch (e) {
-      debugPrint('Error setting user property: $e');
+      debugPrint('❌ Error setting user property: $e');
     }
   }
 
@@ -355,7 +367,7 @@ class AnalyticsService {
   // ==========================================
 
   /// Log screen view
-  static Future<void> logScreenView({
+  Future<void> logScreenView({
     required String screenName,
     String? screenClass,
   }) async {
@@ -366,7 +378,7 @@ class AnalyticsService {
         screenClass: screenClass ?? screenName,
       );
     } catch (e) {
-      debugPrint('Error logging screen view: $e');
+      debugPrint('❌ Error logging screen view: $e');
     }
   }
 }

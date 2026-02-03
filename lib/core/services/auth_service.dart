@@ -3,6 +3,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../middleware/error_handler.dart';
 import 'analytics_service.dart';
 import 'app_initialization_service.dart';
 
@@ -46,13 +47,14 @@ class AuthService {
       );
 
       if (response.user != null) {
-        await AnalyticsService.logSignUp(signUpMethod: 'email');
+        await AnalyticsService.instance.logSignUp(signUpMethod: 'email');
       }
 
       return response;
     } catch (e) {
-      debugPrint('Error signing up with email: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error signing up with email: $message');
+      throw Exception(message);
     }
   }
 
@@ -68,14 +70,16 @@ class AuthService {
       );
 
       if (response.user != null) {
-        await AnalyticsService.logLogin(loginMethod: 'email');
-        await _setUserIdInServices(response.user!.id);
+        await AnalyticsService.instance.logLogin(loginMethod: 'email');
+        // Set user ID in background, don't block on it
+        _setUserIdInServices(response.user!.id);
       }
 
       return response;
     } catch (e) {
-      debugPrint('Error signing in with email: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error signing in with email: $message');
+      throw Exception(message);
     }
   }
 
@@ -84,8 +88,9 @@ class AuthService {
     try {
       await _supabase.auth.resetPasswordForEmail(email);
     } catch (e) {
-      debugPrint('Error sending password reset email: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error sending password reset email: $message');
+      throw Exception(message);
     }
   }
 
@@ -96,8 +101,9 @@ class AuthService {
         UserAttributes(password: newPassword),
       );
     } catch (e) {
-      debugPrint('Error updating password: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error updating password: $message');
+      throw Exception(message);
     }
   }
 
@@ -112,8 +118,9 @@ class AuthService {
         email: currentUser!.email!,
       );
     } catch (e) {
-      debugPrint('Error resending verification email: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error resending verification email: $message');
+      throw Exception(message);
     }
   }
 
@@ -148,14 +155,16 @@ class AuthService {
       );
 
       if (response.user != null) {
-        await AnalyticsService.logLogin(loginMethod: 'google');
-        await _setUserIdInServices(response.user!.id);
+        await AnalyticsService.instance.logLogin(loginMethod: 'google');
+        // Set user ID in background, don't block on it
+        _setUserIdInServices(response.user!.id);
       }
 
       return response;
     } catch (e) {
-      debugPrint('Error signing in with Google: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error signing in with Google: $message');
+      throw Exception(message);
     }
   }
 
@@ -185,14 +194,16 @@ class AuthService {
       );
 
       if (response.user != null) {
-        await AnalyticsService.logLogin(loginMethod: 'facebook');
-        await _setUserIdInServices(response.user!.id);
+        await AnalyticsService.instance.logLogin(loginMethod: 'facebook');
+        // Set user ID in background, don't block on it
+        _setUserIdInServices(response.user!.id);
       }
 
       return response;
     } catch (e) {
-      debugPrint('Error signing in with Facebook: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error signing in with Facebook: $message');
+      throw Exception(message);
     }
   }
 
@@ -203,8 +214,10 @@ class AuthService {
   /// Sign out user
   Future<void> signOut() async {
     try {
-      // Clear user ID from all services
-      await AppInitializationService.clearUserId();
+      // Clear user ID from all services (non-blocking)
+      AppInitializationService.clearUserId().catchError((e) {
+        debugPrint('⚠️  Non-critical: Error clearing user ID in services: $e');
+      });
 
       // Sign out from Supabase
       await _supabase.auth.signOut();
@@ -222,8 +235,9 @@ class AuthService {
 
       debugPrint('✅ User signed out successfully');
     } catch (e) {
-      debugPrint('Error signing out: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error signing out: $message');
+      throw Exception(message);
     }
   }
 
@@ -232,12 +246,13 @@ class AuthService {
   // ==========================================
 
   /// Set user ID in all services (Analytics, Crashlytics, OneSignal)
-  Future<void> _setUserIdInServices(String userId) async {
-    try {
-      await AppInitializationService.setUserId(userId);
-    } catch (e) {
-      debugPrint('Error setting user ID in services: $e');
-    }
+  /// This is called in a fire-and-forget manner to avoid blocking authentication
+  void _setUserIdInServices(String userId) {
+    // Run in background, don't await
+    AppInitializationService.setUserId(userId).catchError((e) {
+      debugPrint('⚠️  Non-critical: Error setting user ID in services: $e');
+      // Don't throw - authentication succeeded, external service sync is best-effort
+    });
   }
 
   /// Check if email is verified

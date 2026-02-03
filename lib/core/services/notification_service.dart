@@ -11,16 +11,22 @@ import 'local_storage_service.dart';
 /// Provides push notification registration, payload handling,
 /// deep-linking, notification preferences, and badge count management
 class NotificationService {
-  static bool _isInitialized = false;
-  static String? _playerId;
-  static final LocalStorageService _localStorage = LocalStorageService();
+  static final NotificationService _instance = NotificationService._internal();
+  factory NotificationService() => _instance;
+  NotificationService._internal();
+
+  static NotificationService get instance => _instance;
+
+  bool _isInitialized = false;
+  String? _playerId;
+  final LocalStorageService _localStorage = LocalStorageService();
 
   // Notification click handler
-  static final StreamController<Map<String, dynamic>> _notificationClickController =
+  final StreamController<Map<String, dynamic>> _notificationClickController =
       StreamController<Map<String, dynamic>>.broadcast();
 
   /// Stream of notification clicks for deep-linking
-  static Stream<Map<String, dynamic>> get notificationClickStream =>
+  Stream<Map<String, dynamic>> get notificationClickStream =>
       _notificationClickController.stream;
 
   // ==========================================
@@ -31,7 +37,7 @@ class NotificationService {
   /// 
   /// [appId] OneSignal App ID
   /// [requiresUserPrivacyConsent] Whether to require user consent
-  static Future<void> initialize({
+  Future<void> initialize({
     required String appId,
     bool requiresUserPrivacyConsent = true,
   }) async {
@@ -70,11 +76,11 @@ class NotificationService {
       debugPrint('📱 OneSignal Player ID: $_playerId');
 
       // Set up notification click handler
-      OneSignal.Notifications.addClickListener(_handleNotificationClick);
+      OneSignal.Notifications.addClickListener(_instance._handleNotificationClick);
 
       // Set up notification will show listener
       OneSignal.Notifications.addForegroundWillDisplayListener(
-        _handleNotificationWillShow,
+        _instance._handleNotificationWillShow,
       );
 
       _isInitialized = true;
@@ -87,7 +93,7 @@ class NotificationService {
   }
 
   /// Check if the service has been initialized
-  static bool get isInitialized => _isInitialized;
+  bool get isInitialized => _isInitialized;
 
   // ==========================================
   // User Management
@@ -96,7 +102,7 @@ class NotificationService {
   /// Set external user ID (for targeting specific users)
   /// 
   /// [userId] The user ID from your backend
-  static Future<void> setExternalUserId(String userId) async {
+  Future<void> setExternalUserId(String userId) async {
     try {
       OneSignal.login(userId);
       debugPrint('✅ Set OneSignal external user ID: $userId');
@@ -106,7 +112,7 @@ class NotificationService {
   }
 
   /// Remove external user ID (on logout)
-  static Future<void> removeExternalUserId() async {
+  Future<void> removeExternalUserId() async {
     try {
       OneSignal.logout();
       debugPrint('✅ Removed OneSignal external user ID');
@@ -116,7 +122,7 @@ class NotificationService {
   }
 
   /// Get player ID
-  static String? get playerId => _playerId;
+  String? get playerId => _playerId;
 
   // ==========================================
   // Tags (for targeted notifications)
@@ -126,7 +132,7 @@ class NotificationService {
   /// 
   /// [tags] Key-value pairs for targeting
   /// Example: {'role': 'owner', 'baby_profile_id': '123'}
-  static Future<void> setTags(Map<String, String> tags) async {
+  Future<void> setTags(Map<String, String> tags) async {
     try {
       for (final entry in tags.entries) {
         OneSignal.User.addTag(entry.key, entry.value);
@@ -140,7 +146,7 @@ class NotificationService {
   /// Remove tags
   /// 
   /// [keys] Tag keys to remove
-  static Future<void> removeTags(List<String> keys) async {
+  Future<void> removeTags(List<String> keys) async {
     try {
       for (final key in keys) {
         OneSignal.User.removeTag(key);
@@ -152,7 +158,7 @@ class NotificationService {
   }
 
   /// Get all tags
-  static Future<Map<String, dynamic>> getTags() async {
+  Future<Map<String, dynamic>> getTags() async {
     try {
       final tags = OneSignal.User.getTags();
       return tags;
@@ -167,13 +173,13 @@ class NotificationService {
   // ==========================================
 
   /// Enable push notifications
-  static Future<void> enableNotifications() async {
+  Future<void> enableNotifications() async {
     try {
       OneSignal.Notifications.requestPermission(true);
       await _localStorage.setNotificationsEnabled(true);
       
       // Track analytics
-      await AnalyticsService.logNotificationPreferenceChanged(enabled: true);
+      await AnalyticsService.instance.logNotificationPreferenceChanged(enabled: true);
       
       debugPrint('✅ Notifications enabled');
     } catch (e) {
@@ -182,14 +188,14 @@ class NotificationService {
   }
 
   /// Disable push notifications
-  static Future<void> disableNotifications() async {
+  Future<void> disableNotifications() async {
     try {
       // Use OneSignal opt-out instead of permission revocation
       OneSignal.User.pushSubscription.optOut();
       await _localStorage.setNotificationsEnabled(false);
       
       // Track analytics
-      await AnalyticsService.logNotificationPreferenceChanged(enabled: false);
+      await AnalyticsService.instance.logNotificationPreferenceChanged(enabled: false);
       
       debugPrint('✅ Notifications disabled');
     } catch (e) {
@@ -198,12 +204,12 @@ class NotificationService {
   }
 
   /// Check if notifications are enabled
-  static bool get areNotificationsEnabled {
+  bool get areNotificationsEnabled {
     return _localStorage.isNotificationsEnabled;
   }
 
   /// Check notification permission status
-  static Future<bool> hasPermission() async {
+  Future<bool> hasPermission() async {
     try {
       return OneSignal.Notifications.permission;
     } catch (e) {
@@ -217,7 +223,7 @@ class NotificationService {
   // ==========================================
 
   /// Provide user privacy consent
-  static Future<void> provideConsent() async {
+  Future<void> provideConsent() async {
     try {
       OneSignal.consentGiven(true);
       debugPrint('✅ User consent provided');
@@ -227,7 +233,7 @@ class NotificationService {
   }
 
   /// Revoke user privacy consent
-  static Future<void> revokeConsent() async {
+  Future<void> revokeConsent() async {
     try {
       OneSignal.consentGiven(false);
       debugPrint('✅ User consent revoked');
@@ -243,7 +249,7 @@ class NotificationService {
   /// Set badge count
   /// 
   /// [count] Badge count to display
-  static Future<void> setBadgeCount(int count) async {
+  Future<void> setBadgeCount(int count) async {
     try {
       // OneSignal doesn't have direct badge API in Flutter
       // Badge is typically managed by notification count
@@ -254,7 +260,7 @@ class NotificationService {
   }
 
   /// Clear badge count
-  static Future<void> clearBadges() async {
+  Future<void> clearBadges() async {
     try {
       OneSignal.Notifications.clearAll();
       debugPrint('✅ Cleared all badges');
@@ -268,7 +274,7 @@ class NotificationService {
   // ==========================================
 
   /// Handle notification click
-  static void _handleNotificationClick(OSNotificationClickEvent event) {
+  void _handleNotificationClick(OSNotificationClickEvent event) {
     debugPrint('📱 Notification clicked: ${event.notification.notificationId}');
     
     // Extract additional data for deep-linking
@@ -283,14 +289,14 @@ class NotificationService {
     });
     
     // Track analytics
-    AnalyticsService.logNotificationOpened(
+    AnalyticsService.instance.logNotificationOpened(
       notificationId: event.notification.notificationId ?? '',
       title: event.notification.title ?? '',
     );
   }
 
   /// Handle notification will show (when app is in foreground)
-  static void _handleNotificationWillShow(OSNotificationWillDisplayEvent event) {
+  void _handleNotificationWillShow(OSNotificationWillDisplayEvent event) {
     debugPrint('📱 Notification received in foreground');
     
     // You can modify or prevent the notification from displaying
@@ -303,7 +309,7 @@ class NotificationService {
   // ==========================================
 
   /// Send a test notification (for development)
-  static Future<void> sendTestNotification() async {
+  Future<void> sendTestNotification() async {
     try {
       // This would typically be done from your backend
       // But OneSignal provides a REST API for testing
@@ -322,7 +328,7 @@ class NotificationService {
   /// Note: Does not close the static notification click stream controller
   /// as it is a process-lifetime stream. Closing it would cause errors
   /// if notifications are handled after dispose() is called.
-  static Future<void> dispose() async {
+  Future<void> dispose() async {
     _isInitialized = false;
     debugPrint('✅ NotificationService disposed');
   }
