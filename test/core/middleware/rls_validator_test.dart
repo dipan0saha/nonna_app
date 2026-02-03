@@ -96,7 +96,6 @@ void main() {
         expect(hasAccess, false);
       });
     });
-    });
 
     group('validateTableAccess', () {
       test('validates access for authenticated user', () async {
