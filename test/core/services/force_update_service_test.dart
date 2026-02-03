@@ -28,18 +28,6 @@ void main() {
     });
 
     group('Version Comparison', () {
-      test('isVersionLessThan returns true when current is less than minimum', () {
-        // Using reflection to access private method for testing
-        final service = ForceUpdateService(
-          databaseService: mockDatabaseService,
-          supabase: mockSupabaseClient,
-        );
-        
-        // Test via public method needsUpdate() with mocked data
-        // We'll test the logic indirectly
-        expect(true, true); // Placeholder - actual implementation would mock the version check
-      });
-
       test('UpdateInfo model contains correct information', () {
         final updateInfo = UpdateInfo(
           currentVersion: '1.0.0',

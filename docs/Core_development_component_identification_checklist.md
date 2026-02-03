@@ -107,20 +107,29 @@
 - [x] RLS Validator (`lib/core/middleware/rls_validator.dart`) - ✨ Created Feb 2026
 
 ### 3.2.8 Database Migrations
-- [ ] Migration Scripts (`supabase/migrations/`)
-- [ ] Migration Strategy Document (`docs/database_migration_strategy.md`)
+- [x] Migration Scripts (`supabase/migrations/`) - ✨ Created Feb 3, 2026
+- [x] Migration Strategy Document (`docs/database_migration_strategy.md`) - ✨ Created Feb 3, 2026
+- [x] App Versions Migration (`supabase/migrations/20260203000001_app_versions_table.sql`) - ✨ Created Feb 3, 2026
 
 ### 3.2.9 Force Update Mechanism
-- [ ] Force Update Service (`lib/core/services/force_update_service.dart`)
+- [x] Force Update Service (`lib/core/services/force_update_service.dart`) - ✨ Created Feb 3, 2026
+- [x] Force Update Service Test (`test/core/services/force_update_service_test.dart`) - ✨ Created Feb 3, 2026
 
 ### 3.2.10 Data Backup & Recovery
-- [ ] Backup Service (`lib/core/services/backup_service.dart`)
-- [ ] Data Export Handler (`lib/core/services/data_export_handler.dart`)
-- [ ] Data Deletion Handler (`lib/core/services/data_deletion_handler.dart`)
+- [x] Backup Service (`lib/core/services/backup_service.dart`) - ✨ Created Feb 3, 2026
+- [x] Data Export Handler (`lib/core/services/data_export_handler.dart`) - ✨ Created Feb 3, 2026
+- [x] Data Deletion Handler (`lib/core/services/data_deletion_handler.dart`) - ✨ Created Feb 3, 2026
+- [x] Backup Service Test (`test/core/services/backup_service_test.dart`) - ✨ Created Feb 3, 2026
+- [x] Data Export Handler Test (`test/core/services/data_export_handler_test.dart`) - ✨ Created Feb 3, 2026
+- [x] Data Deletion Handler Test (`test/core/services/data_deletion_handler_test.dart`) - ✨ Created Feb 3, 2026
 
 ### 3.2.11 RLS Policy Testing
-- [ ] RLS Test Suite (pgTAP) (`supabase/tests/rls_policies/`)
-- [ ] RLS Test Documentation (`docs/rls_testing_guide.md`)
+- [x] RLS Test Suite (pgTAP) (`supabase/tests/rls_policies/`) - ✨ Created Feb 3, 2026
+- [x] RLS Test Documentation (`docs/rls_testing_guide.md`) - ✨ Created Feb 3, 2026
+- [x] Profiles RLS Test (`supabase/tests/rls_policies/profiles_rls_test.sql`) - ✨ Created Feb 3, 2026
+- [x] Baby Profiles RLS Test (`supabase/tests/rls_policies/baby_profiles_rls_test.sql`) - ✨ Created Feb 3, 2026
+- [x] Events RLS Test (`supabase/tests/rls_policies/events_rls_test.sql`) - ✨ Created Feb 3, 2026
+- [x] Photos RLS Test (`supabase/tests/rls_policies/photos_rls_test.sql`) - ✨ Created Feb 3, 2026
 
 ### 3.2.12 Real-Time Subscription Testing
 - [ ] Real-Time Test Suite (`test/integration/realtime/`)
