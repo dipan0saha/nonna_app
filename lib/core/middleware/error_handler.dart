@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../services/observability_service.dart';
+
 /// Global error handler for network, auth, and validation errors
 ///
 /// **Functional Requirements**: Section 3.2.7 - Middleware
@@ -231,7 +233,15 @@ class ErrorHandler {
   ///
   /// This is a placeholder for integration with services like Sentry
   static void _reportError(Object error, StackTrace? stackTrace) {
-    // TODO: Integrate with Sentry or other monitoring service
+    // Report to ObservabilityService (Sentry)
+    if (ObservabilityService.isInitialized) {
+      ObservabilityService.captureException(
+        error,
+        stackTrace: stackTrace,
+        hint: 'Error reported by ErrorHandler',
+      );
+    }
+    
     debugPrint('📊 Reporting error to monitoring service');
     debugPrint('Error: ${error.toString()}');
     
@@ -252,6 +262,14 @@ class ErrorHandler {
   }) {
     if (kReleaseMode) {
       debugPrint('📊 Reporting error with context: $context');
+      
+      // Set context in ObservabilityService before reporting
+      if (ObservabilityService.isInitialized) {
+        for (final entry in context.entries) {
+          ObservabilityService.setContext(entry.key, entry.value);
+        }
+      }
+      
       _reportError(error, stackTrace);
     }
   }

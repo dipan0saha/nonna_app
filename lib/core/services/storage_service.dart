@@ -6,6 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
+
+import '../middleware/error_handler.dart';
+import '../network/interceptors/auth_interceptor.dart';
 import 'analytics_service.dart';
 
 /// Storage service for managing file uploads/downloads
@@ -13,6 +16,11 @@ import 'analytics_service.dart';
 class StorageService {
   final SupabaseClient _supabase = Supabase.instance.client;
   final ImagePicker _picker = ImagePicker();
+  late final AuthInterceptor _authInterceptor;
+
+  StorageService() {
+    _authInterceptor = AuthInterceptor(_supabase);
+  }
 
   // ==========================================
   // Image Picking
@@ -35,8 +43,9 @@ class StorageService {
         maxHeight: maxHeight,
       );
     } catch (e) {
-      debugPrint('Error picking image from gallery: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error picking image from gallery: $message');
+      throw Exception(message);
     }
   }
 
@@ -57,8 +66,9 @@ class StorageService {
         maxHeight: maxHeight,
       );
     } catch (e) {
-      debugPrint('Error picking image from camera: $e');
-      rethrow;
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error picking image from camera: $message');
+      throw Exception(message);
     }
   }
 
@@ -127,41 +137,44 @@ class StorageService {
     String? caption,
     List<String>? tags,
   }) async {
-    try {
-      // Validate file
-      _validateImageFile(imageFile);
+    return await _authInterceptor.executeWithRetry(() async {
+      try {
+        // Validate file
+        _validateImageFile(imageFile);
 
-      // Read image bytes
-      final imageBytes = await imageFile.readAsBytes();
-      final fileSizeKb = (imageBytes.length / 1024).round();
+        // Read image bytes
+        final imageBytes = await imageFile.readAsBytes();
+        final fileSizeKb = (imageBytes.length / 1024).round();
 
-      // Generate unique file name
-      final fileName = '${const Uuid().v4()}.jpg';
-      final storagePath = 'baby_$babyProfileId/$fileName';
+        // Generate unique file name
+        final fileName = '${const Uuid().v4()}.jpg';
+        final storagePath = 'baby_$babyProfileId/$fileName';
 
-      // Upload to Supabase Storage
-      await _supabase.storage.from('gallery-photos').uploadBinary(
-            storagePath,
-            imageBytes,
-            fileOptions: const FileOptions(
-              contentType: 'image/jpeg',
-              upsert: false,
-            ),
-          );
+        // Upload to Supabase Storage
+        await _supabase.storage.from('gallery-photos').uploadBinary(
+              storagePath,
+              imageBytes,
+              fileOptions: const FileOptions(
+                contentType: 'image/jpeg',
+                upsert: false,
+              ),
+            );
 
-      // Log analytics event
-      await AnalyticsService.logPhotoUploaded(
-        babyProfileId: babyProfileId,
-        hasCaption: caption != null && caption.isNotEmpty,
-        hasTags: tags != null && tags.isNotEmpty,
-        fileSizeKb: fileSizeKb,
-      );
+        // Log analytics event
+        await AnalyticsService.instance.logPhotoUploaded(
+          babyProfileId: babyProfileId,
+          hasCaption: caption != null && caption.isNotEmpty,
+          hasTags: tags != null && tags.isNotEmpty,
+          fileSizeKb: fileSizeKb,
+        );
 
-      return storagePath;
-    } catch (e) {
-      debugPrint('Error uploading gallery photo: $e');
-      rethrow;
-    }
+        return storagePath;
+      } catch (e) {
+        final message = ErrorHandler.mapErrorToMessage(e);
+        debugPrint('❌ Error uploading gallery photo: $message');
+        throw Exception(message);
+      }
+    });
   }
 
   /// Upload user avatar
@@ -169,27 +182,30 @@ class StorageService {
     required File imageFile,
     required String userId,
   }) async {
-    try {
-      _validateImageFile(imageFile);
+    return await _authInterceptor.executeWithRetry(() async {
+      try {
+        _validateImageFile(imageFile);
 
-      final imageBytes = await imageFile.readAsBytes();
-      final fileName = '${const Uuid().v4()}.jpg';
-      final storagePath = 'user_$userId/$fileName';
+        final imageBytes = await imageFile.readAsBytes();
+        final fileName = '${const Uuid().v4()}.jpg';
+        final storagePath = 'user_$userId/$fileName';
 
-      await _supabase.storage.from('user-avatars').uploadBinary(
-            storagePath,
-            imageBytes,
-            fileOptions: const FileOptions(
-              contentType: 'image/jpeg',
-              upsert: false,
-            ),
-          );
+        await _supabase.storage.from('user-avatars').uploadBinary(
+              storagePath,
+              imageBytes,
+              fileOptions: const FileOptions(
+                contentType: 'image/jpeg',
+                upsert: false,
+              ),
+            );
 
-      return storagePath;
-    } catch (e) {
-      debugPrint('Error uploading user avatar: $e');
-      rethrow;
-    }
+        return storagePath;
+      } catch (e) {
+        final message = ErrorHandler.mapErrorToMessage(e);
+        debugPrint('❌ Error uploading user avatar: $message');
+        throw Exception(message);
+      }
+    });
   }
 
   /// Upload baby profile photo
@@ -197,27 +213,30 @@ class StorageService {
     required File imageFile,
     required String babyProfileId,
   }) async {
-    try {
-      _validateImageFile(imageFile);
+    return await _authInterceptor.executeWithRetry(() async {
+      try {
+        _validateImageFile(imageFile);
 
-      final imageBytes = await imageFile.readAsBytes();
-      final fileName = '${const Uuid().v4()}.jpg';
-      final storagePath = 'baby_$babyProfileId/$fileName';
+        final imageBytes = await imageFile.readAsBytes();
+        final fileName = '${const Uuid().v4()}.jpg';
+        final storagePath = 'baby_$babyProfileId/$fileName';
 
-      await _supabase.storage.from('baby-profile-photos').uploadBinary(
-            storagePath,
-            imageBytes,
-            fileOptions: const FileOptions(
-              contentType: 'image/jpeg',
-              upsert: false,
-            ),
-          );
+        await _supabase.storage.from('baby-profile-photos').uploadBinary(
+              storagePath,
+              imageBytes,
+              fileOptions: const FileOptions(
+                contentType: 'image/jpeg',
+                upsert: false,
+              ),
+            );
 
-      return storagePath;
-    } catch (e) {
-      debugPrint('Error uploading baby profile photo: $e');
-      rethrow;
-    }
+        return storagePath;
+      } catch (e) {
+        final message = ErrorHandler.mapErrorToMessage(e);
+        debugPrint('❌ Error uploading baby profile photo: $message');
+        throw Exception(message);
+      }
+    });
   }
 
   /// Upload event cover photo
@@ -225,27 +244,30 @@ class StorageService {
     required File imageFile,
     required String babyProfileId,
   }) async {
-    try {
-      _validateImageFile(imageFile);
+    return await _authInterceptor.executeWithRetry(() async {
+      try {
+        _validateImageFile(imageFile);
 
-      final imageBytes = await imageFile.readAsBytes();
-      final fileName = '${const Uuid().v4()}.jpg';
-      final storagePath = 'baby_$babyProfileId/$fileName';
+        final imageBytes = await imageFile.readAsBytes();
+        final fileName = '${const Uuid().v4()}.jpg';
+        final storagePath = 'baby_$babyProfileId/$fileName';
 
-      await _supabase.storage.from('event-photos').uploadBinary(
-            storagePath,
-            imageBytes,
-            fileOptions: const FileOptions(
-              contentType: 'image/jpeg',
-              upsert: false,
-            ),
-          );
+        await _supabase.storage.from('event-photos').uploadBinary(
+              storagePath,
+              imageBytes,
+              fileOptions: const FileOptions(
+                contentType: 'image/jpeg',
+                upsert: false,
+              ),
+            );
 
-      return storagePath;
-    } catch (e) {
-      debugPrint('Error uploading event photo: $e');
-      rethrow;
-    }
+        return storagePath;
+      } catch (e) {
+        final message = ErrorHandler.mapErrorToMessage(e);
+        debugPrint('❌ Error uploading event photo: $message');
+        throw Exception(message);
+      }
+    });
   }
 
   // ==========================================
