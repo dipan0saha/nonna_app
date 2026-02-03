@@ -11,7 +11,6 @@ class CacheService {
   static const String _cacheBoxName = 'app_cache';
   static const String _metadataBoxName = 'cache_metadata';
   static const String _timestampKey = '_timestamp';
-  static const String _ownerUpdateKey = '_owner_update';
 
   Box<dynamic>? _cacheBox;
   Box<Map<dynamic, dynamic>>? _metadataBox;

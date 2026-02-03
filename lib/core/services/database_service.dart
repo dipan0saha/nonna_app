@@ -62,7 +62,7 @@ class DatabaseService {
             .insert(data)
             .select();
         
-        return response as List<Map<String, dynamic>>;
+        return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error inserting into $table: $message');
@@ -90,7 +90,7 @@ class DatabaseService {
             .insert(data)
             .select();
         
-        return response as List<Map<String, dynamic>>;
+        return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error inserting multiple rows into $table: $message');
@@ -108,7 +108,7 @@ class DatabaseService {
   /// [table] The table name
   /// [data] The data to update
   /// Returns a [PostgrestFilterBuilder] for adding WHERE conditions
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> update(
+  PostgrestFilterBuilder<dynamic> update(
     String table,
     Map<String, dynamic> data,
   ) {
@@ -133,7 +133,7 @@ class DatabaseService {
         
         final response = await query.select();
         
-        return response as List<Map<String, dynamic>>;
+        return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error upserting into $table: $message');
@@ -164,7 +164,7 @@ class DatabaseService {
         
         final response = await query.select();
         
-        return response as List<Map<String, dynamic>>;
+        return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error upserting multiple rows into $table: $message');
@@ -181,7 +181,7 @@ class DatabaseService {
   /// 
   /// [table] The table name
   /// Returns a [PostgrestFilterBuilder] for adding WHERE conditions
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> delete(String table) {
+  PostgrestFilterBuilder<dynamic> delete(String table) {
     return _client.from(table).delete();
   }
 
@@ -246,14 +246,15 @@ class DatabaseService {
         final response = await query.range(from, to);
         
         // Get total count for pagination metadata
-        final countQuery = await _client
+        // Count query returns the count directly in Supabase 2.x
+        final countResponse = await _client
             .from(table)
-            .select('*', const FetchOptions(count: CountOption.exact, head: true));
+            .count();
         
-        final totalCount = countQuery.count ?? 0;
+        final totalCount = countResponse;
         
         return PaginatedResult(
-          data: response as List<Map<String, dynamic>>,
+          data: response,
           page: page,
           pageSize: pageSize,
           totalCount: totalCount,
@@ -377,9 +378,9 @@ class DatabaseService {
       try {
         final response = await _client
             .from(table)
-            .select('*', const FetchOptions(count: CountOption.exact, head: true));
+            .count();
         
-        return response.count ?? 0;
+        return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error counting records in $table: $message');

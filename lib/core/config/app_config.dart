@@ -22,7 +22,7 @@ class AppConfig {
   static AppEnvironment get environment {
     // This can be configured via build flavors or environment variables
     // For now, default to production
-    const String? env = String.fromEnvironment('ENV', defaultValue: 'prod');
+    const String env = String.fromEnvironment('ENV', defaultValue: 'prod');
     
     switch (env.toLowerCase()) {
       case 'dev':

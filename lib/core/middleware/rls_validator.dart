@@ -293,10 +293,9 @@ class RlsValidator {
     required String babyProfileId,
   }) async {
     if (!_isEnabled) {
-      return {
-        'warning': false,
-        'message': 'RLS Validator is disabled',
-      };
+      // Return an empty result when disabled
+      debugPrint('⚠️  RLS Validator is disabled');
+      return {};
     }
 
     debugPrint('🧪 Testing RLS policies for user=$userId, baby=$babyProfileId');
