@@ -5,6 +5,8 @@
 
 BEGIN;
 
+CREATE EXTENSION IF NOT EXISTS pgtap;
+
 SELECT plan(11);
 
 -- Test 1: events table exists

@@ -55,30 +55,18 @@ void main() {
         expect(result, false);
       });
 
-      test('verifies confirmation token when provided', () async {
+      test('returns false when confirmation token verification fails', () async {
         final userId = 'test-user-id';
-        final token = 'valid-token';
+        final token = 'invalid-token';
 
-        // Mock all database operations to succeed
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(mockFilterBuilder);
-        when(mockFilterBuilder.eq(any, any))
-            .thenReturn(mockFilterBuilder);
-        when(mockFilterBuilder).thenAnswer((_) async => []);
-
-        when(mockDatabaseService.update(any, any))
-            .thenReturn(mockFilterBuilder);
-        when(mockDatabaseService.delete(any))
-            .thenReturn(mockPostgrestBuilder);
-        when(mockPostgrestBuilder.eq(any, any))
-            .thenReturn(mockPostgrestBuilder);
-
+        // Token verification is not implemented and returns false
         final result = await dataDeletionHandler.deleteUserAccount(
           userId,
           confirmationToken: token,
         );
 
-        expect(result, true);
+        // Should return false due to token verification failure
+        expect(result, false);
       });
     });
   });

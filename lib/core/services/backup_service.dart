@@ -1,25 +1,19 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart' as path;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'database_service.dart';
-import 'storage_service.dart';
 
 /// Service for backing up and restoring user data
 /// 
 /// Provides GDPR-compliant data export, photo backup, and restore functionality
 class BackupService {
   final DatabaseService _databaseService;
-  final StorageService _storageService;
   final SupabaseClient _supabase;
 
   BackupService({
     DatabaseService? databaseService,
-    StorageService? storageService,
     SupabaseClient? supabase,
   })  : _databaseService = databaseService ?? DatabaseService(),
-        _storageService = storageService ?? StorageService(),
         _supabase = supabase ?? Supabase.instance.client;
 
   // ==========================================
@@ -142,11 +136,35 @@ class BackupService {
           .eq('invited_by_user_id', userId);
       data['invitations_sent'] = invitationsSent;
 
-      // Invitations received
-      final invitationsReceived = await _databaseService
-          .select('invitations')
-          .eq('invitee_email', _supabase.auth.currentUser?.email ?? '');
-      data['invitations_received'] = invitationsReceived;
+      // Invitations received - look up user's email first
+      String? userEmail;
+      if (profile != null && profile is Map) {
+        // Try to get email from Supabase auth for this userId
+        try {
+          // Note: In production, this would need admin access to query auth.users
+          // For now, we'll try to get it from the accepted invitations
+          final acceptedInvitations = await _databaseService
+              .select('invitations', columns: 'invitee_email')
+              .eq('accepted_by_user_id', userId)
+              .limit(1);
+          
+          if (acceptedInvitations.isNotEmpty) {
+            userEmail = acceptedInvitations[0]['invitee_email'] as String?;
+          }
+        } catch (e) {
+          debugPrint('⚠️ Could not determine user email for received invitations: $e');
+        }
+      }
+      
+      // Query invitations by email if we have it
+      if (userEmail != null && userEmail.isNotEmpty) {
+        final invitationsReceived = await _databaseService
+            .select('invitations')
+            .eq('invitee_email', userEmail);
+        data['invitations_received'] = invitationsReceived;
+      } else {
+        data['invitations_received'] = [];
+      }
 
       // Add metadata
       data['export_metadata'] = {
@@ -190,7 +208,9 @@ class BackupService {
 
       for (final photo in photos) {
         final storagePath = photo['storage_path'] as String;
-        final backupPath = 'backups/$userId/${path.basename(storagePath)}';
+        // Extract filename from path
+        final fileName = storagePath.split('/').last;
+        final backupPath = 'backups/$userId/$fileName';
 
         try {
           // Note: Actual photo backup would require additional download/upload methods

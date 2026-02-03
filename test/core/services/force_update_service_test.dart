@@ -4,26 +4,22 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/force_update_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([DatabaseService, SupabaseClient, PostgrestFilterBuilder])
+@GenerateMocks([DatabaseService, PostgrestFilterBuilder])
 import 'force_update_service_test.mocks.dart';
 
 void main() {
   group('ForceUpdateService', () {
     late ForceUpdateService forceUpdateService;
     late MockDatabaseService mockDatabaseService;
-    late MockSupabaseClient mockSupabaseClient;
     late MockPostgrestFilterBuilder mockFilterBuilder;
 
     setUp(() {
       mockDatabaseService = MockDatabaseService();
-      mockSupabaseClient = MockSupabaseClient();
       mockFilterBuilder = MockPostgrestFilterBuilder();
       
       forceUpdateService = ForceUpdateService(
         databaseService: mockDatabaseService,
-        supabase: mockSupabaseClient,
       );
     });
 

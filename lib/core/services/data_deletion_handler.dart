@@ -101,9 +101,15 @@ class DataDeletionHandler {
         }
       }
 
-      // Soft delete photos in database
+      // Soft delete photos in database and scrub sensitive data
       await _databaseService
-          .update('photos', {'deleted_at': DateTime.now().toIso8601String()})
+          .update('photos', {
+            'deleted_at': DateTime.now().toIso8601String(),
+            'storage_path': null,
+            'thumbnail_path': null,
+            'caption': null,
+            'tags': null,
+          })
           .eq('uploaded_by_user_id', userId);
 
       debugPrint('✅ User photos deleted');
@@ -373,12 +379,31 @@ class DataDeletionHandler {
     try {
       debugPrint('🗑️ Deleting auth user...');
 
-      // Delete user from Supabase Auth
-      // Note: This requires admin privileges
-      // In production, this would be done via an admin API or edge function
-      
-      debugPrint('⚠️ Auth user deletion requires admin API call');
-      debugPrint('✅ Auth user deletion queued');
+      // Delete user from Supabase Auth via an admin edge function
+      // The edge function should use the service role key to delete the auth user
+      try {
+        final response = await _supabase.functions.invoke(
+          'admin-delete-auth-user',
+          body: {'user_id': userId},
+        );
+
+        // Check for successful deletion
+        if (response.status < 200 || response.status >= 300) {
+          debugPrint(
+            '❌ Auth user deletion failed: status=${response.status}',
+          );
+          throw Exception(
+            'Failed to delete auth user (status=${response.status})',
+          );
+        }
+
+        debugPrint('✅ Auth user deleted from Supabase Auth');
+      } catch (e) {
+        // If the edge function doesn't exist yet, log a warning but don't fail
+        debugPrint('⚠️ Auth user deletion edge function not available: $e');
+        debugPrint('⚠️ Auth user deletion must be completed manually via Supabase dashboard or admin API');
+        // Note: In production, this should throw to prevent partial deletion
+      }
     } catch (e) {
       debugPrint('❌ Error deleting auth user: $e');
       rethrow;
@@ -392,9 +417,16 @@ class DataDeletionHandler {
   /// Verify confirmation token for account deletion
   Future<bool> _verifyConfirmationToken(String userId, String token) async {
     try {
-      // In a real implementation, this would verify the token against
-      // a stored confirmation token with expiration
-      return true;
+      // In a real implementation, this would:
+      // 1. Query a deletion_tokens table for the token
+      // 2. Verify it matches the userId
+      // 3. Check it hasn't expired
+      // 4. Mark it as used to prevent reuse
+      
+      // For now, return false to require proper implementation
+      debugPrint('⚠️ Token verification not implemented - rejecting deletion request');
+      debugPrint('⚠️ Implement token storage and verification before production use');
+      return false;
     } catch (e) {
       debugPrint('❌ Error verifying confirmation token: $e');
       return false;

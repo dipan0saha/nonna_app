@@ -7,6 +7,8 @@
 BEGIN;
 
 -- Load pgTAP extension
+CREATE EXTENSION IF NOT EXISTS pgtap;
+
 SELECT plan(10);
 
 -- Test 1: profiles table exists
@@ -21,8 +23,9 @@ SELECT has_column('public'::name, 'profiles'::name, 'display_name'::name, 'profi
 SELECT has_column('public'::name, 'profiles'::name, 'avatar_url'::name, 'profiles should have avatar_url column');
 
 -- Test 4: Test authenticated user can read their own profile
--- Note: Actual authentication tests would require setting up auth context
--- This is a placeholder for demonstration
+-- Note: These tests currently use placeholder pass() calls
+-- Full implementation requires setting up auth context with SET LOCAL
+-- and actual assertions using is_empty/results_eq/throws_ok
 SELECT pass('Authenticated user can read own profile - requires auth context');
 
 -- Test 5: Test authenticated user cannot read other profiles without proper membership

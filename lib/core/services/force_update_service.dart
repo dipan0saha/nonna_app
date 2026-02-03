@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'database_service.dart';
 
 /// Service for managing force update mechanism
@@ -9,13 +8,10 @@ import 'database_service.dart';
 /// and determines if the user needs to update the app
 class ForceUpdateService {
   final DatabaseService _databaseService;
-  final SupabaseClient _supabase;
 
   ForceUpdateService({
     DatabaseService? databaseService,
-    SupabaseClient? supabase,
-  })  : _databaseService = databaseService ?? DatabaseService(),
-        _supabase = supabase ?? Supabase.instance.client;
+  }) : _databaseService = databaseService ?? DatabaseService();
 
   // ==========================================
   // Version Checking
@@ -51,9 +47,15 @@ class ForceUpdateService {
   /// Get minimum required version from Supabase
   Future<String?> _getMinimumRequiredVersion() async {
     try {
+      final platform = _getPlatform();
+      if (platform == null) {
+        // Unsupported platform, skip version check
+        return null;
+      }
+      
       final response = await _databaseService
           .select('app_versions', columns: 'minimum_version, platform')
-          .eq('platform', _getPlatform())
+          .eq('platform', platform)
           .single();
 
       return response['minimum_version'] as String?;
@@ -64,7 +66,13 @@ class ForceUpdateService {
   }
 
   /// Get the current platform string
-  String _getPlatform() {
+  String? _getPlatform() {
+    // Handle web platform explicitly
+    if (kIsWeb) {
+      return 'web';
+    }
+    
+    // Handle native platforms
     if (defaultTargetPlatform == TargetPlatform.android) {
       return 'android';
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -76,7 +84,9 @@ class ForceUpdateService {
     } else if (defaultTargetPlatform == TargetPlatform.linux) {
       return 'linux';
     }
-    return 'unknown';
+    
+    // Return null for unsupported platforms to skip version check
+    return null;
   }
 
   // ==========================================
@@ -124,9 +134,14 @@ class ForceUpdateService {
   /// Get the app store URL for the current platform
   Future<String?> getStoreUrl() async {
     try {
+      final platform = _getPlatform();
+      if (platform == null) {
+        return null;
+      }
+      
       final response = await _databaseService
           .select('app_versions', columns: 'store_url, platform')
-          .eq('platform', _getPlatform())
+          .eq('platform', platform)
           .single();
 
       return response['store_url'] as String?;
@@ -167,10 +182,32 @@ class ForceUpdateService {
   /// Get full update information
   Future<UpdateInfo?> getUpdateInfo() async {
     try {
+      final platform = _getPlatform();
+      if (platform == null) {
+        final currentVersion = await _getCurrentAppVersion();
+        return UpdateInfo(
+          currentVersion: currentVersion,
+          minimumVersion: null,
+          needsUpdate: false,
+          storeUrl: null,
+        );
+      }
+      
       final currentVersion = await _getCurrentAppVersion();
-      final needsUpdateFlag = await needsUpdate();
-      final storeUrl = await getStoreUrl();
-      final minVersion = await _getMinimumRequiredVersion();
+      
+      // Fetch app_versions row once
+      final response = await _databaseService
+          .select('app_versions', columns: 'minimum_version, store_url, platform')
+          .eq('platform', platform)
+          .single();
+      
+      final minVersion = response['minimum_version'] as String?;
+      final storeUrl = response['store_url'] as String?;
+      
+      // Calculate needsUpdate from the fetched data
+      final needsUpdateFlag = minVersion != null 
+          ? _isVersionLessThan(currentVersion, minVersion)
+          : false;
 
       return UpdateInfo(
         currentVersion: currentVersion,

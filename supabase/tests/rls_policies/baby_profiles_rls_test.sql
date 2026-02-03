@@ -5,6 +5,8 @@
 
 BEGIN;
 
+CREATE EXTENSION IF NOT EXISTS pgtap;
+
 SELECT plan(12);
 
 -- Test 1: baby_profiles table exists

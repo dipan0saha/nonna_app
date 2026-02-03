@@ -3,17 +3,15 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/backup_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/core/services/storage_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([DatabaseService, StorageService, SupabaseClient, PostgrestFilterBuilder, GoTrueClient, User])
+@GenerateMocks([DatabaseService, SupabaseClient, PostgrestFilterBuilder, GoTrueClient, User])
 import 'backup_service_test.mocks.dart';
 
 void main() {
   group('BackupService', () {
     late BackupService backupService;
     late MockDatabaseService mockDatabaseService;
-    late MockStorageService mockStorageService;
     late MockSupabaseClient mockSupabaseClient;
     late MockPostgrestFilterBuilder mockFilterBuilder;
     late MockGoTrueClient mockAuth;
@@ -21,7 +19,6 @@ void main() {
 
     setUp(() {
       mockDatabaseService = MockDatabaseService();
-      mockStorageService = MockStorageService();
       mockSupabaseClient = MockSupabaseClient();
       mockFilterBuilder = MockPostgrestFilterBuilder();
       mockAuth = MockGoTrueClient();
@@ -33,7 +30,6 @@ void main() {
 
       backupService = BackupService(
         databaseService: mockDatabaseService,
-        storageService: mockStorageService,
         supabase: mockSupabaseClient,
       );
     });
@@ -95,8 +91,18 @@ void main() {
         when(mockDatabaseService.select('invitations'))
             .thenReturn(mockFilterBuilder);
 
-        // For select calls with eq(), return empty list
-        when(mockFilterBuilder.eq(any, any)).thenAnswer((_) async => []);
+        // For select calls with eq(), return the filter builder
+        // and stub its Future interface to return empty list
+        when(mockFilterBuilder.eq(any, any)).thenReturn(mockFilterBuilder);
+        when(mockFilterBuilder.maybeSingle()).thenAnswer((_) async => null);
+        when(mockFilterBuilder.limit(any)).thenReturn(mockFilterBuilder);
+        
+        // Stub the await on the filter builder itself
+        when(mockFilterBuilder.then<List<Map<String, dynamic>>>(any))
+            .thenAnswer((invocation) async {
+          final onValue = invocation.positionalArguments[0];
+          return onValue(<Map<String, dynamic>>[]);
+        });
 
         final result = await backupService.exportUserData(userId);
 

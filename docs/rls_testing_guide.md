@@ -45,12 +45,11 @@ CREATE EXTENSION IF NOT EXISTS pgtap;
 
 ```
 supabase/tests/rls_policies/
-├── profiles_rls_test.sql           # User profile tests
-├── baby_profiles_rls_test.sql      # Baby profile tests
-├── events_rls_test.sql             # Event tests
-├── photos_rls_test.sql             # Photo tests
-├── registry_items_rls_test.sql     # Registry tests
-└── ... (28 total test files)
+├── profiles_rls_test.sql           # User profile tests (structure tests only)
+├── baby_profiles_rls_test.sql      # Baby profile tests (structure tests only)
+├── events_rls_test.sql             # Event tests (structure tests only)
+├── photos_rls_test.sql             # Photo tests (structure tests only)
+└── [additional test files to be added as coverage expands]
 ```
 
 ### Test File Template
@@ -188,15 +187,17 @@ SELECT throws_ok(
 
 ## RLS Policy Coverage Matrix
 
-Track which policies are tested:
+Track which policies are tested. This matrix reflects the current implementation status.
+Note: Currently only 4 tables have initial structure tests (schema validation).
+Full auth-based CRUD assertions are planned for future implementation.
 
 | Table | SELECT (Read) | INSERT (Create) | UPDATE (Modify) | DELETE (Remove) | Coverage |
 |-------|--------------|-----------------|-----------------|-----------------|----------|
-| profiles | ✅ | ✅ | ✅ | ✅ | 100% |
-| baby_profiles | ✅ | ✅ | ✅ | ✅ | 100% |
-| events | ✅ | ✅ | ✅ | ✅ | 100% |
-| photos | ✅ | ✅ | ✅ | ✅ | 100% |
-| ... | ... | ... | ... | ... | ... |
+| profiles | ⚠️ Structure | ⚠️ Planned | ⚠️ Planned | ⚠️ Planned | Structure Only |
+| baby_profiles | ⚠️ Structure | ⚠️ Planned | ⚠️ Planned | ⚠️ Planned | Structure Only |
+| events | ⚠️ Structure | ⚠️ Planned | ⚠️ Planned | ⚠️ Planned | Structure Only |
+| photos | ⚠️ Structure | ⚠️ Planned | ⚠️ Planned | ⚠️ Planned | Structure Only |
+| ... | ❌ Not tested | ❌ Not tested | ❌ Not tested | ❌ Not tested | Not Yet Implemented |
 
 ---
 
