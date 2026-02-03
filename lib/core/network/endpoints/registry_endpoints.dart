@@ -147,7 +147,8 @@ class RegistryEndpoints {
   /// [babyProfileId] Baby profile ID
   /// [searchTerm] Search term
   static String searchRegistryItems(String babyProfileId, String searchTerm) {
-    return '${SupabaseTables.registryItems}?baby_profile_id=eq.$babyProfileId&item_name=ilike.*$searchTerm*&is:deleted_at.null&select=*';
+    final encodedSearchTerm = Uri.encodeComponent(searchTerm);
+    return '${SupabaseTables.registryItems}?baby_profile_id=eq.$babyProfileId&item_name=ilike.*$encodedSearchTerm*&is:deleted_at.null&select=*';
   }
 
   /// Get registry items by category

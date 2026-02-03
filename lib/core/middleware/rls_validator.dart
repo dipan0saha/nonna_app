@@ -64,40 +64,21 @@ class RlsValidator {
         debugPrint('✅ Owner access granted');
         return true;
 
-      case UserRole.partner:
-        // Partners have most access except certain admin operations
+      case UserRole.follower:
+        // Followers have read access and limited write access
         if (_isAdminOperation(operation)) {
-          debugPrint('❌ Partner denied admin operation: $operation');
+          debugPrint('❌ Follower denied admin operation: $operation');
           return false;
         }
-        debugPrint('✅ Partner access granted');
-        return true;
-
-      case UserRole.familyMember:
-        // Family members have read and limited write access
         if (_isWriteOperation(operation) && _isRestrictedWrite(operation)) {
-          debugPrint('❌ Family member denied restricted write: $operation');
+          debugPrint('❌ Follower denied restricted write: $operation');
           return false;
         }
-        debugPrint('✅ Family member access granted');
-        return true;
-
-      case UserRole.friend:
-        // Friends have read-only access to most data
-        if (_isWriteOperation(operation)) {
-          debugPrint('❌ Friend denied write operation: $operation');
+        if (_isPrivateData(operation)) {
+          debugPrint('❌ Follower denied private data access: $operation');
           return false;
         }
-        debugPrint('✅ Friend read access granted');
-        return true;
-
-      case UserRole.viewer:
-        // Viewers have limited read access
-        if (_isWriteOperation(operation) || _isPrivateData(operation)) {
-          debugPrint('❌ Viewer denied access: $operation');
-          return false;
-        }
-        debugPrint('✅ Viewer limited read access granted');
+        debugPrint('✅ Follower access granted');
         return true;
     }
   }
@@ -220,7 +201,7 @@ class RlsValidator {
       }
 
       final roleString = membershipResponse['role'] as String;
-      return UserRoleExtension.fromString(roleString);
+      return UserRole.fromJson(roleString);
     } catch (e) {
       debugPrint('❌ Error getting user role: $e');
       return null;

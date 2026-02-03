@@ -43,17 +43,17 @@ class AuthEndpoints {
 
   /// Sign in with Google
   static String googleOAuth({required String redirectUrl}) {
-    return '$_oauthBasePath?provider=google&redirect_to=$redirectUrl';
+    return '$_oauthBasePath?provider=google&redirect_to=${Uri.encodeComponent(redirectUrl)}';
   }
 
   /// Sign in with Facebook
   static String facebookOAuth({required String redirectUrl}) {
-    return '$_oauthBasePath?provider=facebook&redirect_to=$redirectUrl';
+    return '$_oauthBasePath?provider=facebook&redirect_to=${Uri.encodeComponent(redirectUrl)}';
   }
 
   /// Sign in with Apple
   static String appleOAuth({required String redirectUrl}) {
-    return '$_oauthBasePath?provider=apple&redirect_to=$redirectUrl';
+    return '$_oauthBasePath?provider=apple&redirect_to=${Uri.encodeComponent(redirectUrl)}';
   }
 
   // ============================================================
@@ -105,7 +105,7 @@ class AuthEndpoints {
     required String provider,
     required String redirectUrl,
   }) {
-    return '$_oauthBasePath?provider=$provider&redirect_to=$redirectUrl';
+    return '$_oauthBasePath?provider=${Uri.encodeComponent(provider)}&redirect_to=${Uri.encodeComponent(redirectUrl)}';
   }
 
   /// Build query parameters for auth requests
@@ -129,13 +129,21 @@ class AuthEndpoints {
     required String token,
     String type = 'signup',
   }) {
-    return '$_authBasePath/verify?token=$token&type=$type';
+    final query = buildQueryParams({
+      'token': token,
+      'type': type,
+    });
+    return '$_authBasePath/verify$query';
   }
 
   /// Get password recovery URL
   ///
   /// [token] Password recovery token
   static String passwordRecovery({required String token}) {
-    return '$_authBasePath/verify?token=$token&type=recovery';
+    final query = buildQueryParams({
+      'token': token,
+      'type': 'recovery',
+    });
+    return '$_authBasePath/verify$query';
   }
 }

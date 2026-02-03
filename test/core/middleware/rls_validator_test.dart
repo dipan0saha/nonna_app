@@ -46,29 +46,9 @@ void main() {
         expect(hasAccess, true);
       });
 
-      test('grants access to partner for non-admin operations', () async {
+      test('grants access to follower for read operations', () async {
         final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.partner,
-          babyProfileId: 'baby-123',
-          operation: 'create_event',
-        );
-
-        expect(hasAccess, true);
-      });
-
-      test('denies access to partner for admin operations', () async {
-        final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.partner,
-          babyProfileId: 'baby-123',
-          operation: 'delete_baby_profile',
-        );
-
-        expect(hasAccess, false);
-      });
-
-      test('grants read access to family member', () async {
-        final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.familyMember,
+          role: UserRole.follower,
           babyProfileId: 'baby-123',
           operation: 'read_events',
         );
@@ -76,9 +56,19 @@ void main() {
         expect(hasAccess, true);
       });
 
-      test('denies restricted write to family member', () async {
+      test('denies access to follower for admin operations', () async {
         final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.familyMember,
+          role: UserRole.follower,
+          babyProfileId: 'baby-123',
+          operation: 'delete_baby_profile',
+        );
+
+        expect(hasAccess, false);
+      });
+
+      test('denies restricted write to follower', () async {
+        final hasAccess = await rlsValidator.simulateRoleAccess(
+          role: UserRole.follower,
           babyProfileId: 'baby-123',
           operation: 'delete_event',
         );
@@ -86,55 +76,26 @@ void main() {
         expect(hasAccess, false);
       });
 
-      test('grants read access to friend', () async {
+      test('grants limited write access to follower', () async {
         final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.friend,
+          role: UserRole.follower,
           babyProfileId: 'baby-123',
-          operation: 'read_photos',
+          operation: 'create_event',
         );
 
         expect(hasAccess, true);
       });
 
-      test('denies write access to friend', () async {
+      test('denies private data access to follower', () async {
         final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.friend,
-          babyProfileId: 'baby-123',
-          operation: 'create_event',
-        );
-
-        expect(hasAccess, false);
-      });
-
-      test('grants limited read access to viewer', () async {
-        final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.viewer,
-          babyProfileId: 'baby-123',
-          operation: 'read_photos',
-        );
-
-        expect(hasAccess, true);
-      });
-
-      test('denies write access to viewer', () async {
-        final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.viewer,
-          babyProfileId: 'baby-123',
-          operation: 'create_event',
-        );
-
-        expect(hasAccess, false);
-      });
-
-      test('denies private data access to viewer', () async {
-        final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.viewer,
+          role: UserRole.follower,
           babyProfileId: 'baby-123',
           operation: 'read_private_notes',
         );
 
         expect(hasAccess, false);
       });
+    });
     });
 
     group('validateTableAccess', () {
@@ -186,7 +147,7 @@ void main() {
 
       test('simulateRoleAccess always returns true', () async {
         final hasAccess = await rlsValidator.simulateRoleAccess(
-          role: UserRole.viewer,
+          role: UserRole.follower,
           babyProfileId: 'baby-123',
           operation: 'delete_baby_profile',
         );

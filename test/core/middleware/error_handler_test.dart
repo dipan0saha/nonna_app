@@ -42,7 +42,7 @@ void main() {
         final error = AuthException('Email already exists', statusCode: '422');
         final message = ErrorHandler.mapErrorToMessage(error);
         
-        expect(message, contains('email') || message.contains('Invalid data'));
+        expect(message, anyOf(contains('email'), contains('Invalid data')));
       });
 
       test('handles AuthException with 429 status code', () {
@@ -120,7 +120,7 @@ void main() {
         final error = FormatException('Invalid email format');
         final message = ErrorHandler.mapErrorToMessage(error);
         
-        expect(message, contains('email') || message.contains('Invalid'));
+        expect(message, anyOf(contains('email'), contains('Invalid')));
       });
 
       test('handles TypeError', () {

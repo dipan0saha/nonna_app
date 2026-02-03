@@ -169,7 +169,8 @@ class PhotoEndpoints {
   /// [babyProfileId] Baby profile ID
   /// [searchTerm] Search term
   static String searchPhotos(String babyProfileId, String searchTerm) {
-    return '${SupabaseTables.photos}?baby_profile_id=eq.$babyProfileId&caption=ilike.*$searchTerm*&is:deleted_at.null&select=*&order=created_at.desc';
+    final encodedSearchTerm = Uri.encodeComponent(searchTerm);
+    return '${SupabaseTables.photos}?baby_profile_id=eq.$babyProfileId&caption=ilike.*$encodedSearchTerm*&is:deleted_at.null&select=*&order=created_at.desc';
   }
 
   /// Get photos by date range

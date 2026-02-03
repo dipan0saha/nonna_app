@@ -138,7 +138,8 @@ class EventEndpoints {
   /// [babyProfileId] Baby profile ID
   /// [searchTerm] Search term
   static String searchEvents(String babyProfileId, String searchTerm) {
-    return '${SupabaseTables.events}?baby_profile_id=eq.$babyProfileId&title=ilike.*$searchTerm*&is:deleted_at.null&select=*';
+    final encodedSearchTerm = Uri.encodeComponent(searchTerm);
+    return '${SupabaseTables.events}?baby_profile_id=eq.$babyProfileId&title=ilike.*$encodedSearchTerm*&is:deleted_at.null&select=*';
   }
 
   /// Get events by date range
