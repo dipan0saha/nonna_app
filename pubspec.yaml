@@ -46,6 +46,8 @@ dependencies:
   http: ^1.2.0
   uuid: ^4.2.0
   path: ^1.9.0
+  package_info_plus: ^8.0.0
+  archive: ^3.4.0
 
   # State management and navigation
   riverpod: ^3.1.0
