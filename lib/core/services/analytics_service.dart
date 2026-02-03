@@ -28,7 +28,7 @@ class AnalyticsService {
       debugPrint('✅ Analytics enabled');
     } catch (e) {
       debugPrint('❌ Error enabling analytics: $e');
-      await ObservabilityService.captureException(e, hint: 'Failed to enable analytics');
+      await ObservabilityService.captureException(e, hint: 'Failed to enable analytics - check Firebase configuration and permissions');
     }
   }
 
@@ -40,7 +40,7 @@ class AnalyticsService {
       debugPrint('✅ Analytics disabled');
     } catch (e) {
       debugPrint('❌ Error disabling analytics: $e');
-      await ObservabilityService.captureException(e, hint: 'Failed to disable analytics');
+      await ObservabilityService.captureException(e, hint: 'Failed to disable analytics - possible state conflict or API limitation');
     }
   }
 
@@ -58,7 +58,7 @@ class AnalyticsService {
       await _analytics.logSignUp(signUpMethod: signUpMethod);
     } catch (e) {
       debugPrint('❌ Error logging signup: $e');
-      await ObservabilityService.captureException(e, hint: 'Failed to log signup event');
+      await ObservabilityService.captureException(e, hint: 'Failed to log signup event for method: $signUpMethod');
     }
   }
 
@@ -69,7 +69,7 @@ class AnalyticsService {
       await _analytics.logLogin(loginMethod: loginMethod);
     } catch (e) {
       debugPrint('❌ Error logging login: $e');
-      await ObservabilityService.captureException(e, hint: 'Failed to log login event');
+      await ObservabilityService.captureException(e, hint: 'Failed to log login event for method: $loginMethod');
     }
   }
 
