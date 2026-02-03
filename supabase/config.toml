@@ -31,3 +31,27 @@ entrypoint = "./functions/send-push-notification/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/send-push-notification/*.html" ]
+
+[functions.tile-configs]
+enabled = true
+verify_jwt = true
+import_map = "./functions/tile-configs/deno.json"
+entrypoint = "./functions/tile-configs/index.ts"
+# Dynamic tile configuration generation with role-based filtering
+# Target response time: <100ms
+
+[functions.notification-trigger]
+enabled = true
+verify_jwt = true
+import_map = "./functions/notification-trigger/deno.json"
+entrypoint = "./functions/notification-trigger/index.ts"
+# Serverless notification generation with OneSignal integration
+# Supports batching and payload formatting
+
+[functions.image-processing]
+enabled = true
+verify_jwt = true
+import_map = "./functions/image-processing/deno.json"
+entrypoint = "./functions/image-processing/index.ts"
+# Image processing: thumbnails, optimization, metadata extraction
+# Supports format conversion and quality adjustment
