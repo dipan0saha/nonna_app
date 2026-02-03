@@ -215,7 +215,9 @@ class AuthService {
   Future<void> signOut() async {
     try {
       // Clear user ID from all services (non-blocking)
-      AppInitializationService.clearUserId();
+      AppInitializationService.clearUserId().catchError((e) {
+        debugPrint('⚠️  Non-critical: Error clearing user ID in services: $e');
+      });
 
       // Sign out from Supabase
       await _supabase.auth.signOut();

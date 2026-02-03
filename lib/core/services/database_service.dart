@@ -5,6 +5,22 @@ import '../middleware/error_handler.dart';
 import '../network/interceptors/auth_interceptor.dart';
 import '../network/supabase_client.dart';
 
+/// Custom exception for database operations that preserves the original error
+class DatabaseException implements Exception {
+  final String message;
+  final Object? originalException;
+  final StackTrace? stackTrace;
+
+  DatabaseException(
+    this.message, {
+    this.originalException,
+    this.stackTrace,
+  });
+
+  @override
+  String toString() => message;
+}
+
 /// Database service for typed query execution and transaction support
 /// 
 /// Provides query builder wrapper, pagination helpers, and error mapping
@@ -47,10 +63,14 @@ class DatabaseService {
             .select();
         
         return response as List<Map<String, dynamic>>;
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error inserting into $table: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -71,10 +91,14 @@ class DatabaseService {
             .select();
         
         return response as List<Map<String, dynamic>>;
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error inserting multiple rows into $table: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -110,10 +134,14 @@ class DatabaseService {
         final response = await query.select();
         
         return response as List<Map<String, dynamic>>;
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error upserting into $table: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -137,10 +165,14 @@ class DatabaseService {
         final response = await query.select();
         
         return response as List<Map<String, dynamic>>;
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error upserting multiple rows into $table: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -168,10 +200,14 @@ class DatabaseService {
     return await _authInterceptor.executeWithRetry(() async {
       try {
         return await _client.rpc(functionName, params: params);
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error executing RPC $functionName: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -223,10 +259,14 @@ class DatabaseService {
           totalCount: totalCount,
           totalPages: (totalCount / pageSize).ceil(),
         );
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error getting paginated data from $table: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -246,10 +286,14 @@ class DatabaseService {
     return await _authInterceptor.executeWithRetry(() async {
       try {
         await _client.rpc(transactionFunctionName, params: params);
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error executing transaction: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -278,10 +322,14 @@ class DatabaseService {
           
           debugPrint('✅ Inserted batch ${i ~/ batchSize + 1} (${batch.length} items)');
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error in batch insert: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -309,10 +357,14 @@ class DatabaseService {
             .limit(1);
         
         return (response as List).isNotEmpty;
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error checking existence in $table: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }
@@ -328,10 +380,14 @@ class DatabaseService {
             .select('*', const FetchOptions(count: CountOption.exact, head: true));
         
         return response.count ?? 0;
-      } catch (e) {
+      } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
         debugPrint('❌ Error counting records in $table: $message');
-        throw Exception(message);
+        throw DatabaseException(
+          message,
+          originalException: e,
+          stackTrace: stackTrace,
+        );
       }
     });
   }

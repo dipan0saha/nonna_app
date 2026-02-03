@@ -26,7 +26,7 @@ class NotificationService {
       StreamController<Map<String, dynamic>>.broadcast();
 
   /// Stream of notification clicks for deep-linking
-  static Stream<Map<String, dynamic>> get notificationClickStream =>
+  Stream<Map<String, dynamic>> get notificationClickStream =>
       _notificationClickController.stream;
 
   // ==========================================
@@ -76,11 +76,11 @@ class NotificationService {
       debugPrint('📱 OneSignal Player ID: $_playerId');
 
       // Set up notification click handler
-      OneSignal.Notifications.addClickListener(_handleNotificationClick);
+      OneSignal.Notifications.addClickListener(_instance._handleNotificationClick);
 
       // Set up notification will show listener
       OneSignal.Notifications.addForegroundWillDisplayListener(
-        _handleNotificationWillShow,
+        _instance._handleNotificationWillShow,
       );
 
       _isInitialized = true;
@@ -93,7 +93,7 @@ class NotificationService {
   }
 
   /// Check if the service has been initialized
-  static bool get isInitialized => _isInitialized;
+  bool get isInitialized => _isInitialized;
 
   // ==========================================
   // User Management
@@ -204,12 +204,12 @@ class NotificationService {
   }
 
   /// Check if notifications are enabled
-  static bool get areNotificationsEnabled {
+  bool get areNotificationsEnabled {
     return _localStorage.isNotificationsEnabled;
   }
 
   /// Check notification permission status
-  static Future<bool> hasPermission() async {
+  Future<bool> hasPermission() async {
     try {
       return OneSignal.Notifications.permission;
     } catch (e) {
@@ -274,7 +274,7 @@ class NotificationService {
   // ==========================================
 
   /// Handle notification click
-  static void _handleNotificationClick(OSNotificationClickEvent event) {
+  void _handleNotificationClick(OSNotificationClickEvent event) {
     debugPrint('📱 Notification clicked: ${event.notification.notificationId}');
     
     // Extract additional data for deep-linking
@@ -296,7 +296,7 @@ class NotificationService {
   }
 
   /// Handle notification will show (when app is in foreground)
-  static void _handleNotificationWillShow(OSNotificationWillDisplayEvent event) {
+  void _handleNotificationWillShow(OSNotificationWillDisplayEvent event) {
     debugPrint('📱 Notification received in foreground');
     
     // You can modify or prevent the notification from displaying
