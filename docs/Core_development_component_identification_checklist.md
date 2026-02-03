@@ -132,18 +132,44 @@
 - [x] Photos RLS Test (`supabase/tests/rls_policies/photos_rls_test.sql`) - ✨ Created Feb 3, 2026
 
 ### 3.2.12 Real-Time Subscription Testing
-- [ ] Real-Time Test Suite (`test/integration/realtime/`)
-- [ ] Real-Time Test Reports (`test/integration/realtime/test_reports/`)
+- [x] Real-Time Test Suite (`test/integration/realtime/`) - ✨ Created Feb 3, 2026
+  - [x] Photos realtime test (`photos_realtime_test.dart`)
+  - [x] Notifications realtime test (`notifications_realtime_test.dart`)
+  - [x] Events realtime test (`events_realtime_test.dart`)
+  - [x] Name suggestions realtime test (`name_suggestions_realtime_test.dart`)
+  - [x] Registry items realtime test (`registry_items_realtime_test.dart`)
+  - [x] Event RSVPs realtime test (`event_rsvps_realtime_test.dart`)
+  - [x] Comprehensive multi-table test (`comprehensive_realtime_test.dart`)
+- [x] Real-Time Test Reports (`test/integration/realtime/test_reports/`) - ✨ Created Feb 3, 2026
+- [x] Test Documentation (`test/integration/realtime/README.md`) - ✨ Created Feb 3, 2026
 
 ### 3.2.13 Supabase Edge Functions
-- [ ] Tile Config Function (`supabase/functions/tile-configs/`)
-- [ ] Notification Trigger Function (`supabase/functions/notification-trigger/`)
-- [ ] Image Processing Function (`supabase/functions/image-processing/`)
-- [ ] Edge Functions Configuration (`supabase/config.toml`)
+- [x] Tile Config Function (`supabase/functions/tile-configs/`) - ✨ Created Feb 3, 2026
+  - [x] Implementation (`index.ts`) - Role-based filtering, <100ms target
+  - [x] Tests (`index.test.ts`)
+  - [x] Deno configuration (`deno.json`)
+- [x] Notification Trigger Function (`supabase/functions/notification-trigger/`) - ✨ Created Feb 3, 2026
+  - [x] Implementation (`index.ts`) - OneSignal integration, batching logic
+  - [x] Tests (`index.test.ts`)
+  - [x] Deno configuration (`deno.json`)
+- [x] Image Processing Function (`supabase/functions/image-processing/`) - ✨ Created Feb 3, 2026
+  - [x] Implementation (`index.ts`) - Thumbnails, optimization, metadata
+  - [x] Tests (`index.test.ts`)
+  - [x] Deno configuration (`deno.json`)
+- [x] Edge Functions Configuration (`supabase/config.toml`) - ✨ Updated Feb 3, 2026
 
 ### 3.2.14 Supabase Monitoring
-- [ ] Monitoring Dashboard (Supabase Studio)
-- [ ] Custom Monitoring Queries (`supabase/monitoring/queries.sql`)
+- [x] Monitoring Dashboard (Supabase Studio) - ✅ Built-in, documented
+- [x] Custom Monitoring Queries (`supabase/monitoring/queries.sql`) - ✨ Created Feb 3, 2026
+  - [x] Database performance metrics (table sizes, index usage)
+  - [x] Business metrics (baby profiles, user activity, photos, events)
+  - [x] Tile performance queries (usage, popularity)
+  - [x] Storage metrics (usage by bucket, growth rate)
+  - [x] Notification metrics (delivery stats, read rates)
+  - [x] Registry performance (purchase rates, total value)
+  - [x] Engagement metrics (comments, reactions)
+  - [x] Alert threshold queries
+- [x] Monitoring Documentation (`docs/supabase_monitoring_guide.md`) - ✨ Created Feb 3, 2026
 
 ---
 
