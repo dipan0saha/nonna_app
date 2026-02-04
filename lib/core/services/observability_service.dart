@@ -61,7 +61,7 @@ class ObservabilityService {
           options.dist = '1';
           
           // Before send callback for filtering events
-          options.beforeSend = _beforeSend;
+          options.beforeSend = (event, hint) => _beforeSend(event, hint: hint);
         },
       );
 
@@ -279,7 +279,7 @@ class ObservabilityService {
 
     try {
       await Sentry.configureScope((scope) {
-        scope.removeContext(key);
+        scope.setContexts(key, null);
       });
     } catch (e) {
       debugPrint('❌ Error removing context: $e');
@@ -375,7 +375,8 @@ class ObservabilityService {
     }
 
     // Filter out specific errors
-    if (event.message?.formatted?.contains('SocketException') ?? false) {
+    final formatted = event.message?.formatted;
+    if (formatted != null && formatted.contains('SocketException')) {
       // Don't send socket exceptions in certain cases
       // return null;
     }

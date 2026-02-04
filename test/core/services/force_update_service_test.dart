@@ -5,18 +5,16 @@ import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/force_update_service.dart';
 
-@GenerateMocks([DatabaseService, PostgrestFilterBuilder])
+@GenerateMocks([DatabaseService])
 import 'force_update_service_test.mocks.dart';
 
 void main() {
   group('ForceUpdateService', () {
     late ForceUpdateService forceUpdateService;
     late MockDatabaseService mockDatabaseService;
-    late MockPostgrestFilterBuilder mockFilterBuilder;
 
     setUp(() {
       mockDatabaseService = MockDatabaseService();
-      mockFilterBuilder = MockPostgrestFilterBuilder();
       
       forceUpdateService = ForceUpdateService(
         databaseService: mockDatabaseService,
@@ -62,11 +60,8 @@ void main() {
 
     group('needsUpdate', () {
       test('returns false when no minimum version is set', () async {
+        // Mock the select method to throw an exception (no minimum version found)
         when(mockDatabaseService.select('app_versions', columns: 'minimum_version, platform'))
-            .thenReturn(mockFilterBuilder);
-        when(mockFilterBuilder.eq('platform', any))
-            .thenReturn(mockFilterBuilder);
-        when(mockFilterBuilder.single())
             .thenThrow(Exception('No minimum version'));
 
         final result = await forceUpdateService.needsUpdate();

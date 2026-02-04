@@ -27,7 +27,7 @@ class SupabaseService {
   /// Execute a database query
   /// 
   /// Returns a [PostgrestFilterBuilder] for building queries
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> from(String table) {
+  PostgrestQueryBuilder from(String table) {
     return client.from(table);
   }
 
@@ -113,7 +113,7 @@ class SupabaseService {
   }
 
   /// Get realtime connection status stream
-  Stream<RealtimeStatus> get realtimeStatusStream {
+  Stream<RealtimeState> get realtimeStatusStream {
     return client.realtime.connState;
   }
 

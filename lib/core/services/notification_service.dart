@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
-import 'analytics_service.dart';
 import 'local_storage_service.dart';
 
 /// Notification service for managing push notifications via OneSignal
@@ -134,9 +133,8 @@ class NotificationService {
   /// Example: {'role': 'owner', 'baby_profile_id': '123'}
   Future<void> setTags(Map<String, String> tags) async {
     try {
-      for (final entry in tags.entries) {
-        OneSignal.User.addTag(entry.key, entry.value);
-      }
+      // In OneSignal 5.x, use addTags with a map
+      OneSignal.User.addTags(tags);
       debugPrint('✅ Set OneSignal tags: $tags');
     } catch (e) {
       debugPrint('❌ Error setting tags: $e');
@@ -148,9 +146,8 @@ class NotificationService {
   /// [keys] Tag keys to remove
   Future<void> removeTags(List<String> keys) async {
     try {
-      for (final key in keys) {
-        OneSignal.User.removeTag(key);
-      }
+      // In OneSignal 5.x, use removeTags with a list
+      OneSignal.User.removeTags(keys);
       debugPrint('✅ Removed OneSignal tags: $keys');
     } catch (e) {
       debugPrint('❌ Error removing tags: $e');
@@ -178,9 +175,6 @@ class NotificationService {
       OneSignal.Notifications.requestPermission(true);
       await _localStorage.setNotificationsEnabled(true);
       
-      // Track analytics
-      await AnalyticsService.instance.logNotificationPreferenceChanged(enabled: true);
-      
       debugPrint('✅ Notifications enabled');
     } catch (e) {
       debugPrint('❌ Error enabling notifications: $e');
@@ -193,9 +187,6 @@ class NotificationService {
       // Use OneSignal opt-out instead of permission revocation
       OneSignal.User.pushSubscription.optOut();
       await _localStorage.setNotificationsEnabled(false);
-      
-      // Track analytics
-      await AnalyticsService.instance.logNotificationPreferenceChanged(enabled: false);
       
       debugPrint('✅ Notifications disabled');
     } catch (e) {
@@ -287,12 +278,6 @@ class NotificationService {
       'body': event.notification.body,
       'additional_data': additionalData,
     });
-    
-    // Track analytics
-    AnalyticsService.instance.logNotificationOpened(
-      notificationId: event.notification.notificationId ?? '',
-      title: event.notification.title ?? '',
-    );
   }
 
   /// Handle notification will show (when app is in foreground)

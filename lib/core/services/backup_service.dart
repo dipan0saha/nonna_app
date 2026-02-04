@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'database_service.dart';
 
 /// Service for backing up and restoring user data
@@ -8,13 +7,10 @@ import 'database_service.dart';
 /// Provides GDPR-compliant data export, photo backup, and restore functionality
 class BackupService {
   final DatabaseService _databaseService;
-  final SupabaseClient _supabase;
 
   BackupService({
     DatabaseService? databaseService,
-    SupabaseClient? supabase,
-  })  : _databaseService = databaseService ?? DatabaseService(),
-        _supabase = supabase ?? Supabase.instance.client;
+  }) : _databaseService = databaseService ?? DatabaseService();
 
   // ==========================================
   // User Data Export
@@ -138,7 +134,7 @@ class BackupService {
 
       // Invitations received - look up user's email first
       String? userEmail;
-      if (profile != null && profile is Map) {
+      if (profile != null) {
         // Try to get email from Supabase auth for this userId
         try {
           // Note: In production, this would need admin access to query auth.users
