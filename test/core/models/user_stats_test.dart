@@ -104,7 +104,8 @@ void main() {
     });
 
     group('copyWith', () {
-      test('creates a copy with all fields unchanged when no params provided', () {
+      test('creates a copy with all fields unchanged when no params provided',
+          () {
         final copy = userStats.copyWith();
         expect(copy, userStats);
       });

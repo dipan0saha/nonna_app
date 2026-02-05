@@ -17,7 +17,7 @@ void main() {
     mockClient = MockSupabaseClient();
     mockAuth = MockGoTrueClient();
     when(mockClient.auth).thenReturn(mockAuth);
-    
+
     rlsValidator = RlsValidator(mockClient);
   });
 

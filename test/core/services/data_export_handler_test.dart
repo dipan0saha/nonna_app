@@ -60,7 +60,8 @@ void main() {
         final userId = 'test-user-id';
         final zipPath = '/tmp/export.zip';
 
-        final result = await dataExportHandler.generateDownloadLink(userId, zipPath);
+        final result =
+            await dataExportHandler.generateDownloadLink(userId, zipPath);
 
         expect(result, null);
       });

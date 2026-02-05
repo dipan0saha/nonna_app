@@ -8,20 +8,30 @@ void main() {
     });
 
     test('has all expected values', () {
-      expect(ActivityEventType.values, contains(ActivityEventType.photoUploaded));
-      expect(ActivityEventType.values, contains(ActivityEventType.commentAdded));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.photoUploaded));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.commentAdded));
       expect(ActivityEventType.values, contains(ActivityEventType.rsvpYes));
       expect(ActivityEventType.values, contains(ActivityEventType.rsvpNo));
       expect(ActivityEventType.values, contains(ActivityEventType.rsvpMaybe));
-      expect(ActivityEventType.values, contains(ActivityEventType.itemPurchased));
-      expect(ActivityEventType.values, contains(ActivityEventType.eventCreated));
-      expect(ActivityEventType.values, contains(ActivityEventType.eventUpdated));
-      expect(ActivityEventType.values, contains(ActivityEventType.photoSquished));
-      expect(ActivityEventType.values, contains(ActivityEventType.nameSuggested));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.itemPurchased));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.eventCreated));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.eventUpdated));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.photoSquished));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.nameSuggested));
       expect(ActivityEventType.values, contains(ActivityEventType.voteCast));
-      expect(ActivityEventType.values, contains(ActivityEventType.memberInvited));
-      expect(ActivityEventType.values, contains(ActivityEventType.memberJoined));
-      expect(ActivityEventType.values, contains(ActivityEventType.profileUpdated));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.memberInvited));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.memberJoined));
+      expect(
+          ActivityEventType.values, contains(ActivityEventType.profileUpdated));
       expect(ActivityEventType.values, contains(ActivityEventType.photoTagged));
     });
 
@@ -34,21 +44,29 @@ void main() {
       });
 
       test('fromJson parses correct values', () {
-        expect(ActivityEventType.fromJson('photouploaded'), ActivityEventType.photoUploaded);
-        expect(ActivityEventType.fromJson('commentadded'), ActivityEventType.commentAdded);
-        expect(ActivityEventType.fromJson('rsvpyes'), ActivityEventType.rsvpYes);
+        expect(ActivityEventType.fromJson('photouploaded'),
+            ActivityEventType.photoUploaded);
+        expect(ActivityEventType.fromJson('commentadded'),
+            ActivityEventType.commentAdded);
+        expect(
+            ActivityEventType.fromJson('rsvpyes'), ActivityEventType.rsvpYes);
       });
 
       test('fromJson is case insensitive', () {
-        expect(ActivityEventType.fromJson('PHOTOUPLOADED'), ActivityEventType.photoUploaded);
-        expect(ActivityEventType.fromJson('CommentAdded'), ActivityEventType.commentAdded);
-        expect(ActivityEventType.fromJson('RsvpYes'), ActivityEventType.rsvpYes);
+        expect(ActivityEventType.fromJson('PHOTOUPLOADED'),
+            ActivityEventType.photoUploaded);
+        expect(ActivityEventType.fromJson('CommentAdded'),
+            ActivityEventType.commentAdded);
+        expect(
+            ActivityEventType.fromJson('RsvpYes'), ActivityEventType.rsvpYes);
       });
 
       test('fromJson defaults to commentAdded for invalid input', () {
-        expect(ActivityEventType.fromJson('invalid'), ActivityEventType.commentAdded);
+        expect(ActivityEventType.fromJson('invalid'),
+            ActivityEventType.commentAdded);
         expect(ActivityEventType.fromJson(''), ActivityEventType.commentAdded);
-        expect(ActivityEventType.fromJson('unknown'), ActivityEventType.commentAdded);
+        expect(ActivityEventType.fromJson('unknown'),
+            ActivityEventType.commentAdded);
       });
 
       test('toJson and fromJson are reversible', () {
@@ -87,7 +105,8 @@ void main() {
 
       test('display names are properly capitalized', () {
         for (final type in ActivityEventType.values) {
-          expect(type.displayName[0], equals(type.displayName[0].toUpperCase()));
+          expect(
+              type.displayName[0], equals(type.displayName[0].toUpperCase()));
         }
       });
     });
@@ -119,8 +138,10 @@ void main() {
       });
 
       test('descriptions provide meaningful context', () {
-        expect(ActivityEventType.photoSquished.description.contains('liked'), true);
-        expect(ActivityEventType.memberJoined.description.contains('joined'), true);
+        expect(ActivityEventType.photoSquished.description.contains('liked'),
+            true);
+        expect(ActivityEventType.memberJoined.description.contains('joined'),
+            true);
         expect(ActivityEventType.voteCast.description.contains('vote'), true);
       });
     });
@@ -141,23 +162,30 @@ void main() {
 
     group('event management types', () {
       test('has event management types', () {
-        expect(ActivityEventType.values, contains(ActivityEventType.eventCreated));
-        expect(ActivityEventType.values, contains(ActivityEventType.eventUpdated));
+        expect(
+            ActivityEventType.values, contains(ActivityEventType.eventCreated));
+        expect(
+            ActivityEventType.values, contains(ActivityEventType.eventUpdated));
       });
     });
 
     group('member management types', () {
       test('has member management types', () {
-        expect(ActivityEventType.values, contains(ActivityEventType.memberInvited));
-        expect(ActivityEventType.values, contains(ActivityEventType.memberJoined));
+        expect(ActivityEventType.values,
+            contains(ActivityEventType.memberInvited));
+        expect(
+            ActivityEventType.values, contains(ActivityEventType.memberJoined));
       });
     });
 
     group('photo interaction types', () {
       test('has photo interaction types', () {
-        expect(ActivityEventType.values, contains(ActivityEventType.photoUploaded));
-        expect(ActivityEventType.values, contains(ActivityEventType.photoSquished));
-        expect(ActivityEventType.values, contains(ActivityEventType.photoTagged));
+        expect(ActivityEventType.values,
+            contains(ActivityEventType.photoUploaded));
+        expect(ActivityEventType.values,
+            contains(ActivityEventType.photoSquished));
+        expect(
+            ActivityEventType.values, contains(ActivityEventType.photoTagged));
       });
     });
 

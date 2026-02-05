@@ -3,6 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/mixins/role_aware_mixin.dart';
 
+// Helper function to wrap widgets in MaterialApp for testing
+Widget wrapWithMaterialApp(Widget child) {
+  return MaterialApp(
+    home: Scaffold(
+      body: child,
+    ),
+  );
+}
+
 // Test widget that uses RoleAwareMixin
 class TestRoleWidget extends StatefulWidget {
   final UserRole role;
@@ -27,41 +36,36 @@ class _TestRoleWidgetState extends State<TestRoleWidget> with RoleAwareMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Column(
-          children: [
-            Text('Role: ${currentRole.name}'),
-            Text('Is Owner: $isOwner'),
-            Text('Is Follower: $isFollower'),
-            ownerOnly(const Text('Owner Only Content')),
-            followerOnly(const Text('Follower Only Content')),
-            roleBasedWidget(
-              ownerWidget: const Text('Owner Widget'),
-              followerWidget: const Text('Follower Widget'),
-            ),
-            showIf(canCreate, const Text('Can Create')),
-            showIf(canInvite, const Text('Can Invite')),
-            showIf(canManageSettings, const Text('Can Manage')),
-            ElevatedButton(
-              key: const Key('navigate_button'),
-              onPressed: () =>
-                  navigateIfAllowed(context, 'profile_settings'),
-              child: const Text('Navigate'),
-            ),
-            Container(
-              key: const Key('role_color'),
-              color: getRoleColor(context),
-              width: 10,
-              height: 10,
-            ),
-            Icon(
-              getRoleIcon(),
-              key: const Key('role_icon'),
-            ),
-          ],
+    return Column(
+      children: [
+        Text('Role: ${currentRole.name}'),
+        Text('Is Owner: $isOwner'),
+        Text('Is Follower: $isFollower'),
+        ownerOnly(const Text('Owner Only Content')),
+        followerOnly(const Text('Follower Only Content')),
+        roleBasedWidget(
+          ownerWidget: const Text('Owner Widget'),
+          followerWidget: const Text('Follower Widget'),
         ),
-      ),
+        showIf(canCreate, const Text('Can Create')),
+        showIf(canInvite, const Text('Can Invite')),
+        showIf(canManageSettings, const Text('Can Manage')),
+        ElevatedButton(
+          key: const Key('navigate_button'),
+          onPressed: () => navigateIfAllowed(context, 'profile_settings'),
+          child: const Text('Navigate'),
+        ),
+        Container(
+          key: const Key('role_color'),
+          color: getRoleColor(context),
+          width: 10,
+          height: 10,
+        ),
+        Icon(
+          getRoleIcon(),
+          key: const Key('role_icon'),
+        ),
+      ],
     );
   }
 }
@@ -71,7 +75,7 @@ void main() {
     group('Role Checks', () {
       testWidgets('isOwner returns true for owner role', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         expect(find.text('Is Owner: true'), findsOneWidget);
@@ -80,7 +84,7 @@ void main() {
 
       testWidgets('isFollower returns true for follower role', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         expect(find.text('Is Owner: false'), findsOneWidget);
@@ -89,7 +93,7 @@ void main() {
 
       testWidgets('hasRole checks specific role', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -102,10 +106,10 @@ void main() {
     });
 
     group('Permission Checks', () {
-      testWidgets('canEdit checks owner and content ownership',
-          (tester) async {
+      testWidgets('canEdit checks owner and content ownership', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner, userId: 'user123'),
+          wrapWithMaterialApp(
+              const TestRoleWidget(role: UserRole.owner, userId: 'user123')),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -119,7 +123,8 @@ void main() {
 
       testWidgets('canEdit returns false for followers', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower, userId: 'user123'),
+          wrapWithMaterialApp(
+              const TestRoleWidget(role: UserRole.follower, userId: 'user123')),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -133,7 +138,8 @@ void main() {
       testWidgets('canDelete checks owner and content ownership',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner, userId: 'user123'),
+          wrapWithMaterialApp(
+              const TestRoleWidget(role: UserRole.owner, userId: 'user123')),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -147,7 +153,8 @@ void main() {
 
       testWidgets('canDelete returns false for followers', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower, userId: 'user123'),
+          wrapWithMaterialApp(
+              const TestRoleWidget(role: UserRole.follower, userId: 'user123')),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -159,7 +166,7 @@ void main() {
 
       testWidgets('canCreate returns true for all users', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final ownerState = tester.state<_TestRoleWidgetState>(
@@ -169,7 +176,7 @@ void main() {
         expect(ownerState.canCreate, true);
 
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         final followerState = tester.state<_TestRoleWidgetState>(
@@ -182,13 +189,13 @@ void main() {
 
       testWidgets('canInvite returns true only for owners', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         expect(find.text('Can Invite'), findsOneWidget);
 
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         expect(find.text('Can Invite'), findsNothing);
@@ -197,13 +204,13 @@ void main() {
       testWidgets('canManageSettings returns true only for owners',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         expect(find.text('Can Manage'), findsOneWidget);
 
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         expect(find.text('Can Manage'), findsNothing);
@@ -213,7 +220,7 @@ void main() {
     group('Conditional Rendering', () {
       testWidgets('ownerOnly shows content for owners', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         expect(find.text('Owner Only Content'), findsOneWidget);
@@ -221,7 +228,7 @@ void main() {
 
       testWidgets('ownerOnly hides content for followers', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         expect(find.text('Owner Only Content'), findsNothing);
@@ -229,7 +236,7 @@ void main() {
 
       testWidgets('followerOnly shows content for followers', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         expect(find.text('Follower Only Content'), findsOneWidget);
@@ -237,7 +244,7 @@ void main() {
 
       testWidgets('followerOnly hides content for owners', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         expect(find.text('Follower Only Content'), findsNothing);
@@ -246,7 +253,7 @@ void main() {
       testWidgets('roleBasedWidget shows owner widget for owners',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         expect(find.text('Owner Widget'), findsOneWidget);
@@ -256,17 +263,16 @@ void main() {
       testWidgets('roleBasedWidget shows follower widget for followers',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         expect(find.text('Owner Widget'), findsNothing);
         expect(find.text('Follower Widget'), findsOneWidget);
       });
 
-      testWidgets('showIf shows widget when condition is true',
-          (tester) async {
+      testWidgets('showIf shows widget when condition is true', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -280,7 +286,7 @@ void main() {
       testWidgets('showIf hides widget when condition is false',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -296,7 +302,7 @@ void main() {
       testWidgets('getRoleColor returns primary color for owners',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -310,7 +316,7 @@ void main() {
       testWidgets('getRoleColor returns secondary color for followers',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -323,7 +329,7 @@ void main() {
 
       testWidgets('getRoleIcon returns correct icon for role', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         var state = tester.state<_TestRoleWidgetState>(
@@ -333,7 +339,7 @@ void main() {
         expect(state.getRoleIcon(), UserRole.owner.icon);
 
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         state = tester.state<_TestRoleWidgetState>(
@@ -347,7 +353,7 @@ void main() {
     group('Navigation Helpers', () {
       testWidgets('canAccessScreen checks owner-only screens', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final ownerState = tester.state<_TestRoleWidgetState>(
@@ -360,7 +366,7 @@ void main() {
         expect(ownerState.canAccessScreen('public_screen'), true);
 
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         final followerState = tester.state<_TestRoleWidgetState>(
@@ -376,7 +382,7 @@ void main() {
       testWidgets('navigateIfAllowed shows error for unauthorized',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         await tester.tap(find.byKey(const Key('navigate_button')));
@@ -394,7 +400,7 @@ void main() {
       testWidgets('executeIfAllowed executes action when canCreate is true',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -412,7 +418,7 @@ void main() {
       testWidgets('executeIfAllowed calls onUnauthorized callback',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -432,7 +438,7 @@ void main() {
       testWidgets('executeWithRoleCheck executes for matching role',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -453,7 +459,7 @@ void main() {
       testWidgets('executeWithRoleCheck does not execute for wrong role',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -474,7 +480,7 @@ void main() {
       testWidgets('executeWithRoleCheck calls onUnauthorized when wrong role',
           (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.follower),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.follower)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -497,7 +503,7 @@ void main() {
     group('Edge Cases', () {
       testWidgets('handles null userId', (tester) async {
         await tester.pumpWidget(
-          const TestRoleWidget(role: UserRole.owner),
+          wrapWithMaterialApp(const TestRoleWidget(role: UserRole.owner)),
         );
 
         final state = tester.state<_TestRoleWidgetState>(
@@ -511,7 +517,9 @@ void main() {
 
       testWidgets('works with different role types', (tester) async {
         for (final role in UserRole.values) {
-          await tester.pumpWidget(TestRoleWidget(role: role));
+          await tester.pumpWidget(
+            wrapWithMaterialApp(TestRoleWidget(role: role)),
+          );
 
           final state = tester.state<_TestRoleWidgetState>(
             find.byType(TestRoleWidget),

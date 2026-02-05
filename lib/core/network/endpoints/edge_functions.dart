@@ -24,10 +24,12 @@ class EdgeFunctions {
   static const String tileConfigFunction = '$_functionsBasePath/tile-configs';
 
   /// Notification trigger function
-  static const String notificationTriggerFunction = '$_functionsBasePath/notification-trigger';
+  static const String notificationTriggerFunction =
+      '$_functionsBasePath/notification-trigger';
 
   /// Image processing function
-  static const String imageProcessingFunction = '$_functionsBasePath/image-processing';
+  static const String imageProcessingFunction =
+      '$_functionsBasePath/image-processing';
 
   /// User analytics function
   static const String analyticsFunction = '$_functionsBasePath/analytics';

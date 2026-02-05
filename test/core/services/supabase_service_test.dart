@@ -3,7 +3,8 @@ import 'package:mockito/annotations.dart';
 import 'package:nonna_app/core/services/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([SupabaseClient, GoTrueClient, RealtimeClient, SupabaseStorageClient])
+@GenerateMocks(
+    [SupabaseClient, GoTrueClient, RealtimeClient, SupabaseStorageClient])
 void main() {
   group('SupabaseService', () {
     late SupabaseService supabaseService;

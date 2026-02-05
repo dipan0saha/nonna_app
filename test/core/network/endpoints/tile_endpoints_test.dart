@@ -11,7 +11,7 @@ void main() {
     group('tile configuration endpoints', () {
       test('generates correct getTileConfigs endpoint', () {
         final endpoint = TileEndpoints.getTileConfigs(testBabyProfileId);
-        
+
         expect(endpoint, contains('tile_configs'));
         expect(endpoint, contains('baby_profile_id=eq.$testBabyProfileId'));
         expect(endpoint, contains('select=*'));
@@ -19,7 +19,7 @@ void main() {
 
       test('generates correct getTileConfig endpoint', () {
         final endpoint = TileEndpoints.getTileConfig(testTileConfigId);
-        
+
         expect(endpoint, contains('tile_configs'));
         expect(endpoint, contains('id=eq.$testTileConfigId'));
         expect(endpoint, contains('select=*'));
@@ -27,20 +27,20 @@ void main() {
 
       test('generates correct createTileConfig endpoint', () {
         final endpoint = TileEndpoints.createTileConfig();
-        
+
         expect(endpoint, 'tile_configs');
       });
 
       test('generates correct updateTileConfig endpoint', () {
         final endpoint = TileEndpoints.updateTileConfig(testTileConfigId);
-        
+
         expect(endpoint, contains('tile_configs'));
         expect(endpoint, contains('id=eq.$testTileConfigId'));
       });
 
       test('generates correct deleteTileConfig endpoint', () {
         final endpoint = TileEndpoints.deleteTileConfig(testTileConfigId);
-        
+
         expect(endpoint, contains('tile_configs'));
         expect(endpoint, contains('id=eq.$testTileConfigId'));
       });
@@ -49,15 +49,16 @@ void main() {
     group('screen configuration endpoints', () {
       test('generates correct getScreenConfigs endpoint', () {
         final endpoint = TileEndpoints.getScreenConfigs(testBabyProfileId);
-        
+
         expect(endpoint, contains('screen_configs'));
         expect(endpoint, contains('baby_profile_id=eq.$testBabyProfileId'));
         expect(endpoint, contains('select=*'));
       });
 
       test('generates correct getScreenConfig endpoint', () {
-        final endpoint = TileEndpoints.getScreenConfig(testBabyProfileId, testScreenName);
-        
+        final endpoint =
+            TileEndpoints.getScreenConfig(testBabyProfileId, testScreenName);
+
         expect(endpoint, contains('screen_configs'));
         expect(endpoint, contains('baby_profile_id=eq.$testBabyProfileId'));
         expect(endpoint, contains('screen_name=eq.$testScreenName'));
@@ -66,13 +67,13 @@ void main() {
 
       test('generates correct createScreenConfig endpoint', () {
         final endpoint = TileEndpoints.createScreenConfig();
-        
+
         expect(endpoint, 'screen_configs');
       });
 
       test('generates correct updateScreenConfig endpoint', () {
         final endpoint = TileEndpoints.updateScreenConfig('screen-config-123');
-        
+
         expect(endpoint, contains('screen_configs'));
         expect(endpoint, contains('id=eq.screen-config-123'));
       });
@@ -80,8 +81,9 @@ void main() {
 
     group('tile data queries', () {
       test('generates correct getTilesByScreen endpoint', () {
-        final endpoint = TileEndpoints.getTilesByScreen(testBabyProfileId, testScreenName);
-        
+        final endpoint =
+            TileEndpoints.getTilesByScreen(testBabyProfileId, testScreenName);
+
         expect(endpoint, contains('tile_configs'));
         expect(endpoint, contains('baby_profile_id=eq.$testBabyProfileId'));
         expect(endpoint, contains('screen_name=eq.$testScreenName'));
@@ -89,8 +91,9 @@ void main() {
       });
 
       test('generates correct getVisibleTiles endpoint', () {
-        final endpoint = TileEndpoints.getVisibleTiles(testBabyProfileId, testScreenName);
-        
+        final endpoint =
+            TileEndpoints.getVisibleTiles(testBabyProfileId, testScreenName);
+
         expect(endpoint, contains('tile_configs'));
         expect(endpoint, contains('baby_profile_id=eq.$testBabyProfileId'));
         expect(endpoint, contains('screen_name=eq.$testScreenName'));
@@ -99,8 +102,9 @@ void main() {
       });
 
       test('generates correct getTilesByType endpoint', () {
-        final endpoint = TileEndpoints.getTilesByType(testBabyProfileId, testTileType);
-        
+        final endpoint =
+            TileEndpoints.getTilesByType(testBabyProfileId, testTileType);
+
         expect(endpoint, contains('tile_configs'));
         expect(endpoint, contains('baby_profile_id=eq.$testBabyProfileId'));
         expect(endpoint, contains('tile_type=eq.$testTileType'));
@@ -108,13 +112,13 @@ void main() {
 
       test('generates correct reorderTiles endpoint', () {
         final endpoint = TileEndpoints.reorderTiles();
-        
+
         expect(endpoint, 'tile_configs');
       });
 
       test('generates correct toggleTileVisibility endpoint', () {
         final endpoint = TileEndpoints.toggleTileVisibility(testTileConfigId);
-        
+
         expect(endpoint, contains('tile_configs'));
         expect(endpoint, contains('id=eq.$testTileConfigId'));
       });
@@ -127,18 +131,18 @@ void main() {
           'baby_profile_id': testBabyProfileId,
           'screen_name': testScreenName,
         };
-        
+
         final query = TileEndpoints.buildQuery(baseQuery, filters);
-        
+
         expect(query, contains('baby_profile_id=eq.$testBabyProfileId'));
         expect(query, contains('screen_name=eq.$testScreenName'));
       });
 
       test('buildQuery returns base query when no filters', () {
         const baseQuery = 'tile_configs?select=*';
-        
+
         final query = TileEndpoints.buildQuery(baseQuery, {});
-        
+
         expect(query, baseQuery);
       });
 
@@ -148,7 +152,7 @@ void main() {
           ['id', 'tile_type', 'position'],
           filters: {'baby_profile_id': testBabyProfileId},
         );
-        
+
         expect(query, contains('tile_configs'));
         expect(query, contains('select=id,tile_type,position'));
         expect(query, contains('baby_profile_id=eq.$testBabyProfileId'));
@@ -159,7 +163,7 @@ void main() {
           'tile_configs',
           [],
         );
-        
+
         expect(query, contains('select=*'));
       });
     });

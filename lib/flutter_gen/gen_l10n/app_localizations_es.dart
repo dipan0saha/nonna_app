@@ -1,7 +1,10 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
+// ignore_for_file: type=lint
+
+/// The translations for Spanish Castilian (`es`).
 class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
@@ -98,31 +101,38 @@ class AppLocalizationsEs extends AppLocalizations {
   String get error_generic => 'Algo salió mal. Por favor, inténtalo de nuevo.';
 
   @override
-  String get error_network => 'Error de conexión de red. Por favor, verifica tu conexión a internet.';
+  String get error_network =>
+      'Error de conexión de red. Por favor, verifica tu conexión a internet.';
 
   @override
-  String get error_timeout => 'La solicitud ha caducado. Por favor, inténtalo de nuevo.';
+  String get error_timeout =>
+      'La solicitud ha caducado. Por favor, inténtalo de nuevo.';
 
   @override
-  String get error_server => 'Error del servidor. Por favor, inténtalo más tarde.';
+  String get error_server =>
+      'Error del servidor. Por favor, inténtalo más tarde.';
 
   @override
-  String get error_unauthorized => 'No estás autorizado para realizar esta acción.';
+  String get error_unauthorized =>
+      'No estás autorizado para realizar esta acción.';
 
   @override
   String get error_notFound => 'No se encontró el recurso solicitado.';
 
   @override
-  String get error_validation => 'Por favor, verifica tu entrada e inténtalo de nuevo.';
+  String get error_validation =>
+      'Por favor, verifica tu entrada e inténtalo de nuevo.';
 
   @override
   String get error_required_field => 'Este campo es obligatorio';
 
   @override
-  String get error_invalid_email => 'Por favor, ingresa una dirección de correo válida';
+  String get error_invalid_email =>
+      'Por favor, ingresa una dirección de correo válida';
 
   @override
-  String get error_invalid_password => 'La contraseña debe tener al menos 8 caracteres';
+  String get error_invalid_password =>
+      'La contraseña debe tener al menos 8 caracteres';
 
   @override
   String get error_passwords_dont_match => 'Las contraseñas no coinciden';
@@ -137,13 +147,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get empty_state_no_items => 'Aún no hay elementos';
 
   @override
-  String get empty_state_start_creating => 'Comienza creando tu primer elemento';
+  String get empty_state_start_creating =>
+      'Comienza creando tu primer elemento';
 
   @override
   String get empty_state_recipes_title => 'Aún No Hay Recetas';
 
   @override
-  String get empty_state_recipes_message => 'Comienza a construir tu colección de recetas';
+  String get empty_state_recipes_message =>
+      'Comienza a construir tu colección de recetas';
 
   @override
   String get empty_state_recipes_action => 'Añadir Receta';
@@ -152,7 +164,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get empty_state_favorites_title => 'Sin Favoritos';
 
   @override
-  String get empty_state_favorites_message => 'Las recetas que marques como favoritas aparecerán aquí';
+  String get empty_state_favorites_message =>
+      'Las recetas que marques como favoritas aparecerán aquí';
 
   @override
   String get nav_home => 'Inicio';
@@ -267,52 +280,48 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String plurals_items(int count) {
-    return intl.Intl.plural(
+    String _temp0 = intl.Intl.pluralLogic(
       count,
-      zero: 'Sin elementos',
-      one: '1 elemento',
+      locale: localeName,
       other: '$count elementos',
-      name: 'plurals_items',
-      desc: 'Forma plural para conteo de elementos',
-      args: <Object>[count],
+      one: '1 elemento',
+      zero: 'Sin elementos',
     );
+    return '$_temp0';
   }
 
   @override
   String plurals_recipes(int count) {
-    return intl.Intl.plural(
+    String _temp0 = intl.Intl.pluralLogic(
       count,
-      zero: 'Sin recetas',
-      one: '1 receta',
+      locale: localeName,
       other: '$count recetas',
-      name: 'plurals_recipes',
-      desc: 'Forma plural para conteo de recetas',
-      args: <Object>[count],
+      one: '1 receta',
+      zero: 'Sin recetas',
     );
+    return '$_temp0';
   }
 
   @override
   String plurals_minutes(int count) {
-    return intl.Intl.plural(
+    String _temp0 = intl.Intl.pluralLogic(
       count,
-      one: '1 minuto',
+      locale: localeName,
       other: '$count minutos',
-      name: 'plurals_minutes',
-      desc: 'Forma plural para minutos',
-      args: <Object>[count],
+      one: '1 minuto',
     );
+    return '$_temp0';
   }
 
   @override
   String plurals_hours(int count) {
-    return intl.Intl.plural(
+    String _temp0 = intl.Intl.pluralLogic(
       count,
-      one: '1 hora',
+      locale: localeName,
       other: '$count horas',
-      name: 'plurals_hours',
-      desc: 'Forma plural para horas',
-      args: <Object>[count],
+      one: '1 hora',
     );
+    return '$_temp0';
   }
 
   @override
@@ -340,11 +349,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get confirm_delete_title => 'Eliminar Elemento';
 
   @override
-  String get confirm_delete_message => '¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.';
+  String get confirm_delete_message =>
+      '¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.';
 
   @override
   String get confirm_logout_title => 'Cerrar Sesión';
 
   @override
-  String get confirm_logout_message => '¿Estás seguro de que deseas cerrar sesión?';
+  String get confirm_logout_message =>
+      '¿Estás seguro de que deseas cerrar sesión?';
 }

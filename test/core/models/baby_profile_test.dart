@@ -71,7 +71,8 @@ void main() {
         expect(json['name'], 'Baby Jane');
         expect(json['default_last_name_source'], 'mother');
         expect(json['profile_photo_url'], 'https://example.com/baby.jpg');
-        expect(json['expected_birth_date'], expectedBirthDate.toIso8601String());
+        expect(
+            json['expected_birth_date'], expectedBirthDate.toIso8601String());
         expect(json['actual_birth_date'], null);
         expect(json['gender'], 'female');
       });

@@ -180,10 +180,15 @@ mixin ValidationMixin {
 
   /// Validate positive number
   String? validatePositive(String? value) {
+    // Return null for null or empty values (optional field)
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+
     final numError = validateNumeric(value);
     if (numError != null) return numError;
 
-    final number = double.parse(value!);
+    final number = double.parse(value);
     if (number <= 0) {
       return 'Value must be positive';
     }

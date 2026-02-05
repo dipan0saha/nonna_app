@@ -6,7 +6,13 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([DatabaseService, StorageService, SupabaseClient, PostgrestFilterBuilder, PostgrestBuilder])
+@GenerateMocks([
+  DatabaseService,
+  StorageService,
+  SupabaseClient,
+  PostgrestFilterBuilder,
+  PostgrestBuilder
+])
 import 'data_deletion_handler_test.mocks.dart';
 
 void main() {
@@ -32,7 +38,8 @@ void main() {
       test('generates confirmation token', () async {
         final userId = 'test-user-id';
 
-        final token = await dataDeletionHandler.requestDeletionConfirmation(userId);
+        final token =
+            await dataDeletionHandler.requestDeletionConfirmation(userId);
 
         expect(token, isNotEmpty);
         expect(token, startsWith('confirmation_'));
@@ -43,7 +50,8 @@ void main() {
       test('returns false when database operations fail', () async {
         final userId = 'test-user-id';
 
-        when(mockDatabaseService.select('photos', columns: 'id, storage_path, thumbnail_path'))
+        when(mockDatabaseService.select('photos',
+                columns: 'id, storage_path, thumbnail_path'))
             .thenThrow(Exception('Database error'));
 
         final result = await dataDeletionHandler.deleteUserAccount(userId);
@@ -51,7 +59,8 @@ void main() {
         expect(result, false);
       });
 
-      test('returns false when confirmation token verification fails', () async {
+      test('returns false when confirmation token verification fails',
+          () async {
         final userId = 'test-user-id';
         final token = 'invalid-token';
 

@@ -133,7 +133,7 @@ void main() {
       test('compresses image successfully', () async {
         final file = await createTestImage(500, 500);
         final compressed = await ImageHelpers.compressImage(file, quality: 80);
-        
+
         expect(compressed, isNotNull);
         expect(compressed!.length, greaterThan(0));
       });
@@ -145,7 +145,7 @@ void main() {
           quality: 85,
           maxWidth: 500,
         );
-        
+
         expect(compressed, isNotNull);
       });
 
@@ -156,14 +156,14 @@ void main() {
           quality: 85,
           maxHeight: 500,
         );
-        
+
         expect(compressed, isNotNull);
       });
 
       test('handles invalid file gracefully', () async {
         final file = File('/tmp/test_invalid.txt');
         await file.writeAsString('not an image');
-        
+
         final compressed = await ImageHelpers.compressImage(file);
         expect(compressed, isNull);
       });
@@ -173,12 +173,12 @@ void main() {
       test('compresses image to target size', () async {
         final file = await createTestImage(500, 500);
         final targetSize = 10 * 1024; // 10KB
-        
+
         final compressed = await ImageHelpers.compressToSize(
           file,
           targetSizeBytes: targetSize,
         );
-        
+
         expect(compressed, isNotNull);
         expect(compressed!.length, lessThanOrEqualTo(targetSize * 1.1));
       });
@@ -186,25 +186,25 @@ void main() {
       test('reduces quality iteratively', () async {
         final file = await createTestImage(800, 800);
         final targetSize = 5 * 1024; // 5KB (small target)
-        
+
         final compressed = await ImageHelpers.compressToSize(
           file,
           targetSizeBytes: targetSize,
           maxIterations: 3,
         );
-        
+
         expect(compressed, isNotNull);
       });
 
       test('handles invalid file gracefully', () async {
         final file = File('/tmp/test_invalid.txt');
         await file.writeAsString('not an image');
-        
+
         final compressed = await ImageHelpers.compressToSize(
           file,
           targetSizeBytes: 1024,
         );
-        
+
         expect(compressed, isNull);
       });
     });
@@ -217,7 +217,7 @@ void main() {
           width: 200,
           height: 200,
         );
-        
+
         expect(thumbnail, isNotNull);
         expect(thumbnail!.length, greaterThan(0));
       });
@@ -225,14 +225,14 @@ void main() {
       test('uses default dimensions', () async {
         final file = await createTestImage(800, 600);
         final thumbnail = await ImageHelpers.generateThumbnail(file);
-        
+
         expect(thumbnail, isNotNull);
       });
 
       test('handles invalid file gracefully', () async {
         final file = File('/tmp/test_invalid.txt');
         await file.writeAsString('not an image');
-        
+
         final thumbnail = await ImageHelpers.generateThumbnail(file);
         expect(thumbnail, isNull);
       });
@@ -245,7 +245,7 @@ void main() {
           file,
           size: 150,
         );
-        
+
         expect(thumbnail, isNotNull);
         expect(thumbnail!.length, greaterThan(0));
       });
@@ -253,14 +253,14 @@ void main() {
       test('uses default size', () async {
         final file = await createTestImage(1000, 1000);
         final thumbnail = await ImageHelpers.generateSquareThumbnail(file);
-        
+
         expect(thumbnail, isNotNull);
       });
 
       test('handles invalid file gracefully', () async {
         final file = File('/tmp/test_invalid.txt');
         await file.writeAsString('not an image');
-        
+
         final thumbnail = await ImageHelpers.generateSquareThumbnail(file);
         expect(thumbnail, isNull);
       });
@@ -270,7 +270,7 @@ void main() {
       test('converts image to JPEG', () async {
         final file = await createTestImage(400, 400);
         final jpeg = await ImageHelpers.convertToJpeg(file, quality: 90);
-        
+
         expect(jpeg, isNotNull);
         expect(jpeg!.length, greaterThan(0));
       });
@@ -278,7 +278,7 @@ void main() {
       test('handles invalid file gracefully', () async {
         final file = File('/tmp/test_invalid.txt');
         await file.writeAsString('not an image');
-        
+
         final jpeg = await ImageHelpers.convertToJpeg(file);
         expect(jpeg, isNull);
       });
@@ -288,7 +288,7 @@ void main() {
       test('converts image to PNG', () async {
         final file = await createTestImage(400, 400);
         final png = await ImageHelpers.convertToPng(file);
-        
+
         expect(png, isNotNull);
         expect(png!.length, greaterThan(0));
       });
@@ -296,7 +296,7 @@ void main() {
       test('handles invalid file gracefully', () async {
         final file = File('/tmp/test_invalid.txt');
         await file.writeAsString('not an image');
-        
+
         final png = await ImageHelpers.convertToPng(file);
         expect(png, isNull);
       });
@@ -304,13 +304,16 @@ void main() {
 
     group('calculateAspectRatio', () {
       test('calculates aspect ratio correctly', () {
-        expect(ImageHelpers.calculateAspectRatio(1920, 1080), closeTo(16 / 9, 0.01));
+        expect(ImageHelpers.calculateAspectRatio(1920, 1080),
+            closeTo(16 / 9, 0.01));
         expect(ImageHelpers.calculateAspectRatio(1000, 1000), 1.0);
-        expect(ImageHelpers.calculateAspectRatio(800, 600), closeTo(4 / 3, 0.01));
+        expect(
+            ImageHelpers.calculateAspectRatio(800, 600), closeTo(4 / 3, 0.01));
       });
 
       test('handles portrait orientation', () {
-        expect(ImageHelpers.calculateAspectRatio(600, 800), closeTo(0.75, 0.01));
+        expect(
+            ImageHelpers.calculateAspectRatio(600, 800), closeTo(0.75, 0.01));
       });
     });
 
@@ -321,7 +324,7 @@ void main() {
           originalHeight: 500,
           targetWidth: 500,
         );
-        
+
         expect(result.width, 500);
         expect(result.height, 250);
       });
@@ -332,7 +335,7 @@ void main() {
           originalHeight: 600,
           targetHeight: 300,
         );
-        
+
         expect(result.width, 400);
         expect(result.height, 300);
       });
@@ -344,7 +347,7 @@ void main() {
           targetWidth: 200,
           targetHeight: 300,
         );
-        
+
         expect(result.width, 200);
         expect(result.height, 300);
       });
@@ -354,7 +357,7 @@ void main() {
           originalWidth: 800,
           originalHeight: 600,
         );
-        
+
         expect(result.width, 800);
         expect(result.height, 600);
       });
@@ -412,7 +415,7 @@ void main() {
           width: 400,
           height: 300,
         );
-        
+
         expect(cropped, isNotNull);
         expect(cropped!.length, greaterThan(0));
       });
@@ -426,7 +429,7 @@ void main() {
           width: 100,
           height: 100,
         );
-        
+
         // Should handle error gracefully
         expect(cropped, isNull);
       });
@@ -434,7 +437,7 @@ void main() {
       test('handles invalid file gracefully', () async {
         final file = File('/tmp/test_invalid.txt');
         await file.writeAsString('not an image');
-        
+
         final cropped = await ImageHelpers.cropImage(
           file,
           x: 0,
@@ -442,7 +445,7 @@ void main() {
           width: 100,
           height: 100,
         );
-        
+
         expect(cropped, isNull);
       });
     });
@@ -451,7 +454,7 @@ void main() {
       test('returns correct dimensions', () async {
         final file = await createTestImage(640, 480);
         final dimensions = await ImageHelpers.getImageDimensions(file);
-        
+
         expect(dimensions, isNotNull);
         expect(dimensions!.width, 640);
         expect(dimensions.height, 480);
@@ -460,7 +463,7 @@ void main() {
       test('handles invalid file gracefully', () async {
         final file = File('/tmp/test_invalid.txt');
         await file.writeAsString('not an image');
-        
+
         final dimensions = await ImageHelpers.getImageDimensions(file);
         expect(dimensions, isNull);
       });
@@ -494,11 +497,12 @@ void main() {
 
       test('handles quality boundaries', () async {
         final file = await createTestImage(400, 400);
-        
+
         final lowQuality = await ImageHelpers.compressImage(file, quality: 1);
         expect(lowQuality, isNotNull);
-        
-        final highQuality = await ImageHelpers.compressImage(file, quality: 100);
+
+        final highQuality =
+            await ImageHelpers.compressImage(file, quality: 100);
         expect(highQuality, isNotNull);
       });
 
@@ -513,7 +517,7 @@ void main() {
     group('file operations', () {
       test('handles non-existent files', () async {
         final file = File('/tmp/nonexistent.jpg');
-        
+
         expect(
           () => ImageHelpers.compressImage(file),
           throwsA(anything),

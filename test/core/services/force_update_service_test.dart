@@ -15,7 +15,7 @@ void main() {
 
     setUp(() {
       mockDatabaseService = MockDatabaseService();
-      
+
       forceUpdateService = ForceUpdateService(
         databaseService: mockDatabaseService,
       );
@@ -61,7 +61,8 @@ void main() {
     group('needsUpdate', () {
       test('returns false when no minimum version is set', () async {
         // Mock the select method to throw an exception (no minimum version found)
-        when(mockDatabaseService.select('app_versions', columns: 'minimum_version, platform'))
+        when(mockDatabaseService.select('app_versions',
+                columns: 'minimum_version, platform'))
             .thenThrow(Exception('No minimum version'));
 
         final result = await forceUpdateService.needsUpdate();
@@ -69,7 +70,8 @@ void main() {
       });
 
       test('returns false when there is an error checking version', () async {
-        when(mockDatabaseService.select('app_versions', columns: 'minimum_version, platform'))
+        when(mockDatabaseService.select('app_versions',
+                columns: 'minimum_version, platform'))
             .thenThrow(Exception('Database error'));
 
         final result = await forceUpdateService.needsUpdate();
@@ -79,7 +81,8 @@ void main() {
 
     group('getStoreUrl', () {
       test('returns null when there is an error', () async {
-        when(mockDatabaseService.select('app_versions', columns: 'store_url, platform'))
+        when(mockDatabaseService.select('app_versions',
+                columns: 'store_url, platform'))
             .thenThrow(Exception('Database error'));
 
         final result = await forceUpdateService.getStoreUrl();
@@ -99,7 +102,8 @@ void main() {
 
     group('getUpdateInfo', () {
       test('returns null when there is an error', () async {
-        when(mockDatabaseService.select('app_versions', columns: 'minimum_version, platform'))
+        when(mockDatabaseService.select('app_versions',
+                columns: 'minimum_version, platform'))
             .thenThrow(Exception('Database error'));
 
         final result = await forceUpdateService.getUpdateInfo();

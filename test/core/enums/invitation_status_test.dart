@@ -24,14 +24,16 @@ void main() {
 
       test('fromJson parses correct values', () {
         expect(InvitationStatus.fromJson('pending'), InvitationStatus.pending);
-        expect(InvitationStatus.fromJson('accepted'), InvitationStatus.accepted);
+        expect(
+            InvitationStatus.fromJson('accepted'), InvitationStatus.accepted);
         expect(InvitationStatus.fromJson('revoked'), InvitationStatus.revoked);
         expect(InvitationStatus.fromJson('expired'), InvitationStatus.expired);
       });
 
       test('fromJson is case insensitive', () {
         expect(InvitationStatus.fromJson('PENDING'), InvitationStatus.pending);
-        expect(InvitationStatus.fromJson('Accepted'), InvitationStatus.accepted);
+        expect(
+            InvitationStatus.fromJson('Accepted'), InvitationStatus.accepted);
         expect(InvitationStatus.fromJson('REVOKED'), InvitationStatus.revoked);
         expect(InvitationStatus.fromJson('Expired'), InvitationStatus.expired);
       });
@@ -67,7 +69,8 @@ void main() {
 
       test('display names are capitalized', () {
         for (final status in InvitationStatus.values) {
-          expect(status.displayName[0], equals(status.displayName[0].toUpperCase()));
+          expect(status.displayName[0],
+              equals(status.displayName[0].toUpperCase()));
         }
       });
     });

@@ -139,11 +139,10 @@ class TileEndpoints {
   /// [filters] Map of filter key-value pairs
   static String buildQuery(String baseQuery, Map<String, String> filters) {
     if (filters.isEmpty) return baseQuery;
-    
-    final filterString = filters.entries
-        .map((e) => '${e.key}=eq.${e.value}')
-        .join('&');
-    
+
+    final filterString =
+        filters.entries.map((e) => '${e.key}=eq.${e.value}').join('&');
+
     final separator = baseQuery.contains('?') ? '&' : '?';
     return '$baseQuery$separator$filterString';
   }
@@ -160,14 +159,13 @@ class TileEndpoints {
   }) {
     final selectString = columns.isEmpty ? '*' : columns.join(',');
     var query = '$table?select=$selectString';
-    
+
     if (filters != null && filters.isNotEmpty) {
-      final filterString = filters.entries
-          .map((e) => '${e.key}=eq.${e.value}')
-          .join('&');
+      final filterString =
+          filters.entries.map((e) => '${e.key}=eq.${e.value}').join('&');
       query = '$query&$filterString';
     }
-    
+
     return query;
   }
 }

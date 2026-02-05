@@ -6,7 +6,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'local_storage_service.dart';
 
 /// Notification service for managing push notifications via OneSignal
-/// 
+///
 /// Provides push notification registration, payload handling,
 /// deep-linking, notification preferences, and badge count management
 class NotificationService {
@@ -33,7 +33,7 @@ class NotificationService {
   // ==========================================
 
   /// Initialize OneSignal
-  /// 
+  ///
   /// [appId] OneSignal App ID
   /// [requiresUserPrivacyConsent] Whether to require user consent
   Future<void> initialize({
@@ -67,7 +67,8 @@ class NotificationService {
       }
 
       // Request notification permissions
-      final hasPermission = await OneSignal.Notifications.requestPermission(true);
+      final hasPermission =
+          await OneSignal.Notifications.requestPermission(true);
       debugPrint('📱 Notification permission granted: $hasPermission');
 
       // Get player ID
@@ -75,7 +76,8 @@ class NotificationService {
       debugPrint('📱 OneSignal Player ID: $_playerId');
 
       // Set up notification click handler
-      OneSignal.Notifications.addClickListener(_instance._handleNotificationClick);
+      OneSignal.Notifications.addClickListener(
+          _instance._handleNotificationClick);
 
       // Set up notification will show listener
       OneSignal.Notifications.addForegroundWillDisplayListener(
@@ -99,7 +101,7 @@ class NotificationService {
   // ==========================================
 
   /// Set external user ID (for targeting specific users)
-  /// 
+  ///
   /// [userId] The user ID from your backend
   Future<void> setExternalUserId(String userId) async {
     try {
@@ -128,7 +130,7 @@ class NotificationService {
   // ==========================================
 
   /// Set user tags
-  /// 
+  ///
   /// [tags] Key-value pairs for targeting
   /// Example: {'role': 'owner', 'baby_profile_id': '123'}
   Future<void> setTags(Map<String, String> tags) async {
@@ -142,7 +144,7 @@ class NotificationService {
   }
 
   /// Remove tags
-  /// 
+  ///
   /// [keys] Tag keys to remove
   Future<void> removeTags(List<String> keys) async {
     try {
@@ -174,7 +176,7 @@ class NotificationService {
     try {
       OneSignal.Notifications.requestPermission(true);
       await _localStorage.setNotificationsEnabled(true);
-      
+
       debugPrint('✅ Notifications enabled');
     } catch (e) {
       debugPrint('❌ Error enabling notifications: $e');
@@ -187,7 +189,7 @@ class NotificationService {
       // Use OneSignal opt-out instead of permission revocation
       OneSignal.User.pushSubscription.optOut();
       await _localStorage.setNotificationsEnabled(false);
-      
+
       debugPrint('✅ Notifications disabled');
     } catch (e) {
       debugPrint('❌ Error disabling notifications: $e');
@@ -238,7 +240,7 @@ class NotificationService {
   // ==========================================
 
   /// Set badge count
-  /// 
+  ///
   /// [count] Badge count to display
   Future<void> setBadgeCount(int count) async {
     try {
@@ -267,10 +269,10 @@ class NotificationService {
   /// Handle notification click
   void _handleNotificationClick(OSNotificationClickEvent event) {
     debugPrint('📱 Notification clicked: ${event.notification.notificationId}');
-    
+
     // Extract additional data for deep-linking
     final additionalData = event.notification.additionalData ?? {};
-    
+
     // Add notification click to stream for deep-linking
     _notificationClickController.add({
       'notification_id': event.notification.notificationId,
@@ -283,7 +285,7 @@ class NotificationService {
   /// Handle notification will show (when app is in foreground)
   void _handleNotificationWillShow(OSNotificationWillDisplayEvent event) {
     debugPrint('📱 Notification received in foreground');
-    
+
     // You can modify or prevent the notification from displaying
     // For now, we'll just display it
     event.notification.display();
@@ -309,7 +311,7 @@ class NotificationService {
   // ==========================================
 
   /// Dispose the notification service
-  /// 
+  ///
   /// Note: Does not close the static notification click stream controller
   /// as it is a process-lifetime stream. Closing it would cause errors
   /// if notifications are handled after dispose() is called.

@@ -9,11 +9,13 @@ void main() {
       });
 
       test('has correct notification trigger function path', () {
-        expect(EdgeFunctions.notificationTriggerFunction, '/functions/v1/notification-trigger');
+        expect(EdgeFunctions.notificationTriggerFunction,
+            '/functions/v1/notification-trigger');
       });
 
       test('has correct image processing function path', () {
-        expect(EdgeFunctions.imageProcessingFunction, '/functions/v1/image-processing');
+        expect(EdgeFunctions.imageProcessingFunction,
+            '/functions/v1/image-processing');
       });
 
       test('has correct analytics function path', () {

@@ -92,8 +92,10 @@ void main() {
       });
 
       test('returns error for email exceeding 255 characters', () {
-        final invalid = invitation.copyWith(inviteeEmail: '${'a' * 250}@example.com');
-        expect(invalid.validate(), 'Email address must be 255 characters or less');
+        final invalid =
+            invitation.copyWith(inviteeEmail: '${'a' * 250}@example.com');
+        expect(
+            invalid.validate(), 'Email address must be 255 characters or less');
       });
 
       test('returns error for expiration more than 7 days', () {

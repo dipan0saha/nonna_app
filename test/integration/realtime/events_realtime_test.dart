@@ -5,19 +5,20 @@ import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Integration tests for Events real-time subscriptions
-/// 
+///
 /// Tests calendar event updates, RSVP changes, and baby-scoped filtering
 void main() {
   group('Events Realtime Integration Tests', () {
     late RealtimeService realtimeService;
     StreamSubscription<dynamic>? subscription;
-    final testTimeout = const Duration(seconds: 30);
-    
+    const testTimeout = Duration(seconds: 30);
+
     setUp(() {
       realtimeService = RealtimeService();
     });
-    
+
     tearDown(() async {
+      // ignore: dead_code
       await subscription?.cancel();
       await realtimeService.dispose();
     });
@@ -28,15 +29,16 @@ void main() {
           table: 'events',
           channelName: 'test-events-channel',
         );
-        
+
         expect(stream, isNotNull);
         expect(realtimeService.activeChannelsCount, 1);
-        expect(realtimeService.activeChannelNames, contains('test-events-channel'));
+        expect(realtimeService.activeChannelNames,
+            contains('test-events-channel'));
       }, timeout: Timeout(testTimeout));
 
       test('should filter events by baby_profile_id', () async {
         const testBabyProfileId = 'test-baby-123';
-        
+
         final stream = realtimeService.subscribe(
           table: 'events',
           channelName: 'test-events-baby-filter',
@@ -45,7 +47,7 @@ void main() {
             'value': testBabyProfileId,
           },
         );
-        
+
         expect(stream, isNotNull);
         expect(realtimeService.activeChannelsCount, 1);
       }, timeout: Timeout(testTimeout));
@@ -56,13 +58,13 @@ void main() {
           channelName: 'events-baby-1',
           filter: {'column': 'baby_profile_id', 'value': 'baby-1'},
         );
-        
+
         final stream2 = realtimeService.subscribe(
           table: 'events',
           channelName: 'events-baby-2',
           filter: {'column': 'baby_profile_id', 'value': 'baby-2'},
         );
-        
+
         expect(stream1, isNotNull);
         expect(stream2, isNotNull);
         expect(realtimeService.activeChannelsCount, 2);
@@ -76,7 +78,7 @@ void main() {
           channelName: 'insert-event-test',
           event: PostgresChangeEvent.insert,
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
 
@@ -86,7 +88,7 @@ void main() {
           channelName: 'update-event-test',
           event: PostgresChangeEvent.update,
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
 
@@ -96,7 +98,7 @@ void main() {
           channelName: 'delete-event-test',
           event: PostgresChangeEvent.delete,
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
     });
@@ -107,12 +109,12 @@ void main() {
           table: 'events',
           channelName: 'sync-test-1',
         );
-        
+
         final stream2 = realtimeService.subscribe(
           table: 'events',
           channelName: 'sync-test-2',
         );
-        
+
         expect(stream1, isNotNull);
         expect(stream2, isNotNull);
       }, timeout: Timeout(testTimeout));
@@ -121,14 +123,14 @@ void main() {
     group('Performance', () {
       test('should handle event subscriptions with low latency', () async {
         final stopwatch = Stopwatch()..start();
-        
+
         final stream = realtimeService.subscribe(
           table: 'events',
           channelName: 'latency-test',
         );
-        
+
         stopwatch.stop();
-        
+
         expect(stream, isNotNull);
         expect(stopwatch.elapsedMilliseconds, lessThan(2000));
       }, timeout: Timeout(testTimeout));

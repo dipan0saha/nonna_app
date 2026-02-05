@@ -139,7 +139,8 @@ void main() {
         expect(marker.needsRefresh(lastFetched), false);
       });
 
-      test('returns false when tiles were updated at the same time as fetch', () {
+      test('returns false when tiles were updated at the same time as fetch',
+          () {
         expect(marker.needsRefresh(tilesLastUpdated), false);
       });
     });

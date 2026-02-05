@@ -63,7 +63,8 @@ void main() {
 
       test('display names are capitalized', () {
         for (final status in RsvpStatus.values) {
-          expect(status.displayName[0], equals(status.displayName[0].toUpperCase()));
+          expect(status.displayName[0],
+              equals(status.displayName[0].toUpperCase()));
         }
       });
     });
@@ -132,7 +133,8 @@ void main() {
 
     group('consistency', () {
       test('all statuses have unique display names', () {
-        final displayNames = RsvpStatus.values.map((s) => s.displayName).toSet();
+        final displayNames =
+            RsvpStatus.values.map((s) => s.displayName).toSet();
         expect(displayNames.length, RsvpStatus.values.length);
       });
 

@@ -46,7 +46,7 @@ class LoggingInterceptor {
     debugPrint('┌─────────────────────────────────────────────────────────');
     debugPrint('│ 📤 REQUEST: $method $url');
     debugPrint('│ Time: ${startTime.toIso8601String()}');
-    
+
     if (headers != null && headers.isNotEmpty) {
       debugPrint('│ Headers:');
       final redactedHeaders = _redactSensitiveData(headers);
@@ -61,7 +61,7 @@ class LoggingInterceptor {
       final redactedBody = _redactSensitiveDataInString(bodyString);
       debugPrint('│   $redactedBody');
     }
-    
+
     debugPrint('└─────────────────────────────────────────────────────────');
   }
 
@@ -83,11 +83,11 @@ class LoggingInterceptor {
 
     final endTime = DateTime.now();
     final statusEmoji = _getStatusEmoji(statusCode);
-    
+
     debugPrint('┌─────────────────────────────────────────────────────────');
     debugPrint('│ 📥 RESPONSE: $statusEmoji $statusCode - $method $url');
     debugPrint('│ Time: ${endTime.toIso8601String()}');
-    
+
     if (duration != null) {
       debugPrint('│ Duration: ${duration.inMilliseconds}ms');
       _logPerformanceMetrics(duration);
@@ -97,12 +97,12 @@ class LoggingInterceptor {
       debugPrint('│ Body:');
       final bodyString = _formatBody(responseBody);
       final redactedBody = _redactSensitiveDataInString(bodyString);
-      
+
       // Truncate very long responses
       final truncatedBody = _truncateString(redactedBody, 1000);
       debugPrint('│   $truncatedBody');
     }
-    
+
     debugPrint('└─────────────────────────────────────────────────────────');
   }
 
@@ -123,7 +123,7 @@ class LoggingInterceptor {
     debugPrint('┌─────────────────────────────────────────────────────────');
     debugPrint('│ ❌ ERROR: $method $url');
     debugPrint('│ Error: ${error.toString()}');
-    
+
     if (stackTrace != null) {
       debugPrint('│ Stack Trace:');
       final stackLines = stackTrace.toString().split('\n').take(5);
@@ -131,14 +131,14 @@ class LoggingInterceptor {
         debugPrint('│   $line');
       }
     }
-    
+
     debugPrint('└─────────────────────────────────────────────────────────');
   }
 
   /// Log performance metrics
   void _logPerformanceMetrics(Duration duration) {
     final milliseconds = duration.inMilliseconds;
-    
+
     if (milliseconds > 3000) {
       debugPrint('│ ⚠️  Performance: SLOW (${milliseconds}ms)');
     } else if (milliseconds > 1000) {
@@ -151,10 +151,10 @@ class LoggingInterceptor {
   /// Redact sensitive data from a map
   Map<String, dynamic> _redactSensitiveData(Map<dynamic, dynamic> data) {
     final redacted = <String, dynamic>{};
-    
+
     data.forEach((key, value) {
       final keyString = key.toString().toLowerCase();
-      
+
       if (_sensitiveFields.any((field) => keyString.contains(field))) {
         redacted[key.toString()] = '[REDACTED]';
       } else if (value is Map) {
@@ -170,14 +170,14 @@ class LoggingInterceptor {
         redacted[key.toString()] = value;
       }
     });
-    
+
     return redacted;
   }
 
   /// Redact sensitive data from a string
   String _redactSensitiveDataInString(String data) {
     var redacted = data;
-    
+
     for (final field in _sensitiveFields) {
       // Redact JSON field values
       final pattern = RegExp(
@@ -185,7 +185,7 @@ class LoggingInterceptor {
         caseSensitive: false,
       );
       redacted = redacted.replaceAll(pattern, '"$field":"[REDACTED]"');
-      
+
       // Redact header values
       final headerPattern = RegExp(
         '$field:\\s*[^\\s]+',
@@ -193,7 +193,7 @@ class LoggingInterceptor {
       );
       redacted = redacted.replaceAll(headerPattern, '$field: [REDACTED]');
     }
-    
+
     return redacted;
   }
 
@@ -202,7 +202,7 @@ class LoggingInterceptor {
     if (body == null) {
       return 'null';
     }
-    
+
     if (body is String) {
       try {
         final decoded = jsonDecode(body);
@@ -211,7 +211,7 @@ class LoggingInterceptor {
         return body;
       }
     }
-    
+
     if (body is Map || body is List) {
       try {
         return const JsonEncoder.withIndent('  ').convert(body);
@@ -219,7 +219,7 @@ class LoggingInterceptor {
         return body.toString();
       }
     }
-    
+
     return body.toString();
   }
 
@@ -260,12 +260,13 @@ class LoggingInterceptor {
     debugPrint('┌─────────────────────────────────────────────────────────');
     debugPrint('│ 📦 BULK OPERATION: $operationName');
     debugPrint('│ Items: $count');
-    
+
     if (duration != null) {
       debugPrint('│ Duration: ${duration.inMilliseconds}ms');
-      debugPrint('│ Average: ${(duration.inMilliseconds / count).toStringAsFixed(2)}ms per item');
+      debugPrint(
+          '│ Average: ${(duration.inMilliseconds / count).toStringAsFixed(2)}ms per item');
     }
-    
+
     debugPrint('└─────────────────────────────────────────────────────────');
   }
 }

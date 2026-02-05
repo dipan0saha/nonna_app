@@ -50,13 +50,15 @@ void main() {
 
         expect(result, 'cached-value');
         verify(mockCacheService.get<String>('test-key')).called(1);
-        verifyNever(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')));
+        verifyNever(
+            mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')));
       });
 
       test('fetches and caches data when not in cache', () async {
         when(mockCacheService.get<String>('test-key'))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put('test-key', 'fetched-value', ttlMinutes: null))
+        when(mockCacheService.put('test-key', 'fetched-value',
+                ttlMinutes: null))
             .thenAnswer((_) async => {});
 
         final result = await cacheManager.getOrFetch<String>(
@@ -66,7 +68,9 @@ void main() {
 
         expect(result, 'fetched-value');
         verify(mockCacheService.get<String>('test-key')).called(1);
-        verify(mockCacheService.put('test-key', 'fetched-value', ttlMinutes: null)).called(1);
+        verify(mockCacheService.put('test-key', 'fetched-value',
+                ttlMinutes: null))
+            .called(1);
       });
 
       test('caches data with TTL', () async {
@@ -81,7 +85,9 @@ void main() {
           ttlMinutes: 30,
         );
 
-        verify(mockCacheService.put('test-key', 'fetched-value', ttlMinutes: 30)).called(1);
+        verify(mockCacheService.put('test-key', 'fetched-value',
+                ttlMinutes: 30))
+            .called(1);
       });
 
       test('throws error when fetch function fails', () async {
@@ -100,8 +106,8 @@ void main() {
 
     group('invalidateByPattern', () {
       test('invalidates matching cache entries', () async {
-        when(mockCacheService.getAllKeys())
-            .thenReturn(['baby_123_events', 'baby_123_photos', 'user_456_profile']);
+        when(mockCacheService.getAllKeys()).thenReturn(
+            ['baby_123_events', 'baby_123_photos', 'user_456_profile']);
         when(mockCacheService.delete(any)).thenAnswer((_) async => {});
 
         await cacheManager.invalidateByPattern('baby_123');
@@ -158,8 +164,12 @@ void main() {
 
         await cacheManager.warmCache(loaders);
 
-        verify(mockCacheService.put('key1', 'value1', ttlMinutes: CacheManager.mediumTtl)).called(1);
-        verify(mockCacheService.put('key2', 'value2', ttlMinutes: CacheManager.mediumTtl)).called(1);
+        verify(mockCacheService.put('key1', 'value1',
+                ttlMinutes: CacheManager.mediumTtl))
+            .called(1);
+        verify(mockCacheService.put('key2', 'value2',
+                ttlMinutes: CacheManager.mediumTtl))
+            .called(1);
       });
 
       test('skips already cached entries', () async {
@@ -175,8 +185,11 @@ void main() {
 
         await cacheManager.warmCache(loaders);
 
-        verifyNever(mockCacheService.put('key1', any, ttlMinutes: anyNamed('ttlMinutes')));
-        verify(mockCacheService.put('key2', 'value2', ttlMinutes: CacheManager.mediumTtl)).called(1);
+        verifyNever(mockCacheService.put('key1', any,
+            ttlMinutes: anyNamed('ttlMinutes')));
+        verify(mockCacheService.put('key2', 'value2',
+                ttlMinutes: CacheManager.mediumTtl))
+            .called(1);
       });
     });
 

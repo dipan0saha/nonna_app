@@ -99,11 +99,12 @@ class AuthInterceptor {
     }
 
     try {
-      debugPrint('🔄 Refreshing token (attempt ${retryCount + 1}/$_maxRetries)');
-      
+      debugPrint(
+          '🔄 Refreshing token (attempt ${retryCount + 1}/$_maxRetries)');
+
       // Try to refresh the session
       final response = await _client.auth.refreshSession();
-      
+
       if (response.session == null) {
         debugPrint('❌ Token refresh failed, no session returned');
         await _handleLogout();
@@ -111,21 +112,21 @@ class AuthInterceptor {
       }
 
       debugPrint('✅ Token refreshed successfully');
-      
+
       // Retry the operation with the new token
       final delay = _calculateRetryDelay(retryCount);
       await Future.delayed(delay);
       return await executeWithRetry(operation, retryCount: retryCount + 1);
     } catch (e) {
       debugPrint('❌ Error refreshing token: $e');
-      
+
       // If refresh fails, attempt one more time before logging out
       if (retryCount < _maxRetries - 1) {
         final delay = _calculateRetryDelay(retryCount);
         await Future.delayed(delay);
         return await _handle401Error(operation, retryCount + 1);
       }
-      
+
       await _handleLogout();
       rethrow;
     }

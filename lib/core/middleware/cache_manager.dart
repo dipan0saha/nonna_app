@@ -54,20 +54,20 @@ class CacheManager {
     try {
       // Try to get from cache
       final cachedData = await _cacheService.get<T>(key);
-      
+
       if (cachedData != null) {
         debugPrint('✅ Cache hit for key: $key');
         return cachedData;
       }
 
       debugPrint('⚠️  Cache miss for key: $key, fetching...');
-      
+
       // Fetch new data
       final data = await fetchFunction();
-      
+
       // Cache the data
       await _cacheService.put(key, data, ttlMinutes: ttlMinutes);
-      
+
       return data;
     } catch (e) {
       debugPrint('❌ Error in getOrFetch for key $key: $e');
@@ -81,13 +81,15 @@ class CacheManager {
   Future<void> invalidateByPattern(String pattern) async {
     try {
       final allKeys = _cacheService.getAllKeys();
-      final keysToDelete = allKeys.where((key) => key.contains(pattern)).toList();
-      
+      final keysToDelete =
+          allKeys.where((key) => key.contains(pattern)).toList();
+
       for (final key in keysToDelete) {
         await _cacheService.delete(key);
       }
-      
-      debugPrint('✅ Invalidated ${keysToDelete.length} cache entries matching pattern: $pattern');
+
+      debugPrint(
+          '✅ Invalidated ${keysToDelete.length} cache entries matching pattern: $pattern');
     } catch (e) {
       debugPrint('❌ Error invalidating cache by pattern: $e');
     }
@@ -99,13 +101,15 @@ class CacheManager {
   Future<void> invalidateByPrefix(String prefix) async {
     try {
       final allKeys = _cacheService.getAllKeys();
-      final keysToDelete = allKeys.where((key) => key.startsWith(prefix)).toList();
-      
+      final keysToDelete =
+          allKeys.where((key) => key.startsWith(prefix)).toList();
+
       for (final key in keysToDelete) {
         await _cacheService.delete(key);
       }
-      
-      debugPrint('✅ Invalidated ${keysToDelete.length} cache entries with prefix: $prefix');
+
+      debugPrint(
+          '✅ Invalidated ${keysToDelete.length} cache entries with prefix: $prefix');
     } catch (e) {
       debugPrint('❌ Error invalidating cache by prefix: $e');
     }
@@ -125,36 +129,38 @@ class CacheManager {
   /// Warm cache with frequently accessed data
   ///
   /// [dataLoaders] Map of cache keys to data loading functions
-  Future<void> warmCache(Map<String, Future<dynamic> Function()> dataLoaders) async {
+  Future<void> warmCache(
+      Map<String, Future<dynamic> Function()> dataLoaders) async {
     try {
       debugPrint('🔥 Warming cache with ${dataLoaders.length} items...');
-      
+
       int successCount = 0;
       int failureCount = 0;
-      
+
       for (final entry in dataLoaders.entries) {
         try {
           final key = entry.key;
           final loader = entry.value;
-          
+
           // Check if already cached
           if (await _cacheService.has(key)) {
             debugPrint('⚠️  Key already cached: $key');
             continue;
           }
-          
+
           // Load and cache data
           final data = await loader();
           await _cacheService.put(key, data, ttlMinutes: mediumTtl);
-          
+
           successCount++;
         } catch (e) {
           debugPrint('❌ Error warming cache for key ${entry.key}: $e');
           failureCount++;
         }
       }
-      
-      debugPrint('✅ Cache warming complete: $successCount success, $failureCount failures');
+
+      debugPrint(
+          '✅ Cache warming complete: $successCount success, $failureCount failures');
     } catch (e) {
       debugPrint('❌ Error during cache warming: $e');
     }
@@ -171,7 +177,7 @@ class CacheManager {
     final prefixedLoaders = dataLoaders.map(
       (key, loader) => MapEntry('baby_${babyProfileId}_$key', loader),
     );
-    
+
     await warmCache(prefixedLoaders);
   }
 
@@ -191,8 +197,9 @@ class CacheManager {
   }) async {
     // This is a simplified implementation
     // In production, use WorkManager or similar for background tasks
-    debugPrint('📅 Scheduled background refresh for key: $key every $intervalMinutes minutes');
-    
+    debugPrint(
+        '📅 Scheduled background refresh for key: $key every $intervalMinutes minutes');
+
     // Placeholder for actual implementation
     // TODO: Integrate with WorkManager or platform-specific background task API
   }
@@ -201,12 +208,12 @@ class CacheManager {
   Future<void> syncStaleEntries() async {
     try {
       debugPrint('🔄 Syncing stale cache entries...');
-      
+
       // Clean up expired entries first
       await _cacheService.cleanupExpired();
-      
+
       // TODO: Implement background refresh logic for critical data
-      
+
       debugPrint('✅ Background sync complete');
     } catch (e) {
       debugPrint('❌ Error during background sync: $e');
@@ -220,22 +227,25 @@ class CacheManager {
   /// Apply eviction policy based on cache size
   ///
   /// [maxSizeBytes] Maximum cache size in bytes
-  Future<void> applyEvictionPolicy({int maxSizeBytes = 50 * 1024 * 1024}) async {
+  Future<void> applyEvictionPolicy(
+      {int maxSizeBytes = 50 * 1024 * 1024}) async {
     try {
       final currentSize = await _cacheService.getCacheSize();
-      
+
       if (currentSize <= maxSizeBytes) {
-        debugPrint('✅ Cache size within limits: ${currentSize / 1024 / 1024}MB');
+        debugPrint(
+            '✅ Cache size within limits: ${currentSize / 1024 / 1024}MB');
         return;
       }
-      
-      debugPrint('⚠️  Cache size exceeds limit: ${currentSize / 1024 / 1024}MB / ${maxSizeBytes / 1024 / 1024}MB');
+
+      debugPrint(
+          '⚠️  Cache size exceeds limit: ${currentSize / 1024 / 1024}MB / ${maxSizeBytes / 1024 / 1024}MB');
       debugPrint('🗑️  Applying eviction policy...');
-      
+
       // Simple FIFO eviction: remove oldest entries
       // In production, implement more sophisticated policies
       await _cacheService.cleanupExpired();
-      
+
       debugPrint('✅ Eviction policy applied');
     } catch (e) {
       debugPrint('❌ Error applying eviction policy: $e');
@@ -253,7 +263,7 @@ class CacheManager {
     try {
       final allKeys = _cacheService.getAllKeys();
       final cacheSize = await _cacheService.getCacheSize();
-      
+
       return {
         'total_entries': allKeys.length,
         'cache_size_bytes': cacheSize,
@@ -291,7 +301,8 @@ class CacheManager {
   }
 
   /// Build cache key for tile data
-  static String tileKey(String babyProfileId, String screenName, String tileType) {
+  static String tileKey(
+      String babyProfileId, String screenName, String tileType) {
     return 'baby_${babyProfileId}_screen_${screenName}_tile_$tileType';
   }
 

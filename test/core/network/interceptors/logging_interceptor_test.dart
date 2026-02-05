@@ -13,7 +13,8 @@ void main() {
       test('logs request with method and URL', () {
         // This test verifies the method doesn't throw
         expect(
-          () => loggingInterceptor.logRequest('GET', 'https://api.example.com/users'),
+          () => loggingInterceptor.logRequest(
+              'GET', 'https://api.example.com/users'),
           returnsNormally,
         );
       });
@@ -25,7 +26,9 @@ void main() {
         };
 
         expect(
-          () => loggingInterceptor.logRequest('POST', 'https://api.example.com/data', headers: headers),
+          () => loggingInterceptor.logRequest(
+              'POST', 'https://api.example.com/data',
+              headers: headers),
           returnsNormally,
         );
       });
@@ -34,7 +37,8 @@ void main() {
         final body = {'key': 'value', 'password': 'secret'};
 
         expect(
-          () => loggingInterceptor.logRequest('POST', 'https://api.example.com/data', body: body),
+          () => loggingInterceptor
+              .logRequest('POST', 'https://api.example.com/data', body: body),
           returnsNormally,
         );
       });
@@ -109,7 +113,8 @@ void main() {
         final error = Exception('Test error');
 
         expect(
-          () => loggingInterceptor.logError('GET', 'https://api.example.com/users', error),
+          () => loggingInterceptor.logError(
+              'GET', 'https://api.example.com/users', error),
           returnsNormally,
         );
       });

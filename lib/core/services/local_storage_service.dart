@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Local storage service for managing user preferences and app settings
-/// 
+///
 /// Uses SharedPreferences for general data and FlutterSecureStorage for sensitive data
 class LocalStorageService {
   SharedPreferences? _prefs;
@@ -43,9 +43,9 @@ class LocalStorageService {
           encryptedSharedPreferences: true,
         ),
       );
-      
+
       _isInitialized = true;
-      
+
       debugPrint('✅ LocalStorageService initialized');
     } catch (e) {
       debugPrint('❌ Error initializing LocalStorageService: $e');
@@ -83,7 +83,7 @@ class LocalStorageService {
   // ==========================================
 
   /// Get the saved theme mode
-  /// 
+  ///
   /// Returns 'light', 'dark', or 'system'
   String get themeMode {
     _ensureInitialized();

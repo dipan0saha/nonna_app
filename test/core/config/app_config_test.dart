@@ -279,7 +279,8 @@ void main() {
         AppConfig.isProduction,
       ];
       final trueCount = flagsSet.where((flag) => flag).length;
-      expect(trueCount, 1, reason: 'Exactly one environment flag should be true');
+      expect(trueCount, 1,
+          reason: 'Exactly one environment flag should be true');
     });
 
     test('all URLs are HTTPS', () {
@@ -299,7 +300,8 @@ void main() {
 
     test('handles empty paths in getDeepLinkUrl', () {
       final url = AppConfig.getDeepLinkUrl('');
-      expect(url, equals('${AppConfig.deepLinkScheme}://${AppConfig.deepLinkHost}/'));
+      expect(url,
+          equals('${AppConfig.deepLinkScheme}://${AppConfig.deepLinkHost}/'));
     });
 
     test('handles paths with multiple slashes', () {

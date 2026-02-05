@@ -69,8 +69,7 @@ void main() {
 
     group('consistency', () {
       test('all vote types have unique display names', () {
-        final displayNames =
-            VoteType.values.map((v) => v.displayName).toSet();
+        final displayNames = VoteType.values.map((v) => v.displayName).toSet();
         expect(displayNames.length, VoteType.values.length);
       });
 

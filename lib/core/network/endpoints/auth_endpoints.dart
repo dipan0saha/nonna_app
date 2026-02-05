@@ -81,7 +81,8 @@ class AuthEndpoints {
   // ============================================================
 
   /// Refresh access token
-  static const String refreshToken = '$_authBasePath/token?grant_type=refresh_token';
+  static const String refreshToken =
+      '$_authBasePath/token?grant_type=refresh_token';
 
   /// Get current user
   static const String getCurrentUser = '$_authBasePath/user';
@@ -113,11 +114,12 @@ class AuthEndpoints {
   /// [params] Map of query parameters
   static String buildQueryParams(Map<String, String> params) {
     if (params.isEmpty) return '';
-    
+
     final queryString = params.entries
-        .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .map((e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
         .join('&');
-    
+
     return '?$queryString';
   }
 

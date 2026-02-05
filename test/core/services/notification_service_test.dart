@@ -19,7 +19,8 @@ void main() {
       test('returns default value before initialization', () {
         // This will throw since localStorage is not initialized
         // In a real test, we'd mock LocalStorageService
-        expect(() => NotificationService.instance.areNotificationsEnabled, throwsA(anything));
+        expect(() => NotificationService.instance.areNotificationsEnabled,
+            throwsA(anything));
       });
     });
   });

@@ -22,7 +22,7 @@ class DatabaseException implements Exception {
 }
 
 /// Database service for typed query execution and transaction support
-/// 
+///
 /// Provides query builder wrapper, pagination helpers, and error mapping
 class DatabaseService {
   final SupabaseClient _client = SupabaseClientManager.instance;
@@ -37,7 +37,7 @@ class DatabaseService {
   // ==========================================
 
   /// Select data from a table
-  /// 
+  ///
   /// [table] The table name
   /// [columns] Optional columns to select (default: '*')
   PostgrestFilterBuilder<List<Map<String, dynamic>>> select(
@@ -48,7 +48,7 @@ class DatabaseService {
   }
 
   /// Insert data into a table
-  /// 
+  ///
   /// [table] The table name
   /// [data] The data to insert
   Future<List<Map<String, dynamic>>> insert(
@@ -57,11 +57,8 @@ class DatabaseService {
   ) async {
     return await _authInterceptor.executeWithRetry(() async {
       try {
-        final response = await _client
-            .from(table)
-            .insert(data)
-            .select();
-        
+        final response = await _client.from(table).insert(data).select();
+
         return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
@@ -76,7 +73,7 @@ class DatabaseService {
   }
 
   /// Insert multiple rows into a table
-  /// 
+  ///
   /// [table] The table name
   /// [data] List of data objects to insert
   Future<List<Map<String, dynamic>>> insertMany(
@@ -85,11 +82,8 @@ class DatabaseService {
   ) async {
     return await _authInterceptor.executeWithRetry(() async {
       try {
-        final response = await _client
-            .from(table)
-            .insert(data)
-            .select();
-        
+        final response = await _client.from(table).insert(data).select();
+
         return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
@@ -104,7 +98,7 @@ class DatabaseService {
   }
 
   /// Update data in a table
-  /// 
+  ///
   /// [table] The table name
   /// [data] The data to update
   /// Returns a [PostgrestFilterBuilder] for adding WHERE conditions
@@ -116,7 +110,7 @@ class DatabaseService {
   }
 
   /// Upsert data into a table
-  /// 
+  ///
   /// [table] The table name
   /// [data] The data to upsert
   /// [onConflict] Optional conflict target columns
@@ -130,9 +124,9 @@ class DatabaseService {
         final query = onConflict != null
             ? _client.from(table).upsert(data, onConflict: onConflict)
             : _client.from(table).upsert(data);
-        
+
         final response = await query.select();
-        
+
         return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
@@ -147,7 +141,7 @@ class DatabaseService {
   }
 
   /// Upsert multiple rows into a table
-  /// 
+  ///
   /// [table] The table name
   /// [data] List of data objects to upsert
   /// [onConflict] Optional conflict target columns
@@ -161,9 +155,9 @@ class DatabaseService {
         final query = onConflict != null
             ? _client.from(table).upsert(data, onConflict: onConflict)
             : _client.from(table).upsert(data);
-        
+
         final response = await query.select();
-        
+
         return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
@@ -178,7 +172,7 @@ class DatabaseService {
   }
 
   /// Delete data from a table
-  /// 
+  ///
   /// [table] The table name
   /// Returns a [PostgrestFilterBuilder] for adding WHERE conditions
   PostgrestFilterBuilder<dynamic> delete(String table) {
@@ -190,7 +184,7 @@ class DatabaseService {
   // ==========================================
 
   /// Execute a PostgreSQL function
-  /// 
+  ///
   /// [functionName] The name of the function
   /// [params] Optional parameters
   Future<dynamic> rpc(
@@ -217,7 +211,7 @@ class DatabaseService {
   // ==========================================
 
   /// Get paginated data from a table
-  /// 
+  ///
   /// [table] The table name
   /// [page] The page number (0-indexed)
   /// [pageSize] Number of items per page
@@ -244,12 +238,10 @@ class DatabaseService {
         }
 
         final response = await query.range(from, to);
-        
+
         // Get total count for pagination metadata using the count() method
-        final totalCount = await _client
-            .from(table)
-            .count();
-        
+        final totalCount = await _client.from(table).count();
+
         return PaginatedResult(
           data: response,
           page: page,
@@ -274,7 +266,7 @@ class DatabaseService {
   // ==========================================
 
   /// Begin a transaction (requires PostgreSQL function)
-  /// 
+  ///
   /// Note: Supabase doesn't support explicit transactions via REST API.
   /// Use PostgreSQL functions for complex transactions.
   Future<void> executeTransaction(
@@ -301,7 +293,7 @@ class DatabaseService {
   // ==========================================
 
   /// Perform a batch insert with better error handling
-  /// 
+  ///
   /// [table] The table name
   /// [data] List of data objects
   /// [batchSize] Number of items per batch (default: 100)
@@ -313,12 +305,14 @@ class DatabaseService {
     return await _authInterceptor.executeWithRetry(() async {
       try {
         for (var i = 0; i < data.length; i += batchSize) {
-          final end = (i + batchSize < data.length) ? i + batchSize : data.length;
+          final end =
+              (i + batchSize < data.length) ? i + batchSize : data.length;
           final batch = data.sublist(i, end);
-          
+
           await _client.from(table).insert(batch);
-          
-          debugPrint('✅ Inserted batch ${i ~/ batchSize + 1} (${batch.length} items)');
+
+          debugPrint(
+              '✅ Inserted batch ${i ~/ batchSize + 1} (${batch.length} items)');
         }
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
@@ -337,7 +331,7 @@ class DatabaseService {
   // ==========================================
 
   /// Check if a record exists
-  /// 
+  ///
   /// [table] The table name
   /// [column] The column to check
   /// [value] The value to match
@@ -348,12 +342,9 @@ class DatabaseService {
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
       try {
-        final response = await _client
-            .from(table)
-            .select('id')
-            .eq(column, value)
-            .limit(1);
-        
+        final response =
+            await _client.from(table).select('id').eq(column, value).limit(1);
+
         return (response as List).isNotEmpty;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);
@@ -368,15 +359,13 @@ class DatabaseService {
   }
 
   /// Count records in a table
-  /// 
+  ///
   /// [table] The table name
   Future<int> count(String table) async {
     return await _authInterceptor.executeWithRetry(() async {
       try {
-        final response = await _client
-            .from(table)
-            .count();
-        
+        final response = await _client.from(table).count();
+
         return response;
       } catch (e, stackTrace) {
         final message = ErrorHandler.mapErrorToMessage(e);

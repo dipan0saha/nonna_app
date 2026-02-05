@@ -5,7 +5,7 @@ import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Integration tests for Photos real-time subscriptions
-/// 
+///
 /// Tests subscription lifecycle, data updates, reconnection scenarios,
 /// and performance benchmarks for the photos table
 void main() {
@@ -13,11 +13,11 @@ void main() {
     late RealtimeService realtimeService;
     StreamSubscription<dynamic>? subscription;
     final testTimeout = const Duration(seconds: 30);
-    
+
     setUp(() {
       realtimeService = RealtimeService();
     });
-    
+
     tearDown(() async {
       await subscription?.cancel();
       await realtimeService.dispose();
@@ -29,15 +29,16 @@ void main() {
           table: 'photos',
           channelName: 'test-photos-channel',
         );
-        
+
         expect(stream, isNotNull);
         expect(realtimeService.activeChannelsCount, 1);
-        expect(realtimeService.activeChannelNames, contains('test-photos-channel'));
+        expect(realtimeService.activeChannelNames,
+            contains('test-photos-channel'));
       }, timeout: Timeout(testTimeout));
 
       test('should filter photos by baby_profile_id', () async {
         const testBabyProfileId = 'test-baby-123';
-        
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'test-photos-baby-filter',
@@ -46,7 +47,7 @@ void main() {
             'value': testBabyProfileId,
           },
         );
-        
+
         expect(stream, isNotNull);
         expect(realtimeService.activeChannelsCount, 1);
       }, timeout: Timeout(testTimeout));
@@ -56,28 +57,29 @@ void main() {
           table: 'photos',
           channelName: 'photos-channel-1',
         );
-        
+
         final stream2 = realtimeService.subscribe(
           table: 'photos',
           channelName: 'photos-channel-2',
         );
-        
+
         expect(stream1, isNotNull);
         expect(stream2, isNotNull);
         expect(realtimeService.activeChannelsCount, 2);
       }, timeout: Timeout(testTimeout));
 
-      test('should return existing stream for duplicate channel names', () async {
+      test('should return existing stream for duplicate channel names',
+          () async {
         final stream1 = realtimeService.subscribe(
           table: 'photos',
           channelName: 'duplicate-channel',
         );
-        
+
         final stream2 = realtimeService.subscribe(
           table: 'photos',
           channelName: 'duplicate-channel',
         );
-        
+
         expect(identical(stream1, stream2), isTrue);
         expect(realtimeService.activeChannelsCount, 1);
       }, timeout: Timeout(testTimeout));
@@ -87,11 +89,11 @@ void main() {
           table: 'photos',
           channelName: 'unsubscribe-test',
         );
-        
+
         expect(realtimeService.activeChannelsCount, 1);
-        
+
         await realtimeService.unsubscribe('unsubscribe-test');
-        
+
         expect(realtimeService.activeChannelsCount, 0);
         expect(realtimeService.activeChannelNames, isEmpty);
       }, timeout: Timeout(testTimeout));
@@ -100,19 +102,19 @@ void main() {
     group('Event Handling', () {
       test('should listen for INSERT events', () async {
         final completer = Completer<dynamic>();
-        
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'insert-test',
           event: PostgresChangeEvent.insert,
         );
-        
+
         subscription = stream.listen((data) {
           if (!completer.isCompleted) {
             completer.complete(data);
           }
         });
-        
+
         // Note: In real integration tests, this would trigger an actual insert
         // For now, we're testing the subscription setup
         expect(stream, isNotNull);
@@ -124,7 +126,7 @@ void main() {
           channelName: 'update-test',
           event: PostgresChangeEvent.update,
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
 
@@ -134,7 +136,7 @@ void main() {
           channelName: 'delete-test',
           event: PostgresChangeEvent.delete,
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
 
@@ -143,7 +145,7 @@ void main() {
           table: 'photos',
           channelName: 'all-events-test',
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
     });
@@ -152,15 +154,15 @@ void main() {
       test('should handle rapid successive updates', () async {
         final receivedEvents = <dynamic>[];
         final completer = Completer<void>();
-        
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'batch-test',
         );
-        
+
         subscription = stream.listen((data) {
           receivedEvents.add(data);
-          
+
           // Complete after receiving multiple events or timeout
           if (receivedEvents.length >= 3) {
             if (!completer.isCompleted) {
@@ -168,7 +170,7 @@ void main() {
             }
           }
         });
-        
+
         // Note: In real integration tests, this would trigger multiple rapid updates
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
@@ -180,10 +182,10 @@ void main() {
           table: 'photos',
           channelName: 'reconnect-test',
         );
-        
+
         expect(stream, isNotNull);
         expect(realtimeService.activeChannelsCount, 1);
-        
+
         // Note: In real integration tests, this would simulate a disconnection
         // and verify that the subscription is restored
       }, timeout: Timeout(testTimeout));
@@ -192,22 +194,23 @@ void main() {
     group('Performance Benchmarks', () {
       test('subscription should complete within acceptable latency', () async {
         final stopwatch = Stopwatch()..start();
-        
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'latency-test',
         );
-        
+
         stopwatch.stop();
-        
+
         expect(stream, isNotNull);
         // Subscription setup should be fast (< 2 seconds as per requirements)
         expect(stopwatch.elapsedMilliseconds, lessThan(2000));
       }, timeout: Timeout(testTimeout));
 
-      test('should handle multiple concurrent subscriptions efficiently', () async {
+      test('should handle multiple concurrent subscriptions efficiently',
+          () async {
         final stopwatch = Stopwatch()..start();
-        
+
         // Create 10 concurrent subscriptions
         final streams = <Stream<dynamic>>[];
         for (int i = 0; i < 10; i++) {
@@ -218,9 +221,9 @@ void main() {
             ),
           );
         }
-        
+
         stopwatch.stop();
-        
+
         expect(streams.length, 10);
         expect(realtimeService.activeChannelsCount, 10);
         // All subscriptions should be set up reasonably fast
@@ -229,17 +232,18 @@ void main() {
     });
 
     group('Memory Management', () {
-      test('should not leak memory after multiple subscribe/unsubscribe cycles', () async {
+      test('should not leak memory after multiple subscribe/unsubscribe cycles',
+          () async {
         // Subscribe and unsubscribe multiple times
         for (int i = 0; i < 5; i++) {
           realtimeService.subscribe(
             table: 'photos',
             channelName: 'memory-test-$i',
           );
-          
+
           await realtimeService.unsubscribe('memory-test-$i');
         }
-        
+
         expect(realtimeService.activeChannelsCount, 0);
         expect(realtimeService.activeChannelNames, isEmpty);
       }, timeout: Timeout(testTimeout));
@@ -252,11 +256,11 @@ void main() {
             channelName: 'cleanup-test-$i',
           );
         }
-        
+
         expect(realtimeService.activeChannelsCount, 3);
-        
+
         await realtimeService.dispose();
-        
+
         expect(realtimeService.activeChannelsCount, 0);
       }, timeout: Timeout(testTimeout));
     });

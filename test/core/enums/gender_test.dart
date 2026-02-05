@@ -63,7 +63,8 @@ void main() {
 
       test('display names are capitalized', () {
         for (final gender in Gender.values) {
-          expect(gender.displayName[0], equals(gender.displayName[0].toUpperCase()));
+          expect(gender.displayName[0],
+              equals(gender.displayName[0].toUpperCase()));
         }
       });
     });

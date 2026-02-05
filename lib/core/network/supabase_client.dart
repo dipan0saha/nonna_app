@@ -25,7 +25,7 @@ class SupabaseClientManager {
   static bool get isInitialized => _isInitialized;
 
   /// Initialize the Supabase client
-  /// 
+  ///
   /// Must be called before accessing [instance]
   /// Should be called in main() before runApp()
   static Future<void> initialize() async {

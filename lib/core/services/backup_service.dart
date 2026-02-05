@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'database_service.dart';
 
 /// Service for backing up and restoring user data
-/// 
+///
 /// Provides GDPR-compliant data export, photo backup, and restore functionality
 class BackupService {
   final DatabaseService _databaseService;
@@ -17,7 +17,7 @@ class BackupService {
   // ==========================================
 
   /// Export all user data to JSON format
-  /// 
+  ///
   /// [userId] The user ID to export data for
   /// Returns a JSON string containing all user data
   Future<String> exportUserData(String userId) async {
@@ -62,14 +62,12 @@ class BackupService {
       data['photos'] = photos;
 
       // Comments made by user
-      final photoComments = await _databaseService
-          .select('photo_comments')
-          .eq('user_id', userId);
+      final photoComments =
+          await _databaseService.select('photo_comments').eq('user_id', userId);
       data['photo_comments'] = photoComments;
 
-      final eventComments = await _databaseService
-          .select('event_comments')
-          .eq('user_id', userId);
+      final eventComments =
+          await _databaseService.select('event_comments').eq('user_id', userId);
       data['event_comments'] = eventComments;
 
       // Events created by user
@@ -79,9 +77,8 @@ class BackupService {
       data['events'] = events;
 
       // Event RSVPs
-      final rsvps = await _databaseService
-          .select('event_rsvps')
-          .eq('user_id', userId);
+      final rsvps =
+          await _databaseService.select('event_rsvps').eq('user_id', userId);
       data['event_rsvps'] = rsvps;
 
       // Registry items created by user
@@ -103,15 +100,13 @@ class BackupService {
       data['name_suggestions'] = nameSuggestions;
 
       // Votes
-      final votes = await _databaseService
-          .select('votes')
-          .eq('user_id', userId);
+      final votes =
+          await _databaseService.select('votes').eq('user_id', userId);
       data['votes'] = votes;
 
       // Notifications
-      final notifications = await _databaseService
-          .select('notifications')
-          .eq('user_id', userId);
+      final notifications =
+          await _databaseService.select('notifications').eq('user_id', userId);
       data['notifications'] = notifications;
 
       // Photo tags
@@ -121,9 +116,8 @@ class BackupService {
       data['photo_tags'] = photoTags;
 
       // Photo squishes
-      final photoSquishes = await _databaseService
-          .select('photo_squishes')
-          .eq('user_id', userId);
+      final photoSquishes =
+          await _databaseService.select('photo_squishes').eq('user_id', userId);
       data['photo_squishes'] = photoSquishes;
 
       // Invitations sent
@@ -143,15 +137,16 @@ class BackupService {
               .select('invitations', columns: 'invitee_email')
               .eq('accepted_by_user_id', userId)
               .limit(1);
-          
+
           if (acceptedInvitations.isNotEmpty) {
             userEmail = acceptedInvitations[0]['invitee_email'] as String?;
           }
         } catch (e) {
-          debugPrint('⚠️ Could not determine user email for received invitations: $e');
+          debugPrint(
+              '⚠️ Could not determine user email for received invitations: $e');
         }
       }
-      
+
       // Query invitations by email if we have it
       if (userEmail != null && userEmail.isNotEmpty) {
         final invitationsReceived = await _databaseService
@@ -181,7 +176,7 @@ class BackupService {
   // ==========================================
 
   /// Backup photos to Supabase Storage
-  /// 
+  ///
   /// [userId] The user ID to backup photos for
   /// [babyProfileId] Optional baby profile ID to backup photos for
   /// Returns list of backed up photo paths
@@ -231,7 +226,7 @@ class BackupService {
   // ==========================================
 
   /// Restore user data from backup
-  /// 
+  ///
   /// [userId] The user ID to restore data for
   /// [backupData] JSON string containing backup data
   Future<void> restoreFromBackup(String userId, String backupData) async {
@@ -246,17 +241,17 @@ class BackupService {
       // Note: Actual restore logic would need to be carefully implemented
       // to avoid conflicts and maintain data integrity.
       // This is a simplified version that demonstrates the concept.
-      
+
       debugPrint('✅ Backup data validated for user $userId');
-      debugPrint('⚠️ Restore functionality requires careful implementation to maintain data integrity');
-      
+      debugPrint(
+          '⚠️ Restore functionality requires careful implementation to maintain data integrity');
+
       // In a real implementation, you would:
       // 1. Start a transaction
       // 2. Restore each table's data carefully
       // 3. Handle conflicts (e.g., existing data)
       // 4. Maintain referential integrity
       // 5. Commit or rollback based on success
-      
     } catch (e) {
       debugPrint('❌ Error restoring from backup: $e');
       rethrow;

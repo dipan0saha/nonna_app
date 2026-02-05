@@ -111,7 +111,8 @@ void main() {
           startDate: laterDate,
           endDate: earlierDate,
         );
-        expect(params.validate(), contains('End date must be after start date'));
+        expect(
+            params.validate(), contains('End date must be after start date'));
       });
 
       test('returns error for negative limit', () {

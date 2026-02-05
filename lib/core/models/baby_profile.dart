@@ -101,7 +101,8 @@ class BabyProfile {
     }
     if (actualBirthDate != null &&
         expectedBirthDate != null &&
-        actualBirthDate!.isBefore(expectedBirthDate!.subtract(const Duration(days: 90)))) {
+        actualBirthDate!
+            .isBefore(expectedBirthDate!.subtract(const Duration(days: 90)))) {
       return 'Actual birth date cannot be more than 90 days before expected date';
     }
     if (actualBirthDate != null && actualBirthDate!.isAfter(DateTime.now())) {
@@ -132,7 +133,8 @@ class BabyProfile {
     return BabyProfile(
       id: id ?? this.id,
       name: name ?? this.name,
-      defaultLastNameSource: defaultLastNameSource ?? this.defaultLastNameSource,
+      defaultLastNameSource:
+          defaultLastNameSource ?? this.defaultLastNameSource,
       profilePhotoUrl: profilePhotoUrl ?? this.profilePhotoUrl,
       expectedBirthDate: expectedBirthDate ?? this.expectedBirthDate,
       actualBirthDate: actualBirthDate ?? this.actualBirthDate,

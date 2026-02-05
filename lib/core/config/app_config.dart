@@ -23,7 +23,7 @@ class AppConfig {
     // This can be configured via build flavors or environment variables
     // For now, default to production
     const String env = String.fromEnvironment('ENV', defaultValue: 'prod');
-    
+
     switch (env.toLowerCase()) {
       case 'dev':
       case 'development':
@@ -99,8 +99,8 @@ class AppConfig {
 
   /// Enable beta features
   static bool get betaFeaturesEnabled {
-    return environment == AppEnvironment.development || 
-           environment == AppEnvironment.staging;
+    return environment == AppEnvironment.development ||
+        environment == AppEnvironment.staging;
   }
 
   // ============================================================
@@ -152,10 +152,12 @@ class AppConfig {
   static const String defaultShareMessage = 'Check this out on Nonna! 👶';
 
   /// App Store URL (iOS)
-  static const String appStoreUrl = 'https://apps.apple.com/app/nonna/id123456789';
+  static const String appStoreUrl =
+      'https://apps.apple.com/app/nonna/id123456789';
 
   /// Play Store URL (Android)
-  static const String playStoreUrl = 'https://play.google.com/store/apps/details?id=com.nonna.app';
+  static const String playStoreUrl =
+      'https://play.google.com/store/apps/details?id=com.nonna.app';
 
   /// Share referral tracking enabled
   static bool get shareReferralTracking {

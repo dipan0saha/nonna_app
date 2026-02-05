@@ -30,7 +30,10 @@ void main() {
       });
 
       test('clearFieldError removes error from field', () {
-        final errors = <String, String?>{'email': 'Invalid email', 'name': 'Required'};
+        final errors = <String, String?>{
+          'email': 'Invalid email',
+          'name': 'Required'
+        };
 
         validator.clearFieldError(errors, 'email');
 
@@ -53,7 +56,10 @@ void main() {
       test('hasErrors checks if any field has error', () {
         final emptyErrors = <String, String?>{};
         final errorsWithNull = <String, String?>{'email': null, 'name': null};
-        final errorsWithValues = <String, String?>{'email': 'Invalid', 'name': null};
+        final errorsWithValues = <String, String?>{
+          'email': 'Invalid',
+          'name': null
+        };
 
         expect(validator.hasErrors(emptyErrors), false);
         expect(validator.hasErrors(errorsWithNull), false);
@@ -484,7 +490,10 @@ void main() {
           'email': (value) => validator.validateEmail(value),
         };
 
-        final errors = <String, String?>{'email': 'Old error', 'name': 'Another error'};
+        final errors = <String, String?>{
+          'email': 'Old error',
+          'name': 'Another error'
+        };
 
         validator.validateForm(values, validators, errors);
 

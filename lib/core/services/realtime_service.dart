@@ -7,24 +7,21 @@ import '../constants/supabase_tables.dart';
 import '../network/supabase_client.dart';
 
 /// Real-time service for managing Supabase real-time subscriptions
-/// 
+///
 /// Provides role/baby-scoped channels, connection management,
 /// reconnection logic, and batched updates with <2 second latency
 class RealtimeService {
   final SupabaseClient _client = SupabaseClientManager.instance;
   final Map<String, RealtimeChannel> _channels = {};
   final Map<String, StreamController<dynamic>> _streamControllers = {};
-  
+
   bool _isConnected = false;
-  StreamSubscription<SocketStates>? _connectionStatusSubscription;
 
   /// Check if realtime is connected
   bool get isConnected => _isConnected;
 
-  /// Get connection status stream
-  Stream<SocketStates> get connectionStatusStream {
-    return _client.realtime.connState;
-  }
+  /// Get current connection status
+  SocketStates? get connectionStatus => _client.realtime.connState;
 
   // ==========================================
   // Initialization & Lifecycle
@@ -33,18 +30,15 @@ class RealtimeService {
   /// Initialize the realtime service
   Future<void> initialize() async {
     try {
-      // Monitor connection status
-      _connectionStatusSubscription = connectionStatusStream.listen((status) {
-        _isConnected = status == SocketStates.joined;
-        debugPrint('📡 Realtime connection status: $status');
-        
-        if (status == SocketStates.joined) {
-          debugPrint('✅ Realtime connected');
-        } else if (status == SocketStates.closed) {
-          debugPrint('⚠️  Realtime connection closed');
-          _handleDisconnection();
-        }
-      });
+      // Check initial connection status
+      _isConnected = connectionStatus == SocketStates.open;
+      debugPrint('📡 Realtime initial status: $connectionStatus');
+
+      if (_isConnected) {
+        debugPrint('✅ Realtime connected');
+      } else {
+        debugPrint('⚠️  Realtime not connected');
+      }
 
       debugPrint('✅ RealtimeService initialized');
     } catch (e) {
@@ -56,21 +50,19 @@ class RealtimeService {
   /// Dispose the realtime service
   Future<void> dispose() async {
     try {
-      await _connectionStatusSubscription?.cancel();
-      
       // Unsubscribe from all channels
       for (final channel in _channels.values) {
         await _client.removeChannel(channel);
       }
-      
+
       // Close all stream controllers
       for (final controller in _streamControllers.values) {
         await controller.close();
       }
-      
+
       _channels.clear();
       _streamControllers.clear();
-      
+
       debugPrint('✅ RealtimeService disposed');
     } catch (e) {
       debugPrint('❌ Error disposing RealtimeService: $e');
@@ -82,7 +74,7 @@ class RealtimeService {
   // ==========================================
 
   /// Subscribe to a table with filters
-  /// 
+  ///
   /// [table] The table name
   /// [channelName] Unique channel name
   /// [filter] Optional filter with column and value (e.g., {'column': 'baby_profile_id', 'value': '123'})
@@ -96,7 +88,8 @@ class RealtimeService {
     try {
       // Check if channel already exists
       if (_channels.containsKey(channelName)) {
-        debugPrint('⚠️  Channel $channelName already exists, returning existing stream');
+        debugPrint(
+            '⚠️  Channel $channelName already exists, returning existing stream');
         return _streamControllers[channelName]!.stream;
       }
 
@@ -128,7 +121,8 @@ class RealtimeService {
         table: table,
         filter: changeFilter,
         callback: (payload) {
-          debugPrint('📨 Received realtime event for $table: ${payload.eventType}');
+          debugPrint(
+              '📨 Received realtime event for $table: ${payload.eventType}');
           controller.add(payload);
         },
       );
@@ -153,7 +147,7 @@ class RealtimeService {
   }
 
   /// Unsubscribe from a channel
-  /// 
+  ///
   /// [channelName] The channel name
   Future<void> unsubscribe(String channelName) async {
     try {
@@ -246,6 +240,7 @@ class RealtimeService {
   // ==========================================
 
   /// Handle disconnection
+  // ignore: unused_element
   void _handleDisconnection() {
     // Reconnection is handled automatically by Supabase
     // We just log the event here
@@ -257,14 +252,14 @@ class RealtimeService {
     try {
       // Remove and resubscribe to all channels
       final channelNames = List<String>.from(_channels.keys);
-      
+
       for (final channelName in channelNames) {
         final channel = _channels[channelName];
         if (channel != null) {
           await _client.removeChannel(channel);
         }
       }
-      
+
       _channels.clear();
 
       debugPrint('✅ Reconnected to realtime');

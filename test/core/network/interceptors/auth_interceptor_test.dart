@@ -17,7 +17,7 @@ void main() {
     mockAuth = MockGoTrueClient();
     when(mockClient.auth).thenReturn(mockAuth);
     when(mockClient.headers).thenReturn({'apikey': 'test-api-key'});
-    
+
     authInterceptor = AuthInterceptor(mockClient);
   });
 
@@ -46,7 +46,8 @@ void main() {
     group('hasValidSession', () {
       test('returns true for valid session', () {
         final mockSession = MockSession();
-        final futureTime = (DateTime.now().millisecondsSinceEpoch ~/ 1000) + 3600;
+        final futureTime =
+            (DateTime.now().millisecondsSinceEpoch ~/ 1000) + 3600;
         when(mockSession.expiresAt).thenReturn(futureTime);
         when(mockAuth.currentSession).thenReturn(mockSession);
 

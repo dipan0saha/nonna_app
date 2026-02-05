@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../network/supabase_client.dart';
 
 /// Wrapper service for Supabase operations
-/// 
+///
 /// Provides authenticated client management, connection pooling,
 /// error handling, and RLS policy enforcement
 class SupabaseService {
@@ -25,14 +25,14 @@ class SupabaseService {
   // ==========================================
 
   /// Execute a database query
-  /// 
+  ///
   /// Returns a [PostgrestFilterBuilder] for building queries
   PostgrestQueryBuilder from(String table) {
     return client.from(table);
   }
 
   /// Execute a RPC (Remote Procedure Call)
-  /// 
+  ///
   /// [functionName] The name of the PostgreSQL function
   /// [params] Optional parameters to pass to the function
   Future<dynamic> rpc(
@@ -53,14 +53,14 @@ class SupabaseService {
   // ==========================================
 
   /// Get the Supabase storage client
-  /// 
+  ///
   /// Returns a [SupabaseStorageClient] for interacting with storage buckets.
   SupabaseStorageClient storage() {
     return client.storage;
   }
 
   /// Get a specific bucket
-  /// 
+  ///
   /// [bucketId] The ID of the storage bucket
   StorageFileApi bucket(String bucketId) {
     return client.storage.from(bucketId);
@@ -71,14 +71,14 @@ class SupabaseService {
   // ==========================================
 
   /// Create a realtime channel
-  /// 
+  ///
   /// [channelName] The name of the channel
   RealtimeChannel channel(String channelName) {
     return client.channel(channelName);
   }
 
   /// Remove a realtime channel
-  /// 
+  ///
   /// [channel] The channel to remove
   Future<void> removeChannel(RealtimeChannel channel) async {
     try {
@@ -112,19 +112,17 @@ class SupabaseService {
     }
   }
 
-  /// Get realtime connection status stream
-  Stream<SocketStates> get realtimeStatusStream {
+  /// Get realtime connection status
+  SocketStates? get realtimeStatus {
     return client.realtime.connState;
   }
-
-
 
   // ==========================================
   // Health Check
   // ==========================================
 
   /// Perform a health check on the Supabase connection
-  /// 
+  ///
   /// Returns true if the connection is healthy
   Future<bool> healthCheck() async {
     try {

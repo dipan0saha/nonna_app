@@ -6,7 +6,7 @@ import 'package:path/path.dart' as path;
 import 'backup_service.dart';
 
 /// Handler for GDPR-compliant user data export
-/// 
+///
 /// Generates ZIP files containing all user data and provides download/email functionality
 class DataExportHandler {
   final BackupService _backupService;
@@ -20,7 +20,7 @@ class DataExportHandler {
   // ==========================================
 
   /// Export all user data as a ZIP file
-  /// 
+  ///
   /// [userId] The user ID to export data for
   /// [includePhotos] Whether to include photo backups (default: true)
   /// Returns the path to the generated ZIP file
@@ -54,7 +54,8 @@ class DataExportHandler {
             'total_photos': backedUpPhotos.length,
             'backup_paths': backedUpPhotos,
           };
-          final photosManifestFile = File('${exportDir.path}/photos_manifest.json');
+          final photosManifestFile =
+              File('${exportDir.path}/photos_manifest.json');
           await photosManifestFile.writeAsString(jsonEncode(photosManifest));
         } catch (e) {
           debugPrint('⚠️ Error backing up photos: $e');
@@ -68,7 +69,7 @@ class DataExportHandler {
 
       // Create ZIP archive
       final zipPath = await _createZipArchive(exportDir, tempDir);
-      
+
       debugPrint('✅ Data export completed: $zipPath');
 
       // Clean up temporary directory (keep ZIP file)
@@ -82,7 +83,8 @@ class DataExportHandler {
   }
 
   /// Create ZIP archive from directory
-  Future<String> _createZipArchive(Directory sourceDir, Directory tempDir) async {
+  Future<String> _createZipArchive(
+      Directory sourceDir, Directory tempDir) async {
     try {
       final archive = Archive();
 
@@ -91,7 +93,7 @@ class DataExportHandler {
         if (entity is File) {
           final relativePath = path.relative(entity.path, from: sourceDir.path);
           final fileBytes = await entity.readAsBytes();
-          
+
           archive.addFile(ArchiveFile(
             relativePath,
             fileBytes.length,
@@ -189,7 +191,7 @@ Thank you for using Nonna!
   // ==========================================
 
   /// Email the data export to the user
-  /// 
+  ///
   /// [userId] The user ID
   /// [email] The email address to send to
   /// [zipPath] Path to the ZIP file
@@ -204,10 +206,10 @@ Thank you for using Nonna!
       // 2. Send an email with a download link
       // 3. Set an expiration time for the download
       // 4. Clean up the file after expiration
-      
+
       debugPrint('📧 Would email data export to $email');
       debugPrint('📦 ZIP file: $zipPath');
-      
+
       // For now, we just log the operation
       // Actual implementation would use an email service
     } catch (e) {
@@ -221,7 +223,7 @@ Thank you for using Nonna!
   // ==========================================
 
   /// Generate a secure download link for the export
-  /// 
+  ///
   /// [userId] The user ID
   /// [zipPath] Path to the ZIP file
   /// Returns a secure download URL
@@ -231,9 +233,9 @@ Thank you for using Nonna!
       // 1. Upload the ZIP to temporary storage (e.g., Supabase Storage)
       // 2. Generate a signed URL with expiration
       // 3. Return the URL
-      
+
       debugPrint('🔗 Would generate download link for $zipPath');
-      
+
       // For now, return null to indicate the feature is not yet implemented
       return null;
     } catch (e) {

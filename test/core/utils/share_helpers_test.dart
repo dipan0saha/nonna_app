@@ -356,8 +356,7 @@ void main() {
 
       test('shareLink throws UnimplementedError', () async {
         expect(
-          () async =>
-              await ShareHelpers.shareLink('https://nonna.app/test'),
+          () async => await ShareHelpers.shareLink('https://nonna.app/test'),
           throwsA(isA<UnimplementedError>()),
         );
       });
@@ -372,8 +371,10 @@ void main() {
 
     group('Edge Cases', () {
       test('handles empty strings', () {
-        expect(ShareHelpers.generateProfileLink(''), 'https://nonna.app/profile/');
-        expect(ShareHelpers.generateProfileShareText(''), contains('\'s profile'));
+        expect(
+            ShareHelpers.generateProfileLink(''), 'https://nonna.app/profile/');
+        expect(
+            ShareHelpers.generateProfileShareText(''), contains('\'s profile'));
       });
 
       test('handles very long names', () {

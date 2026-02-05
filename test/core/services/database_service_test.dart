@@ -4,13 +4,12 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 @GenerateMocks([SupabaseClient, PostgrestFilterBuilder])
+// ignore: unused_import
 import 'database_service_test.mocks.dart';
 
 void main() {
   group('DatabaseService', () {
-
-    setUp(() {
-    });
+    setUp(() {});
 
     group('PaginatedResult', () {
       test('hasNextPage returns true when there are more pages', () {

@@ -20,7 +20,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
   GoTrueClient,
   User,
 ], customMocks: [
-  MockSpec<PostgrestFilterBuilder<List<Map<String, dynamic>>>>(as: #MockPostgrestFilterBuilder),
+  MockSpec<PostgrestFilterBuilder<List<Map<String, dynamic>>>>(
+      as: #MockPostgrestFilterBuilder),
 ])
 import 'backup_service_test.mocks.dart';
 
@@ -58,8 +59,15 @@ void main() {
             .thenReturn(mockFilterBuilder);
         when(mockFilterBuilder.eq('user_id', userId))
             .thenReturn(mockFilterBuilder);
+        // Mock maybeSingle to return itself
         when(mockFilterBuilder.maybeSingle())
-            .thenAnswer((_) async => {'user_id': userId, 'display_name': 'Test User'});
+            .thenReturn(mockFilterBuilder as dynamic);
+        // Mock the then() method to handle the future resolution
+        when(mockFilterBuilder.then<Map<String, dynamic>?>(any))
+            .thenAnswer((invocation) {
+          final onValue = invocation.positionalArguments[0] as Function;
+          return onValue({'user_id': userId, 'display_name': 'Test User'});
+        });
 
         when(mockDatabaseService.select('user_stats'))
             .thenReturn(mockFilterBuilder);
@@ -91,8 +99,7 @@ void main() {
         when(mockDatabaseService.select('name_suggestions'))
             .thenReturn(mockFilterBuilder);
 
-        when(mockDatabaseService.select('votes'))
-            .thenReturn(mockFilterBuilder);
+        when(mockDatabaseService.select('votes')).thenReturn(mockFilterBuilder);
 
         when(mockDatabaseService.select('notifications'))
             .thenReturn(mockFilterBuilder);
@@ -109,14 +116,15 @@ void main() {
         // For select calls with eq(), return the filter builder
         // and stub its Future interface to return empty list
         when(mockFilterBuilder.eq(any, any)).thenReturn(mockFilterBuilder);
-        when(mockFilterBuilder.maybeSingle()).thenAnswer((_) async => null);
+        when(mockFilterBuilder.maybeSingle())
+            .thenReturn(mockFilterBuilder as dynamic);
         when(mockFilterBuilder.limit(any)).thenReturn(mockFilterBuilder);
-        
-        // Stub the await on the filter builder itself
-        when(mockFilterBuilder.then<List<Map<String, dynamic>>>(any))
-            .thenAnswer((invocation) async {
-          final onValue = invocation.positionalArguments[0];
-          return onValue(<Map<String, dynamic>>[]);
+
+        // Stub the await on the filter builder itself for null case
+        when(mockFilterBuilder.then<Map<String, dynamic>?>(any))
+            .thenAnswer((invocation) {
+          final onValue = invocation.positionalArguments[0] as Function;
+          return onValue(null);
         });
 
         final result = await backupService.exportUserData(userId);
@@ -148,10 +156,14 @@ void main() {
             .thenReturn(mockFilterBuilder);
         when(mockFilterBuilder.eq('baby_profile_id', any))
             .thenReturn(mockFilterBuilder);
-        when(mockFilterBuilder).thenAnswer((_) async => [
-              {'id': '1', 'storage_path': 'path/to/photo1.jpg'},
-              {'id': '2', 'storage_path': 'path/to/photo2.jpg'},
-            ]);
+        when(mockFilterBuilder.then<List<Map<String, dynamic>>>(any))
+            .thenAnswer((invocation) {
+          final onValue = invocation.positionalArguments[0] as Function;
+          return onValue([
+            {'id': '1', 'storage_path': 'path/to/photo1.jpg'},
+            {'id': '2', 'storage_path': 'path/to/photo2.jpg'},
+          ]);
+        });
 
         final result = await backupService.backupPhotos(userId);
 
@@ -166,7 +178,11 @@ void main() {
             .thenReturn(mockFilterBuilder);
         when(mockFilterBuilder.eq('uploaded_by_user_id', userId))
             .thenReturn(mockFilterBuilder);
-        when(mockFilterBuilder).thenAnswer((_) async => []);
+        when(mockFilterBuilder.then<List<Map<String, dynamic>>>(any))
+            .thenAnswer((invocation) {
+          final onValue = invocation.positionalArguments[0] as Function;
+          return onValue(<Map<String, dynamic>>[]);
+        });
 
         final result = await backupService.backupPhotos(userId);
 

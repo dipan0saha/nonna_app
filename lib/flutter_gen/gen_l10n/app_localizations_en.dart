@@ -1,7 +1,10 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
@@ -98,7 +101,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_generic => 'Something went wrong. Please try again.';
 
   @override
-  String get error_network => 'Network connection error. Please check your internet connection.';
+  String get error_network =>
+      'Network connection error. Please check your internet connection.';
 
   @override
   String get error_timeout => 'Request timed out. Please try again.';
@@ -107,7 +111,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_server => 'Server error. Please try again later.';
 
   @override
-  String get error_unauthorized => 'You are not authorized to perform this action.';
+  String get error_unauthorized =>
+      'You are not authorized to perform this action.';
 
   @override
   String get error_notFound => 'The requested resource was not found.';
@@ -143,7 +148,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get empty_state_recipes_title => 'No Recipes Yet';
 
   @override
-  String get empty_state_recipes_message => 'Start building your recipe collection';
+  String get empty_state_recipes_message =>
+      'Start building your recipe collection';
 
   @override
   String get empty_state_recipes_action => 'Add Recipe';
@@ -152,7 +158,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get empty_state_favorites_title => 'No Favorites';
 
   @override
-  String get empty_state_favorites_message => 'Recipes you favorite will appear here';
+  String get empty_state_favorites_message =>
+      'Recipes you favorite will appear here';
 
   @override
   String get nav_home => 'Home';
@@ -200,7 +207,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auth_already_have_account => 'Already have an account?';
 
   @override
-  String get auth_dont_have_account => "Don't have an account?";
+  String get auth_dont_have_account => 'Don\'t have an account?';
 
   @override
   String get auth_or_continue_with => 'Or continue with';
@@ -267,52 +274,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String plurals_items(int count) {
-    return intl.Intl.plural(
+    String _temp0 = intl.Intl.pluralLogic(
       count,
-      zero: 'No items',
-      one: '1 item',
+      locale: localeName,
       other: '$count items',
-      name: 'plurals_items',
-      desc: 'Plural form for items count',
-      args: <Object>[count],
+      one: '1 item',
+      zero: 'No items',
     );
+    return '$_temp0';
   }
 
   @override
   String plurals_recipes(int count) {
-    return intl.Intl.plural(
+    String _temp0 = intl.Intl.pluralLogic(
       count,
-      zero: 'No recipes',
-      one: '1 recipe',
+      locale: localeName,
       other: '$count recipes',
-      name: 'plurals_recipes',
-      desc: 'Plural form for recipes count',
-      args: <Object>[count],
+      one: '1 recipe',
+      zero: 'No recipes',
     );
+    return '$_temp0';
   }
 
   @override
   String plurals_minutes(int count) {
-    return intl.Intl.plural(
+    String _temp0 = intl.Intl.pluralLogic(
       count,
-      one: '1 minute',
+      locale: localeName,
       other: '$count minutes',
-      name: 'plurals_minutes',
-      desc: 'Plural form for minutes',
-      args: <Object>[count],
+      one: '1 minute',
     );
+    return '$_temp0';
   }
 
   @override
   String plurals_hours(int count) {
-    return intl.Intl.plural(
+    String _temp0 = intl.Intl.pluralLogic(
       count,
-      one: '1 hour',
+      locale: localeName,
       other: '$count hours',
-      name: 'plurals_hours',
-      desc: 'Plural form for hours',
-      args: <Object>[count],
+      one: '1 hour',
     );
+    return '$_temp0';
   }
 
   @override
@@ -340,7 +343,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm_delete_title => 'Delete Item';
 
   @override
-  String get confirm_delete_message => 'Are you sure you want to delete this item? This action cannot be undone.';
+  String get confirm_delete_message =>
+      'Are you sure you want to delete this item? This action cannot be undone.';
 
   @override
   String get confirm_logout_title => 'Log Out';

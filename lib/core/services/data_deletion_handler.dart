@@ -4,7 +4,7 @@ import 'database_service.dart';
 import 'storage_service.dart';
 
 /// Handler for GDPR-compliant data deletion
-/// 
+///
 /// Provides hard delete of user accounts with cascade deletion and anonymization
 class DataDeletionHandler {
   final DatabaseService _databaseService;
@@ -24,7 +24,7 @@ class DataDeletionHandler {
   // ==========================================
 
   /// Delete user account and all associated data
-  /// 
+  ///
   /// [userId] The user ID to delete
   /// [confirmationToken] A token to confirm the deletion request
   /// Returns true if deletion was successful
@@ -37,7 +37,8 @@ class DataDeletionHandler {
 
       // Verify confirmation token if provided
       if (confirmationToken != null) {
-        final isValid = await _verifyConfirmationToken(userId, confirmationToken);
+        final isValid =
+            await _verifyConfirmationToken(userId, confirmationToken);
         if (!isValid) {
           throw Exception('Invalid confirmation token');
         }
@@ -61,7 +62,7 @@ class DataDeletionHandler {
       await _deleteAuthUser(userId);
 
       debugPrint('✅ Account deletion completed for user $userId');
-      
+
       return true;
     } catch (e) {
       debugPrint('❌ Error deleting user account: $e');
@@ -102,15 +103,13 @@ class DataDeletionHandler {
       }
 
       // Soft delete photos in database and scrub sensitive data
-      await _databaseService
-          .update('photos', {
-            'deleted_at': DateTime.now().toIso8601String(),
-            'storage_path': null,
-            'thumbnail_path': null,
-            'caption': null,
-            'tags': null,
-          })
-          .eq('uploaded_by_user_id', userId);
+      await _databaseService.update('photos', {
+        'deleted_at': DateTime.now().toIso8601String(),
+        'storage_path': null,
+        'thumbnail_path': null,
+        'caption': null,
+        'tags': null,
+      }).eq('uploaded_by_user_id', userId);
 
       debugPrint('✅ User photos deleted');
     } catch (e) {
@@ -129,14 +128,10 @@ class DataDeletionHandler {
       debugPrint('🗑️ Deleting user comments...');
 
       // Delete photo comments
-      await _databaseService
-          .delete('photo_comments')
-          .eq('user_id', userId);
+      await _databaseService.delete('photo_comments').eq('user_id', userId);
 
       // Delete event comments
-      await _databaseService
-          .delete('event_comments')
-          .eq('user_id', userId);
+      await _databaseService.delete('event_comments').eq('user_id', userId);
 
       debugPrint('✅ User comments deleted');
     } catch (e) {
@@ -163,25 +158,17 @@ class DataDeletionHandler {
         final eventId = event['id'] as String;
 
         // Delete event RSVPs
-        await _databaseService
-            .delete('event_rsvps')
-            .eq('event_id', eventId);
+        await _databaseService.delete('event_rsvps').eq('event_id', eventId);
 
         // Delete event comments (cascade)
-        await _databaseService
-            .delete('event_comments')
-            .eq('event_id', eventId);
+        await _databaseService.delete('event_comments').eq('event_id', eventId);
       }
 
       // Delete events
-      await _databaseService
-          .delete('events')
-          .eq('created_by_user_id', userId);
+      await _databaseService.delete('events').eq('created_by_user_id', userId);
 
       // Delete user's RSVPs to other events
-      await _databaseService
-          .delete('event_rsvps')
-          .eq('user_id', userId);
+      await _databaseService.delete('event_rsvps').eq('user_id', userId);
 
       debugPrint('✅ User events deleted');
     } catch (e) {
@@ -236,14 +223,10 @@ class DataDeletionHandler {
           .eq('user_id', userId);
 
       // Delete votes
-      await _databaseService
-          .delete('votes')
-          .eq('user_id', userId);
+      await _databaseService.delete('votes').eq('user_id', userId);
 
       // Delete photo squishes
-      await _databaseService
-          .delete('photo_squishes')
-          .eq('user_id', userId);
+      await _databaseService.delete('photo_squishes').eq('user_id', userId);
 
       debugPrint('✅ User votes deleted');
     } catch (e) {
@@ -261,9 +244,7 @@ class DataDeletionHandler {
     try {
       debugPrint('🗑️ Deleting user notifications...');
 
-      await _databaseService
-          .delete('notifications')
-          .eq('user_id', userId);
+      await _databaseService.delete('notifications').eq('user_id', userId);
 
       debugPrint('✅ User notifications deleted');
     } catch (e) {
@@ -282,16 +263,12 @@ class DataDeletionHandler {
       debugPrint('🗑️ Deleting user memberships...');
 
       // Mark memberships as removed
-      await _databaseService
-          .update('baby_memberships', {
-            'removed_at': DateTime.now().toIso8601String(),
-          })
-          .eq('user_id', userId);
+      await _databaseService.update('baby_memberships', {
+        'removed_at': DateTime.now().toIso8601String(),
+      }).eq('user_id', userId);
 
       // Delete photo tags
-      await _databaseService
-          .delete('photo_tags')
-          .eq('tagged_user_id', userId);
+      await _databaseService.delete('photo_tags').eq('tagged_user_id', userId);
 
       debugPrint('✅ User memberships deleted');
     } catch (e) {
@@ -334,14 +311,10 @@ class DataDeletionHandler {
       debugPrint('🗑️ Deleting user profile...');
 
       // Delete user stats
-      await _databaseService
-          .delete('user_stats')
-          .eq('user_id', userId);
+      await _databaseService.delete('user_stats').eq('user_id', userId);
 
       // Delete profile
-      await _databaseService
-          .delete('profiles')
-          .eq('user_id', userId);
+      await _databaseService.delete('profiles').eq('user_id', userId);
 
       debugPrint('✅ User profile deleted');
     } catch (e) {
@@ -362,7 +335,7 @@ class DataDeletionHandler {
       // Anonymize activity events
       // Note: This would update any historical records that need to be kept
       // but should not contain personal information
-      
+
       debugPrint('✅ User records anonymized');
     } catch (e) {
       debugPrint('❌ Error anonymizing user records: $e');
@@ -401,7 +374,8 @@ class DataDeletionHandler {
       } catch (e) {
         // If the edge function doesn't exist yet, log a warning but don't fail
         debugPrint('⚠️ Auth user deletion edge function not available: $e');
-        debugPrint('⚠️ Auth user deletion must be completed manually via Supabase dashboard or admin API');
+        debugPrint(
+            '⚠️ Auth user deletion must be completed manually via Supabase dashboard or admin API');
         // Note: In production, this should throw to prevent partial deletion
       }
     } catch (e) {
@@ -422,10 +396,12 @@ class DataDeletionHandler {
       // 2. Verify it matches the userId
       // 3. Check it hasn't expired
       // 4. Mark it as used to prevent reuse
-      
+
       // For now, return false to require proper implementation
-      debugPrint('⚠️ Token verification not implemented - rejecting deletion request');
-      debugPrint('⚠️ Implement token storage and verification before production use');
+      debugPrint(
+          '⚠️ Token verification not implemented - rejecting deletion request');
+      debugPrint(
+          '⚠️ Implement token storage and verification before production use');
       return false;
     } catch (e) {
       debugPrint('❌ Error verifying confirmation token: $e');
@@ -441,10 +417,10 @@ class DataDeletionHandler {
       // 2. Store it with an expiration time
       // 3. Send it to the user via email
       // 4. Return the token
-      
+
       final token = 'confirmation_${DateTime.now().millisecondsSinceEpoch}';
       debugPrint('📧 Deletion confirmation token: $token');
-      
+
       return token;
     } catch (e) {
       debugPrint('❌ Error requesting deletion confirmation: $e');

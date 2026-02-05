@@ -4,23 +4,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 
 /// Integration tests for comprehensive real-time subscription scenarios
-/// 
+///
 /// Tests multiple table subscriptions, performance benchmarks, and edge cases
 void main() {
   group('Comprehensive Realtime Integration Tests', () {
     late RealtimeService realtimeService;
     final testTimeout = const Duration(seconds: 60);
-    
+
     setUp(() {
       realtimeService = RealtimeService();
     });
-    
+
     tearDown(() async {
       await realtimeService.dispose();
     });
 
     group('Multi-Table Subscriptions', () {
-      test('should handle subscriptions to 15+ tables simultaneously', () async {
+      test('should handle subscriptions to 15+ tables simultaneously',
+          () async {
         final tables = [
           'photos',
           'events',
@@ -38,7 +39,7 @@ void main() {
           'name_suggestion_likes',
           'votes',
         ];
-        
+
         final streams = <Stream<dynamic>>[];
         for (var i = 0; i < tables.length; i++) {
           streams.add(
@@ -48,24 +49,25 @@ void main() {
             ),
           );
         }
-        
+
         expect(streams.length, tables.length);
         expect(realtimeService.activeChannelsCount, tables.length);
       }, timeout: Timeout(testTimeout));
 
-      test('should maintain stable connections for all subscriptions', () async {
+      test('should maintain stable connections for all subscriptions',
+          () async {
         final tables = ['photos', 'events', 'notifications', 'registry_items'];
-        
+
         for (var table in tables) {
           realtimeService.subscribe(
             table: table,
             channelName: '$table-stability-test',
           );
         }
-        
+
         // Wait a bit to ensure connections are stable
         await Future.delayed(const Duration(seconds: 2));
-        
+
         expect(realtimeService.activeChannelsCount, tables.length);
       }, timeout: Timeout(testTimeout));
     });
@@ -73,7 +75,7 @@ void main() {
     group('Performance Benchmarks', () {
       test('should handle high subscription load efficiently', () async {
         final stopwatch = Stopwatch()..start();
-        
+
         // Create 20 subscriptions
         for (var i = 0; i < 20; i++) {
           realtimeService.subscribe(
@@ -81,9 +83,9 @@ void main() {
             channelName: 'perf-test-$i',
           );
         }
-        
+
         stopwatch.stop();
-        
+
         expect(realtimeService.activeChannelsCount, 20);
         // Should complete in reasonable time
         expect(stopwatch.elapsedMilliseconds, lessThan(10000));
@@ -96,17 +98,17 @@ void main() {
           'events',
           'registry_purchases',
         ];
-        
+
         for (var table in criticalTables) {
           final stopwatch = Stopwatch()..start();
-          
+
           realtimeService.subscribe(
             table: table,
             channelName: '$table-latency-test',
           );
-          
+
           stopwatch.stop();
-          
+
           // Each subscription should be fast
           expect(stopwatch.elapsedMilliseconds, lessThan(2000),
               reason: 'Latency for $table exceeded 2 seconds');
@@ -121,14 +123,14 @@ void main() {
           table: 'photos',
           channelName: 'restart-test-1',
         );
-        
+
         realtimeService.subscribe(
           table: 'events',
           channelName: 'restart-test-2',
         );
-        
+
         expect(realtimeService.activeChannelsCount, 2);
-        
+
         // In a real scenario, this would test reconnection after network interruption
       }, timeout: Timeout(testTimeout));
     });
@@ -157,17 +159,18 @@ void main() {
     });
 
     group('Memory Leak Detection', () {
-      test('should not leak memory with repeated subscribe/unsubscribe', () async {
+      test('should not leak memory with repeated subscribe/unsubscribe',
+          () async {
         // Perform 20 subscribe/unsubscribe cycles
         for (var i = 0; i < 20; i++) {
           realtimeService.subscribe(
             table: 'photos',
             channelName: 'leak-test-$i',
           );
-          
+
           await realtimeService.unsubscribe('leak-test-$i');
         }
-        
+
         expect(realtimeService.activeChannelsCount, 0);
       }, timeout: Timeout(testTimeout));
 
@@ -179,11 +182,11 @@ void main() {
             channelName: 'disposal-test-$i',
           );
         }
-        
+
         expect(realtimeService.activeChannelsCount, 15);
-        
+
         await realtimeService.dispose();
-        
+
         expect(realtimeService.activeChannelsCount, 0);
         expect(realtimeService.activeChannelNames, isEmpty);
       }, timeout: Timeout(testTimeout));
@@ -195,9 +198,9 @@ void main() {
           table: 'photos',
           channelName: 'throughput-test',
         );
-        
+
         expect(stream, isNotNull);
-        
+
         // In real scenario, this would test handling of multiple rapid updates
       }, timeout: Timeout(testTimeout));
     });

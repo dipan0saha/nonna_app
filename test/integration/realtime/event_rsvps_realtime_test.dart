@@ -5,19 +5,20 @@ import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Integration tests for Event RSVPs real-time subscriptions
-/// 
+///
 /// Tests RSVP status updates and event attendance tracking
 void main() {
   group('Event RSVPs Realtime Integration Tests', () {
     late RealtimeService realtimeService;
     StreamSubscription<dynamic>? subscription;
-    final testTimeout = const Duration(seconds: 30);
-    
+    const testTimeout = Duration(seconds: 30);
+
     setUp(() {
       realtimeService = RealtimeService();
     });
-    
+
     tearDown(() async {
+      // ignore: dead_code
       await subscription?.cancel();
       await realtimeService.dispose();
     });
@@ -28,14 +29,14 @@ void main() {
           table: 'event_rsvps',
           channelName: 'test-event-rsvps-channel',
         );
-        
+
         expect(stream, isNotNull);
         expect(realtimeService.activeChannelsCount, 1);
       }, timeout: Timeout(testTimeout));
 
       test('should filter RSVPs by event_id', () async {
         const testEventId = 'test-event-123';
-        
+
         final stream = realtimeService.subscribe(
           table: 'event_rsvps',
           channelName: 'test-event-rsvps-event-filter',
@@ -44,7 +45,7 @@ void main() {
             'value': testEventId,
           },
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
     });
@@ -56,7 +57,7 @@ void main() {
           channelName: 'insert-rsvp-test',
           event: PostgresChangeEvent.insert,
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
 
@@ -66,7 +67,7 @@ void main() {
           channelName: 'update-rsvp-test',
           event: PostgresChangeEvent.update,
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
 
@@ -76,7 +77,7 @@ void main() {
           channelName: 'delete-rsvp-test',
           event: PostgresChangeEvent.delete,
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
     });
@@ -87,7 +88,7 @@ void main() {
           table: 'event_rsvps',
           channelName: 'rsvp-count-test',
         );
-        
+
         expect(stream, isNotNull);
       }, timeout: Timeout(testTimeout));
     });

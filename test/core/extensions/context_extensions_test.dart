@@ -20,7 +20,7 @@ void main() {
     group('theme access', () {
       testWidgets('theme returns current theme', (tester) async {
         late ThemeData capturedTheme;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -31,14 +31,14 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedTheme, isNotNull);
         expect(capturedTheme.brightness, Brightness.light);
       });
 
       testWidgets('textTheme returns current text theme', (tester) async {
         late TextTheme capturedTextTheme;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -49,14 +49,14 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedTextTheme, isNotNull);
         expect(capturedTextTheme.bodyLarge, isNotNull);
       });
 
       testWidgets('colorScheme returns current color scheme', (tester) async {
         late ColorScheme capturedColorScheme;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -67,7 +67,7 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedColorScheme, isNotNull);
         expect(capturedColorScheme.primary, isNotNull);
       });
@@ -77,7 +77,7 @@ void main() {
         final customTheme = ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         );
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             theme: customTheme,
@@ -89,14 +89,14 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedColor, isNotNull);
         expect(capturedColor, equals(customTheme.colorScheme.primary));
       });
 
       testWidgets('secondaryColor returns secondary color', (tester) async {
         late Color capturedColor;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -107,13 +107,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedColor, isNotNull);
       });
 
       testWidgets('backgroundColor returns surface color', (tester) async {
         late Color capturedColor;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -124,13 +124,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedColor, isNotNull);
       });
 
       testWidgets('errorColor returns error color', (tester) async {
         late Color capturedColor;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -141,13 +141,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedColor, isNotNull);
       });
 
       testWidgets('isDarkMode returns false for light theme', (tester) async {
         late bool isDark;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             theme: ThemeData.light(),
@@ -159,13 +159,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isDark, false);
       });
 
       testWidgets('isDarkMode returns true for dark theme', (tester) async {
         late bool isDark;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             theme: ThemeData.dark(),
@@ -177,13 +177,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isDark, true);
       });
 
       testWidgets('isLightMode returns true for light theme', (tester) async {
         late bool isLight;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             theme: ThemeData.light(),
@@ -195,13 +195,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isLight, true);
       });
 
       testWidgets('isLightMode returns false for dark theme', (tester) async {
         late bool isLight;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             theme: ThemeData.dark(),
@@ -213,7 +213,7 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isLight, false);
       });
     });
@@ -221,7 +221,7 @@ void main() {
     group('MediaQuery shortcuts', () {
       testWidgets('screenSize returns screen dimensions', (tester) async {
         late Size capturedSize;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -232,7 +232,7 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedSize, isNotNull);
         expect(capturedSize.width, greaterThan(0));
         expect(capturedSize.height, greaterThan(0));
@@ -240,7 +240,7 @@ void main() {
 
       testWidgets('screenWidth returns width', (tester) async {
         late double capturedWidth;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -251,13 +251,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedWidth, greaterThan(0));
       });
 
       testWidgets('screenHeight returns height', (tester) async {
         late double capturedHeight;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -268,13 +268,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedHeight, greaterThan(0));
       });
 
       testWidgets('devicePixelRatio returns ratio', (tester) async {
         late double capturedRatio;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -285,13 +285,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedRatio, greaterThan(0));
       });
 
       testWidgets('textScaleFactor returns scale factor', (tester) async {
         late double capturedScale;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -302,13 +302,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedScale, greaterThan(0));
       });
 
       testWidgets('orientation returns current orientation', (tester) async {
         late Orientation capturedOrientation;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -319,17 +319,17 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedOrientation, isNotNull);
       });
 
       testWidgets('isPortrait returns correct value', (tester) async {
         late bool isPortrait;
-        
+
         // Set portrait orientation
         tester.view.physicalSize = const Size(400, 800);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -340,19 +340,19 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isPortrait, true);
-        
+
         addTearDown(tester.view.reset);
       });
 
       testWidgets('isLandscape returns correct value', (tester) async {
         late bool isLandscape;
-        
+
         // Set landscape orientation
         tester.view.physicalSize = const Size(800, 400);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -363,15 +363,15 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isLandscape, true);
-        
+
         addTearDown(tester.view.reset);
       });
 
       testWidgets('padding returns safe area padding', (tester) async {
         late EdgeInsets capturedPadding;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -382,13 +382,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedPadding, isNotNull);
       });
 
       testWidgets('viewInsets returns keyboard insets', (tester) async {
         late EdgeInsets capturedInsets;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -399,13 +399,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedInsets, isNotNull);
       });
 
       testWidgets('viewPadding returns view padding', (tester) async {
         late EdgeInsets capturedPadding;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -416,13 +416,14 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedPadding, isNotNull);
       });
 
-      testWidgets('isKeyboardVisible returns false when no keyboard', (tester) async {
+      testWidgets('isKeyboardVisible returns false when no keyboard',
+          (tester) async {
         late bool isVisible;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -433,15 +434,16 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isVisible, false);
       });
 
-      testWidgets('isKeyboardVisible returns true with keyboard', (tester) async {
+      testWidgets('isKeyboardVisible returns true with keyboard',
+          (tester) async {
         late bool isVisible;
-        
-        tester.view.viewInsets = const FakeViewPadding(bottom: 300);
-        
+
+        tester.view.viewInsets = FakeViewPadding(bottom: 300);
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -452,9 +454,9 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isVisible, true);
-        
+
         addTearDown(tester.view.reset);
       });
     });
@@ -462,7 +464,7 @@ void main() {
     group('Navigator shortcuts', () {
       testWidgets('navigator returns NavigatorState', (tester) async {
         late NavigatorState capturedNavigator;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -473,13 +475,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedNavigator, isNotNull);
       });
 
       testWidgets('canPop returns correct value', (tester) async {
         late bool canPopValue;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -490,7 +492,7 @@ void main() {
             ),
           ),
         );
-        
+
         expect(canPopValue, false); // Root route cannot pop
       });
 
@@ -513,10 +515,10 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.tap(find.text('Push'));
         await tester.pumpAndSettle();
-        
+
         expect(find.text('New Page'), findsOneWidget);
       });
 
@@ -538,10 +540,10 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.tap(find.text('Push Named'));
         await tester.pumpAndSettle();
-        
+
         expect(find.text('Test Route'), findsOneWidget);
       });
 
@@ -567,13 +569,13 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.tap(find.text('Push'));
         await tester.pumpAndSettle();
-        
+
         await tester.tap(find.text('Pop'));
         await tester.pumpAndSettle();
-        
+
         expect(find.text('Pop'), findsNothing);
       });
     });
@@ -594,10 +596,10 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.tap(find.text('Show'));
         await tester.pump();
-        
+
         expect(find.text('Test message'), findsOneWidget);
       });
 
@@ -616,14 +618,15 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.tap(find.text('Show Error'));
         await tester.pump();
-        
+
         expect(find.text('Error message'), findsOneWidget);
       });
 
-      testWidgets('showSuccessSnackBar displays success snackbar', (tester) async {
+      testWidgets('showSuccessSnackBar displays success snackbar',
+          (tester) async {
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -638,10 +641,10 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.tap(find.text('Show Success'));
         await tester.pump();
-        
+
         expect(find.text('Success message'), findsOneWidget);
       });
     });
@@ -649,7 +652,7 @@ void main() {
     group('Focus shortcuts', () {
       testWidgets('unfocus dismisses keyboard', (tester) async {
         final focusNode = FocusNode();
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -667,23 +670,23 @@ void main() {
             ),
           ),
         );
-        
+
         focusNode.requestFocus();
         await tester.pump();
-        
+
         expect(focusNode.hasFocus, true);
-        
+
         await tester.tap(find.text('Unfocus'));
         await tester.pump();
-        
+
         expect(focusNode.hasFocus, false);
-        
+
         focusNode.dispose();
       });
 
       testWidgets('requestFocus focuses a node', (tester) async {
         final focusNode = FocusNode();
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -701,14 +704,14 @@ void main() {
             ),
           ),
         );
-        
+
         expect(focusNode.hasFocus, false);
-        
+
         await tester.tap(find.text('Focus'));
         await tester.pump();
-        
+
         expect(focusNode.hasFocus, true);
-        
+
         focusNode.dispose();
       });
     });
@@ -733,10 +736,10 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.tap(find.text('Show Dialog'));
         await tester.pumpAndSettle();
-        
+
         expect(find.text('Test Dialog'), findsOneWidget);
       });
 
@@ -760,10 +763,10 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.tap(find.text('Show Alert'));
         await tester.pumpAndSettle();
-        
+
         expect(find.text('Alert Title'), findsOneWidget);
         expect(find.text('Alert Message'), findsOneWidget);
         expect(find.text('OK'), findsOneWidget);
@@ -774,10 +777,10 @@ void main() {
     group('Responsive helpers', () {
       testWidgets('isMobile returns true for narrow screens', (tester) async {
         late bool isMobileValue;
-        
+
         tester.view.physicalSize = const Size(400, 800);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -788,18 +791,18 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isMobileValue, true);
-        
+
         addTearDown(tester.view.reset);
       });
 
       testWidgets('isTablet returns true for medium screens', (tester) async {
         late bool isTabletValue;
-        
+
         tester.view.physicalSize = const Size(700, 1000);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -810,18 +813,18 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isTabletValue, true);
-        
+
         addTearDown(tester.view.reset);
       });
 
       testWidgets('isDesktop returns true for wide screens', (tester) async {
         late bool isDesktopValue;
-        
+
         tester.view.physicalSize = const Size(1200, 800);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -832,18 +835,19 @@ void main() {
             ),
           ),
         );
-        
+
         expect(isDesktopValue, true);
-        
+
         addTearDown(tester.view.reset);
       });
 
-      testWidgets('responsive returns correct value for mobile', (tester) async {
+      testWidgets('responsive returns correct value for mobile',
+          (tester) async {
         late String result;
-        
+
         tester.view.physicalSize = const Size(400, 800);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -858,18 +862,19 @@ void main() {
             ),
           ),
         );
-        
+
         expect(result, 'Mobile');
-        
+
         addTearDown(tester.view.reset);
       });
 
-      testWidgets('responsive returns correct value for tablet', (tester) async {
+      testWidgets('responsive returns correct value for tablet',
+          (tester) async {
         late String result;
-        
+
         tester.view.physicalSize = const Size(700, 1000);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -884,18 +889,19 @@ void main() {
             ),
           ),
         );
-        
+
         expect(result, 'Tablet');
-        
+
         addTearDown(tester.view.reset);
       });
 
-      testWidgets('responsive returns correct value for desktop', (tester) async {
+      testWidgets('responsive returns correct value for desktop',
+          (tester) async {
         late String result;
-        
+
         tester.view.physicalSize = const Size(1200, 800);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -910,18 +916,19 @@ void main() {
             ),
           ),
         );
-        
+
         expect(result, 'Desktop');
-        
+
         addTearDown(tester.view.reset);
       });
 
-      testWidgets('responsive falls back to mobile when tablet not specified', (tester) async {
+      testWidgets('responsive falls back to mobile when tablet not specified',
+          (tester) async {
         late String result;
-        
+
         tester.view.physicalSize = const Size(700, 1000);
         tester.view.devicePixelRatio = 1.0;
-        
+
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
@@ -935,9 +942,9 @@ void main() {
             ),
           ),
         );
-        
+
         expect(result, 'Mobile');
-        
+
         addTearDown(tester.view.reset);
       });
     });
@@ -945,7 +952,7 @@ void main() {
     group('Localization shortcuts', () {
       testWidgets('locale returns current locale', (tester) async {
         late Locale capturedLocale;
-        
+
         await tester.pumpWidget(
           MaterialApp(
             locale: const Locale('en', 'US'),
@@ -957,13 +964,13 @@ void main() {
             ),
           ),
         );
-        
+
         expect(capturedLocale.languageCode, 'en');
       });
 
       testWidgets('languageCode returns language code', (tester) async {
         late String languageCode;
-        
+
         await tester.pumpWidget(
           MaterialApp(
             locale: const Locale('es', 'ES'),
@@ -975,31 +982,9 @@ void main() {
             ),
           ),
         );
-        
+
         expect(languageCode, 'es');
       });
     });
   });
-}
-
-// Helper class for testing view insets
-class FakeViewPadding implements ViewPadding {
-  const FakeViewPadding({
-    this.left = 0.0,
-    this.top = 0.0,
-    this.right = 0.0,
-    this.bottom = 0.0,
-  });
-
-  @override
-  final double left;
-
-  @override
-  final double top;
-
-  @override
-  final double right;
-
-  @override
-  final double bottom;
 }

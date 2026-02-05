@@ -30,9 +30,8 @@ class RlsValidator {
   /// [enabled] Whether to enable validation
   void setEnabled(bool enabled) {
     _isEnabled = enabled && kDebugMode;
-    debugPrint(_isEnabled 
-        ? '✅ RLS Validator enabled' 
-        : '⚠️  RLS Validator disabled');
+    debugPrint(
+        _isEnabled ? '✅ RLS Validator enabled' : '⚠️  RLS Validator disabled');
   }
 
   /// Check if validator is enabled
@@ -140,11 +139,12 @@ class RlsValidator {
     if (!_isEnabled) return true;
 
     try {
-      debugPrint('🔍 Validating baby profile access: user=$userId, operation=$operation');
+      debugPrint(
+          '🔍 Validating baby profile access: user=$userId, operation=$operation');
 
       // Get user's role for the baby profile
       final role = await _getUserRole(userId, babyProfileId);
-      
+
       if (role == null) {
         debugPrint('❌ User has no role for baby profile: $babyProfileId');
         _logAccessDenial(userId, babyProfileId, operation, 'No membership');
@@ -159,7 +159,8 @@ class RlsValidator {
       );
 
       if (!hasAccess) {
-        _logAccessDenial(userId, babyProfileId, operation, 'Insufficient permissions');
+        _logAccessDenial(
+            userId, babyProfileId, operation, 'Insufficient permissions');
       }
 
       return hasAccess;
@@ -221,12 +222,13 @@ class RlsValidator {
   }) async {
     if (!_isEnabled) return true;
 
-    debugPrint('🔍 Validating table access: table=$tableName, operation=$operation');
+    debugPrint(
+        '🔍 Validating table access: table=$tableName, operation=$operation');
 
     // Validate based on table RLS policies
     // This is a simplified simulation
     final currentUser = _client.auth.currentUser;
-    
+
     if (currentUser == null || currentUser.id != userId) {
       debugPrint('❌ User not authenticated or mismatch');
       _logAccessDenial(userId, tableName, operation, 'Authentication mismatch');
@@ -254,7 +256,7 @@ class RlsValidator {
     String reason,
   ) {
     final timestamp = DateTime.now().toIso8601String();
-    
+
     debugPrint('┌─────────────────────────────────────────────────────────');
     debugPrint('│ 🚫 ACCESS DENIED');
     debugPrint('│ Time: $timestamp');

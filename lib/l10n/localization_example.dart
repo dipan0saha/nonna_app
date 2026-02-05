@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../core/widgets/custom_button.dart';
 import '../core/widgets/empty_state.dart';
 import '../core/widgets/error_view.dart';

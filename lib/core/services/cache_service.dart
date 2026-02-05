@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/owner_update_marker.dart';
 
 /// Cache service for local data caching using Hive
-/// 
+///
 /// Provides cache expiration (TTL), cache invalidation via owner_update_markers,
 /// offline data access, and background sync
 class CacheService {
@@ -24,7 +24,7 @@ class CacheService {
   // ==========================================
 
   /// Initialize the cache service
-  /// 
+  ///
   /// Must be called before using the service
   Future<void> initialize() async {
     if (_isInitialized) {
@@ -34,12 +34,12 @@ class CacheService {
 
     try {
       await Hive.initFlutter();
-      
+
       _cacheBox = await Hive.openBox(_cacheBoxName);
       _metadataBox = await Hive.openBox<Map>(_metadataBoxName);
-      
+
       _isInitialized = true;
-      
+
       debugPrint('✅ CacheService initialized');
     } catch (e) {
       debugPrint('❌ Error initializing CacheService: $e');
@@ -52,11 +52,11 @@ class CacheService {
     try {
       await _cacheBox?.close();
       await _metadataBox?.close();
-      
+
       _cacheBox = null;
       _metadataBox = null;
       _isInitialized = false;
-      
+
       debugPrint('✅ CacheService disposed');
     } catch (e) {
       debugPrint('❌ Error disposing CacheService: $e');
@@ -68,7 +68,7 @@ class CacheService {
   // ==========================================
 
   /// Save data to cache
-  /// 
+  ///
   /// [key] Cache key
   /// [data] Data to cache
   /// [ttlMinutes] Time-to-live in minutes (null = no expiration)
@@ -81,15 +81,15 @@ class CacheService {
 
     try {
       await _cacheBox!.put(key, data);
-      
+
       // Store metadata
       final metadata = <String, dynamic>{
         _timestampKey: DateTime.now().millisecondsSinceEpoch,
         if (ttlMinutes != null) 'ttl_minutes': ttlMinutes,
       };
-      
+
       await _metadataBox!.put(key, metadata);
-      
+
       debugPrint('✅ Cached data for key: $key');
     } catch (e) {
       debugPrint('❌ Error caching data for key $key: $e');
@@ -98,7 +98,7 @@ class CacheService {
   }
 
   /// Get data from cache
-  /// 
+  ///
   /// [key] Cache key
   /// Returns cached data or null if not found or expired
   Future<T?> get<T>(String key) async {
@@ -125,7 +125,7 @@ class CacheService {
   }
 
   /// Delete data from cache
-  /// 
+  ///
   /// [key] Cache key
   Future<void> delete(String key) async {
     _ensureInitialized();
@@ -133,7 +133,7 @@ class CacheService {
     try {
       await _cacheBox!.delete(key);
       await _metadataBox!.delete(key);
-      
+
       debugPrint('✅ Deleted cache for key: $key');
     } catch (e) {
       debugPrint('❌ Error deleting cache for key $key: $e');
@@ -147,7 +147,7 @@ class CacheService {
     try {
       await _cacheBox!.clear();
       await _metadataBox!.clear();
-      
+
       debugPrint('✅ Cleared all cache');
     } catch (e) {
       debugPrint('❌ Error clearing cache: $e');
@@ -155,7 +155,7 @@ class CacheService {
   }
 
   /// Check if cache key exists and is not expired
-  /// 
+  ///
   /// [key] Cache key
   Future<bool> has(String key) async {
     _ensureInitialized();
@@ -182,7 +182,7 @@ class CacheService {
   // ==========================================
 
   /// Invalidate cache based on owner update marker
-  /// 
+  ///
   /// [babyProfileId] Baby profile ID
   /// [ownerUpdateMarker] Latest owner update marker
   Future<void> invalidateByOwnerUpdate(
@@ -203,7 +203,8 @@ class CacheService {
           if (metadata != null) {
             final cachedTimestamp = metadata[_timestampKey] as int?;
             if (cachedTimestamp != null) {
-              final cachedDate = DateTime.fromMillisecondsSinceEpoch(cachedTimestamp);
+              final cachedDate =
+                  DateTime.fromMillisecondsSinceEpoch(cachedTimestamp);
               if (cachedDate.isBefore(ownerUpdateMarker.tilesLastUpdatedAt)) {
                 keysToDelete.add(key.toString());
               }
@@ -217,14 +218,15 @@ class CacheService {
         await delete(key);
       }
 
-      debugPrint('✅ Invalidated ${keysToDelete.length} cache entries for baby profile $babyProfileId');
+      debugPrint(
+          '✅ Invalidated ${keysToDelete.length} cache entries for baby profile $babyProfileId');
     } catch (e) {
       debugPrint('❌ Error invalidating cache: $e');
     }
   }
 
   /// Invalidate all cache for a baby profile
-  /// 
+  ///
   /// [babyProfileId] Baby profile ID
   Future<void> invalidateByBabyProfile(String babyProfileId) async {
     _ensureInitialized();
@@ -243,7 +245,8 @@ class CacheService {
         await delete(key);
       }
 
-      debugPrint('✅ Invalidated ${keysToDelete.length} cache entries for baby profile $babyProfileId');
+      debugPrint(
+          '✅ Invalidated ${keysToDelete.length} cache entries for baby profile $babyProfileId');
     } catch (e) {
       debugPrint('❌ Error invalidating cache for baby profile: $e');
     }
@@ -320,7 +323,8 @@ class CacheService {
   /// Ensure the service is initialized
   void _ensureInitialized() {
     if (!_isInitialized) {
-      throw StateError('CacheService not initialized. Call initialize() first.');
+      throw StateError(
+          'CacheService not initialized. Call initialize() first.');
     }
   }
 }

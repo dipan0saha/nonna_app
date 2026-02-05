@@ -116,10 +116,19 @@ class TileDefinition {
     return id.hashCode ^
         tileType.hashCode ^
         description.hashCode ^
-        (schemaParams != null ? Object.hashAll(schemaParams!.entries) : 0) ^
+        _mapHashCode(schemaParams) ^
         isActive.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode;
+  }
+
+  /// Helper method to compute hashCode for a map in a consistent way
+  int _mapHashCode<K, V>(Map<K, V>? map) {
+    if (map == null) return 0;
+    // Sort keys to ensure consistent hash regardless of entry order
+    final sortedKeys = map.keys.toList()
+      ..sort((a, b) => a.toString().compareTo(b.toString()));
+    return Object.hashAll(sortedKeys.map((key) => Object.hash(key, map[key])));
   }
 
   @override

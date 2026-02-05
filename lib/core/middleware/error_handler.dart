@@ -43,14 +43,14 @@ class ErrorHandler {
   /// Returns a formatted error message
   static String handleError(Object error, {StackTrace? stackTrace}) {
     debugPrint('❌ ErrorHandler: ${error.toString()}');
-    
+
     if (stackTrace != null && kDebugMode) {
       debugPrint('Stack trace: ${stackTrace.toString()}');
     }
 
     // Map error to user-friendly message
     final message = mapErrorToMessage(error);
-    
+
     // Report to monitoring service in production
     if (kReleaseMode) {
       _reportError(error, stackTrace);
@@ -106,8 +106,8 @@ class ErrorHandler {
       return 'Too many attempts. Please try again later.';
     }
 
-    return error.message.isNotEmpty 
-        ? error.message 
+    return error.message.isNotEmpty
+        ? error.message
         : 'Authentication failed. Please try again.';
   }
 
@@ -182,11 +182,11 @@ class ErrorHandler {
   /// Handle unknown errors
   static String _handleUnknownError(Object error) {
     debugPrint('⚠️  Unknown error type: ${error.runtimeType}');
-    
+
     if (kDebugMode) {
       return 'Error: ${error.toString()}';
     }
-    
+
     return 'Something went wrong. Please try again.';
   }
 
@@ -202,11 +202,11 @@ class ErrorHandler {
     if (error is PostgrestException) {
       // Retry on timeout or temporary server errors
       final message = error.message.toLowerCase();
-      return message.contains('timeout') || 
-             message.contains('temporary') ||
-             message.contains('unavailable');
+      return message.contains('timeout') ||
+          message.contains('temporary') ||
+          message.contains('unavailable');
     }
-    
+
     if (error is AuthException) {
       // Retry on token refresh errors
       return error.statusCode == '401';
@@ -241,10 +241,10 @@ class ErrorHandler {
         hint: 'Error reported by ErrorHandler',
       );
     }
-    
+
     debugPrint('📊 Reporting error to monitoring service');
     debugPrint('Error: ${error.toString()}');
-    
+
     if (stackTrace != null) {
       debugPrint('Stack trace: ${stackTrace.toString()}');
     }
@@ -256,20 +256,20 @@ class ErrorHandler {
   /// [context] Additional context information
   /// [stackTrace] Optional stack trace
   static void reportWithContext(
-    Object error, 
+    Object error,
     Map<String, dynamic> context, {
     StackTrace? stackTrace,
   }) {
     if (kReleaseMode) {
       debugPrint('📊 Reporting error with context: $context');
-      
+
       // Set context in ObservabilityService before reporting
       if (ObservabilityService.isInitialized) {
         for (final entry in context.entries) {
           ObservabilityService.setContext(entry.key, entry.value);
         }
       }
-      
+
       _reportError(error, stackTrace);
     }
   }
@@ -301,7 +301,7 @@ class ErrorHandler {
     } else if (error.toString().toLowerCase().contains('network')) {
       return networkError;
     }
-    
+
     return unknownError;
   }
 }

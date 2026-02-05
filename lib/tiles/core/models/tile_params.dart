@@ -122,7 +122,16 @@ class TileParams {
         endDate.hashCode ^
         limit.hashCode ^
         offset.hashCode ^
-        (customParams != null ? Object.hashAll(customParams!.entries) : 0);
+        _mapHashCode(customParams);
+  }
+
+  /// Helper method to compute hashCode for a map in a consistent way
+  int _mapHashCode<K, V>(Map<K, V>? map) {
+    if (map == null) return 0;
+    // Sort keys to ensure consistent hash regardless of entry order
+    final sortedKeys = map.keys.toList()
+      ..sort((a, b) => a.toString().compareTo(b.toString()));
+    return Object.hashAll(sortedKeys.map((key) => Object.hash(key, map[key])));
   }
 
   @override

@@ -123,8 +123,7 @@ class Invitation {
   bool get isExpired => DateTime.now().isAfter(expiresAt);
 
   /// Checks if the invitation is still actionable
-  bool get canBeAccepted =>
-      status == InvitationStatus.pending && !isExpired;
+  bool get canBeAccepted => status == InvitationStatus.pending && !isExpired;
 
   /// Creates a copy of this Invitation with the specified fields replaced
   Invitation copyWith({

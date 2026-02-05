@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 /// Observability service for crash reporting and error logging
-/// 
+///
 /// Uses Sentry for crash reporting, error logging, performance monitoring,
 /// custom breadcrumbs, user context, and release tracking
 class ObservabilityService {
@@ -17,7 +17,7 @@ class ObservabilityService {
   // ==========================================
 
   /// Initialize Sentry
-  /// 
+  ///
   /// [dsn] Sentry DSN (Data Source Name)
   /// [environment] Environment name (e.g., 'development', 'production')
   /// [tracesSampleRate] Percentage of transactions to trace (0.0 - 1.0)
@@ -39,27 +39,27 @@ class ObservabilityService {
           options.dsn = dsn;
           options.environment = environment;
           options.tracesSampleRate = tracesSampleRate;
-          
+
           // Enable performance monitoring
           options.enableAutoPerformanceTracing = true;
-          
+
           // Attach stack traces to all messages
           options.attachStacktrace = true;
-          
+
           // Send default PII (Personally Identifiable Information)
           options.sendDefaultPii = false;
-          
+
           // Debug mode only in development
           options.debug = kDebugMode;
-          
+
           // Release version - should match pubspec.yaml version
           // TODO: Extract from pubspec.yaml or pass as parameter
           options.release = 'nonna_app@1.0.0';
-          
+
           // Distribution identifier - should be based on build environment
           // TODO: Extract from environment or build configuration
           options.dist = '1';
-          
+
           // Before send callback for filtering events
           options.beforeSend = (event, hint) => _beforeSend(event, hint: hint);
         },
@@ -79,7 +79,7 @@ class ObservabilityService {
   // ==========================================
 
   /// Capture an exception
-  /// 
+  ///
   /// [exception] The exception to capture
   /// [stackTrace] Optional stack trace
   /// [hint] Optional hint with additional context
@@ -99,7 +99,7 @@ class ObservabilityService {
         stackTrace: stackTrace,
         hint: hint != null ? Hint.withMap({'hint': hint}) : null,
       );
-      
+
       debugPrint('📊 Exception captured: $exception');
     } catch (e) {
       debugPrint('❌ Error capturing exception: $e');
@@ -107,7 +107,7 @@ class ObservabilityService {
   }
 
   /// Capture a message
-  /// 
+  ///
   /// [message] The message to capture
   /// [level] Severity level
   static Future<void> captureMessage(
@@ -132,9 +132,9 @@ class ObservabilityService {
   // ==========================================
 
   /// Add a breadcrumb
-  /// 
+  ///
   /// Breadcrumbs are trail of events that led to an error
-  /// 
+  ///
   /// [message] Breadcrumb message
   /// [category] Breadcrumb category (e.g., 'navigation', 'http', 'user')
   /// [level] Severity level
@@ -207,7 +207,7 @@ class ObservabilityService {
   // ==========================================
 
   /// Set user context
-  /// 
+  ///
   /// [userId] User ID
   /// [email] User email
   /// [username] Username
@@ -231,7 +231,7 @@ class ObservabilityService {
           ),
         );
       });
-      
+
       debugPrint('✅ User context set: $userId');
     } catch (e) {
       debugPrint('❌ Error setting user context: $e');
@@ -246,7 +246,7 @@ class ObservabilityService {
       await Sentry.configureScope((scope) {
         scope.setUser(null);
       });
-      
+
       debugPrint('✅ User context cleared');
     } catch (e) {
       debugPrint('❌ Error clearing user context: $e');
@@ -258,7 +258,7 @@ class ObservabilityService {
   // ==========================================
 
   /// Set custom context
-  /// 
+  ///
   /// [key] Context key
   /// [value] Context value
   static Future<void> setContext(String key, dynamic value) async {
@@ -291,9 +291,9 @@ class ObservabilityService {
   // ==========================================
 
   /// Set a tag
-  /// 
+  ///
   /// Tags are key-value pairs for filtering and grouping
-  /// 
+  ///
   /// [key] Tag key
   /// [value] Tag value
   static Future<void> setTag(String key, String value) async {
@@ -326,7 +326,7 @@ class ObservabilityService {
   // ==========================================
 
   /// Start a transaction for performance monitoring
-  /// 
+  ///
   /// [name] Transaction name
   /// [operation] Operation name
   static ISentrySpan? startTransaction({
@@ -345,7 +345,7 @@ class ObservabilityService {
   }
 
   /// Start a child span within a transaction
-  /// 
+  ///
   /// [transaction] Parent transaction
   /// [operation] Operation name
   /// [description] Optional description

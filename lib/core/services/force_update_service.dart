@@ -3,7 +3,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'database_service.dart';
 
 /// Service for managing force update mechanism
-/// 
+///
 /// Checks app version against minimum required version from Supabase
 /// and determines if the user needs to update the app
 class ForceUpdateService {
@@ -13,7 +13,8 @@ class ForceUpdateService {
     DatabaseService? databaseService,
   }) : _databaseService = databaseService ?? DatabaseService() {
     if (databaseService == null) {
-      debugPrint('⚠️  ForceUpdateService: Creating new DatabaseService instance. Consider using dependency injection.');
+      debugPrint(
+          '⚠️  ForceUpdateService: Creating new DatabaseService instance. Consider using dependency injection.');
     }
   }
 
@@ -22,7 +23,7 @@ class ForceUpdateService {
   // ==========================================
 
   /// Check if app needs to be updated
-  /// 
+  ///
   /// Returns true if the current app version is below the minimum required version
   Future<bool> needsUpdate() async {
     try {
@@ -56,7 +57,7 @@ class ForceUpdateService {
         // Unsupported platform, skip version check
         return null;
       }
-      
+
       final response = await _databaseService
           .select('app_versions', columns: 'minimum_version, platform')
           .eq('platform', platform)
@@ -75,7 +76,7 @@ class ForceUpdateService {
     if (kIsWeb) {
       return 'web';
     }
-    
+
     // Handle native platforms
     if (defaultTargetPlatform == TargetPlatform.android) {
       return 'android';
@@ -88,7 +89,7 @@ class ForceUpdateService {
     } else if (defaultTargetPlatform == TargetPlatform.linux) {
       return 'linux';
     }
-    
+
     // Return null for unsupported platforms to skip version check
     return null;
   }
@@ -98,7 +99,7 @@ class ForceUpdateService {
   // ==========================================
 
   /// Compare two semantic version strings
-  /// 
+  ///
   /// Returns true if [current] is less than [minimum]
   bool _isVersionLessThan(String current, String minimum) {
     try {
@@ -142,7 +143,7 @@ class ForceUpdateService {
       if (platform == null) {
         return null;
       }
-      
+
       final response = await _databaseService
           .select('app_versions', columns: 'store_url, platform')
           .eq('platform', platform)
@@ -160,7 +161,7 @@ class ForceUpdateService {
   // ==========================================
 
   /// Check if force update should be bypassed for development
-  /// 
+  ///
   /// Returns true in debug mode to allow testing without updates
   bool shouldBypassForDevelopment() {
     return kDebugMode;
@@ -196,20 +197,21 @@ class ForceUpdateService {
           storeUrl: null,
         );
       }
-      
+
       final currentVersion = await _getCurrentAppVersion();
-      
+
       // Fetch app_versions row once
       final response = await _databaseService
-          .select('app_versions', columns: 'minimum_version, store_url, platform')
+          .select('app_versions',
+              columns: 'minimum_version, store_url, platform')
           .eq('platform', platform)
           .single();
-      
+
       final minVersion = response['minimum_version'] as String?;
       final storeUrl = response['store_url'] as String?;
-      
+
       // Calculate needsUpdate from the fetched data
-      final needsUpdateFlag = minVersion != null 
+      final needsUpdateFlag = minVersion != null
           ? _isVersionLessThan(currentVersion, minVersion)
           : false;
 

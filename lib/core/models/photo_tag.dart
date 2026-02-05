@@ -84,10 +84,7 @@ class PhotoTag {
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        photoId.hashCode ^
-        tag.hashCode ^
-        createdAt.hashCode;
+    return id.hashCode ^ photoId.hashCode ^ tag.hashCode ^ createdAt.hashCode;
   }
 
   @override

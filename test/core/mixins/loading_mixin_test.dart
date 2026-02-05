@@ -197,7 +197,8 @@ void main() {
 
       expect(state.isLoadingFor('test_op'), false);
 
-      final future = state.withLoadingFor('test_op', () => state.asyncOperation());
+      final future =
+          state.withLoadingFor('test_op', () => state.asyncOperation());
       await tester.pump();
 
       expect(state.isLoadingFor('test_op'), true);
@@ -216,13 +217,15 @@ void main() {
       await tester.pumpWidget(const TestWidget());
       state = tester.state(find.byType(TestWidget));
 
-      final future1 = state.withLoadingFor('test_op', () => state.asyncOperation());
+      final future1 =
+          state.withLoadingFor('test_op', () => state.asyncOperation());
       await tester.pump();
 
       expect(state.isLoadingFor('test_op'), true);
 
       // Try to execute with same key
-      final future2 = state.withLoadingFor('test_op', () => state.asyncOperation());
+      final future2 =
+          state.withLoadingFor('test_op', () => state.asyncOperation());
 
       expect(await future2, null);
       expect(await future1, 'success');
