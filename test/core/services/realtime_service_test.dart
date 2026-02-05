@@ -1,12 +1,32 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
+import 'package:nonna_app/core/network/supabase_client.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() {
   group('RealtimeService', () {
     late RealtimeService realtimeService;
 
-    setUp(() {
+    setUp(() async {
+      // Initialize Supabase for testing
+      try {
+        await Supabase.initialize(
+          url: 'https://test.supabase.co',
+          anonKey: 'test-anon-key',
+        );
+      } catch (e) {
+        // Already initialized, ignore
+      }
+
       realtimeService = RealtimeService();
+    });
+
+    tearDown(() async {
+      try {
+        await realtimeService.dispose();
+      } catch (e) {
+        // Ignore disposal errors in tests
+      }
     });
 
     group('isConnected', () {

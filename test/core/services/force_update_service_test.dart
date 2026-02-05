@@ -9,6 +9,9 @@ import 'package:nonna_app/core/services/force_update_service.dart';
 import 'force_update_service_test.mocks.dart';
 
 void main() {
+  // Initialize Flutter test bindings
+  TestWidgetsFlutterBinding.ensureInitialized();
+  
   group('ForceUpdateService', () {
     late ForceUpdateService forceUpdateService;
     late MockDatabaseService mockDatabaseService;
