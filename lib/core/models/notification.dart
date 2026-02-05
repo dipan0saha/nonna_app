@@ -126,26 +126,30 @@ class Notification {
   Notification copyWith({
     String? id,
     String? recipientUserId,
-    String? babyProfileId,
+    Object? babyProfileId = _undefined,
     NotificationType? type,
     String? title,
     String? body,
-    Map<String, dynamic>? payload,
-    DateTime? readAt,
+    Object? payload = _undefined,
+    Object? readAt = _undefined,
     DateTime? createdAt,
   }) {
     return Notification(
       id: id ?? this.id,
       recipientUserId: recipientUserId ?? this.recipientUserId,
-      babyProfileId: babyProfileId ?? this.babyProfileId,
+      babyProfileId: babyProfileId == _undefined ? this.babyProfileId : babyProfileId as String?,
       type: type ?? this.type,
       title: title ?? this.title,
       body: body ?? this.body,
-      payload: payload ?? this.payload,
-      readAt: readAt ?? this.readAt,
+      payload: payload == _undefined ? this.payload : payload as Map<String, dynamic>?,
+      readAt: readAt == _undefined ? this.readAt : readAt as DateTime?,
       createdAt: createdAt ?? this.createdAt,
     );
   }
+
+  // Sentinel value for detecting unset optional parameters
+  static const _undefined = Object();
+
 
   @override
   bool operator ==(Object other) {

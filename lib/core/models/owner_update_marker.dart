@@ -93,7 +93,7 @@ class OwnerUpdateMarker {
     String? babyProfileId,
     DateTime? tilesLastUpdatedAt,
     String? updatedByUserId,
-    String? reason,
+    Object? reason = _undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -102,11 +102,15 @@ class OwnerUpdateMarker {
       babyProfileId: babyProfileId ?? this.babyProfileId,
       tilesLastUpdatedAt: tilesLastUpdatedAt ?? this.tilesLastUpdatedAt,
       updatedByUserId: updatedByUserId ?? this.updatedByUserId,
-      reason: reason ?? this.reason,
+      reason: reason == _undefined ? this.reason : reason as String?,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  // Sentinel value for detecting unset optional parameters
+  static const _undefined = Object();
+
 
   @override
   bool operator ==(Object other) {
