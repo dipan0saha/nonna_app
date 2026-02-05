@@ -23,3 +23,46 @@ git push
 ```bash
 git status && git add . && git commit --no-verify -m "Misc changes" && git push
 ```
+
+
+# Running Unit Tests
+
+To run Flutter unit tests by groups in the nonna_app project, you can organize them by directories (based on the test structure) or use tags if tests are annotated. Here are suggestions:
+
+## By Directory Groups
+
+Run tests in specific subdirectories under `test/`:
+
+- **Core tests:** `flutter test test/core/`
+- **Tiles tests:** `flutter test test/tiles/`
+- **Accessibility tests:** `flutter test test/accessibility/`
+- **L10n tests:** `flutter test test/l10n/`
+- **Integration tests** (separate from unit tests): `flutter test integration_test/`
+- **Single file** (e.g., project initialization): `flutter test test/project_initialization_test.dart`
+
+## By Tags (if available)
+
+If tests use `@Tags` annotations (e.g., `@Tags(['unit', 'core'])`), run groups like:
+
+- `flutter test --tags unit`
+- `flutter test --tags core`
+
+## Additional Options
+
+- **Run with coverage:** Add `--coverage` to any command.
+- **Run in verbose mode:** Add `--verbose`.
+- **Run in parallel** (faster): Add `--concurrency=4` (adjust number as needed).
+
+## To sub-divide even more:
+- flutter test test/core/config/
+- flutter test test/core/constants/ 10
+- flutter test test/core/enums/ 3
+- flutter test test/core/extensions/ 5
+- flutter test test/core/middleware/
+- flutter test test/core/mixins/
+- flutter test test/core/models/ 8
+- flutter test test/core/network/ 4
+- flutter test test/core/services/ 11
+- flutter test test/core/themes/
+- flutter test test/core/utils/ 12
+- flutter test test/core/widgets/

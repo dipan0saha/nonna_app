@@ -134,7 +134,7 @@ class TileConfig {
         role.hashCode ^
         displayOrder.hashCode ^
         isVisible.hashCode ^
-        (params != null ? Object.hashAll(params!.entries) : 0) ^
+        _mapHashCode(params) ^
         createdAt.hashCode ^
         updatedAt.hashCode;
   }
@@ -153,5 +153,18 @@ class TileConfig {
       if (!b.containsKey(key) || a[key] != b[key]) return false;
     }
     return true;
+  }
+
+  /// Helper method to compute stable hash code for maps
+  int _mapHashCode<K, V>(Map<K, V>? map) {
+    if (map == null) return 0;
+    // Sort keys to ensure stable hash
+    final sortedKeys = map.keys.toList()
+      ..sort((a, b) => a.toString().compareTo(b.toString()));
+    int hash = 0;
+    for (final key in sortedKeys) {
+      hash ^= key.hashCode ^ map[key].hashCode;
+    }
+    return hash;
   }
 }

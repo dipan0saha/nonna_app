@@ -88,7 +88,12 @@ extension DateTimeExtensions on DateTime {
       newYear--;
     }
 
-    return DateTime(newYear, newMonth, day, hour, minute, second, millisecond);
+    // Handle day overflow (e.g., Jan 31 -> Feb 28 or Feb 29 -> Feb 28 in non-leap years)
+    int maxDaysInMonth = DateTime(newYear, newMonth + 1, 0).day;
+    int newDay = day > maxDaysInMonth ? maxDaysInMonth : day;
+
+    return DateTime(
+        newYear, newMonth, newDay, hour, minute, second, millisecond);
   }
 
   /// Subtract months from this date

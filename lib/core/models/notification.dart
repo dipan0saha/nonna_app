@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import '../enums/notification_type.dart';
 
 /// Notification model representing a notification in the Nonna app
@@ -137,11 +138,17 @@ class Notification {
     return Notification(
       id: id ?? this.id,
       recipientUserId: recipientUserId ?? this.recipientUserId,
-      babyProfileId: babyProfileId == _undefined ? this.babyProfileId : babyProfileId as String?,
+      babyProfileId: babyProfileId == _undefined
+          ? this.babyProfileId
+          : babyProfileId as String?,
       type: type ?? this.type,
       title: title ?? this.title,
       body: body ?? this.body,
-      payload: payload == _undefined ? this.payload : payload as Map<String, dynamic>?,
+      payload: payload == _undefined
+          ? this.payload
+          : (payload == null
+              ? null
+              : Map<String, dynamic>.from(payload as Map)),
       readAt: readAt == _undefined ? this.readAt : readAt as DateTime?,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -149,7 +156,6 @@ class Notification {
 
   // Sentinel value for detecting unset optional parameters
   static const _undefined = Object();
-
 
   @override
   bool operator ==(Object other) {

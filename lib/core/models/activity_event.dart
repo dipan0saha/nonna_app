@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import '../enums/activity_event_type.dart';
 
 /// Activity event model representing an activity log entry
@@ -98,14 +99,17 @@ class ActivityEvent {
       babyProfileId: babyProfileId ?? this.babyProfileId,
       actorUserId: actorUserId ?? this.actorUserId,
       type: type ?? this.type,
-      payload: payload == _undefined ? this.payload : payload as Map<String, dynamic>?,
+      payload: payload == _undefined
+          ? this.payload
+          : (payload == null
+              ? null
+              : Map<String, dynamic>.from(payload as Map)),
       createdAt: createdAt ?? this.createdAt,
     );
   }
 
   // Sentinel value for detecting unset optional parameters
   static const _undefined = Object();
-
 
   @override
   bool operator ==(Object other) {

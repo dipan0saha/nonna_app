@@ -271,10 +271,24 @@ extension NumListExtensions on List<num> {
   double get average => isEmpty ? 0 : sum / length;
 
   /// Minimum value
-  num? get min => isEmpty ? null : reduce((a, b) => a < b ? a : b);
+  num? get min {
+    if (isEmpty) return null;
+    num minValue = first;
+    for (final element in this) {
+      if (element < minValue) minValue = element;
+    }
+    return minValue;
+  }
 
   /// Maximum value
-  num? get max => isEmpty ? null : reduce((a, b) => a > b ? a : b);
+  num? get max {
+    if (isEmpty) return null;
+    num maxValue = first;
+    for (final element in this) {
+      if (element > maxValue) maxValue = element;
+    }
+    return maxValue;
+  }
 
   /// Median value
   num? get median {

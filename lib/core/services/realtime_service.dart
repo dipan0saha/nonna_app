@@ -11,11 +11,21 @@ import '../network/supabase_client.dart';
 /// Provides role/baby-scoped channels, connection management,
 /// reconnection logic, and batched updates with <2 second latency
 class RealtimeService {
-  final SupabaseClient _client = SupabaseClientManager.instance;
+  late final SupabaseClient _client;
   final Map<String, RealtimeChannel> _channels = {};
   final Map<String, StreamController<dynamic>> _streamControllers = {};
 
   bool _isConnected = false;
+
+  /// Constructor - initializes client from SupabaseClientManager or fallback to Supabase.instance
+  RealtimeService() {
+    try {
+      _client = SupabaseClientManager.instance;
+    } catch (e) {
+      // Fallback for tests where SupabaseClientManager may not be initialized
+      _client = Supabase.instance.client;
+    }
+  }
 
   /// Check if realtime is connected
   bool get isConnected => _isConnected;

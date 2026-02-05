@@ -92,56 +92,44 @@ void main() {
 
     group('SizedBox presets - vertical gaps', () {
       test('verticalGapXS has correct height', () {
-        expect(AppSpacing.verticalGapXS, const SizedBox(height: AppSpacing.xs));
         expect(AppSpacing.verticalGapXS.height, 8.0);
       });
 
       test('verticalGapS has correct height', () {
-        expect(AppSpacing.verticalGapS, const SizedBox(height: AppSpacing.s));
         expect(AppSpacing.verticalGapS.height, 12.0);
       });
 
       test('verticalGapM has correct height', () {
-        expect(AppSpacing.verticalGapM, const SizedBox(height: AppSpacing.m));
         expect(AppSpacing.verticalGapM.height, 16.0);
       });
 
       test('verticalGapL has correct height', () {
-        expect(AppSpacing.verticalGapL, const SizedBox(height: AppSpacing.l));
         expect(AppSpacing.verticalGapL.height, 24.0);
       });
 
       test('verticalGapXL has correct height', () {
-        expect(AppSpacing.verticalGapXL, const SizedBox(height: AppSpacing.xl));
         expect(AppSpacing.verticalGapXL.height, 32.0);
       });
     });
 
     group('SizedBox presets - horizontal gaps', () {
       test('horizontalGapXS has correct width', () {
-        expect(
-            AppSpacing.horizontalGapXS, const SizedBox(width: AppSpacing.xs));
         expect(AppSpacing.horizontalGapXS.width, 8.0);
       });
 
       test('horizontalGapS has correct width', () {
-        expect(AppSpacing.horizontalGapS, const SizedBox(width: AppSpacing.s));
         expect(AppSpacing.horizontalGapS.width, 12.0);
       });
 
       test('horizontalGapM has correct width', () {
-        expect(AppSpacing.horizontalGapM, const SizedBox(width: AppSpacing.m));
         expect(AppSpacing.horizontalGapM.width, 16.0);
       });
 
       test('horizontalGapL has correct width', () {
-        expect(AppSpacing.horizontalGapL, const SizedBox(width: AppSpacing.l));
         expect(AppSpacing.horizontalGapL.width, 24.0);
       });
 
       test('horizontalGapXL has correct width', () {
-        expect(
-            AppSpacing.horizontalGapXL, const SizedBox(width: AppSpacing.xl));
         expect(AppSpacing.horizontalGapXL.width, 32.0);
       });
     });

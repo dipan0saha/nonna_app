@@ -44,12 +44,12 @@ class DateHelpers {
 
   /// Format time as "3:45 PM"
   static String formatTime(DateTime date) {
-    return DateFormat.jm().format(date);
+    return DateFormat.jm().format(date).replaceAll('\u202F', ' ');
   }
 
   /// Format date and time as "Jan 1, 2024 3:45 PM"
   static String formatDateTime(DateTime date) {
-    return DateFormat.yMMMd().add_jm().format(date);
+    return DateFormat.yMMMd().add_jm().format(date).replaceAll('\u202F', ' ');
   }
 
   /// Format with custom pattern
