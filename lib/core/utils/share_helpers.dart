@@ -198,11 +198,13 @@ Sent from Nonna App
 
   /// Generate invitation code
   static String _generateInvitationCode() {
-    // Generate a random 8-character code
+    // Generate a random 8-character code using timestamp and random component
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final random = DateTime.now().millisecondsSinceEpoch;
+    final random = DateTime.now().microsecondsSinceEpoch;
     final code = List.generate(8, (index) {
-      return chars[(random + index) % chars.length];
+      // Use both timestamp and index to ensure uniqueness
+      final charIndex = ((random ~/ (index + 1)) + index * 7) % chars.length;
+      return chars[charIndex];
     }).join();
     return code;
   }
