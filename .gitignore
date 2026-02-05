@@ -12,6 +12,7 @@
 .swiftpm/
 migrate_working_dir/
 **/*prompt*/
+.NOTES.md
 
 # IntelliJ related
 *.iml
