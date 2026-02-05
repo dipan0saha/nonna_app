@@ -136,7 +136,7 @@ extension ListExtensions<T> on List<T> {
 
   /// Sum of elements using a selector (for numeric types)
   num sumBy(num Function(T) selector) {
-    return fold(0, (sum, item) => sum + selector(item));
+    return fold<num>(0, (sum, item) => sum + selector(item));
   }
 
   /// Average of elements using a selector

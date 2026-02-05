@@ -222,6 +222,9 @@ class ImageHelpers {
 
   /// Calculate aspect ratio
   static double calculateAspectRatio(int width, int height) {
+    if (height == 0) {
+      throw ArgumentError('Height cannot be zero');
+    }
     return width / height;
   }
 

@@ -54,20 +54,14 @@ void main() {
       test('exports user data successfully', () async {
         final userId = 'test-user-id';
 
-        // Mock database responses
+        // Mock database responses - use thenAnswer for Futures
         when(mockDatabaseService.select('profiles'))
             .thenReturn(mockFilterBuilder);
         when(mockFilterBuilder.eq('user_id', userId))
             .thenReturn(mockFilterBuilder);
-        // Mock maybeSingle to return itself
+        // Mock maybeSingle to return a Future directly
         when(mockFilterBuilder.maybeSingle())
-            .thenReturn(mockFilterBuilder as dynamic);
-        // Mock the then() method to handle the future resolution
-        when(mockFilterBuilder.then<Map<String, dynamic>?>(any))
-            .thenAnswer((invocation) {
-          final onValue = invocation.positionalArguments[0] as Function;
-          return onValue({'user_id': userId, 'display_name': 'Test User'});
-        });
+            .thenAnswer((_) async => {'user_id': userId, 'display_name': 'Test User'});
 
         when(mockDatabaseService.select('user_stats'))
             .thenReturn(mockFilterBuilder);
@@ -114,18 +108,11 @@ void main() {
             .thenReturn(mockFilterBuilder);
 
         // For select calls with eq(), return the filter builder
-        // and stub its Future interface to return empty list
+        // and stub its Future to return empty data
         when(mockFilterBuilder.eq(any, any)).thenReturn(mockFilterBuilder);
-        when(mockFilterBuilder.maybeSingle())
-            .thenReturn(mockFilterBuilder as dynamic);
         when(mockFilterBuilder.limit(any)).thenReturn(mockFilterBuilder);
-
-        // Stub the await on the filter builder itself for null case
-        when(mockFilterBuilder.then<Map<String, dynamic>?>(any))
-            .thenAnswer((invocation) {
-          final onValue = invocation.positionalArguments[0] as Function;
-          return onValue(null);
-        });
+        // Default for maybeSingle - return null for other tables
+        when(mockFilterBuilder.maybeSingle()).thenAnswer((_) async => null);
 
         final result = await backupService.exportUserData(userId);
 

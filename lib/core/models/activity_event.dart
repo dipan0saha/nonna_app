@@ -90,7 +90,7 @@ class ActivityEvent {
     String? babyProfileId,
     String? actorUserId,
     ActivityEventType? type,
-    Map<String, dynamic>? payload,
+    Object? payload = _undefined,
     DateTime? createdAt,
   }) {
     return ActivityEvent(
@@ -98,10 +98,14 @@ class ActivityEvent {
       babyProfileId: babyProfileId ?? this.babyProfileId,
       actorUserId: actorUserId ?? this.actorUserId,
       type: type ?? this.type,
-      payload: payload ?? this.payload,
+      payload: payload == _undefined ? this.payload : payload as Map<String, dynamic>?,
       createdAt: createdAt ?? this.createdAt,
     );
   }
+
+  // Sentinel value for detecting unset optional parameters
+  static const _undefined = Object();
+
 
   @override
   bool operator ==(Object other) {

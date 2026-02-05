@@ -71,7 +71,7 @@ enum ActivityEventType {
   /// Create an ActivityEventType from a string
   static ActivityEventType fromJson(String value) {
     return ActivityEventType.values.firstWhere(
-      (type) => type.name == value.toLowerCase(),
+      (type) => type.name.toLowerCase() == value.toLowerCase(),
       orElse: () => ActivityEventType.commentAdded,
     );
   }

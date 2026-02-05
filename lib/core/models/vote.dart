@@ -107,8 +107,8 @@ class Vote {
     String? babyProfileId,
     String? userId,
     VoteType? voteType,
-    String? valueText,
-    DateTime? valueDate,
+    Object? valueText = _undefined,
+    Object? valueDate = _undefined,
     bool? isAnonymous,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -118,13 +118,17 @@ class Vote {
       babyProfileId: babyProfileId ?? this.babyProfileId,
       userId: userId ?? this.userId,
       voteType: voteType ?? this.voteType,
-      valueText: valueText ?? this.valueText,
-      valueDate: valueDate ?? this.valueDate,
+      valueText: valueText == _undefined ? this.valueText : valueText as String?,
+      valueDate: valueDate == _undefined ? this.valueDate : valueDate as DateTime?,
       isAnonymous: isAnonymous ?? this.isAnonymous,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  // Sentinel value for detecting unset optional parameters
+  static const _undefined = Object();
+
 
   @override
   bool operator ==(Object other) {
