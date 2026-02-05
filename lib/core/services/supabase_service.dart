@@ -113,7 +113,7 @@ class SupabaseService {
   }
 
   /// Get realtime connection status stream
-  Stream<RealtimeState> get realtimeStatusStream {
+  Stream<SocketStates> get realtimeStatusStream {
     return client.realtime.connState;
   }
 

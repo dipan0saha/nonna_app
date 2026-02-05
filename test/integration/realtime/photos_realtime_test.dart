@@ -11,7 +11,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 void main() {
   group('Photos Realtime Integration Tests', () {
     late RealtimeService realtimeService;
-    late StreamSubscription<dynamic>? subscription;
+    StreamSubscription<dynamic>? subscription;
     final testTimeout = const Duration(seconds: 30);
     
     setUp(() {
@@ -83,7 +83,7 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should unsubscribe from channel', () async {
-        final stream = realtimeService.subscribe(
+        realtimeService.subscribe(
           table: 'photos',
           channelName: 'unsubscribe-test',
         );

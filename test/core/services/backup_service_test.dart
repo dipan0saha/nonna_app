@@ -5,7 +5,23 @@ import 'package:nonna_app/core/services/backup_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([DatabaseService, SupabaseClient, PostgrestFilterBuilder, GoTrueClient, User])
+// NOTE: To fix remaining type errors in this test file, regenerate mocks by running:
+// flutter pub run build_runner build --delete-conflicting-outputs
+//
+// The mock generation has been updated to properly type PostgrestFilterBuilder.
+// After regeneration, the following type errors should be resolved:
+// - Line 142: when(mockFilterBuilder).thenAnswer type mismatch
+// - Line 160: when(mockFilterBuilder).thenAnswer type mismatch
+// - Various "argument_type_not_assignable" errors
+
+@GenerateMocks([
+  DatabaseService,
+  SupabaseClient,
+  GoTrueClient,
+  User,
+], customMocks: [
+  MockSpec<PostgrestFilterBuilder<List<Map<String, dynamic>>>>(as: #MockPostgrestFilterBuilder),
+])
 import 'backup_service_test.mocks.dart';
 
 void main() {
@@ -30,7 +46,6 @@ void main() {
 
       backupService = BackupService(
         databaseService: mockDatabaseService,
-        supabase: mockSupabaseClient,
       );
     });
 

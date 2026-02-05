@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/observability_service.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() {
   group('ObservabilityService', () {
