@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import '../constants/supabase_tables.dart';
 import 'database_service.dart';
 
 /// Service for backing up and restoring user data
@@ -37,92 +38,92 @@ class BackupService {
     try {
       // User profile
       final profile = await _databaseService
-          .select('profiles')
+          .select(SupabaseTables.userProfiles)
           .eq('user_id', userId)
           .maybeSingle();
       data['profile'] = profile;
 
       // User stats
       final stats = await _databaseService
-          .select('user_stats')
+          .select(SupabaseTables.userStats)
           .eq('user_id', userId)
           .maybeSingle();
       data['user_stats'] = stats;
 
       // Baby memberships
       final memberships = await _databaseService
-          .select('baby_memberships')
+          .select(SupabaseTables.babyMemberships)
           .eq('user_id', userId);
       data['baby_memberships'] = memberships;
 
       // Photos uploaded by user
       final photos = await _databaseService
-          .select('photos')
+          .select(SupabaseTables.photos)
           .eq('uploaded_by_user_id', userId);
       data['photos'] = photos;
 
       // Comments made by user
       final photoComments =
-          await _databaseService.select('photo_comments').eq('user_id', userId);
+          await _databaseService.select(SupabaseTables.photoComments).eq('user_id', userId);
       data['photo_comments'] = photoComments;
 
       final eventComments =
-          await _databaseService.select('event_comments').eq('user_id', userId);
+          await _databaseService.select(SupabaseTables.eventComments).eq('user_id', userId);
       data['event_comments'] = eventComments;
 
       // Events created by user
       final events = await _databaseService
-          .select('events')
+          .select(SupabaseTables.events)
           .eq('created_by_user_id', userId);
       data['events'] = events;
 
       // Event RSVPs
       final rsvps =
-          await _databaseService.select('event_rsvps').eq('user_id', userId);
+          await _databaseService.select(SupabaseTables.eventRsvps).eq('user_id', userId);
       data['event_rsvps'] = rsvps;
 
       // Registry items created by user
       final registryItems = await _databaseService
-          .select('registry_items')
+          .select(SupabaseTables.registryItems)
           .eq('created_by_user_id', userId);
       data['registry_items'] = registryItems;
 
       // Registry purchases
       final purchases = await _databaseService
-          .select('registry_purchases')
+          .select(SupabaseTables.registryPurchases)
           .eq('purchased_by_user_id', userId);
       data['registry_purchases'] = purchases;
 
       // Name suggestions
       final nameSuggestions = await _databaseService
-          .select('name_suggestions')
+          .select(SupabaseTables.nameSuggestions)
           .eq('suggested_by_user_id', userId);
       data['name_suggestions'] = nameSuggestions;
 
       // Votes
       final votes =
-          await _databaseService.select('votes').eq('user_id', userId);
+          await _databaseService.select(SupabaseTables.votes).eq('user_id', userId);
       data['votes'] = votes;
 
       // Notifications
       final notifications =
-          await _databaseService.select('notifications').eq('user_id', userId);
+          await _databaseService.select(SupabaseTables.notifications).eq('user_id', userId);
       data['notifications'] = notifications;
 
       // Photo tags
       final photoTags = await _databaseService
-          .select('photo_tags')
+          .select(SupabaseTables.photoTags)
           .eq('tagged_user_id', userId);
       data['photo_tags'] = photoTags;
 
       // Photo squishes
       final photoSquishes =
-          await _databaseService.select('photo_squishes').eq('user_id', userId);
+          await _databaseService.select(SupabaseTables.photoSquishes).eq('user_id', userId);
       data['photo_squishes'] = photoSquishes;
 
       // Invitations sent
       final invitationsSent = await _databaseService
-          .select('invitations')
+          .select(SupabaseTables.invitations)
           .eq('invited_by_user_id', userId);
       data['invitations_sent'] = invitationsSent;
 
@@ -134,7 +135,7 @@ class BackupService {
           // Note: In production, this would need admin access to query auth.users
           // For now, we'll try to get it from the accepted invitations
           final acceptedInvitations = await _databaseService
-              .select('invitations', columns: 'invitee_email')
+              .select(SupabaseTables.invitations, columns: 'invitee_email')
               .eq('accepted_by_user_id', userId)
               .limit(1);
 
@@ -150,7 +151,7 @@ class BackupService {
       // Query invitations by email if we have it
       if (userEmail != null && userEmail.isNotEmpty) {
         final invitationsReceived = await _databaseService
-            .select('invitations')
+            .select(SupabaseTables.invitations)
             .eq('invitee_email', userEmail);
         data['invitations_received'] = invitationsReceived;
       } else {
@@ -187,7 +188,7 @@ class BackupService {
     try {
       // Get photos to backup
       var query = _databaseService
-          .select('photos', columns: 'id, storage_path')
+          .select(SupabaseTables.photos, columns: 'id, storage_path')
           .eq('uploaded_by_user_id', userId);
 
       if (babyProfileId != null) {
