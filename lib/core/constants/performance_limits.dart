@@ -150,6 +150,18 @@ class PerformanceLimits {
   static const int previewMaxWidth = 800;
   static const int previewMaxHeight = 800;
 
+  /// Image compression quality (0-100)
+  static const int imageCompressionQuality = 85;
+
+  /// Thumbnail compression quality (0-100)
+  static const int thumbnailCompressionQuality = 60;
+
+  /// Maximum storage per user in MB
+  static const int maxStoragePerUserMb = 500;
+
+  /// Storage warning threshold in MB
+  static const int storageWarningThresholdMb = 450;
+
   // ============================================================
   // Rate Limiting
   // ============================================================
