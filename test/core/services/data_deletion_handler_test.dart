@@ -15,15 +15,11 @@ void main() {
     late MockDatabaseService mockDatabaseService;
     late MockStorageService mockStorageService;
     late MockSupabaseClient mockSupabaseClient;
-    late MockPostgrestFilterBuilder mockFilterBuilder;
-    late MockPostgrestBuilder mockPostgrestBuilder;
 
     setUp(() {
       mockDatabaseService = MockDatabaseService();
       mockStorageService = MockStorageService();
       mockSupabaseClient = MockSupabaseClient();
-      mockFilterBuilder = MockPostgrestFilterBuilder();
-      mockPostgrestBuilder = MockPostgrestBuilder();
 
       dataDeletionHandler = DataDeletionHandler(
         databaseService: mockDatabaseService,

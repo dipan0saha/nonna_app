@@ -41,12 +41,10 @@ class _TestWidgetState extends State<TestWidget> with LoadingMixin {
               child: const Text('Test'),
             ),
             buildLoadingButton(
-              key: const Key('loading_button'),
               onPressed: () {},
               child: const Text('Loading Button'),
             ),
             buildOperationButton(
-              key: const Key('operation_button'),
               operation: 'test_operation',
               onPressed: () {},
               child: const Text('Operation Button'),
@@ -283,7 +281,7 @@ void main() {
       await tester.pump();
 
       expect(find.byType(SnackBar), findsOneWidget);
-      expect(find.text(contains('An error occurred')), findsOneWidget);
+      expect(find.textContaining('An error occurred'), findsOneWidget);
     });
 
     testWidgets('buildWithLoading shows overlay when loading', (tester) async {

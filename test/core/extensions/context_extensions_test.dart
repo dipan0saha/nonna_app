@@ -983,11 +983,23 @@ void main() {
 }
 
 // Helper class for testing view insets
-class FakeViewPadding extends ViewPadding {
+class FakeViewPadding implements ViewPadding {
   const FakeViewPadding({
-    super.left = 0.0,
-    super.top = 0.0,
-    super.right = 0.0,
-    super.bottom = 0.0,
+    this.left = 0.0,
+    this.top = 0.0,
+    this.right = 0.0,
+    this.bottom = 0.0,
   });
+
+  @override
+  final double left;
+
+  @override
+  final double top;
+
+  @override
+  final double right;
+
+  @override
+  final double bottom;
 }

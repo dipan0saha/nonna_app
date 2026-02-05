@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -9,10 +8,8 @@ import 'database_service_test.mocks.dart';
 
 void main() {
   group('DatabaseService', () {
-    late DatabaseService databaseService;
 
     setUp(() {
-      databaseService = DatabaseService();
     });
 
     group('PaginatedResult', () {
