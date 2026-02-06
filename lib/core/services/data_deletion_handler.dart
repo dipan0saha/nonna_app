@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../constants/supabase_tables.dart';
 import 'database_service.dart';
 import 'storage_service.dart';
 
@@ -81,7 +82,7 @@ class DataDeletionHandler {
 
       // Get all photos uploaded by user
       final photos = await _databaseService
-          .select('photos', columns: 'id, storage_path, thumbnail_path')
+          .select(SupabaseTables.photos, columns: 'id, storage_path, thumbnail_path')
           .eq('uploaded_by_user_id', userId);
 
       // Delete from storage
@@ -103,7 +104,7 @@ class DataDeletionHandler {
       }
 
       // Soft delete photos in database and scrub sensitive data
-      await _databaseService.update('photos', {
+      await _databaseService.update(SupabaseTables.photos, {
         'deleted_at': DateTime.now().toIso8601String(),
         'storage_path': null,
         'thumbnail_path': null,
@@ -128,10 +129,10 @@ class DataDeletionHandler {
       debugPrint('🗑️ Deleting user comments...');
 
       // Delete photo comments
-      await _databaseService.delete('photo_comments').eq('user_id', userId);
+      await _databaseService.delete(SupabaseTables.photoComments).eq('user_id', userId);
 
       // Delete event comments
-      await _databaseService.delete('event_comments').eq('user_id', userId);
+      await _databaseService.delete(SupabaseTables.eventComments).eq('user_id', userId);
 
       debugPrint('✅ User comments deleted');
     } catch (e) {
@@ -151,24 +152,24 @@ class DataDeletionHandler {
 
       // Get events created by user
       final events = await _databaseService
-          .select('events', columns: 'id')
+          .select(SupabaseTables.events, columns: 'id')
           .eq('created_by_user_id', userId);
 
       for (final event in events) {
         final eventId = event['id'] as String;
 
         // Delete event RSVPs
-        await _databaseService.delete('event_rsvps').eq('event_id', eventId);
+        await _databaseService.delete(SupabaseTables.eventRsvps).eq('event_id', eventId);
 
         // Delete event comments (cascade)
-        await _databaseService.delete('event_comments').eq('event_id', eventId);
+        await _databaseService.delete(SupabaseTables.eventComments).eq('event_id', eventId);
       }
 
       // Delete events
-      await _databaseService.delete('events').eq('created_by_user_id', userId);
+      await _databaseService.delete(SupabaseTables.events).eq('created_by_user_id', userId);
 
       // Delete user's RSVPs to other events
-      await _databaseService.delete('event_rsvps').eq('user_id', userId);
+      await _databaseService.delete(SupabaseTables.eventRsvps).eq('user_id', userId);
 
       debugPrint('✅ User events deleted');
     } catch (e) {
@@ -188,12 +189,12 @@ class DataDeletionHandler {
 
       // Delete registry purchases
       await _databaseService
-          .delete('registry_purchases')
+          .delete(SupabaseTables.registryPurchases)
           .eq('purchased_by_user_id', userId);
 
       // Delete registry items
       await _databaseService
-          .delete('registry_items')
+          .delete(SupabaseTables.registryItems)
           .eq('created_by_user_id', userId);
 
       debugPrint('✅ User registry data deleted');
@@ -214,19 +215,19 @@ class DataDeletionHandler {
 
       // Delete name suggestions
       await _databaseService
-          .delete('name_suggestions')
+          .delete(SupabaseTables.nameSuggestions)
           .eq('suggested_by_user_id', userId);
 
       // Delete name suggestion likes
       await _databaseService
-          .delete('name_suggestion_likes')
+          .delete(SupabaseTables.nameSuggestionLikes)
           .eq('user_id', userId);
 
       // Delete votes
-      await _databaseService.delete('votes').eq('user_id', userId);
+      await _databaseService.delete(SupabaseTables.votes).eq('user_id', userId);
 
       // Delete photo squishes
-      await _databaseService.delete('photo_squishes').eq('user_id', userId);
+      await _databaseService.delete(SupabaseTables.photoSquishes).eq('user_id', userId);
 
       debugPrint('✅ User votes deleted');
     } catch (e) {
@@ -244,7 +245,7 @@ class DataDeletionHandler {
     try {
       debugPrint('🗑️ Deleting user notifications...');
 
-      await _databaseService.delete('notifications').eq('user_id', userId);
+      await _databaseService.delete(SupabaseTables.notifications).eq('user_id', userId);
 
       debugPrint('✅ User notifications deleted');
     } catch (e) {
@@ -263,12 +264,12 @@ class DataDeletionHandler {
       debugPrint('🗑️ Deleting user memberships...');
 
       // Mark memberships as removed
-      await _databaseService.update('baby_memberships', {
+      await _databaseService.update(SupabaseTables.babyMemberships, {
         'removed_at': DateTime.now().toIso8601String(),
       }).eq('user_id', userId);
 
       // Delete photo tags
-      await _databaseService.delete('photo_tags').eq('tagged_user_id', userId);
+      await _databaseService.delete(SupabaseTables.photoTags).eq('tagged_user_id', userId);
 
       debugPrint('✅ User memberships deleted');
     } catch (e) {
@@ -288,7 +289,7 @@ class DataDeletionHandler {
 
       // Delete invitations sent by user
       await _databaseService
-          .delete('invitations')
+          .delete(SupabaseTables.invitations)
           .eq('invited_by_user_id', userId);
 
       // Note: Invitations received by email can't be deleted by user_id
@@ -311,10 +312,10 @@ class DataDeletionHandler {
       debugPrint('🗑️ Deleting user profile...');
 
       // Delete user stats
-      await _databaseService.delete('user_stats').eq('user_id', userId);
+      await _databaseService.delete(SupabaseTables.userStats).eq('user_id', userId);
 
       // Delete profile
-      await _databaseService.delete('profiles').eq('user_id', userId);
+      await _databaseService.delete(SupabaseTables.userProfiles).eq('user_id', userId);
 
       debugPrint('✅ User profile deleted');
     } catch (e) {
@@ -419,7 +420,7 @@ class DataDeletionHandler {
       // 4. Return the token
 
       final token = 'confirmation_${DateTime.now().millisecondsSinceEpoch}';
-      debugPrint('📧 Deletion confirmation token: $token');
+      debugPrint('📧 Deletion confirmation token generated successfully');
 
       return token;
     } catch (e) {
