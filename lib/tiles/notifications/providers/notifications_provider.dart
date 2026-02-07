@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/notification.dart' as app_notification;
@@ -70,7 +71,6 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'notifications';
-  static const int _cacheTtlMinutes = 10;
   static const int _maxNotifications = 50;
 
   String? _subscriptionId;
@@ -286,7 +286,7 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
     try {
       final cacheKey = _getCacheKey(userId);
       final jsonData = notifications.map((n) => n.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.highFrequencyCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/tile_config.dart';
@@ -84,7 +85,6 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
   // Configuration
   static const String _screenId = 'home';
   static const String _cacheKeyPrefix = 'home_screen';
-  static const int _cacheTtlMinutes = 30;
 
   // ==========================================
   // Public Methods
@@ -249,7 +249,11 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId, role);
       final jsonData = tiles.map((tile) => tile.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(
+        cacheKey,
+        jsonData,
+        ttlMinutes: PerformanceLimits.screenCacheDuration.inMinutes,
+      );
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

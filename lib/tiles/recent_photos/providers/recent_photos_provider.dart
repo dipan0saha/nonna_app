@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/photo.dart';
@@ -75,7 +76,6 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'recent_photos';
-  static const int _cacheTtlMinutes = 15;
   static const int _pageSize = 30;
 
   String? _subscriptionId;
@@ -235,7 +235,7 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = photos.map((photo) => photo.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

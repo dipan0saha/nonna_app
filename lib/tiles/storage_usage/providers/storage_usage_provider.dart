@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/services/cache_service.dart';
@@ -115,7 +116,6 @@ class StorageUsageNotifier extends StateNotifier<StorageUsageState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'storage_usage';
-  static const int _cacheTtlMinutes = 60; // Cache for 1 hour
   
   // Storage limits (example values - should be configured per plan)
   static const int _defaultTotalStorageBytes = 5 * 1024 * 1024 * 1024; // 5 GB
@@ -247,7 +247,7 @@ class StorageUsageNotifier extends StateNotifier<StorageUsageState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = info.toJson();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

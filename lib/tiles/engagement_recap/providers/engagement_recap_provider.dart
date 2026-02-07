@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/event_rsvp.dart';
@@ -100,7 +101,6 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'engagement_recap';
-  static const int _cacheTtlMinutes = 60; // Cache for 1 hour
   static const int _defaultDaysBack = 30; // Default to last 30 days
 
   // ==========================================
@@ -275,7 +275,7 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId, daysBack);
       final jsonData = metrics.toJson();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

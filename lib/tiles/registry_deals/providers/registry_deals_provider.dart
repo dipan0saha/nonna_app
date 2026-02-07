@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/registry_item.dart';
@@ -66,7 +67,6 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'registry_deals';
-  static const int _cacheTtlMinutes = 30;
   static const int _maxDeals = 15;
   static const int _minPriority = 3; // Show items with priority >= 3
 
@@ -214,7 +214,7 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = deals.map((item) => item.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
