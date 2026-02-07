@@ -95,7 +95,7 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
       if (!forceRefresh) {
         final cachedFollowers = await _loadFromCache(babyProfileId);
         if (cachedFollowers != null && cachedFollowers.isNotEmpty) {
-          final activeCount = cachedFollowers.where((f) => f.isActive).length;
+          final activeCount = cachedFollowers.where((follower) => follower.isActive).length;
           state = state.copyWith(
             followers: cachedFollowers,
             isLoading: false,
@@ -107,7 +107,7 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
 
       // Fetch from database
       final followers = await _fetchFromDatabase(babyProfileId);
-      final activeCount = followers.where((f) => f.isActive).length;
+      final activeCount = followers.where((follower) => follower.isActive).length;
 
       // Save to cache
       await _saveToCache(babyProfileId, followers);
@@ -136,12 +136,12 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
 
   /// Get active followers only
   List<BabyMembership> getActiveFollowers() {
-    return state.followers.where((f) => f.isActive).toList();
+    return state.followers.where((follower) => follower.isActive).toList();
   }
 
   /// Get removed followers
   List<BabyMembership> getRemovedFollowers() {
-    return state.followers.where((f) => f.isRemoved).toList();
+    return state.followers.where((follower) => follower.isRemoved).toList();
   }
 
   /// Refresh followers
@@ -251,7 +251,7 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
       if (eventType == 'INSERT' && newData != null) {
         final newFollower = BabyMembership.fromJson(newData);
         final updatedFollowers = [newFollower, ...state.followers];
-        final activeCount = updatedFollowers.where((f) => f.isActive).length;
+        final activeCount = updatedFollowers.where((follower) => follower.isActive).length;
         state = state.copyWith(
           followers: updatedFollowers,
           activeCount: activeCount,
@@ -260,12 +260,12 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
       } else if (eventType == 'UPDATE' && newData != null) {
         final updatedFollower = BabyMembership.fromJson(newData);
         final updatedFollowers = state.followers
-            .map((f) => f.babyProfileId == updatedFollower.babyProfileId && 
-                       f.userId == updatedFollower.userId 
+            .map((follower) => follower.babyProfileId == updatedFollower.babyProfileId && 
+                       follower.userId == updatedFollower.userId 
                     ? updatedFollower 
-                    : f)
+                    : follower)
             .toList();
-        final activeCount = updatedFollowers.where((f) => f.isActive).length;
+        final activeCount = updatedFollowers.where((follower) => follower.isActive).length;
         state = state.copyWith(
           followers: updatedFollowers,
           activeCount: activeCount,
@@ -277,10 +277,10 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
           final deletedBabyProfileId = oldData['baby_profile_id'] as String;
           final deletedUserId = oldData['user_id'] as String;
           final updatedFollowers = state.followers
-              .where((f) => !(f.babyProfileId == deletedBabyProfileId && 
-                             f.userId == deletedUserId))
+              .where((follower) => !(follower.babyProfileId == deletedBabyProfileId && 
+                             follower.userId == deletedUserId))
               .toList();
-          final activeCount = updatedFollowers.where((f) => f.isActive).length;
+          final activeCount = updatedFollowers.where((follower) => follower.isActive).length;
           state = state.copyWith(
             followers: updatedFollowers,
             activeCount: activeCount,
