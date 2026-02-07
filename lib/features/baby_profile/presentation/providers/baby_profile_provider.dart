@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/enums/gender.dart';
+import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/baby_membership.dart';
 import '../../../../core/models/baby_profile.dart';
 import '../../../../core/services/cache_service.dart';
@@ -177,7 +178,7 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
           .select(SupabaseTables.babyMemberships)
           .eq(SupabaseTables.babyProfileId, babyProfileId)
           .eq('user_id', userId)
-          .eq('role', 'owner')
+          .eq('role', UserRole.owner.name)
           .maybeSingle();
 
       return response != null;
@@ -263,7 +264,7 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
       await _databaseService.insert(SupabaseTables.babyMemberships, {
         'baby_profile_id': profile.id,
         'user_id': userId,
-        'role': 'owner',
+        'role': UserRole.owner.name,
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       });
