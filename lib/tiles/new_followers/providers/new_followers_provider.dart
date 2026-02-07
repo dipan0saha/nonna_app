@@ -260,8 +260,7 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
       } else if (eventType == 'UPDATE' && newData != null) {
         final updatedFollower = BabyMembership.fromJson(newData);
         final updatedFollowers = state.followers
-            .map((follower) => follower.babyProfileId == updatedFollower.babyProfileId && 
-                       follower.userId == updatedFollower.userId 
+            .map((follower) => _isMatchingFollower(follower, updatedFollower)
                     ? updatedFollower 
                     : follower)
             .toList();
@@ -277,8 +276,8 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
           final deletedBabyProfileId = oldData['baby_profile_id'] as String;
           final deletedUserId = oldData['user_id'] as String;
           final updatedFollowers = state.followers
-              .where((follower) => !(follower.babyProfileId == deletedBabyProfileId && 
-                             follower.userId == deletedUserId))
+              .where((follower) => _isNotDeletedFollower(
+                    follower, deletedBabyProfileId, deletedUserId))
               .toList();
           final activeCount = updatedFollowers.where((follower) => follower.isActive).length;
           state = state.copyWith(
@@ -293,6 +292,22 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
     } catch (e) {
       debugPrint('❌ Failed to handle real-time update: $e');
     }
+  }
+
+  /// Check if follower matches the updated follower
+  bool _isMatchingFollower(BabyMembership follower, BabyMembership updatedFollower) {
+    return follower.babyProfileId == updatedFollower.babyProfileId && 
+           follower.userId == updatedFollower.userId;
+  }
+
+  /// Check if follower is not the deleted follower
+  bool _isNotDeletedFollower(
+    BabyMembership follower,
+    String deletedBabyProfileId,
+    String deletedUserId,
+  ) {
+    return follower.babyProfileId != deletedBabyProfileId || 
+           follower.userId != deletedUserId;
   }
 
   /// Cancel real-time subscription
