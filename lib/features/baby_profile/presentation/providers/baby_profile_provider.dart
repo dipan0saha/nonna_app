@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/enums/gender.dart';
@@ -101,7 +102,6 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'baby_profile';
-  static const int _cacheTtlMinutes = 60;
 
   // ==========================================
   // Public Methods
@@ -470,7 +470,11 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      await _cacheService.put(cacheKey, profile.toJson(), ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(
+        cacheKey,
+        profile.toJson(),
+        ttlMinutes: PerformanceLimits.profileCacheDuration.inMinutes,
+      );
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
