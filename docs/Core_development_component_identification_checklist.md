@@ -425,12 +425,36 @@
 - [ ] New Followers Provider (`lib/tiles/new_followers/providers/new_followers_provider.dart`)
 
 ### 3.5.5 State Persistence
-- [ ] State Persistence Manager (`lib/core/services/state_persistence_manager.dart`)
-- [ ] Persistence Strategies (`lib/core/services/persistence_strategies.dart`)
+- [x] State Persistence Manager (`lib/core/services/state_persistence_manager.dart`) - ✨ Created Feb 7, 2026
+  - ✅ Riverpod state persistence to local storage
+  - ✅ Hydration on app start with multiple strategies
+  - ✅ Selective persistence (memory, disk, cloud)
+  - ✅ Background sync with configurable intervals
+  - ✅ TTL management and automatic eviction
+  - ✅ Test file: `test/core/services/state_persistence_manager_test.dart` (20+ test cases)
+- [x] Persistence Strategies (`lib/core/services/persistence_strategies.dart`) - ✨ Created Feb 7, 2026
+  - ✅ Memory strategy (fastest, non-persistent)
+  - ✅ Disk strategy (persistent using LocalStorageService)
+  - ✅ Supabase strategy (cloud sync across devices)
+  - ✅ Unified PersistenceStrategy interface
+  - ✅ TTL support and eviction policies
+  - ✅ Test file: `test/core/services/persistence_strategies_test.dart` (20+ test cases)
 
 ### 3.5.6 Error & Loading State Handlers
-- [ ] Error State Handler (`lib/core/providers/error_state_handler.dart`)
-- [ ] Loading State Handler (`lib/core/providers/loading_state_handler.dart`)
+- [x] Error State Handler (`lib/core/providers/error_state_handler.dart`) - ✨ Created Feb 7, 2026
+  - ✅ Centralized error state management with Riverpod StateNotifier
+  - ✅ Error recovery with exponential backoff (1s, 2s, 4s)
+  - ✅ User notifications with ErrorHandler integration
+  - ✅ Retry logic with max 3 attempts
+  - ✅ Error history tracking (last 50 errors)
+  - ✅ Test file: `test/core/providers/error_state_handler_test.dart` (30+ test cases)
+- [x] Loading State Handler (`lib/core/providers/loading_state_handler.dart`) - ✨ Created Feb 7, 2026
+  - ✅ Loading indicators coordination for multiple operations
+  - ✅ Skeleton screens support
+  - ✅ Progress tracking (0-100% with updates)
+  - ✅ Cancellation support with timeout handling
+  - ✅ Concurrent operation management
+  - ✅ Test file: `test/core/providers/loading_state_handler_test.dart` (35+ test cases)
 
 ---
 
