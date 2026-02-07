@@ -1,18 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/tile_config.dart';
 import '../../../../core/services/cache_service.dart';
 import '../../../../core/services/database_service.dart';
-import '../../../../tiles/core/providers/tile_config_provider.dart';
+import '../../../../core/utils/tile_loader.dart';
 
 /// Home Screen Provider for managing home screen state
 ///
 /// **Functional Requirements**: Section 3.5.3 - Feature Providers
 /// Reference: docs/Core_development_component_identification.md
+///
+/// **Issue #3.21 Fix**: Removed direct dependency on tileConfigProvider
+/// Now uses TileLoader utility for decoupled tile loading
 ///
 /// Features:
 /// - Home screen state management
@@ -21,7 +23,7 @@ import '../../../../tiles/core/providers/tile_config_provider.dart';
 /// - Error handling
 /// - Pull-to-refresh support
 ///
-/// Dependencies: TileConfigProvider, DatabaseService, CacheService
+/// Dependencies: DatabaseService, CacheService (via TileLoader)
 
 /// Home screen state model
 class HomeScreenState {
@@ -104,30 +106,14 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
         selectedRole: role,
       );
 
-      // Try to load from cache first
-      final cachedTiles = await _loadFromCache(babyProfileId, role);
-      if (cachedTiles != null && cachedTiles.isNotEmpty) {
-        state = state.copyWith(
-          tiles: cachedTiles,
-          isLoading: false,
-          lastRefreshed: DateTime.now(),
-        );
-        return;
-      }
-
-      // Fetch from tile config provider
-      final tileConfigNotifier = _ref.read(tileConfigProvider.notifier);
-      await tileConfigNotifier.fetchConfigs(
+      // Load tiles using TileLoader utility (decoupled from tileConfigProvider)
+      // Issue #3.21 Fix: Removed direct provider dependency
+      final tiles = await TileLoader.loadForScreen(
+        ref: _ref,
         screenId: _screenId,
         role: role,
         forceRefresh: false,
       );
-
-      final tileConfigState = _ref.read(tileConfigProvider);
-      final tiles = tileConfigState.configs
-          .where((config) => config.isEnabled)
-          .toList()
-        ..sort((a, b) => a.order.compareTo(b.order));
 
       // Save to cache
       await _saveToCache(babyProfileId, role, tiles);
@@ -159,19 +145,14 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     try {
       state = state.copyWith(isRefreshing: true, error: null);
 
-      // Force refresh from tile config provider
-      final tileConfigNotifier = _ref.read(tileConfigProvider.notifier);
-      await tileConfigNotifier.fetchConfigs(
+      // Force refresh using TileLoader utility (decoupled)
+      // Issue #3.21 Fix: Removed direct provider dependency
+      final tiles = await TileLoader.loadForScreen(
+        ref: _ref,
         screenId: _screenId,
         role: state.selectedRole!,
         forceRefresh: true,
       );
-
-      final tileConfigState = _ref.read(tileConfigProvider);
-      final tiles = tileConfigState.configs
-          .where((config) => config.isEnabled)
-          .toList()
-        ..sort((a, b) => a.order.compareTo(b.order));
 
       // Update cache
       await _saveToCache(state.selectedBabyProfileId!, state.selectedRole!, tiles);
