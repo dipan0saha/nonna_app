@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/enums/user_role.dart';
@@ -115,7 +116,6 @@ class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'calendar_events';
-  static const int _cacheTtlMinutes = 30;
 
   // ==========================================
   // Public Methods
@@ -305,7 +305,11 @@ class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = events.map((event) => event.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(
+        cacheKey,
+        jsonData,
+        ttlMinutes: PerformanceLimits.screenCacheDuration.inMinutes,
+      );
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
