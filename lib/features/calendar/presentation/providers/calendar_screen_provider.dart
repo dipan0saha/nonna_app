@@ -34,7 +34,7 @@ class CalendarScreenState {
   final Map<String, List<Event>> eventsByDate;
   final String? selectedBabyProfileId;
 
-  const CalendarScreenState({
+  CalendarScreenState({
     this.events = const [],
     DateTime? selectedDate,
     DateTime? focusedMonth,
@@ -42,8 +42,13 @@ class CalendarScreenState {
     this.error,
     this.eventsByDate = const {},
     this.selectedBabyProfileId,
-  })  : selectedDate = selectedDate ?? const _DefaultDate(),
-        focusedMonth = focusedMonth ?? const _DefaultDate();
+  })  : selectedDate = selectedDate ?? _getDefaultDate(),
+        focusedMonth = focusedMonth ?? _getDefaultDate();
+
+  static DateTime _getDefaultDate() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
 
   CalendarScreenState copyWith({
     List<Event>? events,
@@ -86,13 +91,6 @@ class CalendarScreenState {
   static String _getDateKey(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
-}
-
-/// Helper class for default date
-class _DefaultDate extends DateTime {
-  const _DefaultDate() : super(2024, 1, 1);
-
-  factory _DefaultDate.now() => _DefaultDate();
 }
 
 /// Calendar Screen Provider Notifier

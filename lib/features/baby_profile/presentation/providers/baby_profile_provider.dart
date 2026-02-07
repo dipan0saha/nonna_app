@@ -74,12 +74,12 @@ class BabyProfileState {
 
   /// Get follower memberships
   List<BabyMembership> get followers {
-    return memberships.where((m) => m.role == 'follower').toList();
+    return memberships.where((m) => m.role == UserRole.follower).toList();
   }
 
   /// Get owner memberships
   List<BabyMembership> get owners {
-    return memberships.where((m) => m.role == 'owner').toList();
+    return memberships.where((m) => m.role == UserRole.owner).toList();
   }
 }
 
