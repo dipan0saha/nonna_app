@@ -74,7 +74,7 @@ void main() {
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(MockPostgrestBuilder([sampleTileConfig.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         await notifier.fetchConfigs(
           screenId: 'home',
@@ -128,7 +128,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(MockPostgrestBuilder([sampleTileConfig.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         await notifier.fetchConfigs(
           screenId: 'home',
@@ -152,7 +152,7 @@ void main() {
         // Setup state with multiple configs
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(MockPostgrestBuilder([
+            .thenReturn(FakePostgrestBuilder([
           config1.toJson(),
           config2.toJson(),
         ]));
@@ -182,7 +182,7 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(MockPostgrestBuilder([
+            .thenReturn(FakePostgrestBuilder([
           config1.toJson(),
           config2.toJson(),
           config3.toJson(),
@@ -212,7 +212,7 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(MockPostgrestBuilder([
+            .thenReturn(FakePostgrestBuilder([
           visibleConfig.toJson(),
           hiddenConfig.toJson(),
           followerConfig.toJson(),
@@ -237,11 +237,11 @@ void main() {
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(MockPostgrestBuilder([sampleTileConfig.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
         await notifier.fetchAllConfigs();
 
         // Setup update mock
-        when(mockDatabaseService.update(any)).thenReturn(MockPostgrestUpdateBuilder());
+        when(mockDatabaseService.update(any)).thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.updateVisibility(
           configId: 'tile_1',
@@ -261,7 +261,7 @@ void main() {
       test('saves fetched configs to cache', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(MockPostgrestBuilder([sampleTileConfig.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         await notifier.fetchConfigs(
           screenId: 'home',
@@ -276,19 +276,19 @@ void main() {
   });
 }
 
-// Mock builders for Postgrest operations
-class MockPostgrestBuilder {
+// Fake builders for Postgrest operations (test doubles)
+class FakePostgrestBuilder {
   final List<Map<String, dynamic>> data;
 
-  MockPostgrestBuilder(this.data);
+  FakePostgrestBuilder(this.data);
 
-  MockPostgrestBuilder eq(String column, dynamic value) => this;
-  MockPostgrestBuilder order(String column) => this;
+  FakePostgrestBuilder eq(String column, dynamic value) => this;
+  FakePostgrestBuilder order(String column) => this;
 
   Future<List<Map<String, dynamic>>> call() async => data;
 }
 
-class MockPostgrestUpdateBuilder {
-  MockPostgrestUpdateBuilder eq(String column, dynamic value) => this;
+class FakePostgrestUpdateBuilder {
+  FakePostgrestUpdateBuilder eq(String column, dynamic value) => this;
   Future<void> update(Map<String, dynamic> data) async {}
 }

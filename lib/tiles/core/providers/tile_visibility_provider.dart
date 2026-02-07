@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/di/providers.dart';
 import '../../../core/services/cache_service.dart';
 import '../../../core/services/local_storage_service.dart';
 
@@ -315,12 +316,11 @@ class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
     }
 
     try {
-      final data = await _localStorageService.getString(key);
+      final data = await _localStorageService.getObject(key);
       if (data == null) return {};
 
-      // Parse JSON string to Map
-      final Map<String, dynamic> jsonMap =
-          Map<String, dynamic>.from(await _localStorageService.getObject(key));
+      // Parse object to Map<String, bool>
+      final Map<String, dynamic> jsonMap = Map<String, dynamic>.from(data);
       return jsonMap.map((key, value) => MapEntry(key, value as bool));
     } catch (e) {
       debugPrint('⚠️  Failed to load visibility from storage: $e');
@@ -376,20 +376,17 @@ class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
 ///
 /// Usage:
 /// ```dart
-/// final tileVisibilityProvider = StateNotifierProvider<TileVisibilityNotifier, TileVisibilityState>((ref) {
-///   final cacheService = ref.watch(cacheServiceProvider);
-///   final localStorageService = ref.watch(localStorageServiceProvider);
-///   return TileVisibilityNotifier(
-///     cacheService: cacheService,
-///     localStorageService: localStorageService,
-///   );
-/// });
+/// final visibilityState = ref.watch(tileVisibilityProvider);
+/// final notifier = ref.read(tileVisibilityProvider.notifier);
+/// await notifier.loadPreferences(userId: currentUserId);
 /// ```
 final tileVisibilityProvider =
     StateNotifierProvider<TileVisibilityNotifier, TileVisibilityState>((ref) {
-  // Import providers from core DI
-  // Note: This will be imported from lib/core/di/providers.dart
-  throw UnimplementedError(
-    'tileVisibilityProvider must be initialized with actual service dependencies',
+  final cacheService = ref.watch(cacheServiceProvider);
+  final localStorageService = ref.watch(localStorageServiceProvider);
+  
+  return TileVisibilityNotifier(
+    cacheService: cacheService,
+    localStorageService: localStorageService,
   );
 });

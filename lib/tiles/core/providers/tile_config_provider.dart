@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/supabase_tables.dart';
+import '../../../core/di/providers.dart';
 import '../../../core/enums/user_role.dart';
 import '../../../core/models/tile_config.dart';
 import '../../../core/services/cache_service.dart';
@@ -352,20 +353,17 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
 ///
 /// Usage:
 /// ```dart
-/// final tileConfigProvider = StateNotifierProvider<TileConfigNotifier, TileConfigState>((ref) {
-///   final databaseService = ref.watch(databaseServiceProvider);
-///   final cacheService = ref.watch(cacheServiceProvider);
-///   return TileConfigNotifier(
-///     databaseService: databaseService,
-///     cacheService: cacheService,
-///   );
-/// });
+/// final configs = ref.watch(tileConfigProvider);
+/// final notifier = ref.read(tileConfigProvider.notifier);
+/// await notifier.fetchConfigs(screenId: 'home', role: UserRole.owner);
 /// ```
 final tileConfigProvider =
     StateNotifierProvider<TileConfigNotifier, TileConfigState>((ref) {
-  // Import providers from core DI
-  // Note: This will be imported from lib/core/di/providers.dart
-  throw UnimplementedError(
-    'tileConfigProvider must be initialized with actual service dependencies',
+  final databaseService = ref.watch(databaseServiceProvider);
+  final cacheService = ref.watch(cacheServiceProvider);
+  
+  return TileConfigNotifier(
+    databaseService: databaseService,
+    cacheService: cacheService,
   );
 });

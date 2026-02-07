@@ -85,12 +85,12 @@ class ServiceLocator {
   }
 
   /// Register core services
-  void _registerCoreServices() {
+  static void _registerCoreServices() {
     register<AuthService>(AuthService());
   }
 
   /// Register data services
-  void _registerDataServices() {
+  static void _registerDataServices() {
     register<DatabaseService>(DatabaseService());
     register<CacheService>(CacheService());
     register<LocalStorageService>(LocalStorageService());
@@ -98,13 +98,13 @@ class ServiceLocator {
   }
 
   /// Register realtime and notification services
-  void _registerRealtimeServices() {
+  static void _registerRealtimeServices() {
     register<RealtimeService>(RealtimeService());
     register<NotificationService>(NotificationService.instance);
   }
 
   /// Register monitoring and analytics services
-  void _registerMonitoringServices() {
+  static void _registerMonitoringServices() {
     register<AnalyticsService>(AnalyticsService.instance);
     register<ObservabilityService>(ObservabilityService());
   }
