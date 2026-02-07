@@ -29,13 +29,10 @@ class PerformanceLimits {
   // - Standard data (screen providers, tiles): 30 minutes  
   // - Low-frequency data (configs, profiles): 60 minutes
 
-  /// Cache duration for user profile data (60 minutes)
+  /// Cache duration for profile data (60 minutes)
   /// Used by: profileProvider, babyProfileProvider
-  static const Duration userProfileCacheDuration = Duration(minutes: 60);
-
-  /// Cache duration for baby profile data (60 minutes)
-  /// Used by: babyProfileProvider
-  static const Duration babyProfileCacheDuration = Duration(minutes: 60);
+  /// Covers: userProfile, babyProfile, user stats
+  static const Duration profileCacheDuration = Duration(minutes: 60);
 
   /// Cache duration for tile configurations (60 minutes)
   /// Used by: tileConfigProvider, tileVisibilityProvider

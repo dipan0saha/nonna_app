@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../constants/performance_limits.dart';
 import '../constants/supabase_tables.dart';
 import '../di/providers.dart';
 import '../enums/user_role.dart';
@@ -20,7 +21,6 @@ class TileLoader {
 
   /// Cache configuration
   static const String _cacheKeyPrefix = 'tile_configs';
-  static const int _cacheTtlMinutes = 30; // 30 minutes for consistency
 
   /// Load tile configurations for a specific screen
   ///
@@ -67,12 +67,12 @@ class TileLoader {
     final response = await query as List<dynamic>;
     final configs = response.map((json) => TileConfig.fromJson(json as Map<String, dynamic>)).toList();
 
-    // Cache the results
+    // Cache the results using standardized TTL from PerformanceLimits
     final cacheKey = _getCacheKey(screenId, role);
     await cacheService.set(
       cacheKey,
       configs.map((c) => c.toJson()).toList(),
-      ttl: Duration(minutes: _cacheTtlMinutes),
+      ttl: PerformanceLimits.screenCacheDuration,
     );
 
     return _filterAndSortConfigs(configs);
