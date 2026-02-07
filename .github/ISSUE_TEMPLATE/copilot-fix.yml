@@ -1,0 +1,60 @@
+name: 🛠️ Copilot - Apply Review Fixes
+description: Implement fixes based on an existing Copilot code review
+title: "[Fix] "
+labels:
+  - copilot
+  - apply-fixes
+assignees:
+  - github-copilot
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔗 Required Reference
+        This issue **must reference an existing review document or PR**.
+
+  - type: input
+    id: review_ref
+    attributes:
+      label: Review document / PR
+      description: Link to the review markdown file or PR number
+      placeholder: docs/code-reviews/module-x-review.md or PR #123
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Fix scope
+      description: What should be implemented from the review?
+      placeholder: |
+        - Critical issues only
+        - Exclude optional refactors
+        - Follow recommendations exactly
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      options:
+        - label: Preserve existing behavior unless explicitly stated
+          required: true
+        - label: Do not introduce new dependencies
+          required: false
+        - label: Add/update tests where applicable
+          required: false
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: When is this issue considered done?
+      placeholder: |
+        - All critical review findings addressed
+        - Tests passing
+        - Code references review sections
+    validations:
+      required: true

@@ -1,0 +1,65 @@
+name: 🤖 Copilot - Code Review Only
+description: Review code and produce documentation without modifying production code
+title: "[Review] "
+labels:
+  - copilot
+  - review-only
+  - no-code-changes
+assignees:
+  - github-copilot
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🚨 Important
+        This issue is for **analysis and documentation only**.
+        **Do NOT modify application code.**
+
+  - type: input
+    id: scope
+    attributes:
+      label: Scope of review
+      description: Which module, folder, or files should be reviewed?
+      placeholder: src/payments/, auth-service/, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: goals
+    attributes:
+      label: Review goals
+      description: What should Copilot focus on?
+      placeholder: |
+        - Bugs and edge cases
+        - Security issues
+        - Performance concerns
+        - Code smells / refactor opportunities
+    validations:
+      required: true
+
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Required deliverables
+      description: Where should the review be documented?
+      value: |
+        - Create a markdown file under `docs/code-reviews/`
+        - Include:
+          - Summary
+          - Critical issues
+          - Recommended fixes
+          - Optional refactors
+    validations:
+      required: true
+
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Change risk tolerance
+      options:
+        - Low (prefer minimal changes later)
+        - Medium
+        - High (refactors acceptable)
+    validations:
+      required: true
