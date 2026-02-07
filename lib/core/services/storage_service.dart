@@ -7,6 +7,7 @@ import 'package:path/path.dart' as path;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../constants/performance_limits.dart';
 import '../middleware/error_handler.dart';
 import '../network/interceptors/auth_interceptor.dart';
 import 'analytics_service.dart';
@@ -378,9 +379,9 @@ class StorageService {
   /// Generate thumbnail for image
   Future<File> generateThumbnail(
     File imageFile, {
-    int maxWidth = 200,
-    int maxHeight = 200,
-    int quality = 60,
+    int maxWidth = PerformanceLimits.thumbnailMaxWidth,
+    int maxHeight = PerformanceLimits.thumbnailMaxHeight,
+    int quality = PerformanceLimits.thumbnailCompressionQuality,
   }) async {
     try {
       return await _compressImage(
@@ -462,7 +463,7 @@ class StorageService {
   /// Check if storage quota is available
   Future<bool> hasStorageQuota(
     String babyProfileId, {
-    int maxStorageMb = 500,
+    int maxStorageMb = PerformanceLimits.maxStoragePerUserMb,
   }) async {
     try {
       final usageBytes = await getStorageUsage(babyProfileId);
@@ -481,10 +482,10 @@ class StorageService {
 
   /// Validate image file
   void _validateImageFile(File file) {
-    // Check file size (max 10MB)
+    // Check file size
     final fileSize = file.lengthSync();
-    if (fileSize > 10 * 1024 * 1024) {
-      throw Exception('File size exceeds 10MB limit');
+    if (fileSize > PerformanceLimits.maxImageSizeBytes) {
+      throw Exception('File size exceeds ${PerformanceLimits.maxImageSizeBytes ~/ (1024 * 1024)}MB limit');
     }
 
     // Check file extension
