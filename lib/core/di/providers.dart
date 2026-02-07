@@ -156,15 +156,17 @@ final currentUserProvider = Provider<User?>((ref) {
 ///
 /// Manages the initialization of cache and local storage services.
 /// Returns true when all services are initialized and ready.
+///
+/// **Issue #3.21 Fix**: Changed ref.read() to ref.watch() for reactivity
 final appInitializationProvider = FutureProvider<bool>((ref) async {
-  // Initialize cache service
-  final cacheService = ref.read(cacheServiceProvider);
+  // Initialize cache service - using ref.watch for reactivity
+  final cacheService = ref.watch(cacheServiceProvider);
   if (!cacheService.isInitialized) {
     await cacheService.initialize();
   }
 
-  // Initialize local storage service
-  final localStorageService = ref.read(localStorageServiceProvider);
+  // Initialize local storage service - using ref.watch for reactivity
+  final localStorageService = ref.watch(localStorageServiceProvider);
   if (!localStorageService.isInitialized) {
     await localStorageService.initialize();
   }

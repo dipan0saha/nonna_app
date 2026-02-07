@@ -22,15 +22,33 @@ class PerformanceLimits {
   // ============================================================
   // Cache TTL (Time To Live) Values
   // ============================================================
+  // **Issue #3.21 Fix**: Standardized cache TTLs for consistency across providers
+  //
+  // TTL Strategy:
+  // - High-frequency data (real-time updates): 10 minutes
+  // - Standard data (screen providers, tiles): 30 minutes  
+  // - Low-frequency data (configs, profiles): 60 minutes
 
-  /// Cache duration for user profile data (15 minutes)
-  static const Duration userProfileCacheDuration = Duration(minutes: 15);
+  /// Cache duration for profile data (60 minutes)
+  /// Used by: profileProvider, babyProfileProvider
+  /// Covers: userProfile, babyProfile, user stats
+  static const Duration profileCacheDuration = Duration(minutes: 60);
 
-  /// Cache duration for baby profile data (10 minutes)
-  static const Duration babyProfileCacheDuration = Duration(minutes: 10);
+  /// Cache duration for tile configurations (60 minutes)
+  /// Used by: tileConfigProvider, tileVisibilityProvider
+  static const Duration tileConfigCacheDuration = Duration(minutes: 60);
 
-  /// Cache duration for tile configurations (30 minutes)
-  static const Duration tileConfigCacheDuration = Duration(minutes: 30);
+  /// Cache duration for screen providers (30 minutes)
+  /// Used by: homeScreenProvider, calendarScreenProvider, galleryScreenProvider, registryScreenProvider
+  static const Duration screenCacheDuration = Duration(minutes: 30);
+
+  /// Cache duration for tile providers (30 minutes)
+  /// Used by: Most tile-specific providers (events, registry, storage, etc.)
+  static const Duration tileCacheDuration = Duration(minutes: 30);
+
+  /// Cache duration for high-frequency data (10 minutes)
+  /// Used by: notificationsProvider, real-time feeds
+  static const Duration highFrequencyCacheDuration = Duration(minutes: 10);
 
   /// Cache duration for static assets (1 hour)
   static const Duration assetCacheDuration = Duration(hours: 1);
