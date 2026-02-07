@@ -364,12 +364,38 @@
 ## 3.5 State Management (Providers)
 
 ### 3.5.1 Core Providers
-- [ ] Global Providers (`lib/core/di/providers.dart`)
-- [ ] Service Locator (`lib/core/di/service_locator.dart`)
+- [x] Global Providers (`lib/core/di/providers.dart`) - ✨ Created Feb 7, 2026
+  - ✅ 10 singleton service providers (Auth, Database, Cache, Storage, Realtime, etc.)
+  - ✅ Auth state and current user providers
+  - ✅ App initialization provider
+  - ✅ Scoped and auto-dispose provider support
+  - ✅ Full documentation with usage examples
+  - ✅ Test file: `test/core/di/providers_test.dart` (15 test cases)
+- [x] Service Locator (`lib/core/di/service_locator.dart`) - ✨ Created Feb 7, 2026
+  - ✅ Manual dependency injection support
+  - ✅ Lazy service registration
+  - ✅ Provider overrides for testing
+  - ✅ Async service initialization (Cache, LocalStorage)
+  - ✅ Service lifecycle management (dispose)
+  - ✅ Test file: `test/core/di/service_locator_test.dart` (26 test cases)
 
 ### 3.5.2 Tile Providers
-- [ ] Tile Config Provider (`lib/tiles/core/providers/tile_config_provider.dart`)
-- [ ] Tile Visibility Provider (`lib/tiles/core/providers/tile_visibility_provider.dart`)
+- [x] Tile Config Provider (`lib/tiles/core/providers/tile_config_provider.dart`) - ✨ Created Feb 7, 2026
+  - ✅ StateNotifier-based reactive state management
+  - ✅ Fetch tile configs from Supabase with caching
+  - ✅ Role-based filtering (owner/follower)
+  - ✅ Screen-specific config loading with sorting
+  - ✅ Visibility management and force refresh
+  - ✅ Cache with 1-hour TTL
+  - ✅ Test file: `test/tiles/core/providers/tile_config_provider_test.dart` (12 test cases)
+- [x] Tile Visibility Provider (`lib/tiles/core/providers/tile_visibility_provider.dart`) - ✨ Created Feb 7, 2026
+  - ✅ User-specific visibility preferences
+  - ✅ Feature flags integration
+  - ✅ Local persistence with per-user keys
+  - ✅ Conditional rendering logic (shouldRenderTile)
+  - ✅ Convenience methods (hide/show/toggle/reset)
+  - ✅ Remote feature flag support
+  - ✅ Test file: `test/tiles/core/providers/tile_visibility_provider_test.dart` (19 test cases)
 
 ### 3.5.3 Feature Providers
 - [ ] Auth Provider (`lib/features/auth/presentation/providers/auth_provider.dart`)
