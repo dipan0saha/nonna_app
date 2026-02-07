@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/user_role.dart';
@@ -75,7 +76,6 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'upcoming_events';
-  static const int _cacheTtlMinutes = 30;
   static const int _pageSize = 20;
 
   String? _subscriptionId;
@@ -244,7 +244,7 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = events.map((event) => event.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

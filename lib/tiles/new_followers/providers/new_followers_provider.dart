@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/baby_membership.dart';
@@ -70,7 +71,6 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'new_followers';
-  static const int _cacheTtlMinutes = 15;
   static const int _maxFollowers = 20;
   static const int _recentDaysThreshold = 30; // Show followers from last 30 days
 
@@ -209,7 +209,7 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = followers.map((f) => f.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

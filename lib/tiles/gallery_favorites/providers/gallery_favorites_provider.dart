@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/photo.dart';
@@ -87,7 +88,6 @@ class GalleryFavoritesNotifier extends StateNotifier<GalleryFavoritesState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'gallery_favorites';
-  static const int _cacheTtlMinutes = 30;
   static const int _maxFavorites = 10;
   static const int _minSquishes = 2; // Minimum squishes to be considered
 
@@ -233,7 +233,7 @@ class GalleryFavoritesNotifier extends StateNotifier<GalleryFavoritesState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = favorites.map((fav) => fav.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

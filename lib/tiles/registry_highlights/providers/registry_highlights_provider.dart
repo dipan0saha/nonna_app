@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/registry_item.dart';
@@ -75,7 +76,6 @@ class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> 
 
   // Configuration
   static const String _cacheKeyPrefix = 'registry_highlights';
-  static const int _cacheTtlMinutes = 30;
   static const int _maxItems = 10; // Show top 10 items
 
   // ==========================================
@@ -260,7 +260,7 @@ class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> 
           'purchases': itemWithStatus.purchases.map((p) => p.toJson()).toList(),
         };
       }).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

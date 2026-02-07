@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/user_role.dart';
@@ -63,7 +64,6 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
 
   // Cache configuration
   static const String _cacheKeyPrefix = 'tile_configs';
-  static const int _cacheTtlMinutes = 60; // 1 hour
 
   // ==========================================
   // Public Methods
@@ -291,7 +291,11 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
     try {
       final cacheKey = _getCacheKey(screenId, role);
       final jsonData = configs.map((config) => config.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(
+        cacheKey,
+        jsonData,
+        ttlMinutes: PerformanceLimits.tileConfigCacheDuration.inMinutes,
+      );
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -323,7 +327,11 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
     try {
       final cacheKey = '${_cacheKeyPrefix}_all';
       final jsonData = configs.map((config) => config.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(
+        cacheKey,
+        jsonData,
+        ttlMinutes: PerformanceLimits.tileConfigCacheDuration.inMinutes,
+      );
     } catch (e) {
       debugPrint('⚠️  Failed to save all to cache: $e');
     }

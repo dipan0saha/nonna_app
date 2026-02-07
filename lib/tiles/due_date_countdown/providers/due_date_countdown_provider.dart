@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/baby_profile.dart';
@@ -82,7 +83,6 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'due_date_countdown';
-  static const int _cacheTtlMinutes = 60; // Cache for 1 hour
 
   String? _subscriptionId;
 
@@ -278,7 +278,7 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
           'profile': countdown.profile.toJson(),
         };
       }).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

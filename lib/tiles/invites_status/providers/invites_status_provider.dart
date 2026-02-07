@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/invitation_status.dart';
@@ -70,7 +71,6 @@ class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'invites_status';
-  static const int _cacheTtlMinutes = 15;
 
   String? _subscriptionId;
 
@@ -215,7 +215,7 @@ class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = invitations.map((inv) => inv.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: _cacheTtlMinutes);
+      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
