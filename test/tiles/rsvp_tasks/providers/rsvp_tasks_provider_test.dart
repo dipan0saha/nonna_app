@@ -30,7 +30,7 @@ void main() {
       startsAt: DateTime.now().add(const Duration(days: 7)),
       endsAt: DateTime.now().add(const Duration(days: 7, hours: 3)),
       location: '123 Main St',
-      createdBy: 'user_1',
+      createdByUserId: 'user_1',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -39,7 +39,7 @@ void main() {
       id: 'rsvp_1',
       eventId: 'event_1',
       userId: 'user_1',
-      status: RsvpStatus.pending,
+      status: RsvpStatus.maybe,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );

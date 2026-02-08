@@ -339,6 +339,7 @@ void main() {
         final initialCount = state.notifications.length;
 
         // Simulate real-time INSERT
+        // ignore: unused_local_variable
         final newNotification = sampleNotification.copyWith(id: 'notif_2');
         // Note: This test is checking the structure but can't easily simulate real-time
         // updates without exposing the internal _handleRealtimeUpdate method
