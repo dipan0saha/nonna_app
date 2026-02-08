@@ -61,7 +61,8 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async => FakePostgrestBuilder([]));
+        // Using thenReturn for FakePostgrestBuilder which implements then() for async
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -74,7 +75,7 @@ void main() {
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleDeal.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -122,7 +123,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleDeal.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(
@@ -131,13 +132,15 @@ void main() {
         );
 
         // Verify database was called despite cache
+        // Using greaterThanOrEqualTo because the provider makes multiple queries
+        // (registry items + purchases) to filter unpurchased items
         verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
       });
 
       test('saves fetched deals to cache', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleDeal.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -154,7 +157,7 @@ void main() {
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async => FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
           deal1.toJson(),
           deal2.toJson(),
           deal3.toJson(),
@@ -173,7 +176,7 @@ void main() {
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async => FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
           deal1.toJson(),
           deal2.toJson(),
           deal3.toJson(),
@@ -192,12 +195,13 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleDeal.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
+        // Using greaterThanOrEqualTo because the provider makes multiple queries
         verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
       });
     });
@@ -210,7 +214,7 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([highPriorityDeal.toJson()]));
+            .thenReturn(FakePostgrestBuilder([highPriorityDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -227,7 +231,7 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
+            .thenReturn(FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -250,8 +254,8 @@ void main() {
         );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer(
-          (_) async => FakePostgrestBuilder(deals.map((d) => d.toJson()).toList()),
+        when(mockDatabaseService.select(any)).thenReturn(
+          FakePostgrestBuilder(deals.map((d) => d.toJson()).toList()),
         );
 
         final notifier = container.read(registryDealsProvider.notifier);

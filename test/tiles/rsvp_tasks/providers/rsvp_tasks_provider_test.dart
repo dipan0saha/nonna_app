@@ -79,7 +79,8 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async => FakePostgrestBuilder([]));
+        // Using thenReturn for FakePostgrestBuilder which implements then() for async
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -100,7 +101,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -170,7 +171,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -180,6 +181,8 @@ void main() {
         );
 
         // Verify database was called despite cache
+        // Using greaterThanOrEqualTo because the provider makes multiple queries
+        // (events + rsvps) to build the full state
         verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
       });
 
@@ -191,7 +194,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -246,7 +249,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.refresh(
@@ -255,6 +258,7 @@ void main() {
         );
 
         // Verify database was called (bypassing cache)
+        // Using greaterThanOrEqualTo because the provider makes multiple queries
         verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
       });
     });
@@ -269,7 +273,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -284,11 +288,11 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscriptions on dispose', () {
+        // Note: Riverpod automatically handles disposal through ref.onDispose
+        // This test verifies the container can be disposed without errors
         when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
 
-        container.dispose();
-
-        expect(true, isTrue);
+        expect(() => container.dispose(), returnsNormally);
       });
     });
 
@@ -301,7 +305,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(

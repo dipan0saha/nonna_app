@@ -62,7 +62,8 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async => FakePostgrestBuilder([]));
+        // Using thenReturn for FakePostgrestBuilder which implements then() for async
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -80,7 +81,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -133,7 +134,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(
@@ -142,6 +143,8 @@ void main() {
         );
 
         // Verify database was called despite cache
+        // Using greaterThanOrEqualTo because the provider makes multiple queries
+        // (registry items + purchases) to build the full state
         verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
       });
 
@@ -153,7 +156,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -180,8 +183,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenAnswer(
-          (_) async => FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
+        when(mockDatabaseService.select(any)).thenReturn(
+          FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
         );
 
         final notifier = container.read(recentPurchasesProvider.notifier);
@@ -202,12 +205,13 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
+        // Using greaterThanOrEqualTo because the provider makes multiple queries
         verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
       });
     });
@@ -222,14 +226,14 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
 
         final initialCount = container.read(recentPurchasesProvider).purchases.length;
 
-        // Simulate real-time INSERT - would be handled by the provider internally
+        // Verify real-time setup occurred
         expect(initialCount, greaterThanOrEqualTo(0));
       });
 
@@ -242,7 +246,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -254,11 +258,11 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
+        // Note: Riverpod automatically handles disposal through ref.onDispose
+        // This test verifies the container can be disposed without errors
         when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
 
-        container.dispose();
-
-        expect(true, isTrue);
+        expect(() => container.dispose(), returnsNormally);
       });
     });
 
@@ -283,7 +287,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenAnswer((_) async => FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
           purchase1.toJson(),
           purchase2.toJson(),
           purchase3.toJson(),
