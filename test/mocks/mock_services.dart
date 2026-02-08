@@ -27,6 +27,12 @@ import 'package:nonna_app/core/services/supabase_service.dart';
 /// ```
 ///
 /// Generated mocks will be available in `mock_services.mocks.dart`
+///
+/// IMPORTANT: The import below is a forward reference to the generated file
+/// which doesn't exist until build_runner is executed.
+// ignore: unused_import
+import 'mock_services.mocks.dart';
+
 @GenerateMocks([
   // ==========================================
   // Supabase Core Components
@@ -73,9 +79,9 @@ import 'package:nonna_app/core/services/supabase_service.dart';
   // ==========================================
   File,
 ])
-// Forward reference to generated mocks file (created by build_runner)
-// ignore: unused_import
-import 'mock_services.mocks.dart';
+void _dummyFunction() {
+  // This empty function is required for the @GenerateMocks annotation
+}
 
 /// Mock Services Documentation
 ///

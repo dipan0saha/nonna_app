@@ -3,9 +3,12 @@
 ## 🚀 Quick Start
 
 ```dart
-import '../../mocks/mock_services.mocks.dart';
-import '../../helpers/mock_factory.dart';
-import '../../helpers/test_data_factory.dart';
+// Import paths depend on your test file location
+// Adjust '../' depth based on nesting level
+// Example for test/tiles/my_tile/providers/my_test.dart:
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
+import '../../../helpers/test_data_factory.dart';
 
 void main() {
   group('MyTest', () {
@@ -263,9 +266,10 @@ import 'my_test.mocks.dart';
 
 ### ✅ DO: Use centralized mocks
 ```dart
-// ✅ GOOD (use relative imports in test files)
-import '../../mocks/mock_services.mocks.dart';
-import '../../helpers/mock_factory.dart';
+// ✅ GOOD (use relative imports based on file location)
+// Example for test/tiles/my_tile/providers/my_test.dart:
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
 ```
 
 ---

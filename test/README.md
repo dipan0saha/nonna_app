@@ -9,7 +9,18 @@
 ## Quick Start
 
 ```dart
-// Import centralized mocks (use relative imports in test files)
+// Import centralized mocks (adjust path based on your test file location)
+// For tests in test/tiles/my_tile/providers/:
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
+import '../../../helpers/test_data_factory.dart';
+
+// For tests in test/features/my_feature/providers/:
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
+import '../../../helpers/test_data_factory.dart';
+
+// For tests directly in test/core/services/:
 import '../../mocks/mock_services.mocks.dart';
 import '../../helpers/mock_factory.dart';
 import '../../helpers/test_data_factory.dart';
