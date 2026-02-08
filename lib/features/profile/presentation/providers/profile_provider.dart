@@ -113,7 +113,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
         throw Exception('Profile not found');
       }
 
-      final profile = User.fromJson(response as Map<String, dynamic>);
+      final profile = User.fromJson(response);
 
       // Save to cache
       await _saveToCache(userId, profile);
@@ -147,7 +147,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
           .maybeSingle();
 
       if (response != null) {
-        final stats = UserStats.fromJson(response as Map<String, dynamic>);
+        final stats = UserStats.fromJson(response);
         state = state.copyWith(stats: stats);
         debugPrint('✅ Loaded user stats');
       }

@@ -255,11 +255,9 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       };
 
       final response = await databaseService
-          .insert(SupabaseTables.babyProfiles, profileData)
-          .select()
-          .single();
+          .insert(SupabaseTables.babyProfiles, profileData);
 
-      final profile = BabyProfile.fromJson(response as Map<String, dynamic>);
+      final profile = BabyProfile.fromJson(response.first as Map<String, dynamic>);
 
       // Create owner membership
       await databaseService.insert(SupabaseTables.babyMemberships, {
