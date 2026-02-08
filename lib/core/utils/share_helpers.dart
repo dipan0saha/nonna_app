@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:nonna_app/core/config/app_config.dart';
 
 /// Social sharing and deep linking utilities
@@ -200,10 +202,13 @@ Sent from Nonna App
   static String _generateInvitationCode() {
     // Generate a random 8-character code using timestamp and random component
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final random = DateTime.now().microsecondsSinceEpoch;
+    final random = Random();
+    final timestamp = DateTime.now().microsecondsSinceEpoch;
     final code = List.generate(8, (index) {
-      // Use both timestamp and index to ensure uniqueness
-      final charIndex = ((random ~/ (index + 1)) + index * 7) % chars.length;
+      // Use both timestamp, random, and index to ensure uniqueness
+      final charIndex = (random.nextInt(chars.length) + 
+                        (timestamp ~/ (index + 1)) + 
+                        index * 7) % chars.length;
       return chars[charIndex];
     }).join();
     return code;
