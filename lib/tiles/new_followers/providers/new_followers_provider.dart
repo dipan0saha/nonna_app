@@ -162,7 +162,7 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
         .select(SupabaseTables.babyMemberships)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String())
-        .isNull(SupabaseTables.removedAt) // Only get active members
+        .is_('removed_at', null) // Only get active members
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxFollowers);
 
@@ -218,13 +218,21 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
+      final channelName = 'baby-memberships-channel-$babyProfileId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.babyMemberships,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
+        channelName: channelName,
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
         },
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for new followers');
     } catch (e) {

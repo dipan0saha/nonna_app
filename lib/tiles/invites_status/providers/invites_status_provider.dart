@@ -225,13 +225,18 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
       _cancelRealtimeSubscription();
 
       final realtimeService = ref.read(realtimeServiceProvider);
-      _subscriptionId = await realtimeService.subscribe(
+      final channelName = 'invitations-channel-$babyProfileId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.invitations,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
-        },
+        channelName: channelName,
+        
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for invitations');
     } catch (e) {

@@ -153,7 +153,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     final itemsResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt);
+        .is_(SupabaseTables.deletedAt, null);
 
     final itemIds = (itemsResponse as List)
         .map((json) => json['id'] as String)
@@ -164,8 +164,8 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     // Then fetch purchases for these items
     final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
-        .inFilter(SupabaseTables.registryItemId, itemIds)
-        .isNull(SupabaseTables.deletedAt)
+        .inFilter('registry_item_id', itemIds)
+        .is_(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxPurchases);
 
@@ -222,12 +222,17 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
+      final channelName = 'registry-purchases-channel-$babyProfileId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.registryPurchases,
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
-        },
+        channelName: channelName,
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for purchases');
     } catch (e) {

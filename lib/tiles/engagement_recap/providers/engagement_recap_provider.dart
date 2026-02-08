@@ -179,7 +179,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     final photosResponse = await databaseService
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt);
+        .is_(SupabaseTables.deletedAt, null);
 
     final photoIds = (photosResponse as List)
         .map((json) => json['id'] as String)
@@ -190,7 +190,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     if (photoIds.isNotEmpty) {
       final squishesResponse = await databaseService
           .select(SupabaseTables.photoSquishes)
-          .inFilter(SupabaseTables.photoId, photoIds)
+          .inFilter('photo_id', photoIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
 
       photoSquishesCount = (squishesResponse as List).length;
@@ -201,7 +201,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     if (photoIds.isNotEmpty) {
       final commentsResponse = await databaseService
           .select(SupabaseTables.photoComments)
-          .inFilter(SupabaseTables.photoId, photoIds)
+          .inFilter('photo_id', photoIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
 
       photoCommentsCount = (commentsResponse as List).length;
@@ -211,7 +211,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     final eventsResponse = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt);
+        .is_(SupabaseTables.deletedAt, null);
 
     final eventIds = (eventsResponse as List)
         .map((json) => json['id'] as String)
@@ -221,8 +221,8 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     int eventRSVPsCount = 0;
     if (eventIds.isNotEmpty) {
       final rsvpsResponse = await databaseService
-          .select(SupabaseTables.eventRSVPs)
-          .inFilter(SupabaseTables.eventId, eventIds)
+          .select('event_rsvps')
+          .inFilter('event_id', eventIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
 
       eventRSVPsCount = (rsvpsResponse as List).length;

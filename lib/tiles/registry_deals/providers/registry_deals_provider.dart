@@ -146,9 +146,9 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
     final itemsResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
-        .gte(SupabaseTables.priority, _minPriority)
-        .order(SupabaseTables.priority, ascending: false)
+        .is_(SupabaseTables.deletedAt, null)
+        .gte('priority', _minPriority)
+        .order('priority', ascending: false)
         .order(SupabaseTables.createdAt, ascending: false);
 
     final items = (itemsResponse as List)
@@ -161,11 +161,11 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
     final itemIds = items.map((item) => item.id).toList();
     final purchasesResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
-        .inFilter(SupabaseTables.registryItemId, itemIds)
-        .isNull(SupabaseTables.deletedAt);
+        .inFilter('registry_item_id', itemIds)
+        .is_(SupabaseTables.deletedAt, null);
 
     final purchasedItemIds = (purchasesResponse as List)
-        .map((json) => json[SupabaseTables.registryItemId] as String)
+        .map((json) => json['registry_item_id'] as String)
         .toSet();
 
     // Filter out purchased items and limit to max deals
@@ -222,13 +222,21 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
+      final channelName = 'registry-items-channel-$babyProfileId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.registryItems,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
+        channelName: channelName,
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
         },
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for registry deals');
     } catch (e) {

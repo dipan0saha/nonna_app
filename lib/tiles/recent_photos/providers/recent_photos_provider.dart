@@ -191,7 +191,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
     final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
+        .is_(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false)
         .range(offset, offset + limit - 1);
 
@@ -244,13 +244,21 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
+      final channelName = 'photos-channel-$babyProfileId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.photos,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
+        channelName: channelName,
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
         },
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for photos');
     } catch (e) {

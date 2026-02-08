@@ -163,7 +163,7 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
     final response = await databaseService
         .select(SupabaseTables.babyProfiles)
         .inFilter(SupabaseTables.id, babyProfileIds)
-        .isNull(SupabaseTables.deletedAt);
+        .is_(SupabaseTables.deletedAt, null);
 
     final profiles = (response as List)
         .map((json) => BabyProfile.fromJson(json as Map<String, dynamic>))
@@ -174,7 +174,7 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
 
   /// Calculate countdown for a baby profile
   BabyCountdown _calculateCountdown(BabyProfile profile) {
-    if (profile.dueDate == null) {
+    if (profile.expectedBirthDate == null) {
       return BabyCountdown(
         profile: profile,
         daysUntilDueDate: 0,
@@ -184,7 +184,7 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
     }
 
     final now = DateTime.now();
-    final dueDate = profile.dueDate!;
+    final dueDate = profile.expectedBirthDate!;
     final difference = dueDate.difference(now);
     final daysUntil = difference.inDays;
 
@@ -292,13 +292,17 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
 
       final realtimeService = ref.read(realtimeServiceProvider);
       // Subscribe to any baby profile changes
-      _subscriptionId = await realtimeService.subscribe(
+      final channelName = 'baby-profiles-channel-${babyProfileIds.join("-")}';
+      final stream = realtimeService.subscribe(
         table: SupabaseTables.babyProfiles,
-        filter: '${SupabaseTables.id}=in.(${babyProfileIds.join(",")})',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileIds);
-        },
+        channelName: channelName,
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileIds);
+      });
 
       debugPrint('✅ Real-time subscription setup for due date countdowns');
     } catch (e) {

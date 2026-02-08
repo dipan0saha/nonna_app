@@ -201,9 +201,9 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
     final response = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
-        .gte(SupabaseTables.startsAt, now.toIso8601String())
-        .order(SupabaseTables.startsAt, ascending: true)
+        .is_(SupabaseTables.deletedAt, null)
+        .gte('starts_at', now.toIso8601String())
+        .order('starts_at', ascending: true)
         .range(offset, offset + limit - 1);
 
     return (response as List)
@@ -256,13 +256,18 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await realtimeService.subscribe(
+      final channelName = 'events-channel-$babyProfileId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.events,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
-        },
+        channelName: channelName,
+        
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for events');
     } catch (e) {

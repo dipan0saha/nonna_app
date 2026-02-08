@@ -138,9 +138,8 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
     try {
       // Update in database
       await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.notifications)
-          .eq(SupabaseTables.id, notificationId)
-          .update({SupabaseTables.isRead: true});
+          .update(SupabaseTables.notifications, {'is_read': true})
+          .eq(SupabaseTables.id, notificationId);
 
       // Update local state
       final updatedNotifications = state.notifications.map((n) {
@@ -182,10 +181,9 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
     try {
       // Update in database
       await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.notifications)
+          .update(SupabaseTables.notifications, {'is_read': true})
           .eq(SupabaseTables.userId, userId)
-          .eq(SupabaseTables.isRead, false)
-          .update({SupabaseTables.isRead: true});
+          .eq('is_read', false);
 
       // Update local state
       final updatedNotifications = state.notifications.map((n) {
@@ -295,13 +293,21 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
+      final channelName = 'notifications-channel-$userId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.notifications,
-        filter: '${SupabaseTables.userId}=eq.$userId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, userId);
+        channelName: channelName,
+        filter: {
+          'column': SupabaseTables.userId,
+          'value': userId,
         },
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, userId);
+      });
 
       debugPrint('✅ Real-time subscription setup for notifications');
     } catch (e) {
