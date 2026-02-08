@@ -310,7 +310,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
     }
 
     try {
-      final data = await localStorageService.getObject(key);
+      final data = localStorageService.getObject(key);
       if (data == null) return {};
 
       // Parse object to Map<String, bool>
@@ -345,7 +345,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
     }
 
     try {
-      final data = await localStorageService.getObject(_featureFlagsStorageKey);
+      final data = localStorageService.getObject(_featureFlagsStorageKey);
       if (data == null) return {};
 
       final Map<String, dynamic> jsonMap = Map<String, dynamic>.from(data);

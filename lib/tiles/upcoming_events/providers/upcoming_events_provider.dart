@@ -196,7 +196,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
     final response = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is(SupabaseTables.deletedAt, null)
+        .isFilter(SupabaseTables.deletedAt, null)
         .gte('starts_at', now.toIso8601String())
         .order('starts_at', ascending: true)
         .range(offset, offset + limit - 1);
@@ -248,7 +248,6 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
 
   /// Setup real-time subscription for events
   Future<void> _setupRealtimeSubscription(String babyProfileId) async {
-    final realtimeService = ref.read(realtimeServiceProvider);
     try {
       _cancelRealtimeSubscription();
 

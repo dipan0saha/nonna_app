@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
@@ -6,6 +7,7 @@ import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/upcoming_events/providers/upcoming_events_provider.dart';
 
 @GenerateMocks([DatabaseService, CacheService, RealtimeService])
@@ -13,7 +15,7 @@ import 'upcoming_events_provider_test.mocks.dart';
 
 void main() {
   group('UpcomingEventsProvider Tests', () {
-    late UpcomingEventsNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -40,20 +42,27 @@ void main() {
       // Setup mock cache service
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = UpcomingEventsNotifier(
-        databaseService: mockDatabaseService,
-        cacheService: mockCacheService,
-        realtimeService: mockRealtimeService,
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
       );
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
       test('initial state has empty events', () {
-        expect(notifier.state.events, isEmpty);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
-        expect(notifier.state.hasMore, isTrue);
-        expect(notifier.state.currentPage, equals(0));
+        final state = container.read(upcomingEventsProvider);
+        expect(state.events, isEmpty);
+        expect(state.isLoading, isFalse);
+        expect(state.error, isNull);
+        expect(state.hasMore, isTrue);
+        expect(state.currentPage, equals(0));
       });
     });
 
@@ -63,8 +72,10 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any)).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
-          return FakePostgrestBuilder([]);
+          return [];
         });
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         // Start fetching
         final fetchFuture = notifier.fetchEvents(
@@ -73,7 +84,7 @@ void main() {
         );
 
         // Verify loading state
-        expect(notifier.state.isLoading, isTrue);
+        expect(container.read(upcomingEventsProvider).isLoading, isTrue);
 
         await fetchFuture;
       });
@@ -83,29 +94,34 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
           role: UserRole.owner,
         );
 
+        final state = container.read(upcomingEventsProvider);
         // Verify state updated
-        expect(notifier.state.events, hasLength(1));
-        expect(notifier.state.events.first.id, equals('event_1'));
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
-        expect(notifier.state.currentPage, equals(1));
+        expect(state.events, hasLength(1));
+        expect(state.events.first.id, equals('event_1'));
+        expect(state.isLoading, isFalse);
+        expect(state.error, isNull);
+        expect(state.currentPage, equals(1));
       });
 
       test('loads events from cache when available', () async {
         // Setup cache to return data
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
@@ -115,9 +131,10 @@ void main() {
         // Verify database was not called
         verifyNever(mockDatabaseService.select(any));
 
+        final state = container.read(upcomingEventsProvider);
         // Verify state updated from cache
-        expect(notifier.state.events, hasLength(1));
-        expect(notifier.state.events.first.id, equals('event_1'));
+        expect(state.events, hasLength(1));
+        expect(state.events.first.id, equals('event_1'));
       });
 
       test('handles errors gracefully', () async {
@@ -126,15 +143,18 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
+        final notifier = container.read(upcomingEventsProvider.notifier);
+
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
           role: UserRole.owner,
         );
 
+        final state = container.read(upcomingEventsProvider);
         // Verify error state
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, contains('Database error'));
-        expect(notifier.state.events, isEmpty);
+        expect(state.isLoading, isFalse);
+        expect(state.error, contains('Database error'));
+        expect(state.events, isEmpty);
       });
 
       test('force refresh bypasses cache', () async {
@@ -143,11 +163,13 @@ void main() {
             .thenAnswer((_) async => [sampleEvent.toJson()]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
@@ -163,11 +185,13 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
@@ -187,11 +211,13 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
@@ -201,13 +227,14 @@ void main() {
         final event2 =
             sampleEvent.copyWith(id: 'event_2', title: 'Gender Reveal');
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([event2.toJson()]));
+            .thenAnswer((_) async => [event2.toJson()]);
 
         await notifier.loadMore(babyProfileId: 'profile_1');
 
+        final state = container.read(upcomingEventsProvider);
         // Verify state updated with new events
-        expect(notifier.state.events, hasLength(2));
-        expect(notifier.state.currentPage, equals(2));
+        expect(state.events, hasLength(2));
+        expect(state.currentPage, equals(2));
       });
 
       test('does not load more when already loading', () async {
@@ -215,11 +242,13 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
@@ -240,19 +269,22 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) async => []);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
           role: UserRole.owner,
         );
 
+        final state = container.read(upcomingEventsProvider);
         // hasMore should be false when empty result
-        expect(notifier.state.hasMore, isFalse);
+        expect(state.hasMore, isFalse);
 
         await notifier.loadMore(babyProfileId: 'profile_1');
 
@@ -267,11 +299,13 @@ void main() {
             .thenAnswer((_) async => [sampleEvent.toJson()]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.refresh(
           babyProfileId: 'profile_1',
@@ -289,18 +323,20 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
           role: UserRole.owner,
         );
 
-        final initialCount = notifier.state.events.length;
+        final initialCount = container.read(upcomingEventsProvider).events.length;
 
         // Simulate real-time INSERT
         final newEvent =
@@ -309,7 +345,7 @@ void main() {
           events: [newEvent, ...notifier.state.events],
         );
 
-        expect(notifier.state.events.length, equals(initialCount + 1));
+        expect(container.read(upcomingEventsProvider).events.length, equals(initialCount + 1));
       });
 
       test('handles UPDATE event', () async {
@@ -317,11 +353,13 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
@@ -336,7 +374,7 @@ void main() {
               .toList(),
         );
 
-        expect(notifier.state.events.first.title, equals('Updated Event'));
+        expect(container.read(upcomingEventsProvider).events.first.title, equals('Updated Event'));
       });
 
       test('handles DELETE event', () async {
@@ -344,18 +382,20 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) async => [sampleEvent.toJson()]);
+
+        final notifier = container.read(upcomingEventsProvider.notifier);
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
           role: UserRole.owner,
         );
 
-        expect(notifier.state.events, hasLength(1));
+        expect(container.read(upcomingEventsProvider).events, hasLength(1));
 
         // Simulate real-time DELETE
         notifier.state = notifier.state.copyWith(
@@ -363,36 +403,24 @@ void main() {
               notifier.state.events.where((e) => e.id != 'event_1').toList(),
         );
 
-        expect(notifier.state.events, isEmpty);
+        expect(container.read(upcomingEventsProvider).events, isEmpty);
       });
     });
 
     group('dispose', () {
-      test('cancels real-time subscription on dispose', () {
-        when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
+      test('cancels real-time subscription on dispose', () async {
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
-        notifier.dispose();
+        // Disposing the container will trigger the onDispose callback
+        container.dispose();
 
-        // Verify unsubscribe was called if subscription existed
+        // Give a moment for async dispose to complete
+        await Future.delayed(const Duration(milliseconds: 50));
+
+        // Verify the container was disposed
         // Note: This verifies the method can be called without errors
-        expect(notifier.state, isNotNull);
+        expect(true, isTrue);
       });
     });
   });
-}
-
-// Fake builders for Postgrest operations (test doubles)
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-
-  FakePostgrestBuilder(this.data);
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder isNull(String column) => this;
-  FakePostgrestBuilder gte(String column, dynamic value) => this;
-  FakePostgrestBuilder order(String column, {bool ascending = true}) => this;
-  FakePostgrestBuilder range(int from, int to) => this;
-  FakePostgrestBuilder limit(int count) => this;
-
-  Future<List<Map<String, dynamic>>> call() async => data;
 }

@@ -150,7 +150,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is(SupabaseTables.deletedAt, null);
+        .isFilter(SupabaseTables.deletedAt, null);
 
     final itemIds =
         (itemsResponse as List).map((json) => json['id'] as String).toList();
@@ -162,7 +162,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
         .inFilter('registry_item_id', itemIds)
-        .is(SupabaseTables.deletedAt, null)
+        .isFilter(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxPurchases);
 

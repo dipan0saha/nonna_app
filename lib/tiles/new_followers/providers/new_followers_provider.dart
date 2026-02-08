@@ -117,7 +117,7 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       await _setupRealtimeSubscription(babyProfileId);
 
       debugPrint(
-        '✅ Loaded ${followers.length} new followers (${activeCount} active) for profile: $babyProfileId',
+        '✅ Loaded ${followers.length} new followers ($activeCount active) for profile: $babyProfileId',
       );
     } catch (e) {
       final errorMessage = 'Failed to fetch new followers: $e';
@@ -162,7 +162,7 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
         .select(SupabaseTables.babyMemberships)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String())
-        .is('removed_at', null) // Only get active members
+        .isFilter('removed_at', null) // Only get active members
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxFollowers);
 

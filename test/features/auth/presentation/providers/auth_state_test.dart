@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
-import 'package:nonna_app/core/models/user.dart' as app_user;
 
 void main() {
   group('AuthState Tests', () {
