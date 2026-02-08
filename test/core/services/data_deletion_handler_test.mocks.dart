@@ -781,8 +781,8 @@ class MockStorageService extends _i1.Mock implements _i6.StorageService {
   @override
   _i5.Future<_i4.File> generateThumbnail(
     _i4.File? imageFile, {
-    int? maxWidth = 200,
-    int? maxHeight = 200,
+    int? maxWidth = 300,
+    int? maxHeight = 300,
     int? quality = 60,
   }) =>
       (super.noSuchMethod(

@@ -701,6 +701,82 @@
 - [ ] Home Screen (`lib/features/home/presentation/screens/home_screen.dart`)
 - [ ] Home App Bar (`lib/features/home/presentation/widgets/home_app_bar.dart`)
 - [ ] Tile List View (`lib/features/home/presentation/widgets/tile_list_view.dart`)
+- [ ] Calendar Screen (`lib/features/calendar/presentation/screens/calendar_screen.dart`)
+- [ ] Calendar Widget (`lib/features/calendar/presentation/widgets/calendar_widget.dart`)
+- [ ] Gallery Screen (`lib/features/gallery/presentation/screens/gallery_screen.dart`)
+- [ ] Photo Detail Screen (`lib/features/gallery/presentation/screens/photo_detail_screen.dart`)
+- [ ] Squish Photo Widget (`lib/features/gallery/presentation/widgets/squish_photo_widget.dart`)
+- [ ] Registry Screen (`lib/features/registry/presentation/screens/registry_screen.dart`)
+- [ ] Registry Item Detail Screen (`lib/features/registry/presentation/screens/registry_item_detail_screen.dart`)
+- [ ] Registry Filter Bar (`lib/features/registry/presentation/widgets/registry_filter_bar.dart`)
+
+**Test Files**:
+- [ ] `test/features/home/presentation/screens/home_screen_test.dart`
+- [ ] `test/features/home/presentation/widgets/home_app_bar_test.dart`
+- [ ] `test/features/home/presentation/widgets/tile_list_view_test.dart`
+- [ ] `test/features/calendar/presentation/screens/calendar_screen_test.dart`
+- [ ] `test/features/calendar/presentation/widgets/calendar_widget_test.dart`
+- [ ] `test/features/gallery/presentation/screens/gallery_screen_test.dart`
+- [ ] `test/features/gallery/presentation/screens/photo_detail_screen_test.dart`
+- [ ] `test/features/gallery/presentation/widgets/squish_photo_widget_test.dart`
+- [ ] `test/features/registry/presentation/screens/registry_screen_test.dart`
+- [ ] `test/features/registry/presentation/screens/registry_item_detail_screen_test.dart`
+- [ ] `test/features/registry/presentation/widgets/registry_filter_bar_test.dart`
+
+### 3.6.3 Profile Management Screens
+- [ ] Profile Screen (`lib/features/profile/presentation/screens/profile_screen.dart`)
+- [ ] Edit Profile Screen (`lib/features/profile/presentation/screens/edit_profile_screen.dart`)
+- [ ] Profile Widgets (`lib/features/profile/presentation/widgets/profile_widgets.dart`)
+
+### 3.6.4 Additional Feature Screens
+- [ ] Baby Profile Screen (`lib/features/baby_profile/presentation/screens/baby_profile_screen.dart`)
+- [ ] Create Baby Profile Screen (`lib/features/baby_profile/presentation/screens/create_baby_profile_screen.dart`)
+- [ ] Edit Baby Profile Screen (`lib/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart`)
+- [ ] Invite Followers Screen (`lib/features/baby_profile/presentation/screens/invite_followers_screen.dart`)
+- [ ] Followers Management Screen (`lib/features/baby_profile/presentation/screens/followers_management_screen.dart`)
+- [ ] Event Creation Screen (`lib/features/calendar/presentation/screens/event_creation_screen.dart`)
+- [ ] Event Detail Screen (`lib/features/calendar/presentation/screens/event_detail_screen.dart`)
+- [ ] Registry Item Creation Screen (`lib/features/registry/presentation/screens/registry_item_creation_screen.dart`)
+- [ ] Gamification Screen (`lib/features/gamification/presentation/screens/gamification_screen.dart`)
+- [ ] Settings Screen (`lib/features/settings/presentation/screens/settings_screen.dart`)
+
+### 3.6.5 Navigation & Routing
+- [ ] App Router (`lib/core/navigation/app_router.dart`)
+- [ ] Route Guards (`lib/core/navigation/route_guards.dart`)
+- [ ] Navigation Service (`lib/core/navigation/navigation_service.dart`)
+
+### 3.6.6 Responsive Layouts
+- [ ] Responsive Scaffold (`lib/core/widgets/responsive_scaffold.dart`)
+- [ ] Breakpoint System (`lib/core/utils/breakpoint_system.dart`)
+
+### 3.6.7 Error Boundaries & Recovery
+- [ ] Error Boundary Widget (`lib/core/widgets/error_boundary.dart`)
+- [ ] Crash Recovery Handler (`lib/core/services/crash_recovery_handler.dart`)
+
+### 3.6.8 Offline-First Implementation
+- [ ] Offline Indicator (`lib/core/widgets/offline_indicator.dart`)
+- [ ] Sync Manager (`lib/core/services/sync_manager.dart`)
+
+### 3.6.9 Network Failure Handling
+- [ ] Retry Widget (`lib/core/widgets/retry_widget.dart`)
+- [ ] Network Status Monitor (`lib/core/services/network_status_monitor.dart`)
+
+### 3.6.10 Tile Widgets (15 Tiles)
+- [ ] Upcoming Events Tile (`lib/tiles/upcoming_events/widgets/upcoming_events_tile.dart`)
+- [ ] Recent Photos Tile (`lib/tiles/recent_photos/widgets/recent_photos_tile.dart`)
+- [ ] Registry Highlights Tile (`lib/tiles/registry_highlights/widgets/registry_highlights_tile.dart`)
+- [ ] Notifications Tile (`lib/tiles/notifications/widgets/notifications_tile.dart`)
+- [ ] Invites Status Tile (`lib/tiles/invites_status/widgets/invites_status_tile.dart`)
+- [ ] RSVP Tasks Tile (`lib/tiles/rsvp_tasks/widgets/rsvp_tasks_tile.dart`)
+- [ ] Due Date Countdown Tile (`lib/tiles/due_date_countdown/widgets/due_date_countdown_tile.dart`)
+- [ ] Recent Purchases Tile (`lib/tiles/recent_purchases/widgets/recent_purchases_tile.dart`)
+- [ ] Registry Deals Tile (`lib/tiles/registry_deals/widgets/registry_deals_tile.dart`)
+- [ ] Engagement Recap Tile (`lib/tiles/engagement_recap/widgets/engagement_recap_tile.dart`)
+- [ ] Gallery Favorites Tile (`lib/tiles/gallery_favorites/widgets/gallery_favorites_tile.dart`)
+- [ ] Checklist Tile (`lib/tiles/checklist/widgets/checklist_tile.dart`)
+- [ ] Storage Usage Tile (`lib/tiles/storage_usage/widgets/storage_usage_tile.dart`)
+- [ ] System Announcements Tile (`lib/tiles/system_announcements/widgets/system_announcements_tile.dart`)
+- [ ] New Followers Tile (`lib/tiles/new_followers/widgets/new_followers_tile.dart`)
 
 ---
 
