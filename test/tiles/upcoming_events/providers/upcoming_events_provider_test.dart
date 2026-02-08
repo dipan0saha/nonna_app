@@ -72,8 +72,8 @@ void main() {
     group('fetchEvents', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async {
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(argThat(isA<String>()))).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
           return [];
         });
@@ -94,13 +94,13 @@ void main() {
 
       test('fetches events from database when cache is empty', () async {
         // Setup mocks
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -121,7 +121,7 @@ void main() {
 
       test('loads events from cache when available', () async {
         // Setup cache to return data
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -132,7 +132,7 @@ void main() {
         );
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(argThat(isA<String>())));
 
         final state = container.read(upcomingEventsProvider);
         // Verify state updated from cache
@@ -142,8 +142,8 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenThrow(Exception('Database error'));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -162,14 +162,14 @@ void main() {
 
       test('force refresh bypasses cache', () async {
         // Setup mocks
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -181,17 +181,17 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mockDatabaseService.select(argThat(isA<String>()))).called(1);
       });
 
       test('saves fetched events to cache', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -211,13 +211,13 @@ void main() {
     group('loadMore', () {
       test('loads more events for pagination', () async {
         // Setup initial state with events
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -229,7 +229,7 @@ void main() {
 
         final event2 =
             sampleEvent.copyWith(id: 'event_2', title: 'Gender Reveal');
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [event2.toJson()]);
 
         await notifier.loadMore(babyProfileId: 'profile_1');
@@ -242,13 +242,13 @@ void main() {
 
       test('does not load more when already loading', () async {
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -264,18 +264,18 @@ void main() {
         await notifier.loadMore(babyProfileId: 'profile_1');
 
         // Verify no additional database call
-        verify(mockDatabaseService.select(any)).called(1); // Only initial fetch
+        verify(mockDatabaseService.select(argThat(isA<String>()))).called(1); // Only initial fetch
       });
 
       test('does not load more when hasMore is false', () async {
         // Setup initial state with hasMore = false
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => []);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -292,20 +292,20 @@ void main() {
         await notifier.loadMore(babyProfileId: 'profile_1');
 
         // Verify only initial database call
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mockDatabaseService.select(argThat(isA<String>()))).called(1);
       });
     });
 
     group('refresh', () {
       test('refreshes events with force refresh', () async {
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -316,20 +316,20 @@ void main() {
         );
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mockDatabaseService.select(argThat(isA<String>()))).called(1);
       });
     });
 
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -353,13 +353,13 @@ void main() {
 
       test('handles UPDATE event', () async {
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);
@@ -382,13 +382,13 @@ void main() {
 
       test('handles DELETE event', () async {
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
         final notifier = container.read(upcomingEventsProvider.notifier);

@@ -73,8 +73,8 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
         
         // Setup mock to delay response
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async {
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(argThat(isA<String>()))).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
           return FakePostgrestBuilder([]);
         });
@@ -93,13 +93,13 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
         
         // Setup mocks
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
@@ -118,13 +118,13 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
         
         // Setup cache to return data
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(argThat(isA<String>())));
 
         final state = container.read(invitesStatusProvider);
         
@@ -137,8 +137,8 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
         
         // Setup mock to throw error
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenThrow(Exception('Database error'));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
@@ -155,14 +155,14 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
         
         // Setup mocks
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(
@@ -171,7 +171,7 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mockDatabaseService.select(argThat(isA<String>()))).called(1);
       });
 
       test('calculates pending count correctly', () async {
@@ -184,13 +184,13 @@ void main() {
         final invite3 = sampleInvitation.copyWith(
             id: 'invite_3', status: InvitationStatus.pending);
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(argThat(isA<String>()))).thenReturn(FakePostgrestBuilder([
           invite1.toJson(),
           invite2.toJson(),
           invite3.toJson(),
@@ -206,20 +206,20 @@ void main() {
       test('refreshes invitations with force refresh', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
         
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(argThat(isA<String>())))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mockDatabaseService.select(argThat(isA<String>()))).called(1);
       });
     });
 
@@ -228,13 +228,13 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
         
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
@@ -256,13 +256,13 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
         
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
@@ -288,7 +288,7 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
-        when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
+        when(mockRealtimeService.unsubscribe(argThat(isA<String>()))).thenAnswer((_) async {});
 
         final state = container.read(invitesStatusProvider);
         expect(state, isNotNull);
@@ -299,13 +299,13 @@ void main() {
       test('owner can fetch invitations', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
         
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(argThat(isA<String>())))
             .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
