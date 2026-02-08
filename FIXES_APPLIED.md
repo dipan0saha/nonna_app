@@ -8,11 +8,11 @@ This document summarizes all the fixes applied to resolve flutter test issues as
 ### 1. Core Services Fixes
 
 #### service_locator.dart
-- **Issue**: Unused import of flutter_riverpod, undefined dispose method on LocalStorageService
+- **Issue**: Undefined dispose method on LocalStorageService
 - **Fix**: 
-  - Changed import from `riverpod` to `flutter_riverpod` (needed for Override type)
   - Removed call to non-existent `dispose()` method on LocalStorageService
   - Added comment explaining that LocalStorageService doesn't need disposal
+  - Note: Import changed to flutter_riverpod (needed for Override type)
 
 #### local_storage_service.dart
 - **Issue**: Missing `getAllKeys()` method

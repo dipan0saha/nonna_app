@@ -223,11 +223,13 @@ void main() {
 
       test('adjusts for day of month', () {
         final now = DateTime.now();
-        // Test with a date 14 months in the future
+        // Test with a date exactly 14 months ahead using the same day
+        // Handle edge case: if now is on day 29-31, use day 28 to avoid month overflow
+        final safeDay = now.day > 28 ? 28 : now.day;
         final targetMonth = now.month + 2;
-        final targetYear = now.year + 1 + (targetMonth > 12 ? 1 : 0);
+        final targetYear = targetMonth > 12 ? now.year + 2 : now.year + 1;
         final adjustedMonth = targetMonth > 12 ? targetMonth - 12 : targetMonth;
-        final future = DateTime(targetYear, adjustedMonth, now.day);
+        final future = DateTime(targetYear, adjustedMonth, safeDay);
         expect(DateHelpers.monthsUntil(future), 14);
       });
     });
