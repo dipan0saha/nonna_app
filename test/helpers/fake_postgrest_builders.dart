@@ -6,9 +6,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 PostgrestBuilder<List<Map<String, dynamic>>, List<Map<String, dynamic>>,
     List<Map<String, dynamic>>> _createBaseBuilder() {
   final client = SupabaseClient('http://localhost', 'fake-key');
-  final queryBuilder = client.from('fake_table');
-  // Cast the SupabaseQueryBuilder to the expected PostgrestBuilder type
-  return queryBuilder as PostgrestBuilder<List<Map<String, dynamic>>,
+  // Call select() to get a PostgrestFilterBuilder which extends PostgrestBuilder
+  final selectBuilder = client.from('fake_table').select();
+  return selectBuilder as PostgrestBuilder<List<Map<String, dynamic>>,
       List<Map<String, dynamic>>, List<Map<String, dynamic>>>;
 }
 
