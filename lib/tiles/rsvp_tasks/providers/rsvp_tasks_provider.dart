@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
-import '../../../core/enums/rsvp_status.dart';
 import '../../../core/models/event.dart';
 import '../../../core/models/event_rsvp.dart';
 

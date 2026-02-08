@@ -12,12 +12,16 @@ import 'gallery_favorites_provider_test.mocks.dart';
 
 void main() {
   group('GalleryFavoritesProvider Tests', () {
+    // ignore: unused_local_variable
     late GalleryFavoritesNotifier notifier;
+    // ignore: unused_local_variable
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
+    // ignore: unused_local_variable
     late MockRealtimeService mockRealtimeService;
 
     // Sample favorite photo data
+    // ignore: unused_local_variable
     final samplePhoto = Photo(
       id: 'photo_1',
       babyProfileId: 'profile_1',

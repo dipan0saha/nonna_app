@@ -19,12 +19,11 @@ void main() {
     final sampleItem = RegistryItem(
       id: 'item_1',
       babyProfileId: 'profile_1',
+      createdByUserId: 'user_1',
       name: 'Baby Stroller',
       description: 'Lightweight stroller',
-      price: 299.99,
       priority: 5,
-      category: 'Gear',
-      url: 'https://example.com/stroller',
+      linkUrl: 'https://example.com/stroller',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );

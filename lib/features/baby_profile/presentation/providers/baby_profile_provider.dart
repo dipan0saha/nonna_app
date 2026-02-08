@@ -136,7 +136,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
         throw Exception('Baby profile not found');
       }
 
-      final profile = BabyProfile.fromJson(response as Map<String, dynamic>);
+      final profile = BabyProfile.fromJson(response);
 
       // Check if current user is owner
       final isOwner =
@@ -337,7 +337,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
           .isFilter(SupabaseTables.deletedAt, null)
           .single();
 
-      final profile = BabyProfile.fromJson(response as Map<String, dynamic>);
+      final profile = BabyProfile.fromJson(response);
 
       // Update cache
       await _saveToCache(babyProfileId, profile);
