@@ -7,9 +7,6 @@ import '../../../core/di/providers.dart';
 import '../../../core/enums/rsvp_status.dart';
 import '../../../core/models/event.dart';
 import '../../../core/models/event_rsvp.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
-import '../../../core/services/realtime_service.dart';
 
 /// Event with RSVP status
 class EventWithRSVP {
@@ -134,7 +131,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
       await _setupRealtimeSubscriptions(userId, babyProfileId);
 
       debugPrint(
-        '✅ Loaded ${events.length} RSVP tasks (${pendingCount} pending) for user: $userId',
+        '✅ Loaded ${events.length} RSVP tasks ($pendingCount pending) for user: $userId',
       );
     } catch (e) {
       final errorMessage = 'Failed to fetch RSVP tasks: $e';
@@ -184,7 +181,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is(SupabaseTables.deletedAt, null)
+        .isFilter(SupabaseTables.deletedAt, null)
         .gte('starts_at', now.toIso8601String())
         .order('starts_at', ascending: true);
 
@@ -212,7 +209,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
     // Combine events with RSVPs
     return events.map((event) {
       final rsvp = rsvpMap[event.id];
-      final needsResponse = rsvp == null || rsvp.status == RsvpStatus.pending;
+      final needsResponse = rsvp == null;
       return EventWithRSVP(
         event: event,
         rsvp: rsvp,

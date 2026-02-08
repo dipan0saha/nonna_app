@@ -142,7 +142,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is(SupabaseTables.deletedAt, null)
+        .isFilter(SupabaseTables.deletedAt, null)
         .gte('priority', _minPriority)
         .order('priority', ascending: false)
         .order(SupabaseTables.createdAt, ascending: false);
@@ -159,7 +159,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
         .inFilter('registry_item_id', itemIds)
-        .is(SupabaseTables.deletedAt, null);
+        .isFilter(SupabaseTables.deletedAt, null);
 
     final purchasedItemIds = (purchasesResponse as List)
         .map((json) => json['registry_item_id'] as String)

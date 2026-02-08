@@ -114,7 +114,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
       await _setupRealtimeSubscription(userId);
 
       debugPrint(
-        '✅ Loaded ${notifications.length} notifications (${unreadCount} unread) for user: $userId',
+        '✅ Loaded ${notifications.length} notifications ($unreadCount unread) for user: $userId',
       );
     } catch (e) {
       final errorMessage = 'Failed to fetch notifications: $e';

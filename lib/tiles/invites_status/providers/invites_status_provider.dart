@@ -116,7 +116,7 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
       await _setupRealtimeSubscription(babyProfileId);
 
       debugPrint(
-        '✅ Loaded ${invitations.length} invitations (${pendingCount} pending) for profile: $babyProfileId',
+        '✅ Loaded ${invitations.length} invitations ($pendingCount pending) for profile: $babyProfileId',
       );
     } catch (e) {
       final errorMessage = 'Failed to fetch invitations: $e';
@@ -222,7 +222,6 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
     try {
       _cancelRealtimeSubscription();
 
-      final realtimeService = ref.read(realtimeServiceProvider);
       final channelName = 'invitations-channel-$babyProfileId';
       final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.invitations,

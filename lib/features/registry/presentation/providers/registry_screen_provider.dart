@@ -249,7 +249,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     final itemsResponse = await databaseService
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is(SupabaseTables.deletedAt, null)
+        .isFilter(SupabaseTables.deletedAt, null)
         .order('priority', ascending: false);
 
     final items = (itemsResponse as List)

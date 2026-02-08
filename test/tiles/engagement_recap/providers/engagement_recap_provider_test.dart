@@ -3,7 +3,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/tiles/engagement_recap/providers/engagement_recap_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
 
