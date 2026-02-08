@@ -55,24 +55,19 @@ class InvitesStatusState {
 /// Invites Status provider
 ///
 /// Manages pending invitations with real-time updates and acceptance tracking.
-class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  InvitesStatusNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const InvitesStatusState());
-
+class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
   // Configuration
   static const String _cacheKeyPrefix = 'invites_status';
 
   String? _subscriptionId;
+
+  @override
+  InvitesStatusState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const InvitesStatusState();
+  }
 
   // ==========================================
   // Public Methods
@@ -165,18 +160,14 @@ class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscription();
-  }
-
   // ==========================================
   // Private Methods
   // ==========================================
 
   /// Fetch invitations from database
   Future<List<Invitation>> _fetchFromDatabase(String babyProfileId) async {
-    final response = await _databaseService
+    final databaseService = ref.read(databaseServiceProvider);
+    final response = await databaseService
         .select(SupabaseTables.invitations)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .order(SupabaseTables.createdAt, ascending: false);
@@ -188,11 +179,12 @@ class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
 
   /// Load invitations from cache
   Future<List<Invitation>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -210,12 +202,13 @@ class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
     String babyProfileId,
     List<Invitation> invitations,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = invitations.map((inv) => inv.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -231,7 +224,8 @@ class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      final realtimeService = ref.read(realtimeServiceProvider);
+      _subscriptionId = await realtimeService.subscribe(
         table: SupabaseTables.invitations,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -304,7 +298,8 @@ class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      final realtimeService = ref.read(realtimeServiceProvider);
+      realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
@@ -320,22 +315,6 @@ class InvitesStatusNotifier extends StateNotifier<InvitesStatusState> {
 /// await notifier.fetchInvitations(babyProfileId: 'abc');
 /// ```
 final invitesStatusProvider =
-    StateNotifierProvider.autoDispose<InvitesStatusNotifier, InvitesStatusState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = InvitesStatusNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+    NotifierProvider.autoDispose<InvitesStatusNotifier, InvitesStatusState>(
+  InvitesStatusNotifier.new,
 );

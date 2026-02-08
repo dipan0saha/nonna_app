@@ -67,24 +67,19 @@ class DueDateCountdownState {
 /// Due Date Countdown provider
 ///
 /// Manages due date countdowns with automatic calculations and formatting.
-class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  DueDateCountdownNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const DueDateCountdownState());
-
+class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
   // Configuration
   static const String _cacheKeyPrefix = 'due_date_countdown';
 
   String? _subscriptionId;
+
+  @override
+  DueDateCountdownState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const DueDateCountdownState();
+  }
 
   // ==========================================
   // Public Methods
@@ -156,11 +151,6 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscription();
-  }
-
   // ==========================================
   // Private Methods
   // ==========================================
@@ -169,7 +159,8 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
   Future<List<BabyCountdown>> _fetchFromDatabase(
     List<String> babyProfileIds,
   ) async {
-    final response = await _databaseService
+    final databaseService = ref.read(databaseServiceProvider);
+    final response = await databaseService
         .select(SupabaseTables.babyProfiles)
         .inFilter(SupabaseTables.id, babyProfileIds)
         .isNull(SupabaseTables.deletedAt);
@@ -244,11 +235,12 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
   Future<List<BabyCountdown>?> _loadFromCache(
     List<String> babyProfileIds,
   ) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileIds);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -269,7 +261,8 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
     List<String> babyProfileIds,
     List<BabyCountdown> countdowns,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileIds);
@@ -278,7 +271,7 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
           'profile': countdown.profile.toJson(),
         };
       }).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -297,8 +290,9 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
 
       if (babyProfileIds.isEmpty) return;
 
+      final realtimeService = ref.read(realtimeServiceProvider);
       // Subscribe to any baby profile changes
-      _subscriptionId = await _realtimeService.subscribe(
+      _subscriptionId = await realtimeService.subscribe(
         table: SupabaseTables.babyProfiles,
         filter: '${SupabaseTables.id}=in.(${babyProfileIds.join(",")})',
         callback: (payload) {
@@ -333,7 +327,8 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      final realtimeService = ref.read(realtimeServiceProvider);
+      realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
@@ -348,23 +343,7 @@ class DueDateCountdownNotifier extends StateNotifier<DueDateCountdownState> {
 /// final notifier = ref.read(dueDateCountdownProvider.notifier);
 /// await notifier.fetchCountdowns(babyProfileIds: ['abc', 'def']);
 /// ```
-final dueDateCountdownProvider = StateNotifierProvider.autoDispose<
+final dueDateCountdownProvider = NotifierProvider.autoDispose<
     DueDateCountdownNotifier, DueDateCountdownState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = DueDateCountdownNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+  DueDateCountdownNotifier.new,
 );

@@ -75,21 +75,16 @@ class GalleryFavoritesState {
 /// Gallery Favorites provider
 ///
 /// Manages most squished photos with popularity ranking.
-class GalleryFavoritesNotifier extends StateNotifier<GalleryFavoritesState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-
-  GalleryFavoritesNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        super(const GalleryFavoritesState());
-
+class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
   // Configuration
   static const String _cacheKeyPrefix = 'gallery_favorites';
   static const int _maxFavorites = 10;
   static const int _minSquishes = 2; // Minimum squishes to be considered
+
+  @override
+  GalleryFavoritesState build() {
+    return const GalleryFavoritesState();
+  }
 
   // ==========================================
   // Public Methods
@@ -158,8 +153,9 @@ class GalleryFavoritesNotifier extends StateNotifier<GalleryFavoritesState> {
   Future<List<PhotoWithSquishes>> _fetchFromDatabase(
     String babyProfileId,
   ) async {
+    final databaseService = ref.read(databaseServiceProvider);
     // Get all photos for this baby profile
-    final photosResponse = await _databaseService
+    final photosResponse = await databaseService
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -173,7 +169,7 @@ class GalleryFavoritesNotifier extends StateNotifier<GalleryFavoritesState> {
 
     // Get squish counts for each photo
     final photoIds = photos.map((p) => p.id).toList();
-    final squishesResponse = await _databaseService
+    final squishesResponse = await databaseService
         .select(SupabaseTables.photoSquishes)
         .inFilter(SupabaseTables.photoId, photoIds);
 
@@ -205,11 +201,12 @@ class GalleryFavoritesNotifier extends StateNotifier<GalleryFavoritesState> {
 
   /// Load favorites from cache
   Future<List<PhotoWithSquishes>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -228,12 +225,13 @@ class GalleryFavoritesNotifier extends StateNotifier<GalleryFavoritesState> {
     String babyProfileId,
     List<PhotoWithSquishes> favorites,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = favorites.map((fav) => fav.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -253,15 +251,7 @@ class GalleryFavoritesNotifier extends StateNotifier<GalleryFavoritesState> {
 /// final notifier = ref.read(galleryFavoritesProvider.notifier);
 /// await notifier.fetchFavorites(babyProfileId: 'abc');
 /// ```
-final galleryFavoritesProvider = StateNotifierProvider.autoDispose<
+final galleryFavoritesProvider = NotifierProvider.autoDispose<
     GalleryFavoritesNotifier, GalleryFavoritesState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-
-    return GalleryFavoritesNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-    );
-  },
+  GalleryFavoritesNotifier.new,
 );
