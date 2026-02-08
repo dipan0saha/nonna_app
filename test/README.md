@@ -1,283 +1,210 @@
-# Test Directory
+# Test Directory - Centralized Mocking Strategy
 
-This directory contains all unit tests, widget tests, and test utilities for the Nonna App.
+**IMPORTANT**: This project uses a centralized mocking strategy. All tests must use the shared mock infrastructure described below.
 
-## Directory Structure
+---
 
-```
-test/
-├── core/                  # Tests for core functionality
-│   ├── services/         # Service layer tests
-│   ├── utils/            # Utility function tests
-│   └── widgets/          # Shared widget tests
-│
-├── tiles/                # Tests for tile components
-│   ├── feeding/          # Feeding tile tests
-│   ├── diaper/           # Diaper tile tests
-│   └── [other tiles]     # Other tile tests
-│
-├── features/             # Tests for feature modules
-│   ├── auth/             # Authentication feature tests
-│   ├── home/             # Home/Dashboard feature tests
-│   └── [other features]  # Other feature tests
-│
-├── helpers/              # Test helpers and utilities
-│   ├── test_helpers.dart # Common test utilities
-│   └── mock_data.dart    # Mock data for testing
-│
-└── fixtures/             # Test fixtures and data
-    └── json/             # JSON fixtures
-```
+# Centralized Mocking Strategy
 
-## Running Tests
+## Quick Start
 
-### All Tests
-```bash
-flutter test
-```
-
-### With Coverage
-```bash
-flutter test --coverage
-```
-
-### Specific Test File
-```bash
-flutter test test/core/services/auth_service_test.dart
-```
-
-### Watch Mode (re-run on changes)
-```bash
-flutter test --watch
-```
-
-### Using Makefile
-```bash
-make test
-```
-
-## Test Types
-
-### Unit Tests
-Test individual functions, classes, and methods in isolation.
-
-**Example:**
 ```dart
-test('validates email correctly', () {
-  expect(Validators.isValidEmail('test@example.com'), true);
-  expect(Validators.isValidEmail('invalid'), false);
-});
-```
+// Import centralized mocks (adjust path based on your test file location)
+// For tests in test/tiles/my_tile/providers/:
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
+import '../../../helpers/test_data_factory.dart';
 
-### Widget Tests
-Test Flutter widgets and their behavior.
+// For tests in test/features/my_feature/providers/:
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
+import '../../../helpers/test_data_factory.dart';
 
-**Example:**
-```dart
-testWidgets('LoginButton shows text', (WidgetTester tester) async {
-  await tester.pumpWidget(
-    MaterialApp(
-      home: LoginButton(onPressed: () {}),
-    ),
-  );
-  
-  expect(find.text('Login'), findsOneWidget);
-});
-```
-
-### Integration Tests
-Test complete user flows (located in `integration_test/` directory).
-
-## Writing Tests
-
-### Test File Naming
-- Match source file name with `_test.dart` suffix
-- Example: `auth_service.dart` → `auth_service_test.dart`
-
-### Test Structure
-```dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+// For tests directly in test/core/services/:
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
+import '../../helpers/test_data_factory.dart';
 
 void main() {
-  group('FeatureName', () {
-    late ServiceClass service;
-    
+  group('MyTest', () {
+    late MockServiceContainer mocks;
+
     setUp(() {
-      // Setup before each test
-      service = ServiceClass();
+      // Create all services with sensible defaults
+      mocks = MockFactory.createServiceContainer();
     });
-    
-    tearDown(() {
-      // Cleanup after each test
-    });
-    
-    test('should do something', () {
-      // Arrange
-      final input = 'test';
+
+    test('example test', () {
+      // Create test data
+      final user = TestDataFactory.createUser();
       
-      // Act
-      final result = service.doSomething(input);
-      
-      // Assert
-      expect(result, 'expected');
+      // Setup mock behavior
+      MockHelpers.setupDatabaseSelect(
+        mocks.database,
+        'users',
+        [user.toJson()],
+      );
+
+      // ... rest of test
     });
   });
 }
 ```
 
-## Mocking
+## Core Mocking Components
 
-Use Mockito for mocking dependencies:
+### 1. Central Mock Generation (`test/mocks/mock_services.dart`)
+
+**Single source of truth** for all mocks. Never create `@GenerateMocks` annotations in test files.
+
+Provides mocks for:
+- Supabase: SupabaseClient, GoTrueClient, RealtimeChannel, StorageFileApi, etc.
+- Firebase: FirebaseAnalytics
+- App Services: DatabaseService, CacheService, RealtimeService, StorageService, etc.
+
+To regenerate after changes:
+```bash
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+### 2. Mock Factory (`test/helpers/mock_factory.dart`)
+
+Pre-configured mock instances with sensible defaults:
 
 ```dart
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+// Individual services
+final mockDb = MockFactory.createDatabaseService();
+final mockCache = MockFactory.createCacheService();
 
-@GenerateMocks([AuthService, DatabaseService])
+// Complete service container
+final mocks = MockFactory.createServiceContainer();
+```
+
+### 3. Test Data Factory (`test/helpers/test_data_factory.dart`)
+
+Consistent test data creation:
+
+```dart
+// Single object
+final user = TestDataFactory.createUser();
+final baby = TestDataFactory.createBabyProfile();
+
+// Batches
+final users = TestDataFactory.createUsers(5);
+final photos = TestDataFactory.createPhotos(10);
+
+// Convert to JSON for mocks
+final jsonData = TestDataFactory.usersToJson(users);
+```
+
+### 4. Mock Helpers
+
+Common mock configuration patterns:
+
+```dart
+// Database
+MockHelpers.setupDatabaseSelect(mockDb, 'table', [data]);
+MockHelpers.setupDatabaseError(mockDb, 'table', Exception('error'));
+
+// Cache
+MockHelpers.setupCacheHit(mockCache, {'key': 'value'});
+MockHelpers.setupCacheMiss(mockCache);
+
+// Realtime
+MockHelpers.setupRealtimeSubscription(mockRealtime, 'table', stream);
+```
+
+## Migration from Old Pattern
+
+### ❌ OLD (Don't do this)
+```dart
+@GenerateMocks([DatabaseService, CacheService])
+import 'my_test.mocks.dart';
+
 void main() {
-  late MockAuthService mockAuthService;
+  late MockDatabaseService mockDb;
   
   setUp(() {
-    mockAuthService = MockAuthService();
-  });
-  
-  test('uses mocked service', () {
-    when(mockAuthService.login(any, any))
-        .thenAnswer((_) async => User(id: '123'));
-    
-    // Test code using mockAuthService
+    mockDb = MockDatabaseService();
+    when(mockDb.select(any)).thenReturn(FakePostgrestBuilder([]));
   });
 }
 ```
 
-Generate mocks:
-```bash
-flutter pub run build_runner build
+### ✅ NEW (Do this)
+```dart
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
+
+void main() {
+  late MockServiceContainer mocks;
+  
+  setUp(() {
+    mocks = MockFactory.createServiceContainer();
+    // Defaults already configured!
+  });
+}
 ```
 
-## Test Coverage
+## Common Test Patterns
 
-### Target Coverage
-- Overall: 80% minimum
-- Core services: 90% minimum
-- Utilities: 95% minimum
-- UI widgets: 70% minimum
+### Testing Loading States
+```dart
+test('shows loading state', () async {
+  when(mocks.database.select(any))
+    .thenReturn(FakePostgrestBuilder.withDelay(
+      [testData],
+      delay: Duration(milliseconds: 100),
+    ));
 
-### Generate Coverage Report
-```bash
-# Run tests with coverage
-flutter test --coverage
+  expect(container.read(provider).isLoading, isTrue);
+  await Future.delayed(Duration(milliseconds: 150));
+  expect(container.read(provider).isLoading, isFalse);
+});
+```
 
-# Generate HTML report
-genhtml coverage/lcov.info -o coverage/html
+### Testing Error States
+```dart
+test('handles error', () async {
+  when(mocks.database.select(any))
+    .thenReturn(FakePostgrestBuilder.withError(
+      Exception('Database error'),
+    ));
 
-# View report
-open coverage/html/index.html
+  await container.read(provider.notifier).fetch();
+  expect(container.read(provider).error, isNotNull);
+});
+```
+
+### Testing Cache Behavior
+```dart
+test('uses cache when available', () async {
+  MockHelpers.setupCacheGet(mocks.cache, 'key', testData);
+  
+  await container.read(provider.notifier).fetch();
+  
+  verifyNever(mocks.database.select(any));
+});
 ```
 
 ## Best Practices
 
-### DO
-- ✅ Write tests for new features
-- ✅ Test edge cases and error conditions
-- ✅ Use meaningful test descriptions
-- ✅ Keep tests independent
-- ✅ Mock external dependencies
-- ✅ Follow Arrange-Act-Assert pattern
-- ✅ Test one thing per test
-- ✅ Use descriptive variable names
+### ✅ DO
+- Import mocks using relative paths (e.g., `../../mocks/mock_services.mocks.dart`)
+- Use `MockFactory` for common scenarios
+- Use `TestDataFactory` for test data
+- Use `MockHelpers` for common patterns
+- Keep tests focused on business logic
+- Mock all external dependencies
 
-### DON'T
-- ❌ Test Flutter framework code
-- ❌ Write tests that depend on each other
-- ❌ Test implementation details
-- ❌ Ignore failing tests
-- ❌ Write overly complex tests
-- ❌ Mock everything unnecessarily
-- ❌ Test private methods directly
-
-## Common Test Patterns
-
-### Testing Async Code
-```dart
-test('async function works', () async {
-  final result = await asyncFunction();
-  expect(result, expectedValue);
-});
-```
-
-### Testing Streams
-```dart
-test('stream emits values', () {
-  expect(
-    stream,
-    emitsInOrder([value1, value2, emitsDone]),
-  );
-});
-```
-
-### Testing Exceptions
-```dart
-test('throws exception on error', () {
-  expect(
-    () => functionThatThrows(),
-    throwsA(isA<CustomException>()),
-  );
-});
-```
-
-### Widget Finder Patterns
-```dart
-// Find by text
-expect(find.text('Login'), findsOneWidget);
-
-// Find by key
-expect(find.byKey(Key('login-button')), findsOneWidget);
-
-// Find by type
-expect(find.byType(ElevatedButton), findsWidgets);
-
-// Find by icon
-expect(find.byIcon(Icons.login), findsOneWidget);
-```
-
-## Troubleshooting
-
-### Tests Failing in CI but Pass Locally
-- Check for timezone differences
-- Verify mock data is consistent
-- Look for random data or timing issues
-- Ensure all test dependencies are committed
-
-### Slow Tests
-- Avoid unnecessary `pump()` calls
-- Use `pumpAndSettle()` sparingly
-- Mock expensive operations
-- Consider parallelization
-
-### Flaky Tests
-- Remove randomness
-- Fix timing dependencies
-- Use proper waits and matchers
-- Ensure proper cleanup in `tearDown()`
-
-## Resources
-
-- [Flutter Testing Guide](https://docs.flutter.dev/testing)
-- [Widget Testing](https://docs.flutter.dev/cookbook/testing/widget/introduction)
-- [Mockito Documentation](https://pub.dev/packages/mockito)
-- [Flutter Test Package](https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html)
-
-## Contributing
-
-When adding new code:
-1. Write tests first (TDD) or alongside your code
-2. Ensure all tests pass before creating PR
-3. Add tests for bug fixes
-4. Update this README if adding new test patterns
+### ❌ DON'T
+- Create new `@GenerateMocks` annotations
+- Use package imports for test files (use relative imports)
+- Manually configure common defaults
+- Duplicate test data setup
+- Make real network/database calls
+- Use inline/ad-hoc mocks
+- Mix `Future.value()` and `async`
 
 ---
 
-**Maintained by**: Development Team  
-**Questions?** Ask in team chat or create a GitHub issue
