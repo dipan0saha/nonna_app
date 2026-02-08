@@ -48,13 +48,10 @@ class AuthState {
 
   /// Authenticated state
   const AuthState.authenticated({
-    required User user,
-    required Session session,
-    app_user.User? userModel,
+    required this.user,
+    required this.session,
+    this.userModel,
   })  : status = AuthStatus.authenticated,
-        user = user,
-        session = session,
-        userModel = userModel,
         errorMessage = null;
 
   /// Loading state
@@ -107,7 +104,7 @@ class AuthState {
         other.status == status &&
         other.user?.id == user?.id &&
         other.session?.accessToken == session?.accessToken &&
-        other.userModel?.id == userModel?.id &&
+        other.userModel?.userId == userModel?.userId &&
         other.errorMessage == errorMessage;
   }
 

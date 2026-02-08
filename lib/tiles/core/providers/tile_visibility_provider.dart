@@ -330,7 +330,6 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
     Map<String, bool> visibilityMap,
   ) async {
     final localStorageService = ref.read(localStorageServiceProvider);
-  ) async {
     if (!localStorageService.isInitialized) return;
 
     try {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -359,5 +361,58 @@ class LocalStorageService {
   Set<String> getAllKeys() {
     _ensureInitialized();
     return _prefs!.getKeys();
+  }
+
+  // ==========================================
+  // Object Storage Methods (JSON)
+  // ==========================================
+
+  /// Save an object as JSON string
+  Future<void> setObject(String key, Map<String, dynamic> value) async {
+    _ensureInitialized();
+    final jsonString = _encodeJson(value);
+    await _prefs!.setString(key, jsonString);
+  }
+
+  /// Get an object from JSON string
+  Map<String, dynamic>? getObject(String key) {
+    _ensureInitialized();
+    final jsonString = _prefs!.getString(key);
+    if (jsonString == null) return null;
+    return _decodeJson(jsonString);
+  }
+
+  /// Alias for setString - for backwards compatibility
+  Future<void> put(String key, String value) async {
+    await setString(key, value);
+  }
+
+  /// Alias for getString - for backwards compatibility
+  String? get(String key) {
+    return getString(key);
+  }
+
+  /// Helper method to encode JSON
+  String _encodeJson(Map<String, dynamic> value) {
+    try {
+      return jsonEncode(value);
+    } catch (e) {
+      debugPrint('❌ Error encoding JSON: $e');
+      rethrow;
+    }
+  }
+
+  /// Helper method to decode JSON
+  Map<String, dynamic> _decodeJson(String jsonString) {
+    try {
+      final dynamic decoded = jsonDecode(jsonString);
+      if (decoded is Map<String, dynamic>) {
+        return decoded;
+      }
+      throw FormatException('Expected Map<String, dynamic>, got ${decoded.runtimeType}');
+    } catch (e) {
+      debugPrint('❌ Error decoding JSON: $e');
+      rethrow;
+    }
   }
 }
