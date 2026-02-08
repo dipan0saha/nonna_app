@@ -60,19 +60,14 @@ class UpcomingEventsState {
 /// Upcoming Events provider
 ///
 /// Manages upcoming events with pagination, caching, and real-time updates.
-class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  UpcomingEventsNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const UpcomingEventsState());
+class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
+  @override
+  UpcomingEventsState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const UpcomingEventsState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'upcoming_events';
@@ -188,10 +183,7 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscription();
-  }
+
 
   // ==========================================
   // Private Methods
@@ -203,9 +195,10 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
     required int limit,
     required int offset,
   }) async {
+    final databaseService = ref.read(databaseServiceProvider);
     final now = DateTime.now();
 
-    final response = await _databaseService
+    final response = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -220,11 +213,12 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
 
   /// Load events from cache
   Future<List<Event>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -239,12 +233,13 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
 
   /// Save events to cache
   Future<void> _saveToCache(String babyProfileId, List<Event> events) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = events.map((event) => event.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -257,10 +252,11 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
 
   /// Setup real-time subscription for events
   Future<void> _setupRealtimeSubscription(String babyProfileId) async {
+    final realtimeService = ref.read(realtimeServiceProvider);
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      _subscriptionId = await realtimeService.subscribe(
         table: SupabaseTables.events,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -313,7 +309,8 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      final realtimeService = ref.read(realtimeServiceProvider);
+      realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
@@ -329,22 +326,6 @@ class UpcomingEventsNotifier extends StateNotifier<UpcomingEventsState> {
 /// await notifier.fetchEvents(babyProfileId: 'abc', role: UserRole.owner);
 /// ```
 final upcomingEventsProvider =
-    StateNotifierProvider.autoDispose<UpcomingEventsNotifier, UpcomingEventsState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = UpcomingEventsNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+    NotifierProvider.autoDispose<UpcomingEventsNotifier, UpcomingEventsState>(
+  UpcomingEventsNotifier.new,
 );

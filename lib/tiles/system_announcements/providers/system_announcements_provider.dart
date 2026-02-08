@@ -109,13 +109,11 @@ class SystemAnnouncementsState {
 /// System Announcements provider
 ///
 /// Manages global system announcements with per-user dismissal tracking.
-class SystemAnnouncementsNotifier extends StateNotifier<SystemAnnouncementsState> {
-  final CacheService _cacheService;
-
-  SystemAnnouncementsNotifier({
-    required CacheService cacheService,
-  })  : _cacheService = cacheService,
-        super(const SystemAnnouncementsState());
+class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
+  @override
+  SystemAnnouncementsState build() {
+    return const SystemAnnouncementsState();
+  }
 
   // Configuration
   static const String _cacheKeyAnnouncements = 'system_announcements';
@@ -246,12 +244,13 @@ class SystemAnnouncementsNotifier extends StateNotifier<SystemAnnouncementsState
 
   /// Load announcements from cache (or use mock data)
   Future<List<SystemAnnouncement>> _loadAnnouncementsFromCache() async {
-    if (!_cacheService.isInitialized) {
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) {
       return _mockAnnouncements;
     }
 
     try {
-      final cachedData = await _cacheService.get(_cacheKeyAnnouncements);
+      final cachedData = await cacheService.get(_cacheKeyAnnouncements);
 
       if (cachedData == null) {
         // Save mock announcements to cache
@@ -273,11 +272,12 @@ class SystemAnnouncementsNotifier extends StateNotifier<SystemAnnouncementsState
   Future<void> _saveAnnouncementsToCache(
     List<SystemAnnouncement> announcements,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final jsonData = announcements.map((a) => a.toJson()).toList();
-      await _cacheService.put(_cacheKeyAnnouncements, jsonData);
+      await cacheService.put(_cacheKeyAnnouncements, jsonData);
     } catch (e) {
       debugPrint('⚠️  Failed to save announcements to cache: $e');
     }
@@ -285,11 +285,12 @@ class SystemAnnouncementsNotifier extends StateNotifier<SystemAnnouncementsState
 
   /// Load dismissed announcement IDs for a user
   Future<Set<String>> _loadDismissedIds(String userId) async {
-    if (!_cacheService.isInitialized) return {};
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return {};
 
     try {
       final cacheKey = _getDismissedCacheKey(userId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return {};
 
@@ -302,11 +303,12 @@ class SystemAnnouncementsNotifier extends StateNotifier<SystemAnnouncementsState
 
   /// Save dismissed announcement IDs for a user
   Future<void> _saveDismissedIds(String userId, Set<String> dismissedIds) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getDismissedCacheKey(userId);
-      await _cacheService.put(cacheKey, dismissedIds.toList());
+      await cacheService.put(cacheKey, dismissedIds.toList());
     } catch (e) {
       debugPrint('⚠️  Failed to save dismissed IDs to cache: $e');
     }
@@ -326,13 +328,7 @@ class SystemAnnouncementsNotifier extends StateNotifier<SystemAnnouncementsState
 /// final notifier = ref.read(systemAnnouncementsProvider.notifier);
 /// await notifier.loadAnnouncements(userId: 'user123');
 /// ```
-final systemAnnouncementsProvider = StateNotifierProvider.autoDispose<
+final systemAnnouncementsProvider = NotifierProvider.autoDispose<
     SystemAnnouncementsNotifier, SystemAnnouncementsState>(
-  (ref) {
-    final cacheService = ref.watch(cacheServiceProvider);
-
-    return SystemAnnouncementsNotifier(
-      cacheService: cacheService,
-    );
-  },
+  SystemAnnouncementsNotifier.new,
 );
