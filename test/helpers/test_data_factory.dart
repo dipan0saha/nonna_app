@@ -227,7 +227,7 @@ class TestDataFactory {
       id: id ?? 'test-notif-${now.millisecondsSinceEpoch}',
       recipientUserId: recipientUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
       babyProfileId: babyProfileId,
-      type: type ?? NotificationType.general,
+      type: type ?? NotificationType.system,
       title: title ?? 'Test Notification',
       body: body ?? 'This is a test notification',
       payload: payload,
