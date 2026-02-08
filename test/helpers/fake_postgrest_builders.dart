@@ -7,9 +7,7 @@ PostgrestBuilder<List<Map<String, dynamic>>, List<Map<String, dynamic>>,
     List<Map<String, dynamic>>> _createBaseBuilder() {
   final client = SupabaseClient('http://localhost', 'fake-key');
   // Call select() to get a PostgrestFilterBuilder which extends PostgrestBuilder
-  final selectBuilder = client.from('fake_table').select();
-  return selectBuilder as PostgrestBuilder<List<Map<String, dynamic>>,
-      List<Map<String, dynamic>>, List<Map<String, dynamic>>>;
+  return client.from('fake_table').select();
 }
 
 /// Fake Postgrest Builder for testing
@@ -265,10 +263,7 @@ class FakePostgrestUpdateBuilder
     extends PostgrestFilterBuilder<List<Map<String, dynamic>>> {
   final Map<String, dynamic>? _data;
 
-  FakePostgrestUpdateBuilder([this._data]) : super(_createBaseBuilder() as PostgrestBuilder<
-      List<Map<String, dynamic>>,
-      List<Map<String, dynamic>>,
-      List<Map<String, dynamic>>>);
+  FakePostgrestUpdateBuilder([this._data]) : super(_createBaseBuilder());
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(
@@ -441,11 +436,7 @@ class FakePostgrestUpdateBuilder
 /// Fake Postgrest Delete Builder for testing
 class FakePostgrestDeleteBuilder
     extends PostgrestFilterBuilder<List<Map<String, dynamic>>> {
-  FakePostgrestDeleteBuilder()
-      : super(_createBaseBuilder() as PostgrestBuilder<
-            List<Map<String, dynamic>>,
-            List<Map<String, dynamic>>,
-            List<Map<String, dynamic>>>);
+  FakePostgrestDeleteBuilder() : super(_createBaseBuilder());
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(
