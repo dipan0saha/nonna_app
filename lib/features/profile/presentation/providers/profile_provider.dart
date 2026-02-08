@@ -107,7 +107,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
       // Fetch from database
       final response = await ref.read(databaseServiceProvider)
-          .select(SupabaseTables.profiles)
+          .select(SupabaseTables.userProfiles)
           .eq('user_id', userId)
           .maybeSingle();
 
@@ -197,7 +197,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
       }
 
       await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.profiles, updateData)
+          .update(SupabaseTables.userProfiles, updateData)
           .eq('user_id', userId);
 
       // Reload profile
@@ -252,7 +252,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
   }) async {
     try {
       await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.profiles, {
+          .update(SupabaseTables.userProfiles, {
             'biometric_enabled': enabled,
             'updated_at': DateTime.now().toIso8601String(),
           })
