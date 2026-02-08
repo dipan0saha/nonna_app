@@ -312,9 +312,9 @@ void main() {
     group('uploadAvatar', () {
       test('uploads avatar successfully', () async {
         when(mockStorageService.uploadFile(
-          filePath: argThat(isA<String>()),
-          storageKey: argThat(isA<String>()),
-          bucket: argThat(isA<String>()),
+          filePath: any,
+          storageKey: any,
+          bucket: any,
         )).thenAnswer((_) async => 'https://example.com/uploaded-avatar.jpg');
 
         final result = await notifier.uploadAvatar(
@@ -328,9 +328,9 @@ void main() {
 
       test('handles upload error gracefully', () async {
         when(mockStorageService.uploadFile(
-          filePath: argThat(isA<String>()),
-          storageKey: argThat(isA<String>()),
-          bucket: argThat(isA<String>()),
+          filePath: any,
+          storageKey: any,
+          bucket: any,
         )).thenThrow(Exception('Upload failed'));
 
         final result = await notifier.uploadAvatar(

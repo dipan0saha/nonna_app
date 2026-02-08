@@ -65,8 +65,8 @@ void main() {
     group('fetchCountdowns', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(argThat(isA<String>()))).thenReturn(FakePostgrestBuilder([]));
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
 
         // Start fetching
         final fetchFuture = notifier.fetchCountdowns(
@@ -81,14 +81,14 @@ void main() {
 
       test('fetches profiles from database when cache is empty', () async {
         // Setup mocks
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(argThat(isA<String>())))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
@@ -114,12 +114,12 @@ void main() {
           'isPastDue': false,
           'formattedCountdown': '30 days',
         };
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => [cachedData]);
+        when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(argThat(isA<String>())));
+        verifyNever(mockDatabaseService.select(any));
 
         // Verify state updated from cache
         expect(notifier.state.countdowns, hasLength(1));
@@ -128,8 +128,8 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(argThat(isA<String>())))
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
@@ -148,14 +148,14 @@ void main() {
           'isPastDue': false,
           'formattedCountdown': '30 days',
         };
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => [cachedData]);
+        when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(argThat(isA<String>())))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.fetchCountdowns(
           babyProfileIds: ['profile_1'],
@@ -163,7 +163,7 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(argThat(isA<String>()))).called(1);
+        verify(mockDatabaseService.select(any)).called(1);
       });
 
       test('calculates days until due date correctly', () async {
@@ -171,14 +171,14 @@ void main() {
           expectedBirthDate: DateTime.now().add(const Duration(days: 45)),
         );
 
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(argThat(isA<String>())))
-            .thenAnswer((_) async => FakePostgrestBuilder([futureProfile.toJson()]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([futureProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
@@ -192,14 +192,14 @@ void main() {
           expectedBirthDate: DateTime.now().subtract(const Duration(days: 10)),
         );
 
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(argThat(isA<String>())))
-            .thenAnswer((_) async => FakePostgrestBuilder([pastProfile.toJson()]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([pastProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
@@ -210,13 +210,13 @@ void main() {
         final profile2 =
             sampleProfile.copyWith(id: 'profile_2', name: 'Baby Jack');
 
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(argThat(isA<String>()))).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
           sampleProfile.toJson(),
           profile2.toJson(),
         ]));
@@ -237,33 +237,33 @@ void main() {
           'isPastDue': false,
           'formattedCountdown': '30 days',
         };
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => [cachedData]);
+        when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(argThat(isA<String>())))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.refresh(babyProfileIds: ['profile_1']);
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(argThat(isA<String>()))).called(1);
+        verify(mockDatabaseService.select(any)).called(1);
       });
     });
 
     group('Real-time Updates', () {
       test('handles UPDATE to due date', () async {
         // Setup initial state
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(argThat(isA<String>())))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
@@ -303,14 +303,14 @@ void main() {
 
     group('Countdown Formatting', () {
       test('formats countdown as days', () async {
-        when(mockCacheService.get(argThat(isA<String>()))).thenAnswer((_) async => null);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(argThat(isA<String>())))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
