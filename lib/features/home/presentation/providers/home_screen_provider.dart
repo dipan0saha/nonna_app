@@ -5,7 +5,6 @@ import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/tile_config.dart';
-import '../../../../core/services/cache_service.dart';
 import '../../../../core/utils/tile_loader.dart';
 
 /// Home Screen Provider for managing home screen state

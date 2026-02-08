@@ -188,7 +188,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null)
+        .is(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false)
         .range(offset, offset + limit - 1);
 

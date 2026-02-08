@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
-import 'package:nonna_app/core/models/registry_purchase.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';

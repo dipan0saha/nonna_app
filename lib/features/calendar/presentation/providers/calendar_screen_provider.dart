@@ -178,7 +178,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
     final response = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null)
+        .is(SupabaseTables.deletedAt, null)
         .gte('starts_at', start.toIso8601String())
         .lte('starts_at', end.toIso8601String())
         .order('starts_at', ascending: true);

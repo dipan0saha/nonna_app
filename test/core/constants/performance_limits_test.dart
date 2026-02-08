@@ -5,9 +5,8 @@ void main() {
   group('PerformanceLimits', () {
     group('cache TTL values', () {
       test('has positive cache durations', () {
-        expect(PerformanceLimits.userProfileCacheDuration.inMinutes, 15);
-        expect(PerformanceLimits.babyProfileCacheDuration.inMinutes, 10);
-        expect(PerformanceLimits.tileConfigCacheDuration.inMinutes, 30);
+        expect(PerformanceLimits.profileCacheDuration.inMinutes, 60);
+        expect(PerformanceLimits.tileConfigCacheDuration.inMinutes, 60);
         expect(PerformanceLimits.imageCacheDuration.inDays, 1);
       });
     });

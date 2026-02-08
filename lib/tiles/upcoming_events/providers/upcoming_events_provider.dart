@@ -196,7 +196,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
     final response = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null)
+        .is(SupabaseTables.deletedAt, null)
         .gte('starts_at', now.toIso8601String())
         .order('starts_at', ascending: true)
         .range(offset, offset + limit - 1);

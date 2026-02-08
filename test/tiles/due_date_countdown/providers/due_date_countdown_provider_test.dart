@@ -1,17 +1,22 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/baby_profile.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/tiles/due_date_countdown/providers/due_date_countdown_provider.dart';
 
+import '../../../helpers/fake_postgrest_builders.dart';
+
 @GenerateMocks([DatabaseService, CacheService, RealtimeService])
 import 'due_date_countdown_provider_test.mocks.dart';
 
 void main() {
   group('DueDateCountdownProvider Tests', () {
+    late ProviderContainer container;
     late DueDateCountdownNotifier notifier;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
@@ -20,9 +25,8 @@ void main() {
     // Sample baby profile data
     final sampleProfile = BabyProfile(
       id: 'profile_1',
-      userId: 'user_1',
       name: 'Baby Emma',
-      dueDate: DateTime.now().add(const Duration(days: 30)),
+      expectedBirthDate: DateTime.now().add(const Duration(days: 30)),
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -35,11 +39,19 @@ void main() {
       // Setup mock cache service
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = DueDateCountdownNotifier(
-        databaseService: mockDatabaseService,
-        cacheService: mockCacheService,
-        realtimeService: mockRealtimeService,
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
       );
+
+      notifier = container.read(dueDateCountdownProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
@@ -159,7 +171,7 @@ void main() {
 
       test('calculates days until due date correctly', () async {
         final futureProfile = sampleProfile.copyWith(
-          dueDate: DateTime.now().add(const Duration(days: 45)),
+          expectedBirthDate: DateTime.now().add(const Duration(days: 45)),
         );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
@@ -180,7 +192,7 @@ void main() {
 
       test('handles past due date correctly', () async {
         final pastProfile = sampleProfile.copyWith(
-          dueDate: DateTime.now().subtract(const Duration(days: 10)),
+          expectedBirthDate: DateTime.now().subtract(const Duration(days: 10)),
         );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
@@ -262,7 +274,7 @@ void main() {
 
         // Simulate real-time UPDATE
         final updatedProfile = sampleProfile.copyWith(
-          dueDate: DateTime.now().add(const Duration(days: 60)),
+          expectedBirthDate: DateTime.now().add(const Duration(days: 60)),
         );
 
         // Manually update state to simulate real-time handler
@@ -286,7 +298,7 @@ void main() {
       test('cancels real-time subscription on dispose', () {
         when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
 
-        notifier.dispose();
+        // Notifier handles cleanup automatically, no manual dispose needed
 
         expect(notifier.state, isNotNull);
       });
@@ -309,16 +321,4 @@ void main() {
       });
     });
   });
-}
-
-// Fake builders for Postgrest operations (test doubles)
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-
-  FakePostgrestBuilder(this.data);
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder isIn(String column, List<dynamic> values) => this;
-
-  Future<List<Map<String, dynamic>>> call() async => data;
 }

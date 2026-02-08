@@ -10,6 +10,8 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 
+import '../../../../../../helpers/fake_postgrest_builders.dart';
+
 @GenerateMocks([DatabaseService, CacheService, StorageService])
 import 'baby_profile_provider_test.mocks.dart';
 
@@ -54,11 +56,7 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = BabyProfileNotifier(
-        databaseService: mockDatabaseService,
-        cacheService: mockCacheService,
-        storageService: mockStorageService,
-      );
+      notifier = BabyProfileNotifier();
     });
 
     group('Initial State', () {
@@ -327,6 +325,7 @@ void main() {
           userId: 'user_1',
           expectedBirthDate: DateTime.now().add(const Duration(days: 90)),
           gender: Gender.female,
+          relationshipLabel: '',
         );
 
         expect(result, isNotNull);
@@ -340,6 +339,7 @@ void main() {
         final result = await notifier.createProfile(
           name: '   ',
           userId: 'user_1',
+          relationshipLabel: '',
         );
 
         expect(result, isNull);
@@ -355,6 +355,7 @@ void main() {
         final result = await notifier.createProfile(
           name: 'Baby Jane',
           userId: 'user_1',
+          relationshipLabel: '',
         );
 
         expect(result, isNull);
@@ -668,47 +669,4 @@ void main() {
       });
     });
   });
-}
-
-// Fake builders for Postgrest operations (test doubles)
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-  final bool returnNull;
-
-  FakePostgrestBuilder(this.data, {this.returnNull = false});
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder isNull(String column) => this;
-  FakePostgrestBuilder order(String column, {bool ascending = true}) => this;
-  FakePostgrestBuilder limit(int count) => this;
-
-  Future<Map<String, dynamic>?> maybeSingle() async {
-    if (returnNull || data.isEmpty) return null;
-    return data.first;
-  }
-
-  Future<Map<String, dynamic>> single() async => data.first;
-  Future<List<Map<String, dynamic>>> call() async => data;
-}
-
-class FakePostgrestUpdateBuilder {
-  FakePostgrestUpdateBuilder eq(String column, dynamic value) => this;
-
-  Future<void> call() async {}
-}
-
-class FakePostgrestInsertBuilder {
-  final List<Map<String, dynamic>> data;
-
-  FakePostgrestInsertBuilder(this.data);
-
-  FakePostgrestInsertBuilder select() => this;
-
-  Future<Map<String, dynamic>> single() async => data.first;
-}
-
-class FakePostgrestDeleteBuilder {
-  FakePostgrestDeleteBuilder eq(String column, dynamic value) => this;
-
-  Future<void> call() async {}
 }
