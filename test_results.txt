@@ -1,13 +1,106 @@
-Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
-Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+00:00 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:01 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:01 +0 -1: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart [E]                                   
+  Failed to load "/Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart":
+  Compilation failed for testPath=/Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart: test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart:114:11: Error: The argument type 'Null' can't be assigned to the parameter type 'String'.
+            any,
+            ^
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart:157:11: Error: The argument type 'Null' can't be assigned to the parameter type 'String'.
+            any,
+            ^
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart:290:11: Error: The argument type 'Null' can't be assigned to the parameter type 'String'.
+            any,
+            ^
+  test/helpers/mock_factory.dart:66:15: Error: The method 'invalidate' isn't defined for the type 'MockCacheService'.
+   - 'MockCacheService' is from 'test/mocks/mock_services.mocks.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'invalidate'.
+      when(mock.invalidate(any)).thenAnswer((_) async => null);
+                ^^^^^^^^^^
+  test/helpers/mock_factory.dart:114:15: Error: The method 'uploadImage' isn't defined for the type 'MockStorageService'.
+   - 'MockStorageService' is from 'test/mocks/mock_services.mocks.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'uploadImage'.
+      when(mock.uploadImage(
+                ^^^^^^^^^^^
+  test/helpers/mock_factory.dart:121:25: Error: Too few positional arguments: 2 required, 0 given.
+      when(mock.deleteFile(
+                          ^
+  test/helpers/mock_factory.dart:127:27: Error: Too few positional arguments: 2 required, 0 given.
+      when(mock.getPublicUrl(
+                            ^
+  test/helpers/mock_factory.dart:173:42: Error: The argument type 'Future<Null> Function(Invocation)' can't be assigned to the parameter type 'String? Function(Invocation)'.
+   - 'Future' is from 'dart:async'.
+   - 'Invocation' is from 'dart:core'.
+      when(mock.getString(any)).thenAnswer((_) async => null);
+                                           ^
+  test/helpers/mock_factory.dart:179:40: Error: The argument type 'Future<Null> Function(Invocation)' can't be assigned to the parameter type 'bool? Function(Invocation)'.
+   - 'Future' is from 'dart:async'.
+   - 'Invocation' is from 'dart:core'.
+      when(mock.getBool(any)).thenAnswer((_) async => null);
+                                         ^
+  test/helpers/mock_factory.dart:192:15: Error: The method 'createBackup' isn't defined for the type 'MockBackupService'.
+   - 'MockBackupService' is from 'test/mocks/mock_services.mocks.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'createBackup'.
+      when(mock.createBackup()).thenAnswer((_) async => 'backup-id-123');
+                ^^^^^^^^^^^^
+  test/helpers/mock_factory.dart:195:15: Error: The method 'restoreBackup' isn't defined for the type 'MockBackupService'.
+   - 'MockBackupService' is from 'test/mocks/mock_services.mocks.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'restoreBackup'.
+      when(mock.restoreBackup(any)).thenAnswer((_) async => null);
+                ^^^^^^^^^^^^^
+  test/helpers/mock_factory.dart:213:15: Error: The method 'logEvent' isn't defined for the type 'MockAnalyticsService'.
+   - 'MockAnalyticsService' is from 'test/mocks/mock_services.mocks.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'logEvent'.
+      when(mock.logEvent(
+                ^^^^^^^^
+  test/helpers/mock_factory.dart:372:21: Error: Too many positional arguments: 2 allowed, but 3 found.
+  Try removing the extra positional arguments.
+      when(mock.update(table, any, any))
+                      ^
+  test/helpers/mock_factory.dart:458:15: Error: The method 'uploadImage' isn't defined for the type 'MockStorageService'.
+   - 'MockStorageService' is from 'test/mocks/mock_services.mocks.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'uploadImage'.
+      when(mock.uploadImage(
+                ^^^^^^^^^^^
+  test/helpers/mock_factory.dart:471:15: Error: The method 'uploadImage' isn't defined for the type 'MockStorageService'.
+   - 'MockStorageService' is from 'test/mocks/mock_services.mocks.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'uploadImage'.
+      when(mock.uploadImage(
+                ^^^^^^^^^^^
+  test/helpers/test_data_factory.dart:42:7: Error: No named parameter with the name 'id'.
+        id: id ?? 'test-user-${DateTime.now().millisecondsSinceEpoch}',
+        ^^
+  lib/core/models/user.dart:25:9: Context: Found this candidate, but the arguments don't match.
+    const User({
+          ^^^^
+  test/helpers/test_data_factory.dart:69:7: Error: No named parameter with the name 'dueDate'.
+        dueDate: dueDate,
+        ^^^^^^^
+  lib/core/models/baby_profile.dart:39:9: Context: Found this candidate, but the arguments don't match.
+    const BabyProfile({
+          ^^^^^^^^^^^
+  test/helpers/test_data_factory.dart:119:7: Error: No named parameter with the name 'eventDate'.
+        eventDate: eventDate ?? DateTime.now().add(const Duration(days: 30)),
+        ^^^^^^^^^
+  lib/core/models/event.dart:46:9: Context: Found this candidate, but the arguments don't match.
+    const Event({
+          ^^^^^
+  test/helpers/test_data_factory.dart:146:7: Error: No named parameter with the name 'uploadedBy'.
+        uploadedBy:
+        ^^^^^^^^^^
+  lib/core/models/photo.dart:37:9: Context: Found this candidate, but the arguments don't match.
+    const Photo({
+          ^^^^^
+  test/helpers/test_data_factory.dart:179:7: Error: No named parameter with the name 'price'.
+        price: price ?? 29.99,
+        ^^^^^
+  lib/core/models/registry_item.dart:37:9: Context: Found this candidate, but the arguments don't match.
+    const RegistryItem({
+          ^^^^^^^^^^^^
+  test/helpers/test_data_factory.dart:205:7: Error: No named parameter with the name 'userId'.
+        userId: userId ?? 'test-user-${DateTime.now().millisecondsSinceEpoch}',
+        ^^^^^^
+  lib/core/models/notification.dart:40:9: Context: Found this candidate, but the arguments don't match.
+    const Notification({
+          ^^^^^^^^^^^^
+  .
 
-Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
-Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
-
-Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
-Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
-
-Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
-Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
-
-00:00 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/l10n/localization_test.dart
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart'
+00:01 +0 -1: Some tests failed.                                                                                                                                                                        
