@@ -68,19 +68,11 @@ class HomeScreenState {
 }
 
 /// Home Screen Provider Notifier
-class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final Ref _ref;
-
-  HomeScreenNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required Ref ref,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _ref = ref,
-        super(const HomeScreenState());
+class HomeScreenNotifier extends Notifier<HomeScreenState> {
+  @override
+  HomeScreenState build() {
+    return const HomeScreenState();
+  }
 
   // Configuration
   static const String _screenId = 'home';
@@ -109,7 +101,7 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
       // Load tiles using TileLoader utility (decoupled from tileConfigProvider)
       // Issue #3.21 Fix: Removed direct provider dependency
       final tiles = await TileLoader.loadForScreen(
-        ref: _ref,
+        ref: ref,
         screenId: _screenId,
         role: role,
         forceRefresh: false,
@@ -148,7 +140,7 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
       // Force refresh using TileLoader utility (decoupled)
       // Issue #3.21 Fix: Removed direct provider dependency
       final tiles = await TileLoader.loadForScreen(
-        ref: _ref,
+        ref: ref,
         screenId: _screenId,
         role: state.selectedRole!,
         forceRefresh: true,
@@ -221,11 +213,12 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     String babyProfileId,
     UserRole role,
   ) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId, role);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -244,12 +237,13 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     UserRole role,
     List<TileConfig> tiles,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId, role);
       final jsonData = tiles.map((tile) => tile.toJson()).toList();
-      await _cacheService.put(
+      await cacheService.put(
         cacheKey,
         jsonData,
         ttlMinutes: PerformanceLimits.screenCacheDuration.inMinutes,
@@ -274,15 +268,6 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
 /// await notifier.loadTiles(babyProfileId: 'abc', role: UserRole.owner);
 /// ```
 final homeScreenProvider =
-    StateNotifierProvider.autoDispose<HomeScreenNotifier, HomeScreenState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-
-    return HomeScreenNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      ref: ref,
-    );
-  },
+    NotifierProvider.autoDispose<HomeScreenNotifier, HomeScreenState>(
+  HomeScreenNotifier.new,
 );
