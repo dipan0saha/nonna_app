@@ -59,7 +59,6 @@ void main() {
 
     group('Initial State', () {
       test('initial state has empty invitations', () {
-        final notifier = container.read(invitesStatusProvider.notifier);
         final state = container.read(invitesStatusProvider);
         
         expect(state.invitations, isEmpty);
