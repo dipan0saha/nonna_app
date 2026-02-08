@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/enums/gender.dart';
@@ -8,6 +9,7 @@ import 'package:nonna_app/core/models/baby_profile.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
@@ -17,7 +19,7 @@ import 'baby_profile_provider_test.mocks.dart';
 
 void main() {
   group('BabyProfileProvider Tests', () {
-    late BabyProfileNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockStorageService mockStorageService;
@@ -59,20 +61,32 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = BabyProfileNotifier();
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          storageServiceProvider.overrideWithValue(mockStorageService),
+        ],
+      );
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
       test('initial state has no profile', () {
-        expect(notifier.state.profile, isNull);
-        expect(notifier.state.memberships, isEmpty);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.isSaving, isFalse);
-        expect(notifier.state.isEditMode, isFalse);
-        expect(notifier.state.error, isNull);
-        expect(notifier.state.saveError, isNull);
-        expect(notifier.state.saveSuccess, isFalse);
-        expect(notifier.state.isOwner, isFalse);
+        final state = container.read(babyProfileProvider);
+        
+        expect(state.profile, isNull);
+        expect(state.memberships, isEmpty);
+        expect(state.isLoading, isFalse);
+        expect(state.isSaving, isFalse);
+        expect(state.isEditMode, isFalse);
+        expect(state.error, isNull);
+        expect(state.saveError, isNull);
+        expect(state.saveSuccess, isFalse);
+        expect(state.isOwner, isFalse);
       });
     });
 
@@ -91,12 +105,12 @@ void main() {
           }
         });
 
-        final loadFuture = notifier.loadProfile(
+        final loadFuture = container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
-        expect(notifier.state.isLoading, isTrue);
+        expect(container.read(babyProfileProvider).isLoading, isTrue);
 
         await loadFuture;
       });
@@ -115,16 +129,16 @@ void main() {
           }
         });
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
-        expect(notifier.state.profile, isNotNull);
-        expect(notifier.state.profile!.id, equals('baby_1'));
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
-        expect(notifier.state.isOwner, isTrue);
+        expect(container.read(babyProfileProvider).profile, isNotNull);
+        expect(container.read(babyProfileProvider).profile!.id, equals('baby_1'));
+        expect(container.read(babyProfileProvider).isLoading, isFalse);
+        expect(container.read(babyProfileProvider).error, isNull);
+        expect(container.read(babyProfileProvider).isOwner, isTrue);
       });
 
       test('loads profile from cache when available', () async {
@@ -140,13 +154,13 @@ void main() {
           }
         });
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
-        expect(notifier.state.profile, isNotNull);
-        expect(notifier.state.profile!.id, equals('baby_1'));
+        expect(container.read(babyProfileProvider).profile, isNotNull);
+        expect(container.read(babyProfileProvider).profile!.id, equals('baby_1'));
       });
 
       test('loads profile with memberships', () async {
@@ -166,14 +180,14 @@ void main() {
           }
         });
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
-        expect(notifier.state.memberships, hasLength(2));
-        expect(notifier.state.owners, hasLength(1));
-        expect(notifier.state.followers, hasLength(1));
+        expect(container.read(babyProfileProvider).memberships, hasLength(2));
+        expect(container.read(babyProfileProvider).owners, hasLength(1));
+        expect(container.read(babyProfileProvider).followers, hasLength(1));
       });
 
       test('handles profile not found error', () async {
@@ -181,14 +195,14 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, contains('Baby profile not found'));
-        expect(notifier.state.profile, isNull);
+        expect(container.read(babyProfileProvider).isLoading, isFalse);
+        expect(container.read(babyProfileProvider).error, contains('Baby profile not found'));
+        expect(container.read(babyProfileProvider).profile, isNull);
       });
 
       test('handles database error gracefully', () async {
@@ -196,14 +210,14 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, contains('Database error'));
-        expect(notifier.state.profile, isNull);
+        expect(container.read(babyProfileProvider).isLoading, isFalse);
+        expect(container.read(babyProfileProvider).error, contains('Database error'));
+        expect(container.read(babyProfileProvider).profile, isNull);
       });
 
       test('force refresh bypasses cache', () async {
@@ -221,7 +235,7 @@ void main() {
           }
         });
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
           forceRefresh: true,
@@ -244,7 +258,7 @@ void main() {
           }
         });
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
@@ -270,22 +284,22 @@ void main() {
           }
         });
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
         notifier.enterEditMode();
 
-        expect(notifier.state.isEditMode, isTrue);
-        expect(notifier.state.saveError, isNull);
-        expect(notifier.state.saveSuccess, isFalse);
+        expect(container.read(babyProfileProvider).isEditMode, isTrue);
+        expect(container.read(babyProfileProvider).saveError, isNull);
+        expect(container.read(babyProfileProvider).saveSuccess, isFalse);
       });
 
       test('does not enable edit mode when user is not owner', () {
         notifier.enterEditMode();
 
-        expect(notifier.state.isEditMode, isFalse);
+        expect(container.read(babyProfileProvider).isEditMode, isFalse);
       });
     });
 
@@ -304,7 +318,7 @@ void main() {
           }
         });
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
@@ -312,9 +326,9 @@ void main() {
         notifier.enterEditMode();
         notifier.cancelEdit();
 
-        expect(notifier.state.isEditMode, isFalse);
-        expect(notifier.state.saveError, isNull);
-        expect(notifier.state.saveSuccess, isFalse);
+        expect(container.read(babyProfileProvider).isEditMode, isFalse);
+        expect(container.read(babyProfileProvider).saveError, isNull);
+        expect(container.read(babyProfileProvider).saveSuccess, isFalse);
       });
     });
 
@@ -332,9 +346,9 @@ void main() {
 
         expect(result, isNotNull);
         expect(result!.name, equals('Baby Jane'));
-        expect(notifier.state.isSaving, isFalse);
-        expect(notifier.state.saveSuccess, isTrue);
-        expect(notifier.state.isOwner, isTrue);
+        expect(container.read(babyProfileProvider).isSaving, isFalse);
+        expect(container.read(babyProfileProvider).saveSuccess, isTrue);
+        expect(container.read(babyProfileProvider).isOwner, isTrue);
       });
 
       test('validates empty baby name', () async {
@@ -344,9 +358,9 @@ void main() {
         );
 
         expect(result, isNull);
-        expect(notifier.state.isSaving, isFalse);
-        expect(notifier.state.saveError, contains('Baby name is required'));
-        expect(notifier.state.saveSuccess, isFalse);
+        expect(container.read(babyProfileProvider).isSaving, isFalse);
+        expect(container.read(babyProfileProvider).saveError, contains('Baby name is required'));
+        expect(container.read(babyProfileProvider).saveSuccess, isFalse);
       });
 
       test('handles database error during creation', () async {
@@ -359,9 +373,9 @@ void main() {
         );
 
         expect(result, isNull);
-        expect(notifier.state.isSaving, isFalse);
-        expect(notifier.state.saveError, contains('Creation failed'));
-        expect(notifier.state.saveSuccess, isFalse);
+        expect(container.read(babyProfileProvider).isSaving, isFalse);
+        expect(container.read(babyProfileProvider).saveError, contains('Creation failed'));
+        expect(container.read(babyProfileProvider).saveSuccess, isFalse);
       });
     });
 
@@ -382,7 +396,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
@@ -393,10 +407,10 @@ void main() {
           gender: Gender.female,
         );
 
-        expect(notifier.state.isSaving, isFalse);
-        expect(notifier.state.isEditMode, isFalse);
-        expect(notifier.state.saveSuccess, isTrue);
-        expect(notifier.state.saveError, isNull);
+        expect(container.read(babyProfileProvider).isSaving, isFalse);
+        expect(container.read(babyProfileProvider).isEditMode, isFalse);
+        expect(container.read(babyProfileProvider).saveSuccess, isTrue);
+        expect(container.read(babyProfileProvider).saveError, isNull);
       });
 
       test('does not update when user is not owner', () async {
@@ -405,7 +419,7 @@ void main() {
           name: 'Baby Jane Smith',
         );
 
-        expect(notifier.state.saveError, contains('Only owners can update'));
+        expect(container.read(babyProfileProvider).saveError, contains('Only owners can update'));
         verifyNever(mockDatabaseService.update(any, any));
       });
 
@@ -423,7 +437,7 @@ void main() {
           }
         });
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
@@ -433,9 +447,9 @@ void main() {
           name: '   ',
         );
 
-        expect(notifier.state.isSaving, isFalse);
-        expect(notifier.state.saveError, contains('Baby name is required'));
-        expect(notifier.state.saveSuccess, isFalse);
+        expect(container.read(babyProfileProvider).isSaving, isFalse);
+        expect(container.read(babyProfileProvider).saveError, contains('Baby name is required'));
+        expect(container.read(babyProfileProvider).saveSuccess, isFalse);
       });
 
       test('handles database error during update', () async {
@@ -454,7 +468,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
@@ -464,9 +478,9 @@ void main() {
           name: 'Baby Jane Smith',
         );
 
-        expect(notifier.state.isSaving, isFalse);
-        expect(notifier.state.saveError, contains('Update failed'));
-        expect(notifier.state.saveSuccess, isFalse);
+        expect(container.read(babyProfileProvider).isSaving, isFalse);
+        expect(container.read(babyProfileProvider).saveError, contains('Update failed'));
+        expect(container.read(babyProfileProvider).saveSuccess, isFalse);
       });
     });
 
@@ -487,7 +501,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
@@ -521,7 +535,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Delete failed'));
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
@@ -540,7 +554,7 @@ void main() {
           bucket: 'bucket',
         )).thenAnswer((_) async => 'https://example.com/uploaded-photo.jpg');
 
-        final result = await notifier.uploadProfilePhoto(
+        final result = await container.read(babyProfileProvider.notifier).uploadProfilePhoto(
           babyProfileId: 'baby_1',
           filePath: '/path/to/photo.jpg',
         );
@@ -556,7 +570,7 @@ void main() {
           bucket: 'bucket',
         )).thenThrow(Exception('Upload failed'));
 
-        final result = await notifier.uploadProfilePhoto(
+        final result = await container.read(babyProfileProvider.notifier).uploadProfilePhoto(
           babyProfileId: 'baby_1',
           filePath: '/path/to/photo.jpg',
         );
@@ -582,12 +596,12 @@ void main() {
         when(mockDatabaseService.delete(any))
             .thenReturn(FakePostgrestDeleteBuilder());
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
-        final result = await notifier.removeFollower(
+        final result = await container.read(babyProfileProvider.notifier).removeFollower(
           babyProfileId: 'baby_1',
           membershipId: 'membership_1',
         );
@@ -597,7 +611,7 @@ void main() {
       });
 
       test('does not remove follower when user is not owner', () async {
-        final result = await notifier.removeFollower(
+        final result = await container.read(babyProfileProvider.notifier).removeFollower(
           babyProfileId: 'baby_1',
           membershipId: 'membership_1',
         );
@@ -622,12 +636,12 @@ void main() {
         when(mockDatabaseService.delete(any))
             .thenThrow(Exception('Delete failed'));
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
 
-        final result = await notifier.removeFollower(
+        final result = await container.read(babyProfileProvider.notifier).removeFollower(
           babyProfileId: 'baby_1',
           membershipId: 'membership_1',
         );
@@ -654,7 +668,7 @@ void main() {
         });
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
-        await notifier.loadProfile(
+        await container.read(babyProfileProvider.notifier).loadProfile(
           babyProfileId: 'baby_1',
           currentUserId: 'user_1',
         );
@@ -662,7 +676,7 @@ void main() {
         final initialLoadCount =
             verify(mockDatabaseService.select(any)).callCount;
 
-        await notifier.refresh('baby_1', 'user_1');
+        await container.read(babyProfileProvider.notifier).refresh('baby_1', 'user_1');
 
         expect(verify(mockDatabaseService.select(any)).callCount,
             greaterThan(initialLoadCount));

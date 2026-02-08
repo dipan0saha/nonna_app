@@ -1,10 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/calendar/presentation/providers/calendar_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
@@ -14,7 +16,7 @@ import 'calendar_screen_provider_test.mocks.dart';
 
 void main() {
   group('CalendarScreenNotifier Tests', () {
-    late CalendarScreenNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -39,24 +41,36 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = CalendarScreenNotifier();
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
+      );
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
       test('initial state has empty events', () {
-        expect(notifier.state.events, isEmpty);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
-        expect(notifier.state.eventsByDate, isEmpty);
-        expect(notifier.state.selectedDate, isNotNull);
-        expect(notifier.state.focusedMonth, isNotNull);
+        final state = container.read(calendarScreenProvider);
+        
+        expect(state.events, isEmpty);
+        expect(state.isLoading, isFalse);
+        expect(state.error, isNull);
+        expect(state.eventsByDate, isEmpty);
+        expect(container.read(calendarScreenProvider).selectedDate, isNotNull);
+        expect(container.read(calendarScreenProvider).focusedMonth, isNotNull);
       });
 
       test('initial date is today', () {
         final now = DateTime.now();
-        expect(notifier.state.selectedDate.year, equals(now.year));
-        expect(notifier.state.selectedDate.month, equals(now.month));
-        expect(notifier.state.selectedDate.day, equals(now.day));
+        expect(container.read(calendarScreenProvider).selectedDate.year, equals(now.year));
+        expect(container.read(calendarScreenProvider).selectedDate.month, equals(now.month));
+        expect(container.read(calendarScreenProvider).selectedDate.day, equals(now.day));
       });
     });
 
@@ -71,9 +85,9 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
 
-        final future = notifier.loadEvents(babyProfileId: 'profile_1');
+        final future = container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
-        expect(notifier.state.isLoading, isTrue);
+        expect(container.read(calendarScreenProvider).isLoading, isTrue);
         await future;
       });
 
@@ -82,12 +96,12 @@ void main() {
               sampleEvent.toJson(),
             ]);
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
-        expect(notifier.state.events, hasLength(1));
-        expect(notifier.state.events.first.id, equals('event_1'));
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.selectedBabyProfileId, equals('profile_1'));
+        expect(container.read(calendarScreenProvider).events, hasLength(1));
+        expect(container.read(calendarScreenProvider).events.first.id, equals('event_1'));
+        expect(container.read(calendarScreenProvider).isLoading, isFalse);
+        expect(container.read(calendarScreenProvider).selectedBabyProfileId, equals('profile_1'));
       });
 
       test('fetches events from database when cache is empty', () async {
@@ -102,11 +116,11 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
-        expect(notifier.state.events, hasLength(1));
-        expect(notifier.state.events.first.id, equals('event_1'));
-        expect(notifier.state.isLoading, isFalse);
+        expect(container.read(calendarScreenProvider).events, hasLength(1));
+        expect(container.read(calendarScreenProvider).events.first.id, equals('event_1'));
+        expect(container.read(calendarScreenProvider).isLoading, isFalse);
         verify(mockCacheService.put(any, any, ttlMinutes: 30)).called(1);
       });
 
@@ -127,11 +141,11 @@ void main() {
         when(mockDatabaseService.select(any)).thenReturn(
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
-        expect(notifier.state.eventsByDate.keys, hasLength(2));
-        expect(notifier.state.eventsByDate['2024-06-15'], hasLength(1));
-        expect(notifier.state.eventsByDate['2024-06-16'], hasLength(1));
+        expect(container.read(calendarScreenProvider).eventsByDate.keys, hasLength(2));
+        expect(container.read(calendarScreenProvider).eventsByDate['2024-06-15'], hasLength(1));
+        expect(container.read(calendarScreenProvider).eventsByDate['2024-06-16'], hasLength(1));
       });
 
       test('uses custom date range when provided', () async {
@@ -149,13 +163,13 @@ void main() {
         final startDate = DateTime(2024, 5, 1);
         final endDate = DateTime(2024, 7, 31);
 
-        await notifier.loadEvents(
+        await container.read(calendarScreenProvider.notifier).loadEvents(
           babyProfileId: 'profile_1',
           startDate: startDate,
           endDate: endDate,
         );
 
-        expect(notifier.state.events, hasLength(1));
+        expect(container.read(calendarScreenProvider).events, hasLength(1));
       });
 
       test('handles errors gracefully', () async {
@@ -163,11 +177,11 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, contains('Database error'));
-        expect(notifier.state.events, isEmpty);
+        expect(container.read(calendarScreenProvider).isLoading, isFalse);
+        expect(container.read(calendarScreenProvider).error, contains('Database error'));
+        expect(container.read(calendarScreenProvider).events, isEmpty);
       });
 
       test('sets up real-time subscription', () async {
@@ -182,7 +196,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
         verify(mockRealtimeService.subscribe(
           table: any,
@@ -196,9 +210,9 @@ void main() {
       test('selectDate updates selected date', () {
         final newDate = DateTime(2024, 7, 20);
 
-        notifier.selectDate(newDate);
+        container.read(calendarScreenProvider.notifier).selectDate(newDate);
 
-        expect(notifier.state.selectedDate, equals(newDate));
+        expect(container.read(calendarScreenProvider).selectedDate, equals(newDate));
       });
 
       test('eventsForSelectedDate returns correct events', () async {
@@ -213,12 +227,12 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
-        notifier.selectDate(DateTime(2024, 6, 15));
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
+        container.read(calendarScreenProvider.notifier).selectDate(DateTime(2024, 6, 15));
 
-        expect(notifier.state.eventsForSelectedDate, hasLength(1));
+        expect(container.read(calendarScreenProvider).eventsForSelectedDate, hasLength(1));
         expect(
-            notifier.state.eventsForSelectedDate.first.id, equals('event_1'));
+            container.read(calendarScreenProvider).eventsForSelectedDate.first.id, equals('event_1'));
       });
 
       test('datesWithEvents returns all dates with events', () async {
@@ -238,9 +252,9 @@ void main() {
         when(mockDatabaseService.select(any)).thenReturn(
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
-        final datesWithEvents = notifier.state.datesWithEvents;
+        final datesWithEvents = container.read(calendarScreenProvider).datesWithEvents;
         expect(datesWithEvents, hasLength(2));
       });
     });
@@ -248,22 +262,22 @@ void main() {
     group('Month Navigation', () {
       test('nextMonth navigates to next month', () {
         final currentMonth = DateTime(2024, 6, 1);
-        notifier.state = notifier.state.copyWith(focusedMonth: currentMonth);
+        container.read(calendarScreenProvider) = container.read(calendarScreenProvider).copyWith(focusedMonth: currentMonth);
 
         notifier.nextMonth();
 
-        expect(notifier.state.focusedMonth.year, equals(2024));
-        expect(notifier.state.focusedMonth.month, equals(7));
+        expect(container.read(calendarScreenProvider).focusedMonth.year, equals(2024));
+        expect(container.read(calendarScreenProvider).focusedMonth.month, equals(7));
       });
 
       test('previousMonth navigates to previous month', () {
         final currentMonth = DateTime(2024, 6, 1);
-        notifier.state = notifier.state.copyWith(focusedMonth: currentMonth);
+        container.read(calendarScreenProvider) = container.read(calendarScreenProvider).copyWith(focusedMonth: currentMonth);
 
         notifier.previousMonth();
 
-        expect(notifier.state.focusedMonth.year, equals(2024));
-        expect(notifier.state.focusedMonth.month, equals(5));
+        expect(container.read(calendarScreenProvider).focusedMonth.year, equals(2024));
+        expect(container.read(calendarScreenProvider).focusedMonth.month, equals(5));
       });
 
       test('goToMonth navigates to specific month', () {
@@ -271,34 +285,34 @@ void main() {
 
         notifier.goToMonth(targetMonth);
 
-        expect(notifier.state.focusedMonth.year, equals(2024));
-        expect(notifier.state.focusedMonth.month, equals(12));
+        expect(container.read(calendarScreenProvider).focusedMonth.year, equals(2024));
+        expect(container.read(calendarScreenProvider).focusedMonth.month, equals(12));
       });
 
       test('nextMonth handles year transition', () {
         final currentMonth = DateTime(2024, 12, 1);
-        notifier.state = notifier.state.copyWith(focusedMonth: currentMonth);
+        container.read(calendarScreenProvider) = container.read(calendarScreenProvider).copyWith(focusedMonth: currentMonth);
 
         notifier.nextMonth();
 
-        expect(notifier.state.focusedMonth.year, equals(2025));
-        expect(notifier.state.focusedMonth.month, equals(1));
+        expect(container.read(calendarScreenProvider).focusedMonth.year, equals(2025));
+        expect(container.read(calendarScreenProvider).focusedMonth.month, equals(1));
       });
 
       test('previousMonth handles year transition', () {
         final currentMonth = DateTime(2024, 1, 1);
-        notifier.state = notifier.state.copyWith(focusedMonth: currentMonth);
+        container.read(calendarScreenProvider) = container.read(calendarScreenProvider).copyWith(focusedMonth: currentMonth);
 
         notifier.previousMonth();
 
-        expect(notifier.state.focusedMonth.year, equals(2023));
-        expect(notifier.state.focusedMonth.month, equals(12));
+        expect(container.read(calendarScreenProvider).focusedMonth.year, equals(2023));
+        expect(container.read(calendarScreenProvider).focusedMonth.month, equals(12));
       });
     });
 
     group('refresh', () {
       test('refreshes events', () async {
-        notifier.state = notifier.state.copyWith(
+        container.read(calendarScreenProvider) = container.read(calendarScreenProvider).copyWith(
           selectedBabyProfileId: 'profile_1',
         );
 
@@ -315,7 +329,7 @@ void main() {
 
         await notifier.refresh();
 
-        expect(notifier.state.events, hasLength(1));
+        expect(container.read(calendarScreenProvider).events, hasLength(1));
       });
 
       test('does not refresh when baby profile is missing', () async {
@@ -353,12 +367,12 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
         // Wait for stream to emit
         await Future.delayed(const Duration(milliseconds: 100));
 
-        expect(notifier.state.events.length, equals(2));
+        expect(container.read(calendarScreenProvider).events.length, equals(2));
       });
 
       test('handles UPDATE event', () async {
@@ -391,12 +405,12 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
         // Wait for stream to emit
         await Future.delayed(const Duration(milliseconds: 100));
 
-        expect(notifier.state.events.first.title, equals('Updated Event'));
+        expect(container.read(calendarScreenProvider).events.first.title, equals('Updated Event'));
       });
 
       test('handles DELETE event', () async {
@@ -418,14 +432,14 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
-        expect(notifier.state.events, hasLength(1));
+        expect(container.read(calendarScreenProvider).events, hasLength(1));
 
         // Wait for stream to emit
         await Future.delayed(const Duration(milliseconds: 100));
 
-        expect(notifier.state.events, isEmpty);
+        expect(container.read(calendarScreenProvider).events, isEmpty);
       });
     });
 
@@ -443,7 +457,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
-        await notifier.loadEvents(babyProfileId: 'profile_1');
+        await container.read(calendarScreenProvider.notifier).loadEvents(babyProfileId: 'profile_1');
 
         // Note: dispose is called automatically by Riverpod's ref.onDispose
         // We can't manually call dispose on a Riverpod notifier
