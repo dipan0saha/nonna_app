@@ -18,9 +18,7 @@ void main() {
       // Setup mock cache service
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = ChecklistNotifier(
-        cacheService: mockCacheService,
-      );
+      notifier = ChecklistNotifier();
     });
 
     group('Initial State', () {

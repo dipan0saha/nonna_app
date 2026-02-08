@@ -8,6 +8,8 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 
+import '../../../../../../helpers/fake_postgrest_builders.dart';
+
 @GenerateMocks([DatabaseService, CacheService, RealtimeService])
 import 'registry_screen_provider_test.mocks.dart';
 
@@ -45,11 +47,7 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = RegistryScreenNotifier(
-        databaseService: mockDatabaseService,
-        cacheService: mockCacheService,
-        realtimeService: mockRealtimeService,
-      );
+      notifier = RegistryScreenNotifier();
     });
 
     group('Initial State', () {
@@ -372,25 +370,8 @@ void main() {
       test('cancels real-time subscriptions on dispose', () {
         when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
 
-        notifier.dispose();
-
         expect(notifier.state, isNotNull);
       });
     });
   });
-}
-
-// Fake builders for Postgrest operations (test doubles)
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-
-  FakePostgrestBuilder(this.data);
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder isNull(String column) => this;
-  FakePostgrestBuilder order(String column, {bool ascending = true}) => this;
-  FakePostgrestBuilder range(int from, int to) => this;
-  FakePostgrestBuilder limit(int count) => this;
-
-  Future<List<Map<String, dynamic>>> call() async => data;
 }

@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/local_storage_service.dart';
 import 'package:nonna_app/tiles/core/providers/tile_visibility_provider.dart';
@@ -13,6 +15,7 @@ void main() {
     late TileVisibilityNotifier notifier;
     late MockCacheService mockCacheService;
     late MockLocalStorageService mockLocalStorageService;
+    late ProviderContainer container;
 
     setUp(() {
       mockCacheService = MockCacheService();
@@ -21,10 +24,19 @@ void main() {
       // Setup mock local storage
       when(mockLocalStorageService.isInitialized).thenReturn(true);
 
-      notifier = TileVisibilityNotifier(
-        cacheService: mockCacheService,
-        localStorageService: mockLocalStorageService,
+      // Create provider container with overrides
+      container = ProviderContainer(
+        overrides: [
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          localStorageServiceProvider.overrideWithValue(mockLocalStorageService),
+        ],
       );
+
+      notifier = container.read(tileVisibilityProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
