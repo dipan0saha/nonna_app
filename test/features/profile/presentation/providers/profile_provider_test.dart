@@ -7,6 +7,10 @@ import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
 import 'package:nonna_app/features/profile/presentation/providers/profile_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/di/providers.dart';
+
+import '../../../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService, StorageService])
 import 'profile_provider_test.mocks.dart';
@@ -14,6 +18,7 @@ import 'profile_provider_test.mocks.dart';
 void main() {
   group('ProfileProvider Tests', () {
     late ProfileNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockStorageService mockStorageService;
@@ -42,11 +47,19 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = ProfileNotifier(
-        databaseService: mockDatabaseService,
-        cacheService: mockCacheService,
-        storageService: mockStorageService,
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          storageServiceProvider.overrideWithValue(mockStorageService),
+        ],
       );
+
+      notifier = container.read(profileProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
@@ -110,7 +123,7 @@ void main() {
       test('handles profile not found error', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([], returnNull: true));
+            .thenReturn(FakePostgrestBuilder([]));
 
         await notifier.loadProfile(userId: 'user_1');
 
@@ -386,31 +399,4 @@ void main() {
       });
     });
   });
-}
-
-// Fake builders for Postgrest operations (test doubles)
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-  final bool returnNull;
-
-  FakePostgrestBuilder(this.data, {this.returnNull = false});
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder isNull(String column) => this;
-  FakePostgrestBuilder order(String column, {bool ascending = true}) => this;
-  FakePostgrestBuilder limit(int count) => this;
-
-  Future<Map<String, dynamic>?> maybeSingle() async {
-    if (returnNull || data.isEmpty) return null;
-    return data.first;
-  }
-
-  Future<Map<String, dynamic>> single() async => data.first;
-  Future<List<Map<String, dynamic>>> call() async => data;
-}
-
-class FakePostgrestUpdateBuilder {
-  FakePostgrestUpdateBuilder eq(String column, dynamic value) => this;
-
-  Future<void> call() async {}
 }

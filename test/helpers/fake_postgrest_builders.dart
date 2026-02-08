@@ -4,107 +4,120 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// 
 /// This builder implements the PostgrestFilterBuilder interface
 /// to allow for proper type checking in tests
-class FakePostgrestBuilder extends PostgrestFilterBuilder<List<Map<String, dynamic>>> {
+class FakePostgrestBuilder extends PostgrestFilterBuilder<dynamic> {
   final List<Map<String, dynamic>> _data;
+  bool _isMaybeSingle = false;
+  bool _isSingle = false;
 
   FakePostgrestBuilder(this._data) : super(null, null, null, null, {});
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(String column, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> eq(String column, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> neq(String column, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> neq(String column, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> gt(String column, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> gt(String column, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> gte(String column, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> gte(String column, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> lt(String column, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> lt(String column, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> lte(String column, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> lte(String column, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> like(String column, String pattern) => this;
+  PostgrestFilterBuilder<dynamic> like(String column, String pattern) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> ilike(String column, String pattern) => this;
+  PostgrestFilterBuilder<dynamic> ilike(String column, String pattern) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> is_(String column, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> is_(String column, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> contains(String column, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> contains(String column, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> containedBy(String column, List<dynamic> values) => this;
+  PostgrestFilterBuilder<dynamic> containedBy(String column, List<dynamic> values) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> rangeLt(String column, String range) => this;
+  PostgrestFilterBuilder<dynamic> rangeLt(String column, String range) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> rangeGt(String column, String range) => this;
+  PostgrestFilterBuilder<dynamic> rangeGt(String column, String range) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> rangeGte(String column, String range) => this;
+  PostgrestFilterBuilder<dynamic> rangeGte(String column, String range) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> rangeLte(String column, String range) => this;
+  PostgrestFilterBuilder<dynamic> rangeLte(String column, String range) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> rangeAdjacent(String column, String range) => this;
+  PostgrestFilterBuilder<dynamic> rangeAdjacent(String column, String range) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> overlaps(String column, List<String> values) => this;
+  PostgrestFilterBuilder<dynamic> overlaps(String column, List<String> values) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> textSearch(String column, String query, {TextSearchType? type, String? config}) => this;
+  PostgrestFilterBuilder<dynamic> textSearch(String column, String query, {TextSearchType? type, String? config}) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> match(Map<String, dynamic> query) => this;
+  PostgrestFilterBuilder<dynamic> match(Map<String, dynamic> query) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> not(String column, String operator, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> not(String column, String operator, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> or(String filters, {String? foreignTable}) => this;
+  PostgrestFilterBuilder<dynamic> or(String filters, {String? foreignTable}) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> filter(String column, String operator, dynamic value) => this;
+  PostgrestFilterBuilder<dynamic> filter(String column, String operator, dynamic value) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> order(String column, {bool ascending = false, bool nullsFirst = false, String? foreignTable}) => this;
+  PostgrestFilterBuilder<dynamic> order(String column, {bool ascending = false, bool nullsFirst = false, String? foreignTable}) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> limit(int count, {String? foreignTable}) => this;
+  PostgrestFilterBuilder<dynamic> limit(int count, {String? foreignTable}) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> range(int from, int to, {String? foreignTable}) => this;
+  PostgrestFilterBuilder<dynamic> range(int from, int to, {String? foreignTable}) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> single() => this;
+  PostgrestFilterBuilder<dynamic> single() {
+    _isSingle = true;
+    return this;
+  }
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> maybeSingle() => this;
+  PostgrestFilterBuilder<dynamic> maybeSingle() {
+    _isMaybeSingle = true;
+    return this;
+  }
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> csv() => this;
+  PostgrestFilterBuilder<dynamic> csv() => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> geojson() => this;
+  PostgrestFilterBuilder<dynamic> geojson() => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> explain({bool analyze = false, bool verbose = false, bool settings = false, bool buffers = false, bool wal = false, String? format}) => this;
+  PostgrestFilterBuilder<dynamic> explain({bool analyze = false, bool verbose = false, bool settings = false, bool buffers = false, bool wal = false, String? format}) => this;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> select([String columns = '*']) => 
+  PostgrestTransformBuilder<dynamic> select([String columns = '*']) => 
       PostgrestTransformBuilder(null, null, null, null, {});
 
   @override
-  Future<List<Map<String, dynamic>>> then<R>(FutureOr<R> Function(List<Map<String, dynamic>> value) onValue, {Function? onError}) async {
+  Future<dynamic> then<R>(FutureOr<R> Function(dynamic value) onValue, {Function? onError}) async {
+    if (_isMaybeSingle) {
+      return _data.isEmpty ? null : _data.first;
+    } else if (_isSingle) {
+      return _data.first;
+    }
     return _data;
   }
 }
