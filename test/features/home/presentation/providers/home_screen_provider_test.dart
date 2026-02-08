@@ -9,7 +9,7 @@ import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 
-import '../../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService])
 import 'home_screen_provider_test.mocks.dart';

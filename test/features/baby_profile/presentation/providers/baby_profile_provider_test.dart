@@ -10,7 +10,7 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 
-import '../../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService, StorageService])
 import 'baby_profile_provider_test.mocks.dart';

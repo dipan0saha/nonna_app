@@ -2,65 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/providers.dart';
-
-/// Announcement priority levels
-enum AnnouncementPriority {
-  low,
-  medium,
-  high,
-  critical,
-}
-
-/// System announcement
-class SystemAnnouncement {
-  final String id;
-  final String title;
-  final String body;
-  final AnnouncementPriority priority;
-  final DateTime createdAt;
-  final DateTime? expiresAt;
-
-  const SystemAnnouncement({
-    required this.id,
-    required this.title,
-    required this.body,
-    required this.priority,
-    required this.createdAt,
-    this.expiresAt,
-  });
-
-  bool get isExpired {
-    if (expiresAt == null) return false;
-    return DateTime.now().isAfter(expiresAt!);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'body': body,
-      'priority': priority.name,
-      'createdAt': createdAt.toIso8601String(),
-      'expiresAt': expiresAt?.toIso8601String(),
-    };
-  }
-
-  factory SystemAnnouncement.fromJson(Map<String, dynamic> json) {
-    return SystemAnnouncement(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      body: json['body'] as String,
-      priority: AnnouncementPriority.values.firstWhere(
-        (p) => p.name == json['priority'],
-        orElse: () => AnnouncementPriority.medium,
-      ),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      expiresAt: json['expiresAt'] != null
-          ? DateTime.parse(json['expiresAt'] as String)
-          : null,
-    );
-  }
-}
+import '../../../core/models/system_announcement.dart';
 
 /// System Announcements provider for the System Announcements tile
 ///

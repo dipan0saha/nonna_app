@@ -7,7 +7,7 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/gallery_screen_provider.dart';
 
-import '../../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService, RealtimeService])
 import 'gallery_screen_provider_test.mocks.dart';

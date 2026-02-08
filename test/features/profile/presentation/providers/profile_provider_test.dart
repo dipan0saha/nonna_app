@@ -10,7 +10,7 @@ import 'package:nonna_app/features/profile/presentation/providers/profile_provid
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/di/providers.dart';
 
-import '../../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService, StorageService])
 import 'profile_provider_test.mocks.dart';
