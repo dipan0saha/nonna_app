@@ -11,14 +11,51 @@ dynamic _createBaseBuilder() {
 /// Fake Postgrest Builder for testing
 ///
 /// This builder implements the PostgrestFilterBuilder interface
-/// to allow for proper type checking in tests
+/// to allow for proper type checking in tests.
+///
+/// ## Usage
+///
+/// ```dart
+/// // Return data from a mock select
+/// when(mockDatabase.select(any))
+///   .thenReturn(FakePostgrestBuilder([{'id': '1', 'name': 'Test'}]));
+///
+/// // Simulate an error
+/// when(mockDatabase.select(any))
+///   .thenReturn(FakePostgrestBuilder.withError(Exception('Test error')));
+///
+/// // Simulate a delayed response
+/// when(mockDatabase.select(any))
+///   .thenReturn(FakePostgrestBuilder.withDelay(
+///     [{'id': '1'}],
+///     delay: Duration(seconds: 1),
+///   ));
+/// ```
 class FakePostgrestBuilder
     extends PostgrestFilterBuilder<List<Map<String, dynamic>>> {
   final List<Map<String, dynamic>> _data;
+  final Exception? _error;
+  final Duration? _delay;
   bool _isMaybeSingle = false;
   bool _isSingle = false;
 
-  FakePostgrestBuilder(this._data) : super(_createBaseBuilder());
+  FakePostgrestBuilder(this._data, {Exception? error, Duration? delay})
+      : _error = error,
+        _delay = delay,
+        super(_createBaseBuilder());
+
+  /// Create a builder that will throw an error
+  factory FakePostgrestBuilder.withError(Exception error) {
+    return FakePostgrestBuilder([], error: error);
+  }
+
+  /// Create a builder that will delay before returning data
+  factory FakePostgrestBuilder.withDelay(
+    List<Map<String, dynamic>> data, {
+    required Duration delay,
+  }) {
+    return FakePostgrestBuilder(data, delay: delay);
+  }
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(
@@ -188,6 +225,19 @@ class FakePostgrestBuilder
   Future<U> then<U>(
       FutureOr<U> Function(List<Map<String, dynamic>> value) onValue,
       {Function? onError}) async {
+    // Handle delay if specified
+    if (_delay != null) {
+      await Future.delayed(_delay!);
+    }
+
+    // Handle error if specified
+    if (_error != null) {
+      if (onError != null) {
+        return onError(_error, StackTrace.current);
+      }
+      throw _error!;
+    }
+
     // Note: This is a simplified implementation for testing.
     // In real usage, single() and maybeSingle() change the generic type,
     // but for our mock purposes, we cast appropriately.
