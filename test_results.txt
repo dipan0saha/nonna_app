@@ -1,9 +1,150 @@
-00:00 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:01 +0 -1: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart [E]                                   
-  Failed to load "/Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart":
-  Compilation failed for testPath=/Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart: test/helpers/test_data_factory.dart:230:38: Error: Member not found: 'general'.
-        type: type ?? NotificationType.general,
-                                       ^^^^^^^
-  .
+00:00 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:01 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:01 +0: NewFollowersProvider Tests Refactored Initial State initial state has empty followers                                                                                                        00:01 +1: NewFollowersProvider Tests Refactored Initial State initial state has empty followers                                                                                                        00:01 +1: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   00:01 +1: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   
+❌ Failed to fetch new followers: Exception: Database connection failed
+00:01 +2: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   00:01 +2: NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching                                                                                                        00:01 +2 -1: NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching [E]                                                                                                 
+  type 'SupabaseQueryBuilder' is not a subtype of type 'PostgrestBuilder<List<Map<String, dynamic>>, List<Map<String, dynamic>>, List<Map<String, dynamic>>>'
+  test/helpers/fake_postgrest_builders.dart 45:15                                       new FakePostgrestBuilder
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 98:51  main.<fn>.<fn>.<fn>
+  
 
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart'
-00:01 +0 -1: Some tests failed.                                                                                                                                                                        
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching'
+00:01 +2 -1: NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty                                                                                   00:01 +2 -2: NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty [E]                                                                               
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty'
+00:01 +2 -2: NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache                                                                                                          00:01 +2 -3: NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache [E]                                                                                                      
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache'
+00:01 +2 -3: NewFollowersProvider Tests Refactored Data Fetching filters only recent followers                                                                                                         00:01 +2 -4: NewFollowersProvider Tests Refactored Data Fetching filters only recent followers [E]                                                                                                     
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching filters only recent followers'
+00:01 +2 -4: NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache                                                                                                      00:01 +2 -5: NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache [E]                                                                                                  
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache'
+00:01 +2 -5: NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only                                                                                                       00:01 +2 -6: NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only [E]                                                                                                   
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only'
+00:01 +2 -6: NewFollowersProvider Tests Refactored Cache Behavior uses cached data when available                                                                                                      00:01 +2 -7: NewFollowersProvider Tests Refactored Cache Behavior uses cached data when available [E]                                                                                                  
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Cache Behavior uses cached data when available'
+00:01 +2 -7: NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh                                                                                                      00:01 +2 -8: NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh [E]                                                                                                  
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh'
+00:01 +2 -8: NewFollowersProvider Tests Refactored Active/Removed Followers getActiveFollowers returns only active followers                                                                           00:01 +2 -9: NewFollowersProvider Tests Refactored Active/Removed Followers getActiveFollowers returns only active followers [E]                                                                       
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Active/Removed Followers getActiveFollowers returns only active followers'
+00:01 +2 -9: NewFollowersProvider Tests Refactored Active/Removed Followers getRemovedFollowers returns only removed followers                                                                         00:01 +2 -10: NewFollowersProvider Tests Refactored Active/Removed Followers getRemovedFollowers returns only removed followers [E]                                                                    
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Active/Removed Followers getRemovedFollowers returns only removed followers'
+00:01 +2 -10: NewFollowersProvider Tests Refactored Real-time Updates handles new follower                                                                                                             00:01 +2 -11: NewFollowersProvider Tests Refactored Real-time Updates handles new follower [E]                                                                                                         
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Real-time Updates handles new follower'
+00:01 +2 -11: NewFollowersProvider Tests Refactored Real-time Updates handles follower removed                                                                                                         00:01 +2 -12: NewFollowersProvider Tests Refactored Real-time Updates handles follower removed [E]                                                                                                     
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Real-time Updates handles follower removed'
+00:01 +2 -12: NewFollowersProvider Tests Refactored Time Period Options supports 7-day period                                                                                                          00:01 +2 -13: NewFollowersProvider Tests Refactored Time Period Options supports 7-day period [E]                                                                                                      
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Time Period Options supports 7-day period'
+00:01 +2 -13: NewFollowersProvider Tests Refactored Time Period Options supports 30-day period                                                                                                         00:01 +2 -14: NewFollowersProvider Tests Refactored Time Period Options supports 30-day period [E]                                                                                                     
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Time Period Options supports 30-day period'
+00:01 +2 -14: NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first)                                                                                                     00:01 +2 -15: NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first) [E]                                                                                                 
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first)'
+00:01 +2 -15: NewFollowersProvider Tests Refactored Error Handling error state can be set and read                                                                                                     00:01 +2 -16: NewFollowersProvider Tests Refactored Error Handling error state can be set and read [E]                                                                                                 
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Error Handling error state can be set and read'
+00:01 +2 -16: NewFollowersProvider Tests Refactored Basic Functionality provider can be read from container                                                                                            00:01 +2 -17: NewFollowersProvider Tests Refactored Basic Functionality provider can be read from container [E]                                                                                        
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Basic Functionality provider can be read from container'
+00:01 +2 -17: NewFollowersProvider Tests Refactored Basic Functionality provider has access to required services                                                                                       00:01 +2 -18: NewFollowersProvider Tests Refactored Basic Functionality provider has access to required services [E]                                                                                   
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Basic Functionality provider has access to required services'
+00:01 +2 -18: NewFollowersProvider Tests Refactored Basic Functionality fetchFollowers method exists                                                                                                   00:01 +2 -19: NewFollowersProvider Tests Refactored Basic Functionality fetchFollowers method exists [E]                                                                                               
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Basic Functionality fetchFollowers method exists'
+00:01 +2 -19: NewFollowersProvider Tests Refactored Basic Functionality refresh method exists                                                                                                          00:01 +2 -20: NewFollowersProvider Tests Refactored Basic Functionality refresh method exists [E]                                                                                                      
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Basic Functionality refresh method exists'
+00:01 +2 -20: NewFollowersProvider Tests Refactored dispose container can be disposed without errors                                                                                                   00:01 +2 -21: NewFollowersProvider Tests Refactored dispose container can be disposed without errors [E]                                                                                               
+  Bad state: Cannot call `when` within a stub response
+  package:mockito/src/mock.dart 1207:5                                                 when
+  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 41:7  main.<fn>.<fn>
+  
+
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored dispose container can be disposed without errors'
+00:01 +2 -21: Some tests failed.                                                                                                                                                                       
