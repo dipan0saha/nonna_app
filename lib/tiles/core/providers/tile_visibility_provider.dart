@@ -359,12 +359,14 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
   }
 
   /// Save feature flags to storage
-  Future<void> _saveFeatureFlagsToStorage(Map<String, bool> featureFlags) async {
+  Future<void> _saveFeatureFlagsToStorage(
+      Map<String, bool> featureFlags) async {
     final localStorageService = ref.read(localStorageServiceProvider);
     if (!localStorageService.isInitialized) return;
 
     try {
-      await localStorageService.setObject(_featureFlagsStorageKey, featureFlags);
+      await localStorageService.setObject(
+          _featureFlagsStorageKey, featureFlags);
     } catch (e) {
       debugPrint('⚠️  Failed to save feature flags to storage: $e');
     }
@@ -380,4 +382,5 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
 /// await notifier.loadPreferences(userId: currentUserId);
 /// ```
 final tileVisibilityProvider =
-    NotifierProvider<TileVisibilityNotifier, TileVisibilityState>(TileVisibilityNotifier.new);
+    NotifierProvider<TileVisibilityNotifier, TileVisibilityState>(
+        TileVisibilityNotifier.new);

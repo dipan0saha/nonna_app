@@ -112,7 +112,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       if (!forceRefresh) {
         final cachedProfile = await _loadFromCache(babyProfileId);
         if (cachedProfile != null) {
-          final isOwner = await _checkIsOwner(babyProfileId, currentUserId, databaseService);
+          final isOwner = await _checkIsOwner(
+              babyProfileId, currentUserId, databaseService);
           state = state.copyWith(
             profile: cachedProfile,
             isLoading: false,
@@ -138,7 +139,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       final profile = BabyProfile.fromJson(response as Map<String, dynamic>);
 
       // Check if current user is owner
-      final isOwner = await _checkIsOwner(babyProfileId, currentUserId, databaseService);
+      final isOwner =
+          await _checkIsOwner(babyProfileId, currentUserId, databaseService);
 
       // Save to cache
       await _saveToCache(babyProfileId, profile);
@@ -164,7 +166,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
   }
 
   /// Check if user is owner
-  Future<bool> _checkIsOwner(String babyProfileId, String userId, DatabaseService databaseService) async {
+  Future<bool> _checkIsOwner(String babyProfileId, String userId,
+      DatabaseService databaseService) async {
     try {
       final response = await databaseService
           .select(SupabaseTables.babyMemberships)
@@ -181,7 +184,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
   }
 
   /// Load memberships
-  Future<void> _loadMemberships(String babyProfileId, DatabaseService databaseService) async {
+  Future<void> _loadMemberships(
+      String babyProfileId, DatabaseService databaseService) async {
     try {
       final response = await databaseService
           .select(SupabaseTables.babyMemberships)
@@ -205,13 +209,15 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       debugPrint('⚠️  Only owners can edit baby profile');
       return;
     }
-    state = state.copyWith(isEditMode: true, saveError: null, saveSuccess: false);
+    state =
+        state.copyWith(isEditMode: true, saveError: null, saveSuccess: false);
     debugPrint('✅ Entered edit mode');
   }
 
   /// Cancel edit mode
   void cancelEdit() {
-    state = state.copyWith(isEditMode: false, saveError: null, saveSuccess: false);
+    state =
+        state.copyWith(isEditMode: false, saveError: null, saveSuccess: false);
     debugPrint('✅ Cancelled edit mode');
   }
 
@@ -226,7 +232,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
     String? defaultLastNameSource,
   }) async {
     try {
-      state = state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
+      state =
+          state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
 
       // Validate
       if (name.trim().isEmpty) {
@@ -300,7 +307,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
     }
 
     try {
-      state = state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
+      state =
+          state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
 
       // Validate
       if (name.trim().isEmpty) {
@@ -366,13 +374,11 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
 
     try {
       final databaseService = ref.read(databaseServiceProvider);
-      
-      await databaseService
-          .update(SupabaseTables.babyProfiles, {
-            'deleted_at': DateTime.now().toIso8601String(),
-            'updated_at': DateTime.now().toIso8601String(),
-          })
-          .eq('id', babyProfileId);
+
+      await databaseService.update(SupabaseTables.babyProfiles, {
+        'deleted_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('id', babyProfileId);
 
       debugPrint('✅ Baby profile deleted: $babyProfileId');
       return true;
@@ -391,7 +397,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       debugPrint('📤 Uploading profile photo...');
 
       final storageService = ref.read(storageServiceProvider);
-      final storageKey = 'baby_profiles/$babyProfileId/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final storageKey =
+          'baby_profiles/$babyProfileId/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
       final photoUrl = await storageService.uploadFile(
         filePath: filePath,
@@ -419,7 +426,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
 
     try {
       final databaseService = ref.read(databaseServiceProvider);
-      
+
       await databaseService
           .delete(SupabaseTables.babyMemberships)
           .eq('id', membershipId);
@@ -497,5 +504,6 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
 /// final notifier = ref.read(babyProfileProvider.notifier);
 /// await notifier.loadProfile(babyProfileId: 'abc', currentUserId: 'user123');
 /// ```
-final babyProfileProvider = NotifierProvider.autoDispose<
-    BabyProfileNotifier, BabyProfileState>(BabyProfileNotifier.new);
+final babyProfileProvider =
+    NotifierProvider.autoDispose<BabyProfileNotifier, BabyProfileState>(
+        BabyProfileNotifier.new);

@@ -175,7 +175,8 @@ void main() {
         );
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
     });
@@ -197,7 +198,8 @@ void main() {
           role: UserRole.owner,
         );
 
-        final event2 = sampleEvent.copyWith(id: 'event_2', title: 'Gender Reveal');
+        final event2 =
+            sampleEvent.copyWith(id: 'event_2', title: 'Gender Reveal');
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([event2.toJson()]));
 
@@ -241,7 +243,8 @@ void main() {
           filter: anyNamed('filter'),
           callback: anyNamed('callback'),
         )).thenAnswer((_) async => 'sub_1');
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         await notifier.fetchEvents(
           babyProfileId: 'profile_1',
@@ -300,7 +303,8 @@ void main() {
         final initialCount = notifier.state.events.length;
 
         // Simulate real-time INSERT
-        final newEvent = sampleEvent.copyWith(id: 'event_2', title: 'New Event');
+        final newEvent =
+            sampleEvent.copyWith(id: 'event_2', title: 'New Event');
         notifier.state = notifier.state.copyWith(
           events: [newEvent, ...notifier.state.events],
         );
@@ -355,7 +359,8 @@ void main() {
 
         // Simulate real-time DELETE
         notifier.state = notifier.state.copyWith(
-          events: notifier.state.events.where((e) => e.id != 'event_1').toList(),
+          events:
+              notifier.state.events.where((e) => e.id != 'event_1').toList(),
         );
 
         expect(notifier.state.events, isEmpty);

@@ -53,11 +53,11 @@ class NewFollowersState {
 ///
 /// Manages recent followers with active/removed status tracking and real-time updates.
 class NewFollowersNotifier extends Notifier<NewFollowersState> {
-
   // Configuration
   static const String _cacheKeyPrefix = 'new_followers';
   static const int _maxFollowers = 20;
-  static const int _recentDaysThreshold = 30; // Show followers from last 30 days
+  static const int _recentDaysThreshold =
+      30; // Show followers from last 30 days
 
   String? _subscriptionId;
 
@@ -88,7 +88,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       if (!forceRefresh) {
         final cachedFollowers = await _loadFromCache(babyProfileId);
         if (cachedFollowers != null && cachedFollowers.isNotEmpty) {
-          final activeCount = cachedFollowers.where((follower) => follower.isActive).length;
+          final activeCount =
+              cachedFollowers.where((follower) => follower.isActive).length;
           state = state.copyWith(
             followers: cachedFollowers,
             isLoading: false,
@@ -100,7 +101,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
 
       // Fetch from database
       final followers = await _fetchFromDatabase(babyProfileId);
-      final activeCount = followers.where((follower) => follower.isActive).length;
+      final activeCount =
+          followers.where((follower) => follower.isActive).length;
 
       // Save to cache
       await _saveToCache(babyProfileId, followers);
@@ -155,7 +157,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       Duration(days: _recentDaysThreshold),
     );
 
-    final response = await ref.read(databaseServiceProvider)
+    final response = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.babyMemberships)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String())
@@ -199,7 +202,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = followers.map((f) => f.toJson()).toList();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -224,9 +228,9 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
           'value': babyProfileId,
         },
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
@@ -249,7 +253,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       if (eventType == 'INSERT' && newData != null) {
         final newFollower = BabyMembership.fromJson(newData);
         final updatedFollowers = [newFollower, ...state.followers];
-        final activeCount = updatedFollowers.where((follower) => follower.isActive).length;
+        final activeCount =
+            updatedFollowers.where((follower) => follower.isActive).length;
         state = state.copyWith(
           followers: updatedFollowers,
           activeCount: activeCount,
@@ -259,10 +264,11 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
         final updatedFollower = BabyMembership.fromJson(newData);
         final updatedFollowers = state.followers
             .map((follower) => _isMatchingFollower(follower, updatedFollower)
-                    ? updatedFollower 
-                    : follower)
+                ? updatedFollower
+                : follower)
             .toList();
-        final activeCount = updatedFollowers.where((follower) => follower.isActive).length;
+        final activeCount =
+            updatedFollowers.where((follower) => follower.isActive).length;
         state = state.copyWith(
           followers: updatedFollowers,
           activeCount: activeCount,
@@ -275,9 +281,10 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
           final deletedUserId = oldData['user_id'] as String;
           final updatedFollowers = state.followers
               .where((follower) => _isNotDeletedFollower(
-                    follower, deletedBabyProfileId, deletedUserId))
+                  follower, deletedBabyProfileId, deletedUserId))
               .toList();
-          final activeCount = updatedFollowers.where((follower) => follower.isActive).length;
+          final activeCount =
+              updatedFollowers.where((follower) => follower.isActive).length;
           state = state.copyWith(
             followers: updatedFollowers,
             activeCount: activeCount,
@@ -293,9 +300,10 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
   }
 
   /// Check if follower matches the updated follower
-  bool _isMatchingFollower(BabyMembership follower, BabyMembership updatedFollower) {
-    return follower.babyProfileId == updatedFollower.babyProfileId && 
-           follower.userId == updatedFollower.userId;
+  bool _isMatchingFollower(
+      BabyMembership follower, BabyMembership updatedFollower) {
+    return follower.babyProfileId == updatedFollower.babyProfileId &&
+        follower.userId == updatedFollower.userId;
   }
 
   /// Check if follower is not the deleted follower
@@ -304,8 +312,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
     String deletedBabyProfileId,
     String deletedUserId,
   ) {
-    return follower.babyProfileId != deletedBabyProfileId || 
-           follower.userId != deletedUserId;
+    return follower.babyProfileId != deletedBabyProfileId ||
+        follower.userId != deletedUserId;
   }
 
   /// Cancel real-time subscription

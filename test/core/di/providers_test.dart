@@ -71,7 +71,8 @@ void main() {
         expect(service, isA<AnalyticsService>());
       });
 
-      test('observabilityServiceProvider provides ObservabilityService instance',
+      test(
+          'observabilityServiceProvider provides ObservabilityService instance',
           () {
         final service = container.read(observabilityServiceProvider);
         expect(service, isA<ObservabilityService>());

@@ -82,7 +82,8 @@ class DataDeletionHandler {
 
       // Get all photos uploaded by user
       final photos = await _databaseService
-          .select(SupabaseTables.photos, columns: 'id, storage_path, thumbnail_path')
+          .select(SupabaseTables.photos,
+              columns: 'id, storage_path, thumbnail_path')
           .eq('uploaded_by_user_id', userId);
 
       // Delete from storage
@@ -129,10 +130,14 @@ class DataDeletionHandler {
       debugPrint('🗑️ Deleting user comments...');
 
       // Delete photo comments
-      await _databaseService.delete(SupabaseTables.photoComments).eq('user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.photoComments)
+          .eq('user_id', userId);
 
       // Delete event comments
-      await _databaseService.delete(SupabaseTables.eventComments).eq('user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.eventComments)
+          .eq('user_id', userId);
 
       debugPrint('✅ User comments deleted');
     } catch (e) {
@@ -159,17 +164,25 @@ class DataDeletionHandler {
         final eventId = event['id'] as String;
 
         // Delete event RSVPs
-        await _databaseService.delete(SupabaseTables.eventRsvps).eq('event_id', eventId);
+        await _databaseService
+            .delete(SupabaseTables.eventRsvps)
+            .eq('event_id', eventId);
 
         // Delete event comments (cascade)
-        await _databaseService.delete(SupabaseTables.eventComments).eq('event_id', eventId);
+        await _databaseService
+            .delete(SupabaseTables.eventComments)
+            .eq('event_id', eventId);
       }
 
       // Delete events
-      await _databaseService.delete(SupabaseTables.events).eq('created_by_user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.events)
+          .eq('created_by_user_id', userId);
 
       // Delete user's RSVPs to other events
-      await _databaseService.delete(SupabaseTables.eventRsvps).eq('user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.eventRsvps)
+          .eq('user_id', userId);
 
       debugPrint('✅ User events deleted');
     } catch (e) {
@@ -227,7 +240,9 @@ class DataDeletionHandler {
       await _databaseService.delete(SupabaseTables.votes).eq('user_id', userId);
 
       // Delete photo squishes
-      await _databaseService.delete(SupabaseTables.photoSquishes).eq('user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.photoSquishes)
+          .eq('user_id', userId);
 
       debugPrint('✅ User votes deleted');
     } catch (e) {
@@ -245,7 +260,9 @@ class DataDeletionHandler {
     try {
       debugPrint('🗑️ Deleting user notifications...');
 
-      await _databaseService.delete(SupabaseTables.notifications).eq('user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.notifications)
+          .eq('user_id', userId);
 
       debugPrint('✅ User notifications deleted');
     } catch (e) {
@@ -269,7 +286,9 @@ class DataDeletionHandler {
       }).eq('user_id', userId);
 
       // Delete photo tags
-      await _databaseService.delete(SupabaseTables.photoTags).eq('tagged_user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.photoTags)
+          .eq('tagged_user_id', userId);
 
       debugPrint('✅ User memberships deleted');
     } catch (e) {
@@ -312,10 +331,14 @@ class DataDeletionHandler {
       debugPrint('🗑️ Deleting user profile...');
 
       // Delete user stats
-      await _databaseService.delete(SupabaseTables.userStats).eq('user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.userStats)
+          .eq('user_id', userId);
 
       // Delete profile
-      await _databaseService.delete(SupabaseTables.userProfiles).eq('user_id', userId);
+      await _databaseService
+          .delete(SupabaseTables.userProfiles)
+          .eq('user_id', userId);
 
       debugPrint('✅ User profile deleted');
     } catch (e) {

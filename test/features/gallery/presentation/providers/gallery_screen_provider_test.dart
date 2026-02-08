@@ -123,8 +123,8 @@ void main() {
           filter: anyNamed('filter'),
           callback: anyNamed('callback'),
         )).thenAnswer((_) async => 'sub_1');
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder(photos.map((p) => p.toJson()).toList()));
+        when(mockDatabaseService.select(any)).thenReturn(
+            FakePostgrestBuilder(photos.map((p) => p.toJson()).toList()));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -197,8 +197,7 @@ void main() {
 
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
           samplePhoto.copyWith(id: 'photo_2').toJson(),
         ]));
 
@@ -350,7 +349,8 @@ void main() {
         final initialCount = notifier.state.photos.length;
 
         // Simulate INSERT
-        final newPhoto = samplePhoto.copyWith(id: 'photo_2', caption: 'New photo');
+        final newPhoto =
+            samplePhoto.copyWith(id: 'photo_2', caption: 'New photo');
         realtimeCallback!({
           'eventType': 'INSERT',
           'new': newPhoto.toJson(),

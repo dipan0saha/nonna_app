@@ -180,8 +180,6 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
     );
   }
 
-
-
   // ==========================================
   // Private Methods
   // ==========================================
@@ -236,7 +234,8 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = events.map((event) => event.toJson()).toList();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -262,9 +261,9 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
           'value': babyProfileId,
         },
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
@@ -276,7 +275,8 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
   }
 
   /// Handle real-time update
-  void _handleRealtimeUpdate(Map<String, dynamic> payload, String babyProfileId) {
+  void _handleRealtimeUpdate(
+      Map<String, dynamic> payload, String babyProfileId) {
     try {
       final eventType = payload['eventType'] as String?;
       final newData = payload['new'] as Map<String, dynamic>?;
@@ -299,7 +299,8 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
         final oldData = payload['old'] as Map<String, dynamic>?;
         if (oldData != null) {
           final deletedId = oldData['id'] as String;
-          final updatedEvents = state.events.where((e) => e.id != deletedId).toList();
+          final updatedEvents =
+              state.events.where((e) => e.id != deletedId).toList();
           state = state.copyWith(events: updatedEvents);
           _saveToCache(babyProfileId, updatedEvents);
         }

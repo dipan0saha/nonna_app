@@ -139,9 +139,12 @@ void main() {
         );
 
         // Verify state updated
-        expect(notifier.state.completedCount, equals(initialCompletedCount + 1));
         expect(
-          notifier.state.items.firstWhere((item) => item.id == itemId).isCompleted,
+            notifier.state.completedCount, equals(initialCompletedCount + 1));
+        expect(
+          notifier.state.items
+              .firstWhere((item) => item.id == itemId)
+              .isCompleted,
           isTrue,
         );
       });

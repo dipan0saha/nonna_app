@@ -26,7 +26,7 @@ class PerformanceLimits {
   //
   // TTL Strategy:
   // - High-frequency data (real-time updates): 10 minutes
-  // - Standard data (screen providers, tiles): 30 minutes  
+  // - Standard data (screen providers, tiles): 30 minutes
   // - Low-frequency data (configs, profiles): 60 minutes
 
   /// Cache duration for profile data (60 minutes)

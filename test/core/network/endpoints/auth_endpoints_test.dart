@@ -45,7 +45,8 @@ void main() {
 
         expect(url, contains('/auth/v1/authorize'));
         expect(url, contains('provider=google'));
-        expect(url, contains('redirect_to=https%3A%2F%2Fexample.com%2Fcallback'));
+        expect(
+            url, contains('redirect_to=https%3A%2F%2Fexample.com%2Fcallback'));
       });
 
       test('generates correct Facebook OAuth URL', () {
@@ -54,7 +55,8 @@ void main() {
 
         expect(url, contains('/auth/v1/authorize'));
         expect(url, contains('provider=facebook'));
-        expect(url, contains('redirect_to=https%3A%2F%2Fexample.com%2Fcallback'));
+        expect(
+            url, contains('redirect_to=https%3A%2F%2Fexample.com%2Fcallback'));
       });
 
       test('generates correct Apple OAuth URL', () {
@@ -63,7 +65,8 @@ void main() {
 
         expect(url, contains('/auth/v1/authorize'));
         expect(url, contains('provider=apple'));
-        expect(url, contains('redirect_to=https%3A%2F%2Fexample.com%2Fcallback'));
+        expect(
+            url, contains('redirect_to=https%3A%2F%2Fexample.com%2Fcallback'));
       });
 
       test('generates OAuth URL for custom provider', () {
@@ -74,7 +77,8 @@ void main() {
 
         expect(url, contains('/auth/v1/authorize'));
         expect(url, contains('provider=github'));
-        expect(url, contains('redirect_to=https%3A%2F%2Fexample.com%2Fcallback'));
+        expect(
+            url, contains('redirect_to=https%3A%2F%2Fexample.com%2Fcallback'));
       });
     });
 

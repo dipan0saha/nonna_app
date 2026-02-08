@@ -132,13 +132,13 @@ class StorageService {
   // ==========================================
 
   /// Generic file upload method
-  /// 
+  ///
   /// Upload a file to a specified bucket with a custom storage key
-  /// 
+  ///
   /// [filePath] - Local file path to upload
   /// [storageKey] - Storage path/key for the file in the bucket
   /// [bucket] - Bucket name to upload to
-  /// 
+  ///
   /// Returns the public URL of the uploaded file
   Future<String> uploadFile({
     required String filePath,
@@ -182,7 +182,8 @@ class StorageService {
             );
 
         // Get public URL
-        final publicUrl = _supabase.storage.from(bucket).getPublicUrl(storageKey);
+        final publicUrl =
+            _supabase.storage.from(bucket).getPublicUrl(storageKey);
 
         debugPrint('✅ File uploaded successfully: $publicUrl');
 
@@ -549,7 +550,8 @@ class StorageService {
     // Check file size
     final fileSize = file.lengthSync();
     if (fileSize > PerformanceLimits.maxImageSizeBytes) {
-      throw Exception('File size exceeds ${PerformanceLimits.maxImageSizeBytes ~/ (1024 * 1024)}MB limit');
+      throw Exception(
+          'File size exceeds ${PerformanceLimits.maxImageSizeBytes ~/ (1024 * 1024)}MB limit');
     }
 
     // Check file extension

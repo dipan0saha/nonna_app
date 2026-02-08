@@ -59,7 +59,8 @@ class HomeScreenState {
       isLoading: isLoading ?? this.isLoading,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       error: error,
-      selectedBabyProfileId: selectedBabyProfileId ?? this.selectedBabyProfileId,
+      selectedBabyProfileId:
+          selectedBabyProfileId ?? this.selectedBabyProfileId,
       selectedRole: selectedRole ?? this.selectedRole,
       lastRefreshed: lastRefreshed ?? this.lastRefreshed,
     );
@@ -146,7 +147,8 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
       );
 
       // Update cache
-      await _saveToCache(state.selectedBabyProfileId!, state.selectedRole!, tiles);
+      await _saveToCache(
+          state.selectedBabyProfileId!, state.selectedRole!, tiles);
 
       state = state.copyWith(
         tiles: tiles,

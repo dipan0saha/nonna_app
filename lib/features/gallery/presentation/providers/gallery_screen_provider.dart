@@ -75,7 +75,8 @@ class GalleryScreenState {
       selectedDate: selectedDate ?? this.selectedDate,
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
-      selectedBabyProfileId: selectedBabyProfileId ?? this.selectedBabyProfileId,
+      selectedBabyProfileId:
+          selectedBabyProfileId ?? this.selectedBabyProfileId,
     );
   }
 }
@@ -158,7 +159,9 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 
   /// Load more photos (pagination)
   Future<void> loadMore() async {
-    if (state.isLoadingMore || !state.hasMore || state.selectedBabyProfileId == null) {
+    if (state.isLoadingMore ||
+        !state.hasMore ||
+        state.selectedBabyProfileId == null) {
       return;
     }
 
@@ -262,7 +265,8 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
     required int limit,
     required int offset,
   }) async {
-    final response = await ref.read(databaseServiceProvider)
+    final response = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null)
@@ -279,12 +283,13 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
     required String babyProfileId,
     required String tag,
   }) async {
-    final response = await ref.read(databaseServiceProvider)
+    final response = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null)
-        .contains('tags', [tag])
-        .order(SupabaseTables.createdAt, ascending: false);
+        .contains('tags', [tag]).order(SupabaseTables.createdAt,
+            ascending: false);
 
     return (response as List)
         .map((json) => Photo.fromJson(json as Map<String, dynamic>))
@@ -348,9 +353,9 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
           'value': babyProfileId,
         },
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
@@ -386,7 +391,8 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
         final oldData = payload['old'] as Map<String, dynamic>?;
         if (oldData != null) {
           final deletedId = oldData['id'] as String;
-          final updatedPhotos = state.photos.where((p) => p.id != deletedId).toList();
+          final updatedPhotos =
+              state.photos.where((p) => p.id != deletedId).toList();
           state = state.copyWith(photos: updatedPhotos);
           _saveToCache(babyProfileId, updatedPhotos);
         }
@@ -416,7 +422,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 /// final notifier = ref.read(galleryScreenProvider.notifier);
 /// await notifier.loadPhotos(babyProfileId: 'abc');
 /// ```
-final galleryScreenProvider = NotifierProvider.autoDispose<
-    GalleryScreenNotifier, GalleryScreenState>(
+final galleryScreenProvider =
+    NotifierProvider.autoDispose<GalleryScreenNotifier, GalleryScreenState>(
   GalleryScreenNotifier.new,
 );

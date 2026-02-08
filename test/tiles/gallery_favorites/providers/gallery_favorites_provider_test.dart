@@ -63,8 +63,7 @@ void main() {
         });
 
         // Start fetching
-        final fetchFuture =
-            notifier.fetchFavorites(babyProfileId: 'profile_1');
+        final fetchFuture = notifier.fetchFavorites(babyProfileId: 'profile_1');
 
         // Verify loading state
         expect(notifier.state.isLoading, isTrue);
@@ -143,7 +142,8 @@ void main() {
       });
 
       test('filters only favorite photos', () async {
-        final favoritePhoto = samplePhoto.copyWith(id: 'photo_1', isFavorite: true);
+        final favoritePhoto =
+            samplePhoto.copyWith(id: 'photo_1', isFavorite: true);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
@@ -174,7 +174,8 @@ void main() {
         await notifier.fetchFavorites(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
     });
@@ -195,7 +196,8 @@ void main() {
         await notifier.fetchFavorites(babyProfileId: 'profile_1');
 
         // Setup update mock
-        when(mockDatabaseService.update(any)).thenReturn(FakePostgrestUpdateBuilder());
+        when(mockDatabaseService.update(any))
+            .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.toggleFavorite(
           photoId: 'photo_1',
@@ -218,7 +220,8 @@ void main() {
             .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
         await notifier.fetchFavorites(babyProfileId: 'profile_1');
 
-        when(mockDatabaseService.update(any)).thenReturn(FakePostgrestUpdateBuilder());
+        when(mockDatabaseService.update(any))
+            .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.toggleFavorite(
           photoId: 'photo_1',
@@ -258,7 +261,8 @@ void main() {
           filter: anyNamed('filter'),
           callback: anyNamed('callback'),
         )).thenAnswer((_) async => 'sub_1');
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         await notifier.fetchFavorites(babyProfileId: 'profile_1');
 

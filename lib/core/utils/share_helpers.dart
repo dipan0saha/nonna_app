@@ -206,9 +206,10 @@ Sent from Nonna App
     final timestamp = DateTime.now().microsecondsSinceEpoch;
     final code = List.generate(8, (index) {
       // Use both timestamp, random, and index to ensure uniqueness
-      final charIndex = (random.nextInt(chars.length) + 
-                        (timestamp ~/ (index + 1)) + 
-                        index * 7) % chars.length;
+      final charIndex = (random.nextInt(chars.length) +
+              (timestamp ~/ (index + 1)) +
+              index * 7) %
+          chars.length;
       return chars[charIndex];
     }).join();
     return code;

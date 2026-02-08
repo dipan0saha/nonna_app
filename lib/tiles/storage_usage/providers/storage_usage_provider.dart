@@ -109,10 +109,11 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'storage_usage';
-  
+
   // Storage limits (example values - should be configured per plan)
   static const int _defaultTotalStorageBytes = 5 * 1024 * 1024 * 1024; // 5 GB
-  static const int _estimatedPhotoSizeBytes = 2 * 1024 * 1024; // 2 MB average per photo
+  static const int _estimatedPhotoSizeBytes =
+      2 * 1024 * 1024; // 2 MB average per photo
 
   // ==========================================
   // Public Methods
@@ -190,7 +191,8 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
   /// Calculate storage usage from database
   Future<StorageUsageInfo> _calculateUsage(String babyProfileId) async {
     // Count photos for this baby profile
-    final photosResponse = await ref.read(databaseServiceProvider)
+    final photosResponse = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null);
@@ -240,7 +242,8 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = info.toJson();
-      await ref.read(cacheServiceProvider).put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await ref.read(cacheServiceProvider).put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

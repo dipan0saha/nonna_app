@@ -205,7 +205,8 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = invitations.map((inv) => inv.toJson()).toList();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -231,9 +232,9 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
           'value': babyProfileId,
         },
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
@@ -267,7 +268,8 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
       } else if (eventType == 'UPDATE' && newData != null) {
         final updatedInvitation = Invitation.fromJson(newData);
         final updatedInvitations = state.invitations
-            .map((inv) => inv.id == updatedInvitation.id ? updatedInvitation : inv)
+            .map((inv) =>
+                inv.id == updatedInvitation.id ? updatedInvitation : inv)
             .toList();
         final pendingCount = updatedInvitations
             .where((inv) => inv.status == InvitationStatus.pending)

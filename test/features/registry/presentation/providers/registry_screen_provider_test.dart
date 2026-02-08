@@ -163,7 +163,8 @@ void main() {
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
@@ -174,7 +175,7 @@ void main() {
           filter: anyNamed('filter'),
           callback: anyNamed('callback'),
         )).thenAnswer((_) async => 'sub_1');
-        
+
         var callCount = 0;
         when(mockDatabaseService.select(any)).thenAnswer((_) {
           callCount++;
@@ -197,7 +198,8 @@ void main() {
       test('changes current filter', () {
         notifier.applyFilter(RegistryFilter.highPriority);
 
-        expect(notifier.state.currentFilter, equals(RegistryFilter.highPriority));
+        expect(
+            notifier.state.currentFilter, equals(RegistryFilter.highPriority));
       });
 
       test('filters high priority items', () async {
@@ -220,7 +222,8 @@ void main() {
         notifier.applyFilter(RegistryFilter.highPriority);
 
         expect(notifier.state.filteredItems, hasLength(1));
-        expect(notifier.state.filteredItems.first.item.priority, greaterThanOrEqualTo(4));
+        expect(notifier.state.filteredItems.first.item.priority,
+            greaterThanOrEqualTo(4));
       });
 
       test('filters purchased items', () async {
@@ -254,7 +257,8 @@ void main() {
       });
 
       test('sorts items by priority high to low', () async {
-        final lowPriorityItem = sampleItem.copyWith(id: 'item_2', priority: 2, name: 'Diapers');
+        final lowPriorityItem =
+            sampleItem.copyWith(id: 'item_2', priority: 2, name: 'Diapers');
         final cachedData = [
           {
             'item': lowPriorityItem.toJson(),
@@ -273,7 +277,8 @@ void main() {
         notifier.applySort(RegistrySort.priorityHigh);
 
         final sorted = notifier.state.sortedItems;
-        expect(sorted.first.item.priority, greaterThan(sorted.last.item.priority));
+        expect(
+            sorted.first.item.priority, greaterThan(sorted.last.item.priority));
       });
 
       test('sorts items by name ascending', () async {
@@ -314,8 +319,9 @@ void main() {
             .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
-        
-        final initialLoadCount = verify(mockDatabaseService.select(any)).callCount;
+
+        final initialLoadCount =
+            verify(mockDatabaseService.select(any)).callCount;
 
         await notifier.refresh();
 

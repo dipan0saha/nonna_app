@@ -144,12 +144,12 @@ void main() {
       });
 
       test('calculates pending count correctly', () async {
-        final invite1 =
-            sampleInvitation.copyWith(id: 'invite_1', status: InvitationStatus.pending);
-        final invite2 =
-            sampleInvitation.copyWith(id: 'invite_2', status: InvitationStatus.accepted);
-        final invite3 =
-            sampleInvitation.copyWith(id: 'invite_3', status: InvitationStatus.pending);
+        final invite1 = sampleInvitation.copyWith(
+            id: 'invite_1', status: InvitationStatus.pending);
+        final invite2 = sampleInvitation.copyWith(
+            id: 'invite_2', status: InvitationStatus.accepted);
+        final invite3 = sampleInvitation.copyWith(
+            id: 'invite_3', status: InvitationStatus.pending);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(

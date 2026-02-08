@@ -103,7 +103,8 @@ class ProfileNotifier extends Notifier<ProfileState> {
       }
 
       // Fetch from database
-      final response = await ref.read(databaseServiceProvider)
+      final response = await ref
+          .read(databaseServiceProvider)
           .select(SupabaseTables.userProfiles)
           .eq('user_id', userId)
           .maybeSingle();
@@ -139,7 +140,8 @@ class ProfileNotifier extends Notifier<ProfileState> {
   /// Load user stats
   Future<void> _loadUserStats(String userId) async {
     try {
-      final response = await ref.read(databaseServiceProvider)
+      final response = await ref
+          .read(databaseServiceProvider)
           .select(SupabaseTables.userStats)
           .eq('user_id', userId)
           .maybeSingle();
@@ -156,13 +158,15 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
   /// Enable edit mode
   void enterEditMode() {
-    state = state.copyWith(isEditMode: true, saveError: null, saveSuccess: false);
+    state =
+        state.copyWith(isEditMode: true, saveError: null, saveSuccess: false);
     debugPrint('✅ Entered edit mode');
   }
 
   /// Cancel edit mode
   void cancelEdit() {
-    state = state.copyWith(isEditMode: false, saveError: null, saveSuccess: false);
+    state =
+        state.copyWith(isEditMode: false, saveError: null, saveSuccess: false);
     debugPrint('✅ Cancelled edit mode');
   }
 
@@ -173,7 +177,8 @@ class ProfileNotifier extends Notifier<ProfileState> {
     String? avatarUrl,
   }) async {
     try {
-      state = state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
+      state =
+          state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
 
       // Validate
       if (displayName.trim().isEmpty) {
@@ -193,7 +198,8 @@ class ProfileNotifier extends Notifier<ProfileState> {
         updateData['avatar_url'] = avatarUrl;
       }
 
-      await ref.read(databaseServiceProvider)
+      await ref
+          .read(databaseServiceProvider)
           .update(SupabaseTables.userProfiles, updateData)
           .eq('user_id', userId);
 
@@ -226,13 +232,14 @@ class ProfileNotifier extends Notifier<ProfileState> {
     try {
       debugPrint('📤 Uploading avatar...');
 
-      final storageKey = 'avatars/$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final storageKey =
+          'avatars/$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
       final avatarUrl = await ref.read(storageServiceProvider).uploadFile(
-        filePath: filePath,
-        storageKey: storageKey,
-        bucket: 'avatars',
-      );
+            filePath: filePath,
+            storageKey: storageKey,
+            bucket: 'avatars',
+          );
 
       debugPrint('✅ Avatar uploaded: $avatarUrl');
       return avatarUrl;
@@ -248,12 +255,12 @@ class ProfileNotifier extends Notifier<ProfileState> {
     required bool enabled,
   }) async {
     try {
-      await ref.read(databaseServiceProvider)
+      await ref
+          .read(databaseServiceProvider)
           .update(SupabaseTables.userProfiles, {
-            'biometric_enabled': enabled,
-            'updated_at': DateTime.now().toIso8601String(),
-          })
-          .eq('user_id', userId);
+        'biometric_enabled': enabled,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('user_id', userId);
 
       // Reload profile
       await loadProfile(userId: userId, forceRefresh: true);
@@ -298,10 +305,10 @@ class ProfileNotifier extends Notifier<ProfileState> {
     try {
       final cacheKey = _getCacheKey(userId);
       await ref.read(cacheServiceProvider).put(
-        cacheKey,
-        profile.toJson(),
-        ttlMinutes: PerformanceLimits.profileCacheDuration.inMinutes,
-      );
+            cacheKey,
+            profile.toJson(),
+            ttlMinutes: PerformanceLimits.profileCacheDuration.inMinutes,
+          );
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -321,6 +328,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
 /// final notifier = ref.read(profileProvider.notifier);
 /// await notifier.loadProfile(userId: 'abc');
 /// ```
-final profileProvider = NotifierProvider.autoDispose<ProfileNotifier, ProfileState>(
+final profileProvider =
+    NotifierProvider.autoDispose<ProfileNotifier, ProfileState>(
   ProfileNotifier.new,
 );

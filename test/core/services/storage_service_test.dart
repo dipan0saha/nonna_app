@@ -18,10 +18,10 @@ void main() {
     setUp(() {
       mockSupabaseClient = MockSupabaseClient();
       mockStorage = MockSupabaseStorageClient();
-      
+
       // Mock the storage getter
       when(mockSupabaseClient.storage).thenReturn(mockStorage);
-      
+
       // Initialize service
       storageService = StorageService();
     });
@@ -30,7 +30,7 @@ void main() {
       test('validates file size limits using PerformanceLimits constants', () {
         // Verify service is using constants
         expect(storageService, isNotNull);
-        
+
         // Note: Actual validation testing would require mock files
         // This test verifies the service structure is correct
       });

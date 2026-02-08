@@ -176,9 +176,8 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null);
 
-    final photoIds = (photosResponse as List)
-        .map((json) => json['id'] as String)
-        .toList();
+    final photoIds =
+        (photosResponse as List).map((json) => json['id'] as String).toList();
 
     // Count photo squishes
     int photoSquishesCount = 0;
@@ -208,9 +207,8 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null);
 
-    final eventIds = (eventsResponse as List)
-        .map((json) => json['id'] as String)
-        .toList();
+    final eventIds =
+        (eventsResponse as List).map((json) => json['id'] as String).toList();
 
     // Count event RSVPs
     int eventRSVPsCount = 0;
@@ -268,7 +266,8 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId, daysBack);
       final jsonData = metrics.toJson();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -288,7 +287,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
 /// final notifier = ref.read(engagementRecapProvider.notifier);
 /// await notifier.fetchEngagement(babyProfileId: 'abc', daysBack: 30);
 /// ```
-final engagementRecapProvider = NotifierProvider.autoDispose<
-    EngagementRecapNotifier, EngagementRecapState>(
+final engagementRecapProvider =
+    NotifierProvider.autoDispose<EngagementRecapNotifier, EngagementRecapState>(
   EngagementRecapNotifier.new,
 );

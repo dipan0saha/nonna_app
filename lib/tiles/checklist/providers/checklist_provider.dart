@@ -211,9 +211,11 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
         return item;
       }).toList();
 
-      final completedCount = updatedItems.where((item) => item.isCompleted).length;
-      final progressPercentage =
-          updatedItems.isEmpty ? 0.0 : (completedCount / updatedItems.length) * 100;
+      final completedCount =
+          updatedItems.where((item) => item.isCompleted).length;
+      final progressPercentage = updatedItems.isEmpty
+          ? 0.0
+          : (completedCount / updatedItems.length) * 100;
 
       state = state.copyWith(
         items: updatedItems,

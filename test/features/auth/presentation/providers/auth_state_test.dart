@@ -70,7 +70,8 @@ void main() {
         expect(state.isAuthenticated, isTrue);
       });
 
-      test('isAuthenticated returns false when status is not authenticated', () {
+      test('isAuthenticated returns false when status is not authenticated',
+          () {
         const state = AuthState.unauthenticated();
         expect(state.isAuthenticated, isFalse);
       });

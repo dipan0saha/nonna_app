@@ -60,8 +60,7 @@ void main() {
         });
 
         // Start fetching
-        final fetchFuture =
-            notifier.fetchPurchases(babyProfileId: 'profile_1');
+        final fetchFuture = notifier.fetchPurchases(babyProfileId: 'profile_1');
 
         // Verify loading state
         expect(notifier.state.isLoading, isTrue);
@@ -152,7 +151,8 @@ void main() {
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 

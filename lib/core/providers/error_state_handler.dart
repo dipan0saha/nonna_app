@@ -176,7 +176,8 @@ class ErrorStateHandler extends Notifier<ErrorState> {
       handleError(
         error: 'Max retry attempts reached',
         key: key,
-        userMessage: 'Failed after $maxRetryAttempts attempts. Please try again later.',
+        userMessage:
+            'Failed after $maxRetryAttempts attempts. Please try again later.',
         retryable: false,
       );
       return;

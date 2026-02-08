@@ -36,7 +36,8 @@ void main() {
           message: 'Loading data...',
         );
 
-        expect(loadingHandler.getMessage('test_operation'), equals('Loading data...'));
+        expect(loadingHandler.getMessage('test_operation'),
+            equals('Loading data...'));
       });
 
       test('enables progress tracking when requested', () {
@@ -169,7 +170,8 @@ void main() {
           message: '50% complete',
         );
 
-        expect(loadingHandler.getMessage('test_operation'), equals('50% complete'));
+        expect(loadingHandler.getMessage('test_operation'),
+            equals('50% complete'));
       });
 
       test('handles updating non-existent operation', () {
@@ -183,7 +185,8 @@ void main() {
         loadingHandler.startLoading('test_operation', message: 'Loading...');
         loadingHandler.updateMessage('test_operation', 'Almost done...');
 
-        expect(loadingHandler.getMessage('test_operation'), equals('Almost done...'));
+        expect(loadingHandler.getMessage('test_operation'),
+            equals('Almost done...'));
       });
 
       test('handles updating non-existent operation', () {

@@ -39,7 +39,7 @@ class AuthNotifier extends Notifier<AuthState> {
     final localStorage = ref.read(localStorageServiceProvider);
 
     _initialize(authService, databaseService, localStorage);
-    
+
     ref.onDispose(() {
       _authSubscription?.cancel();
     });
@@ -63,7 +63,8 @@ class AuthNotifier extends Notifier<AuthState> {
   ) {
     // Listen to auth state changes
     _authSubscription = authService.authStateChanges.listen((authState) {
-      _handleAuthStateChange(authState, authService, databaseService, localStorage);
+      _handleAuthStateChange(
+          authState, authService, databaseService, localStorage);
     });
 
     // Check current auth state
@@ -338,7 +339,8 @@ class AuthNotifier extends Notifier<AuthState> {
   // ==========================================
 
   /// Persist session to local storage
-  Future<void> _persistSession(supabase.Session session, LocalStorageService localStorage) async {
+  Future<void> _persistSession(
+      supabase.Session session, LocalStorageService localStorage) async {
     if (!localStorage.isInitialized) return;
 
     try {
@@ -374,11 +376,12 @@ class AuthNotifier extends Notifier<AuthState> {
       final authService = ref.read(authServiceProvider);
       final databaseService = ref.read(databaseServiceProvider);
       final localStorage = ref.read(localStorageServiceProvider);
-      
+
       // Get current session from Supabase
       final currentSession = authService.currentSession;
       if (currentSession?.user != null) {
-        await _loadUserProfile(currentSession!.user, databaseService, localStorage);
+        await _loadUserProfile(
+            currentSession!.user, databaseService, localStorage);
       }
       debugPrint('✅ Session refreshed');
     } catch (e) {
@@ -396,7 +399,8 @@ class AuthNotifier extends Notifier<AuthState> {
 /// final notifier = ref.read(authProvider.notifier);
 /// await notifier.signInWithEmail(email: 'user@example.com', password: 'password');
 /// ```
-final authProvider = NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);
+final authProvider =
+    NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);
 
 /// Convenience provider for checking if user is authenticated
 final isAuthenticatedProvider = Provider<bool>((ref) {

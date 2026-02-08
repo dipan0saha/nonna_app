@@ -106,7 +106,8 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
       if (!forceRefresh) {
         final cachedEvents = await _loadFromCache(userId, babyProfileId);
         if (cachedEvents != null && cachedEvents.isNotEmpty) {
-          final pendingCount = cachedEvents.where((e) => e.needsResponse).length;
+          final pendingCount =
+              cachedEvents.where((e) => e.needsResponse).length;
           state = state.copyWith(
             events: cachedEvents,
             isLoading: false,
@@ -167,8 +168,6 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
     );
   }
 
-
-
   // ==========================================
   // Private Methods
   // ==========================================
@@ -181,7 +180,8 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
     final now = DateTime.now();
 
     // Fetch upcoming events for this baby profile
-    final eventsResponse = await ref.read(databaseServiceProvider)
+    final eventsResponse = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null)
@@ -196,7 +196,8 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
     final eventIds = events.map((e) => e.id).toList();
     if (eventIds.isEmpty) return [];
 
-    final rsvpsResponse = await ref.read(databaseServiceProvider)
+    final rsvpsResponse = await ref
+        .read(databaseServiceProvider)
         .select('event_rsvps')
         .eq(SupabaseTables.userId, userId)
         .inFilter('event_id', eventIds);
@@ -267,7 +268,8 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
           'needsResponse': eventWithRSVP.needsResponse,
         };
       }).toList();
-      await ref.read(cacheServiceProvider).put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await ref.read(cacheServiceProvider).put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -296,9 +298,9 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
           'value': babyProfileId,
         },
       );
-      
+
       _eventsSubscriptionId = eventsChannelName;
-      
+
       eventsStream.listen((payload) {
         _handleRealtimeUpdate(payload, userId, babyProfileId);
       });
@@ -313,9 +315,9 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
           'value': userId,
         },
       );
-      
+
       _rsvpsSubscriptionId = rsvpsChannelName;
-      
+
       rsvpsStream.listen((payload) {
         _handleRealtimeUpdate(payload, userId, babyProfileId);
       });

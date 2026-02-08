@@ -123,7 +123,8 @@ class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
     SystemAnnouncement(
       id: 'welcome',
       title: 'Welcome to Nonna!',
-      body: 'Thank you for joining our baby sharing community. Get started by creating your baby profile.',
+      body:
+          'Thank you for joining our baby sharing community. Get started by creating your baby profile.',
       priority: AnnouncementPriority.medium,
       createdAt: DateTime.now().subtract(const Duration(days: 7)),
     ),
@@ -183,7 +184,7 @@ class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
   ///
   /// This method is provided for backward compatibility with tests.
   /// In production, use loadAnnouncements with a specific userId.
-  /// 
+  ///
   /// Note: This uses a placeholder userId and should not be used in production code.
   /// Tests should be updated to call loadAnnouncements directly with a proper userId.
   Future<void> fetchAnnouncements() async {
@@ -301,7 +302,8 @@ class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
   }
 
   /// Save dismissed announcement IDs for a user
-  Future<void> _saveDismissedIds(String userId, Set<String> dismissedIds) async {
+  Future<void> _saveDismissedIds(
+      String userId, Set<String> dismissedIds) async {
     final cacheService = ref.read(cacheServiceProvider);
     if (!cacheService.isInitialized) return;
 

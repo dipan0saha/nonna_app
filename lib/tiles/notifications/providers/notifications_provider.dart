@@ -53,7 +53,6 @@ class NotificationsState {
 ///
 /// Manages notifications with read/unread state and real-time updates.
 class NotificationsNotifier extends Notifier<NotificationsState> {
-
   // Configuration
   static const String _cacheKeyPrefix = 'notifications';
   static const int _maxNotifications = 50;
@@ -134,9 +133,10 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
   }) async {
     try {
       // Update in database
-      await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.notifications, {'is_read': true})
-          .eq(SupabaseTables.id, notificationId);
+      await ref
+          .read(databaseServiceProvider)
+          .update(SupabaseTables.notifications, {'is_read': true}).eq(
+              SupabaseTables.id, notificationId);
 
       // Update local state
       final updatedNotifications = state.notifications.map((n) {
@@ -177,7 +177,8 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
   Future<void> markAllAsRead({required String userId}) async {
     try {
       // Update in database
-      await ref.read(databaseServiceProvider)
+      await ref
+          .read(databaseServiceProvider)
           .update(SupabaseTables.notifications, {'is_read': true})
           .eq(SupabaseTables.userId, userId)
           .eq('is_read', false);
@@ -228,15 +229,16 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
   Future<List<app_notification.Notification>> _fetchFromDatabase(
     String userId,
   ) async {
-    final response = await ref.read(databaseServiceProvider)
+    final response = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.notifications)
         .eq(SupabaseTables.userId, userId)
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxNotifications);
 
     return (response as List)
-        .map((json) =>
-            app_notification.Notification.fromJson(json as Map<String, dynamic>))
+        .map((json) => app_notification.Notification.fromJson(
+            json as Map<String, dynamic>))
         .toList();
   }
 
@@ -274,7 +276,8 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
     try {
       final cacheKey = _getCacheKey(userId);
       final jsonData = notifications.map((n) => n.toJson()).toList();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.highFrequencyCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.highFrequencyCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -299,9 +302,9 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
           'value': userId,
         },
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, userId);
       });
@@ -331,7 +334,8 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
         final updatedNotification =
             app_notification.Notification.fromJson(newData);
         final updatedNotifications = state.notifications
-            .map((n) => n.id == updatedNotification.id ? updatedNotification : n)
+            .map(
+                (n) => n.id == updatedNotification.id ? updatedNotification : n)
             .toList();
         final unreadCount = updatedNotifications.where((n) => !n.isRead).length;
         state = state.copyWith(

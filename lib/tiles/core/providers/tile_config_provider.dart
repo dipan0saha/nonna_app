@@ -131,7 +131,8 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
       }
 
       // Fetch from database
-      final response = await ref.read(databaseServiceProvider)
+      final response = await ref
+          .read(databaseServiceProvider)
           .select(SupabaseTables.tileConfigs)
           .order('display_order');
 
@@ -162,9 +163,7 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
   ///
   /// Returns cached configs filtered by screen ID.
   List<TileConfig> getConfigsForScreen(String screenId) {
-    return state.configs
-        .where((config) => config.screenId == screenId)
-        .toList()
+    return state.configs.where((config) => config.screenId == screenId).toList()
       ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
   }
 
@@ -191,9 +190,10 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
   }) async {
     try {
       // Update in database
-      await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.tileConfigs, {'is_visible': isVisible})
-          .eq(SupabaseTables.id, configId);
+      await ref
+          .read(databaseServiceProvider)
+          .update(SupabaseTables.tileConfigs, {'is_visible': isVisible}).eq(
+              SupabaseTables.id, configId);
 
       // Update local state
       final updatedConfigs = state.configs.map((config) {
@@ -239,7 +239,8 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
     String screenId,
     UserRole role,
   ) async {
-    final response = await ref.read(databaseServiceProvider)
+    final response = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.tileConfigs)
         .eq('screen_id', screenId)
         .eq(SupabaseTables.role, role.toJson())
@@ -284,10 +285,10 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
       final cacheKey = _getCacheKey(screenId, role);
       final jsonData = configs.map((config) => config.toJson()).toList();
       await ref.read(cacheServiceProvider).put(
-        cacheKey,
-        jsonData,
-        ttlMinutes: PerformanceLimits.tileConfigCacheDuration.inMinutes,
-      );
+            cacheKey,
+            jsonData,
+            ttlMinutes: PerformanceLimits.tileConfigCacheDuration.inMinutes,
+          );
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -320,10 +321,10 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
       final cacheKey = '${_cacheKeyPrefix}_all';
       final jsonData = configs.map((config) => config.toJson()).toList();
       await ref.read(cacheServiceProvider).put(
-        cacheKey,
-        jsonData,
-        ttlMinutes: PerformanceLimits.tileConfigCacheDuration.inMinutes,
-      );
+            cacheKey,
+            jsonData,
+            ttlMinutes: PerformanceLimits.tileConfigCacheDuration.inMinutes,
+          );
     } catch (e) {
       debugPrint('⚠️  Failed to save all to cache: $e');
     }
@@ -358,4 +359,5 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
 /// await notifier.fetchConfigs(screenId: 'home', role: UserRole.owner);
 /// ```
 final tileConfigProvider =
-    NotifierProvider<TileConfigNotifier, TileConfigState>(TileConfigNotifier.new);
+    NotifierProvider<TileConfigNotifier, TileConfigState>(
+        TileConfigNotifier.new);

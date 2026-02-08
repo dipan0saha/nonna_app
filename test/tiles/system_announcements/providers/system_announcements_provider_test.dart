@@ -193,7 +193,8 @@ void main() {
         await notifier.fetchAnnouncements();
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
     });
@@ -270,7 +271,8 @@ void main() {
         final initialCount = notifier.state.announcements.length;
 
         // Simulate real-time INSERT
-        final newAnnouncement = sampleAnnouncement.copyWith(id: 'announcement_2');
+        final newAnnouncement =
+            sampleAnnouncement.copyWith(id: 'announcement_2');
         notifier.state = notifier.state.copyWith(
           announcements: [newAnnouncement, ...notifier.state.announcements],
         );
@@ -295,11 +297,13 @@ void main() {
             sampleAnnouncement.copyWith(title: 'Updated Title');
         notifier.state = notifier.state.copyWith(
           announcements: notifier.state.announcements
-              .map((a) => a.id == updatedAnnouncement.id ? updatedAnnouncement : a)
+              .map((a) =>
+                  a.id == updatedAnnouncement.id ? updatedAnnouncement : a)
               .toList(),
         );
 
-        expect(notifier.state.announcements.first.title, equals('Updated Title'));
+        expect(
+            notifier.state.announcements.first.title, equals('Updated Title'));
       });
     });
 

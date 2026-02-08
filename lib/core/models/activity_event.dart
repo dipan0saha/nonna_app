@@ -45,7 +45,8 @@ class ActivityEvent {
       type: ActivityEventType.fromJson(json['type'] as String),
       payload: json['payload'] != null
           ? (json['payload'] is String
-              ? Map<String, dynamic>.from(jsonDecode(json['payload'] as String) as Map)
+              ? Map<String, dynamic>.from(
+                  jsonDecode(json['payload'] as String) as Map)
               : Map<String, dynamic>.from(json['payload'] as Map))
           : null,
       createdAt: DateTime.parse(json['created_at'] as String),

@@ -19,7 +19,7 @@ void main() {
     test('singleton instance is always the same', () {
       final instance1 = AnalyticsService.instance;
       final instance2 = AnalyticsService.instance;
-      
+
       expect(instance1, same(instance2));
     });
 
@@ -27,7 +27,7 @@ void main() {
       test('sets user ID correctly', () async {
         // Verify service structure
         expect(analyticsService, isNotNull);
-        
+
         // Note: Actual Firebase analytics testing requires Firebase initialization
         // This test verifies the service structure is correct
       });

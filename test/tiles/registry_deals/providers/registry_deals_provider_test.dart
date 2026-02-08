@@ -137,14 +137,18 @@ void main() {
         await notifier.fetchDeals(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
       test('filters items with discounts only', () async {
-        final deal1 = sampleDeal.copyWith(id: 'item_1', discountPercentage: 20.0);
-        final deal2 = sampleDeal.copyWith(id: 'item_2', discountPercentage: 0.0);
-        final deal3 = sampleDeal.copyWith(id: 'item_3', discountPercentage: 15.0);
+        final deal1 =
+            sampleDeal.copyWith(id: 'item_1', discountPercentage: 20.0);
+        final deal2 =
+            sampleDeal.copyWith(id: 'item_2', discountPercentage: 0.0);
+        final deal3 =
+            sampleDeal.copyWith(id: 'item_3', discountPercentage: 15.0);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
@@ -165,9 +169,12 @@ void main() {
       });
 
       test('sorts deals by discount percentage (highest first)', () async {
-        final deal1 = sampleDeal.copyWith(id: 'item_1', discountPercentage: 10.0);
-        final deal2 = sampleDeal.copyWith(id: 'item_2', discountPercentage: 30.0);
-        final deal3 = sampleDeal.copyWith(id: 'item_3', discountPercentage: 20.0);
+        final deal1 =
+            sampleDeal.copyWith(id: 'item_1', discountPercentage: 10.0);
+        final deal2 =
+            sampleDeal.copyWith(id: 'item_2', discountPercentage: 30.0);
+        final deal3 =
+            sampleDeal.copyWith(id: 'item_3', discountPercentage: 20.0);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([

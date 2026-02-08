@@ -131,8 +131,6 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
     );
   }
 
-
-
   // ==========================================
   // Private Methods
   // ==========================================
@@ -140,7 +138,8 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
   /// Fetch unpurchased high-priority items from database
   Future<List<RegistryItem>> _fetchFromDatabase(String babyProfileId) async {
     // Get all registry items for this profile
-    final itemsResponse = await ref.read(databaseServiceProvider)
+    final itemsResponse = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null)
@@ -156,7 +155,8 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
 
     // Check which items have been purchased
     final itemIds = items.map((item) => item.id).toList();
-    final purchasesResponse = await ref.read(databaseServiceProvider)
+    final purchasesResponse = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
         .inFilter('registry_item_id', itemIds)
         .is_(SupabaseTables.deletedAt, null);
@@ -203,7 +203,8 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = deals.map((item) => item.toJson()).toList();
-      await ref.read(cacheServiceProvider).put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await ref.read(cacheServiceProvider).put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -228,9 +229,9 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
           'value': babyProfileId,
         },
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });

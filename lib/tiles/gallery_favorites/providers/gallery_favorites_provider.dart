@@ -228,7 +228,8 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = favorites.map((fav) => fav.toJson()).toList();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

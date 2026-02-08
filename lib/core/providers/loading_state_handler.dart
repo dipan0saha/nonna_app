@@ -82,7 +82,8 @@ class LoadingStateHandler extends Notifier<LoadingState> {
 
     state = state.copyWith(operations: operations);
 
-    debugPrint('⏳ Loading started: $key${message != null ? " - $message" : ""}');
+    debugPrint(
+        '⏳ Loading started: $key${message != null ? " - $message" : ""}');
 
     // Set up timeout if specified
     if (timeout != null) {
@@ -151,7 +152,8 @@ class LoadingStateHandler extends Notifier<LoadingState> {
 
     state = state.copyWith(operations: operations);
 
-    debugPrint('📊 Progress updated: $key - ${(clampedProgress * 100).toInt()}%');
+    debugPrint(
+        '📊 Progress updated: $key - ${(clampedProgress * 100).toInt()}%');
   }
 
   /// Update loading message
@@ -451,4 +453,5 @@ class LoadingOperation {
 
 /// Provider for loading state handler
 final loadingStateHandlerProvider =
-    NotifierProvider<LoadingStateHandler, LoadingState>(LoadingStateHandler.new);
+    NotifierProvider<LoadingStateHandler, LoadingState>(
+        LoadingStateHandler.new);

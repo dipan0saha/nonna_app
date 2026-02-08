@@ -208,7 +208,8 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
       if (remainingDays == 0) {
         formatted = '$weeks ${weeks == 1 ? "week" : "weeks"}';
       } else {
-        formatted = '$weeks ${weeks == 1 ? "week" : "weeks"}, $remainingDays ${remainingDays == 1 ? "day" : "days"}';
+        formatted =
+            '$weeks ${weeks == 1 ? "week" : "weeks"}, $remainingDays ${remainingDays == 1 ? "day" : "days"}';
       }
     } else {
       final months = (daysUntil / 30).floor();
@@ -216,7 +217,8 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
       if (remainingDays == 0) {
         formatted = '$months ${months == 1 ? "month" : "months"}';
       } else {
-        formatted = '$months ${months == 1 ? "month" : "months"}, $remainingDays ${remainingDays == 1 ? "day" : "days"}';
+        formatted =
+            '$months ${months == 1 ? "month" : "months"}, $remainingDays ${remainingDays == 1 ? "day" : "days"}';
       }
     }
 
@@ -268,7 +270,8 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
           'profile': countdown.profile.toJson(),
         };
       }).toList();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -294,9 +297,9 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
         table: SupabaseTables.babyProfiles,
         channelName: channelName,
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileIds);
       });

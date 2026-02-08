@@ -270,9 +270,8 @@ class SupabasePersistenceStrategy implements PersistenceStrategy {
         return;
       }
 
-      final expiresAt = ttl != null
-          ? DateTime.now().add(ttl).toIso8601String()
-          : null;
+      final expiresAt =
+          ttl != null ? DateTime.now().add(ttl).toIso8601String() : null;
 
       final payload = {
         'user_id': userId,
@@ -397,10 +396,7 @@ class SupabasePersistenceStrategy implements PersistenceStrategy {
         return;
       }
 
-      await _supabase.client
-          .from(_tableName)
-          .delete()
-          .eq('user_id', userId);
+      await _supabase.client.from(_tableName).delete().eq('user_id', userId);
 
       debugPrint('💾 Supabase: Cleared all data');
     } catch (e) {

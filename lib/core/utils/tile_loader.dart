@@ -43,11 +43,13 @@ class TileLoader {
     // Try cache first
     if (!forceRefresh) {
       final cacheKey = _getCacheKey(screenId, role);
-      final cached = await cacheService.get<List<Map<String, dynamic>>>(cacheKey);
-      
+      final cached =
+          await cacheService.get<List<Map<String, dynamic>>>(cacheKey);
+
       if (cached != null) {
         try {
-          final configs = cached.map((json) => TileConfig.fromJson(json)).toList();
+          final configs =
+              cached.map((json) => TileConfig.fromJson(json)).toList();
           return _filterAndSortConfigs(configs);
         } catch (e) {
           // Cache corrupted, continue to fetch from DB
@@ -78,9 +80,7 @@ class TileLoader {
 
   /// Filter enabled tiles and sort by order
   static List<TileConfig> _filterAndSortConfigs(List<TileConfig> configs) {
-    return configs
-        .where((config) => config.isVisible)
-        .toList()
+    return configs.where((config) => config.isVisible).toList()
       ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
   }
 

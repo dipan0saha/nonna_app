@@ -99,7 +99,8 @@ void main() {
         );
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
+        verifyNever(
+            mockDatabaseService.select(any, columns: anyNamed('columns')));
 
         // Verify state updated from cache
         expect(notifier.state.configs, hasLength(1));
@@ -137,7 +138,8 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any, columns: anyNamed('columns'))).called(1);
+        verify(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .called(1);
       });
     });
 
@@ -241,7 +243,8 @@ void main() {
         await notifier.fetchAllConfigs();
 
         // Setup update mock
-        when(mockDatabaseService.update(any)).thenReturn(FakePostgrestUpdateBuilder());
+        when(mockDatabaseService.update(any))
+            .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.updateVisibility(
           configId: 'tile_1',
@@ -252,7 +255,8 @@ void main() {
         verify(mockDatabaseService.update(any)).called(1);
 
         // Verify state updated
-        final config = notifier.state.configs.firstWhere((c) => c.id == 'tile_1');
+        final config =
+            notifier.state.configs.firstWhere((c) => c.id == 'tile_1');
         expect(config.isVisible, isFalse);
       });
     });
@@ -269,7 +273,8 @@ void main() {
         );
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
     });

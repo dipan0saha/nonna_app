@@ -63,7 +63,8 @@ class CalendarScreenState {
       isLoading: isLoading ?? this.isLoading,
       error: error,
       eventsByDate: eventsByDate ?? this.eventsByDate,
-      selectedBabyProfileId: selectedBabyProfileId ?? this.selectedBabyProfileId,
+      selectedBabyProfileId:
+          selectedBabyProfileId ?? this.selectedBabyProfileId,
     );
   }
 
@@ -99,7 +100,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
     ref.onDispose(() {
       _cancelRealtimeSubscription();
     });
-    
+
     return CalendarScreenState(
       selectedDate: DateTime.now(),
       focusedMonth: DateTime.now(),
@@ -131,7 +132,8 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
       );
 
       // Default date range: 3 months ago to 6 months from now
-      final start = startDate ?? DateTime.now().subtract(const Duration(days: 90));
+      final start =
+          startDate ?? DateTime.now().subtract(const Duration(days: 90));
       final end = endDate ?? DateTime.now().add(const Duration(days: 180));
 
       // Try to load from cache first
@@ -172,7 +174,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
     DateTime end,
   ) async {
     final databaseService = ref.read(databaseServiceProvider);
-    
+
     final response = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
@@ -323,7 +325,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
 
       final realtimeService = ref.read(realtimeServiceProvider);
       final channelName = 'events-channel-$babyProfileId';
-      
+
       final stream = realtimeService.subscribe(
         table: SupabaseTables.events,
         channelName: channelName,
@@ -332,9 +334,9 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
           'value': babyProfileId,
         },
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
@@ -380,7 +382,8 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
         final oldData = payload['old'] as Map<String, dynamic>?;
         if (oldData != null) {
           final deletedId = oldData['id'] as String;
-          final updatedEvents = state.events.where((e) => e.id != deletedId).toList();
+          final updatedEvents =
+              state.events.where((e) => e.id != deletedId).toList();
           final eventsByDate = _groupEventsByDate(updatedEvents);
           state = state.copyWith(
             events: updatedEvents,
@@ -415,5 +418,6 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
 /// final notifier = ref.read(calendarScreenProvider.notifier);
 /// await notifier.loadEvents(babyProfileId: 'abc');
 /// ```
-final calendarScreenProvider = NotifierProvider.autoDispose<
-    CalendarScreenNotifier, CalendarScreenState>(CalendarScreenNotifier.new);
+final calendarScreenProvider =
+    NotifierProvider.autoDispose<CalendarScreenNotifier, CalendarScreenState>(
+        CalendarScreenNotifier.new);

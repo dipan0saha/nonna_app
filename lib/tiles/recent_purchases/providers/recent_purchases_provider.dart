@@ -52,7 +52,6 @@ class RecentPurchasesState {
 ///
 /// Manages recent purchases with thank you status tracking and real-time updates.
 class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
-
   // Configuration
   static const String _cacheKeyPrefix = 'recent_purchases';
   static const int _maxPurchases = 20;
@@ -147,19 +146,20 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     String babyProfileId,
   ) async {
     // First get all registry items for this baby profile
-    final itemsResponse = await ref.read(databaseServiceProvider)
+    final itemsResponse = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null);
 
-    final itemIds = (itemsResponse as List)
-        .map((json) => json['id'] as String)
-        .toList();
+    final itemIds =
+        (itemsResponse as List).map((json) => json['id'] as String).toList();
 
     if (itemIds.isEmpty) return [];
 
     // Then fetch purchases for these items
-    final response = await ref.read(databaseServiceProvider)
+    final response = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
         .inFilter('registry_item_id', itemIds)
         .is_(SupabaseTables.deletedAt, null)
@@ -183,8 +183,8 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) =>
-              RegistryPurchase.fromJson(json as Map<String, dynamic>))
+          .map(
+              (json) => RegistryPurchase.fromJson(json as Map<String, dynamic>))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
@@ -203,7 +203,8 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = purchases.map((p) => p.toJson()).toList();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -221,12 +222,12 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
       final channelName = 'registry-purchases-channel-$babyProfileId';
       final stream = ref.read(realtimeServiceProvider).subscribe(
-        table: SupabaseTables.registryPurchases,
-        channelName: channelName,
-      );
-      
+            table: SupabaseTables.registryPurchases,
+            channelName: channelName,
+          );
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
@@ -302,7 +303,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 /// final notifier = ref.read(recentPurchasesProvider.notifier);
 /// await notifier.fetchPurchases(babyProfileId: 'abc');
 /// ```
-final recentPurchasesProvider = NotifierProvider.autoDispose<
-    RecentPurchasesNotifier, RecentPurchasesState>(
+final recentPurchasesProvider =
+    NotifierProvider.autoDispose<RecentPurchasesNotifier, RecentPurchasesState>(
   RecentPurchasesNotifier.new,
 );

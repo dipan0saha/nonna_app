@@ -75,12 +75,10 @@ class StatePersistenceManager {
     Duration evictionInterval = const Duration(minutes: 1),
   }) {
     return StatePersistenceManager(
-      diskStrategy: localStorage != null
-          ? DiskPersistenceStrategy(localStorage)
-          : null,
-      cloudStrategy: supabase != null
-          ? SupabasePersistenceStrategy(supabase)
-          : null,
+      diskStrategy:
+          localStorage != null ? DiskPersistenceStrategy(localStorage) : null,
+      cloudStrategy:
+          supabase != null ? SupabasePersistenceStrategy(supabase) : null,
       syncInterval: syncInterval,
       evictionInterval: evictionInterval,
     );
@@ -365,7 +363,8 @@ class StatePersistenceManager {
       await _syncStates();
     });
 
-    debugPrint('🔄 Background sync started (interval: ${syncInterval.inMinutes}min)');
+    debugPrint(
+        '🔄 Background sync started (interval: ${syncInterval.inMinutes}min)');
   }
 
   /// Sync states between strategies
@@ -418,7 +417,8 @@ class StatePersistenceManager {
       _evictExpiredEntries();
     });
 
-    debugPrint('🗑️  Eviction timer started (interval: ${evictionInterval.inMinutes}min)');
+    debugPrint(
+        '🗑️  Eviction timer started (interval: ${evictionInterval.inMinutes}min)');
   }
 
   /// Evict expired entries from memory

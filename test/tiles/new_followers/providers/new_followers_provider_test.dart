@@ -177,7 +177,8 @@ void main() {
         await notifier.fetchNewFollowers(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 

@@ -84,7 +84,8 @@ class RegistryScreenState {
       error: error,
       currentFilter: currentFilter ?? this.currentFilter,
       currentSort: currentSort ?? this.currentSort,
-      selectedBabyProfileId: selectedBabyProfileId ?? this.selectedBabyProfileId,
+      selectedBabyProfileId:
+          selectedBabyProfileId ?? this.selectedBabyProfileId,
     );
   }
 
@@ -127,10 +128,12 @@ class RegistryScreenState {
         itemsToSort.sort((a, b) => b.item.name.compareTo(a.item.name));
         break;
       case RegistrySort.dateNewest:
-        itemsToSort.sort((a, b) => b.item.createdAt.compareTo(a.item.createdAt));
+        itemsToSort
+            .sort((a, b) => b.item.createdAt.compareTo(a.item.createdAt));
         break;
       case RegistrySort.dateOldest:
-        itemsToSort.sort((a, b) => a.item.createdAt.compareTo(b.item.createdAt));
+        itemsToSort
+            .sort((a, b) => a.item.createdAt.compareTo(b.item.createdAt));
         break;
     }
 
@@ -241,7 +244,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     String babyProfileId,
   ) async {
     final databaseService = ref.read(databaseServiceProvider);
-    
+
     // Fetch registry items
     final itemsResponse = await databaseService
         .select(SupabaseTables.registryItems)
@@ -264,7 +267,8 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
     // Create items with purchase status
     final itemsWithStatus = items.map((item) {
-      final itemPurchases = purchases.where((p) => p.registryItemId == item.id).toList();
+      final itemPurchases =
+          purchases.where((p) => p.registryItemId == item.id).toList();
       return RegistryItemWithStatus(
         item: item,
         isPurchased: itemPurchases.isNotEmpty,
@@ -312,11 +316,13 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final jsonData = items.map((itemWithStatus) => {
-        'item': itemWithStatus.item.toJson(),
-        'isPurchased': itemWithStatus.isPurchased,
-        'purchaseCount': itemWithStatus.purchaseCount,
-      }).toList();
+      final jsonData = items
+          .map((itemWithStatus) => {
+                'item': itemWithStatus.item.toJson(),
+                'isPurchased': itemWithStatus.isPurchased,
+                'purchaseCount': itemWithStatus.purchaseCount,
+              })
+          .toList();
       await cacheService.put(
         cacheKey,
         jsonData,
@@ -349,9 +355,9 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
           'value': babyProfileId,
         },
       );
-      
+
       _itemsSubscriptionId = itemsChannelName;
-      
+
       itemsStream.listen((payload) {
         _handleItemsUpdate(payload, babyProfileId);
       });
@@ -362,9 +368,9 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
         table: SupabaseTables.registryPurchases,
         channelName: purchasesChannelName,
       );
-      
+
       _purchasesSubscriptionId = purchasesChannelName;
-      
+
       purchasesStream.listen((payload) {
         _handlePurchasesUpdate(payload, babyProfileId);
       });
@@ -426,7 +432,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 /// final notifier = ref.read(registryScreenProvider.notifier);
 /// await notifier.loadItems(babyProfileId: 'abc');
 /// ```
-final registryScreenProvider = NotifierProvider.autoDispose<
-    RegistryScreenNotifier, RegistryScreenState>(
+final registryScreenProvider =
+    NotifierProvider.autoDispose<RegistryScreenNotifier, RegistryScreenState>(
   RegistryScreenNotifier.new,
 );

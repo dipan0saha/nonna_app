@@ -111,7 +111,6 @@ class OwnerUpdateMarker {
   // Sentinel value for detecting unset optional parameters
   static const _undefined = Object();
 
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

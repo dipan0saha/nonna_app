@@ -27,7 +27,8 @@ void main() {
         );
 
         expect(errorHandler.hasError('test_error'), isTrue);
-        expect(errorHandler.getErrorMessage('test_error'), equals('Test error message'));
+        expect(errorHandler.getErrorMessage('test_error'),
+            equals('Test error message'));
       });
 
       test('uses default global key when not provided', () {
@@ -272,7 +273,8 @@ void main() {
         }
 
         // Should stop at max attempts (3)
-        expect(retryCount, lessThanOrEqualTo(ErrorStateHandler.maxRetryAttempts));
+        expect(
+            retryCount, lessThanOrEqualTo(ErrorStateHandler.maxRetryAttempts));
       });
     });
 
@@ -296,7 +298,8 @@ void main() {
 
         expect(result, isNull);
         expect(errorHandler.hasError('test'), isTrue);
-        expect(errorHandler.getErrorMessage('test'), equals('Operation failed'));
+        expect(
+            errorHandler.getErrorMessage('test'), equals('Operation failed'));
       });
 
       test('clears existing error before executing', () async {

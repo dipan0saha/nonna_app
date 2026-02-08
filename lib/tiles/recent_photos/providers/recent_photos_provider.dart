@@ -58,7 +58,6 @@ class RecentPhotosState {
 ///
 /// Manages recent photos with infinite scroll, thumbnail loading, and real-time updates.
 class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
-
   // Configuration
   static const String _cacheKeyPrefix = 'recent_photos';
   static const int _pageSize = 30;
@@ -185,7 +184,8 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
     required int limit,
     required int offset,
   }) async {
-    final response = await ref.read(databaseServiceProvider)
+    final response = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null)
@@ -225,7 +225,8 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = photos.map((photo) => photo.toJson()).toList();
-      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -250,9 +251,9 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
           'value': babyProfileId,
         },
       );
-      
+
       _subscriptionId = channelName;
-      
+
       stream.listen((payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
@@ -264,7 +265,8 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
   }
 
   /// Handle real-time update
-  void _handleRealtimeUpdate(Map<String, dynamic> payload, String babyProfileId) {
+  void _handleRealtimeUpdate(
+      Map<String, dynamic> payload, String babyProfileId) {
     try {
       final eventType = payload['eventType'] as String?;
       final newData = payload['new'] as Map<String, dynamic>?;
@@ -285,7 +287,8 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
         final oldData = payload['old'] as Map<String, dynamic>?;
         if (oldData != null) {
           final deletedId = oldData['id'] as String;
-          final updatedPhotos = state.photos.where((p) => p.id != deletedId).toList();
+          final updatedPhotos =
+              state.photos.where((p) => p.id != deletedId).toList();
           state = state.copyWith(photos: updatedPhotos);
           _saveToCache(babyProfileId, updatedPhotos);
         }

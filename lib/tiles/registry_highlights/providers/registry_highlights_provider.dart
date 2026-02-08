@@ -149,7 +149,8 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
 
   /// Fetch registry items from database
   Future<List<RegistryItem>> _fetchFromDatabase(String babyProfileId) async {
-    final response = await ref.read(databaseServiceProvider)
+    final response = await ref
+        .read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .is_(SupabaseTables.deletedAt, null)
@@ -173,7 +174,8 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
     for (final item in items) {
       try {
         // Fetch purchases for this item
-        final response = await ref.read(databaseServiceProvider)
+        final response = await ref
+            .read(databaseServiceProvider)
             .select(SupabaseTables.registryPurchases)
             .eq('registry_item_id', item.id)
             .is_(SupabaseTables.deletedAt, null);
@@ -191,7 +193,8 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
           ),
         );
       } catch (e) {
-        debugPrint('⚠️  Failed to fetch purchase status for item ${item.id}: $e');
+        debugPrint(
+            '⚠️  Failed to fetch purchase status for item ${item.id}: $e');
         // Add item without purchase status
         itemsWithStatus.add(
           RegistryItemWithStatus(
@@ -253,7 +256,8 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
           'purchases': itemWithStatus.purchases.map((p) => p.toJson()).toList(),
         };
       }).toList();
-      await ref.read(cacheServiceProvider).put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await ref.read(cacheServiceProvider).put(cacheKey, jsonData,
+          ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }

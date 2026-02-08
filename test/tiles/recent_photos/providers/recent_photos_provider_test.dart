@@ -156,7 +156,8 @@ void main() {
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
     });
@@ -216,7 +217,8 @@ void main() {
           filter: anyNamed('filter'),
           callback: anyNamed('callback'),
         )).thenAnswer((_) async => 'sub_1');
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
 
@@ -313,7 +315,8 @@ void main() {
 
         // Simulate real-time DELETE
         notifier.state = notifier.state.copyWith(
-          photos: notifier.state.photos.where((p) => p.id != 'photo_1').toList(),
+          photos:
+              notifier.state.photos.where((p) => p.id != 'photo_1').toList(),
         );
 
         expect(notifier.state.photos, isEmpty);

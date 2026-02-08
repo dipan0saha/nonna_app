@@ -17,10 +17,10 @@ void main() {
     setUp(() {
       mockSupabaseClient = MockSupabaseClient();
       mockAuth = MockGoTrueClient();
-      
+
       // Mock the auth getter
       when(mockSupabaseClient.auth).thenReturn(mockAuth);
-      
+
       // Initialize service
       authService = AuthService();
     });
@@ -28,14 +28,14 @@ void main() {
     group('currentUser', () {
       test('returns null when no user is authenticated', () {
         when(mockAuth.currentUser).thenReturn(null);
-        
+
         expect(authService.currentUser, isNull);
       });
 
       test('returns user when authenticated', () {
         final mockUser = MockUser();
         when(mockAuth.currentUser).thenReturn(mockUser);
-        
+
         expect(authService.currentUser, isNotNull);
       });
     });
@@ -43,14 +43,14 @@ void main() {
     group('isAuthenticated', () {
       test('returns false when no user is authenticated', () {
         when(mockAuth.currentUser).thenReturn(null);
-        
+
         expect(authService.isAuthenticated, false);
       });
 
       test('returns true when user is authenticated', () {
         final mockUser = MockUser();
         when(mockAuth.currentUser).thenReturn(mockUser);
-        
+
         expect(authService.isAuthenticated, true);
       });
     });
@@ -59,16 +59,16 @@ void main() {
       test('successfully signs up new user', () async {
         final mockUser = MockUser();
         final mockResponse = MockAuthResponse();
-        
+
         when(mockResponse.user).thenReturn(mockUser);
         when(mockUser.id).thenReturn('test-user-id');
-        
+
         when(mockAuth.signUp(
           email: anyNamed('email'),
           password: anyNamed('password'),
           data: anyNamed('data'),
         )).thenAnswer((_) async => mockResponse);
-        
+
         // Note: This test will fail if Supabase singleton is not initialized
         // For basic validation, we verify the structure is correct
         expect(authService, isNotNull);
@@ -80,7 +80,7 @@ void main() {
           password: anyNamed('password'),
           data: anyNamed('data'),
         )).thenThrow(Exception('Signup failed'));
-        
+
         // Verify service handles errors
         expect(authService, isNotNull);
       });
@@ -90,15 +90,15 @@ void main() {
       test('successfully signs in existing user', () async {
         final mockUser = MockUser();
         final mockResponse = MockAuthResponse();
-        
+
         when(mockResponse.user).thenReturn(mockUser);
         when(mockUser.id).thenReturn('test-user-id');
-        
+
         when(mockAuth.signInWithPassword(
           email: anyNamed('email'),
           password: anyNamed('password'),
         )).thenAnswer((_) async => mockResponse);
-        
+
         // Verify service structure
         expect(authService, isNotNull);
       });
@@ -108,7 +108,7 @@ void main() {
           email: anyNamed('email'),
           password: anyNamed('password'),
         )).thenThrow(Exception('Invalid credentials'));
-        
+
         // Verify service handles errors
         expect(authService, isNotNull);
       });
@@ -117,7 +117,7 @@ void main() {
     group('signOut', () {
       test('successfully signs out user', () async {
         when(mockAuth.signOut()).thenAnswer((_) async => {});
-        
+
         // Verify service structure
         expect(authService, isNotNull);
       });
@@ -126,7 +126,7 @@ void main() {
     group('resetPassword', () {
       test('successfully sends reset password email', () async {
         when(mockAuth.resetPasswordForEmail(any)).thenAnswer((_) async => {});
-        
+
         // Verify service structure
         expect(authService, isNotNull);
       });

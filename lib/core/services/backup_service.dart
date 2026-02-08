@@ -63,12 +63,14 @@ class BackupService {
       data['photos'] = photos;
 
       // Comments made by user
-      final photoComments =
-          await _databaseService.select(SupabaseTables.photoComments).eq('user_id', userId);
+      final photoComments = await _databaseService
+          .select(SupabaseTables.photoComments)
+          .eq('user_id', userId);
       data['photo_comments'] = photoComments;
 
-      final eventComments =
-          await _databaseService.select(SupabaseTables.eventComments).eq('user_id', userId);
+      final eventComments = await _databaseService
+          .select(SupabaseTables.eventComments)
+          .eq('user_id', userId);
       data['event_comments'] = eventComments;
 
       // Events created by user
@@ -78,8 +80,9 @@ class BackupService {
       data['events'] = events;
 
       // Event RSVPs
-      final rsvps =
-          await _databaseService.select(SupabaseTables.eventRsvps).eq('user_id', userId);
+      final rsvps = await _databaseService
+          .select(SupabaseTables.eventRsvps)
+          .eq('user_id', userId);
       data['event_rsvps'] = rsvps;
 
       // Registry items created by user
@@ -101,13 +104,15 @@ class BackupService {
       data['name_suggestions'] = nameSuggestions;
 
       // Votes
-      final votes =
-          await _databaseService.select(SupabaseTables.votes).eq('user_id', userId);
+      final votes = await _databaseService
+          .select(SupabaseTables.votes)
+          .eq('user_id', userId);
       data['votes'] = votes;
 
       // Notifications
-      final notifications =
-          await _databaseService.select(SupabaseTables.notifications).eq('user_id', userId);
+      final notifications = await _databaseService
+          .select(SupabaseTables.notifications)
+          .eq('user_id', userId);
       data['notifications'] = notifications;
 
       // Photo tags
@@ -117,8 +122,9 @@ class BackupService {
       data['photo_tags'] = photoTags;
 
       // Photo squishes
-      final photoSquishes =
-          await _databaseService.select(SupabaseTables.photoSquishes).eq('user_id', userId);
+      final photoSquishes = await _databaseService
+          .select(SupabaseTables.photoSquishes)
+          .eq('user_id', userId);
       data['photo_squishes'] = photoSquishes;
 
       // Invitations sent

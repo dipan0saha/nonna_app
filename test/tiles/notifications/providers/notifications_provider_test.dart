@@ -144,8 +144,10 @@ void main() {
       });
 
       test('calculates unread count correctly', () async {
-        final notif1 = sampleNotification.copyWith(id: 'notif_1', isRead: false);
-        final notif2 = sampleNotification.copyWith(id: 'notif_2', isRead: false);
+        final notif1 =
+            sampleNotification.copyWith(id: 'notif_1', isRead: false);
+        final notif2 =
+            sampleNotification.copyWith(id: 'notif_2', isRead: false);
         final notif3 = sampleNotification.copyWith(id: 'notif_3', isRead: true);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
@@ -180,7 +182,8 @@ void main() {
         await notifier.fetchNotifications(userId: 'user_1');
 
         // Setup update mock
-        when(mockDatabaseService.update(any)).thenReturn(FakePostgrestUpdateBuilder());
+        when(mockDatabaseService.update(any))
+            .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAsRead(
           notificationId: 'notif_1',
@@ -209,7 +212,8 @@ void main() {
             .thenReturn(FakePostgrestBuilder([sampleNotification.toJson()]));
         await notifier.fetchNotifications(userId: 'user_1');
 
-        when(mockDatabaseService.update(any)).thenReturn(FakePostgrestUpdateBuilder());
+        when(mockDatabaseService.update(any))
+            .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAsRead(
           notificationId: 'notif_1',
@@ -217,15 +221,18 @@ void main() {
         );
 
         // Verify cache was updated
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(greaterThanOrEqualTo(1));
       });
     });
 
     group('markAllAsRead', () {
       test('marks all notifications as read', () async {
-        final notif1 = sampleNotification.copyWith(id: 'notif_1', isRead: false);
-        final notif2 = sampleNotification.copyWith(id: 'notif_2', isRead: false);
+        final notif1 =
+            sampleNotification.copyWith(id: 'notif_1', isRead: false);
+        final notif2 =
+            sampleNotification.copyWith(id: 'notif_2', isRead: false);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
@@ -239,7 +246,8 @@ void main() {
         ]));
         await notifier.fetchNotifications(userId: 'user_1');
 
-        when(mockDatabaseService.update(any)).thenReturn(FakePostgrestUpdateBuilder());
+        when(mockDatabaseService.update(any))
+            .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAllAsRead(userId: 'user_1');
 

@@ -248,7 +248,8 @@ void main() {
           currentUserId: 'user_1',
         );
 
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
     });
@@ -536,8 +537,7 @@ void main() {
           filePath: anyNamed('filePath'),
           storageKey: anyNamed('storageKey'),
           bucket: anyNamed('bucket'),
-        )).thenAnswer(
-            (_) async => 'https://example.com/uploaded-photo.jpg');
+        )).thenAnswer((_) async => 'https://example.com/uploaded-photo.jpg');
 
         final result = await notifier.uploadProfilePhoto(
           babyProfileId: 'baby_1',
@@ -642,7 +642,10 @@ void main() {
           callCount++;
           if (callCount == 1 || callCount == 4) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
-          } else if (callCount == 2 || callCount == 3 || callCount == 5 || callCount == 6) {
+          } else if (callCount == 2 ||
+              callCount == 3 ||
+              callCount == 5 ||
+              callCount == 6) {
             return FakePostgrestBuilder([sampleMembership.toJson()]);
           } else {
             return FakePostgrestBuilder([]);
@@ -655,7 +658,8 @@ void main() {
           currentUserId: 'user_1',
         );
 
-        final initialLoadCount = verify(mockDatabaseService.select(any)).callCount;
+        final initialLoadCount =
+            verify(mockDatabaseService.select(any)).callCount;
 
         await notifier.refresh('baby_1', 'user_1');
 

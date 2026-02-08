@@ -61,7 +61,8 @@ void main() {
         });
 
         // Start fetching
-        final fetchFuture = notifier.fetchHighlights(babyProfileId: 'profile_1');
+        final fetchFuture =
+            notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify loading state
         expect(notifier.state.isLoading, isTrue);
@@ -145,7 +146,8 @@ void main() {
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
@@ -190,7 +192,6 @@ void main() {
 
     group('Purchase Status', () {
       test('tracks purchase status correctly', () async {
-
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));

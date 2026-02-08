@@ -198,7 +198,8 @@ void main() {
       });
 
       test('handles multiple babies', () async {
-        final profile2 = sampleProfile.copyWith(id: 'profile_2', name: 'Baby Jack');
+        final profile2 =
+            sampleProfile.copyWith(id: 'profile_2', name: 'Baby Jack');
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(

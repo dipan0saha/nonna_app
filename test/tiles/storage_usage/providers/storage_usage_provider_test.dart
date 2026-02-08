@@ -137,7 +137,8 @@ void main() {
         await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
@@ -239,7 +240,8 @@ void main() {
           calculatedAt: DateTime.now(),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => fullInfo.toJson());
+        when(mockCacheService.get(any))
+            .thenAnswer((_) async => fullInfo.toJson());
 
         await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
 
@@ -266,7 +268,8 @@ void main() {
 
       test('handles zero photos', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
 

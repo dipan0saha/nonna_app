@@ -163,7 +163,8 @@ void main() {
 
         await notifier.loadProfile(userId: 'user_1');
 
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
@@ -374,8 +375,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
         await notifier.loadProfile(userId: 'user_1');
-        
-        final initialLoadCount = verify(mockDatabaseService.select(any)).callCount;
+
+        final initialLoadCount =
+            verify(mockDatabaseService.select(any)).callCount;
 
         await notifier.refresh('user_1');
 
@@ -409,6 +411,6 @@ class FakePostgrestBuilder {
 
 class FakePostgrestUpdateBuilder {
   FakePostgrestUpdateBuilder eq(String column, dynamic value) => this;
-  
+
   Future<void> call() async {}
 }

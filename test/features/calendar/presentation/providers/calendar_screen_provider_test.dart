@@ -223,7 +223,8 @@ void main() {
         notifier.selectDate(DateTime(2024, 6, 15));
 
         expect(notifier.state.eventsForSelectedDate, hasLength(1));
-        expect(notifier.state.eventsForSelectedDate.first.id, equals('event_1'));
+        expect(
+            notifier.state.eventsForSelectedDate.first.id, equals('event_1'));
       });
 
       test('datesWithEvents returns all dates with events', () async {

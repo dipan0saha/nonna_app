@@ -409,7 +409,8 @@ class LocalStorageService {
       if (decoded is Map<String, dynamic>) {
         return decoded;
       }
-      throw FormatException('Expected Map<String, dynamic>, got ${decoded.runtimeType}');
+      throw FormatException(
+          'Expected Map<String, dynamic>, got ${decoded.runtimeType}');
     } catch (e) {
       debugPrint('❌ Error decoding JSON: $e');
       rethrow;
