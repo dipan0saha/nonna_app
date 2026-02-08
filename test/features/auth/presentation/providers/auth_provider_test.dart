@@ -92,7 +92,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any as String, any as String)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).thenAnswer((_) async => {});
 
         final future = notifier.signInWithEmail(
           email: 'test@example.com',
@@ -115,7 +115,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any as String, any as String)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).thenAnswer((_) async => {});
 
         await notifier.signInWithEmail(
           email: 'test@example.com',
@@ -172,7 +172,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any as String, any as String)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).thenAnswer((_) async => {});
 
         await notifier.signUpWithEmail(
           email: 'test@example.com',
@@ -210,7 +210,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any as String, any as String)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).thenAnswer((_) async => {});
 
         await notifier.signInWithGoogle();
 
@@ -237,7 +237,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any as String, any as String)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).thenAnswer((_) async => {});
 
         await notifier.signInWithFacebook();
 
@@ -338,21 +338,21 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any as String, any as String)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).thenAnswer((_) async => {});
 
         await notifier.signInWithEmail(
           email: 'test@example.com',
           password: 'password123',
         );
 
-        verify(mockLocalStorage.put(any as String, any as String)).called(1);
+        verify(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).called(1);
       });
 
       test('refreshSession updates session state', () async {
         when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any as String, any as String)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).thenAnswer((_) async => {});
 
         await notifier.refreshSession();
 
@@ -372,7 +372,7 @@ void main() {
       test('handles auth state changes from stream', () async {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any as String, any as String)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put(argThat(isA<String>()), argThat(isA<String>()))).thenAnswer((_) async => {});
 
         authStateController.add(
           supabase.AuthState(
