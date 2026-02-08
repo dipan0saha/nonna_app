@@ -1,17 +1,21 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
+
+import '../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService])
 import 'registry_highlights_provider_test.mocks.dart';
 
 void main() {
   group('RegistryHighlightsProvider Tests', () {
-    late RegistryHighlightsNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
 
@@ -35,17 +39,28 @@ void main() {
       // Setup mock cache service
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = RegistryHighlightsNotifier(
-        databaseService: mockDatabaseService,
-        cacheService: mockCacheService,
+      // Setup dummy values for Mockito null-safety
+      provideDummy<String>('');
+
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+        ],
       );
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
       test('initial state has empty items', () {
-        expect(notifier.state.items, isEmpty);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
+        final state = container.read(registryHighlightsProvider);
+        
+        expect(state.items, isEmpty);
+        expect(state.isLoading, isFalse);
+        expect(state.error, isNull);
       });
     });
 
@@ -53,17 +68,17 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async {
-          await Future.delayed(const Duration(milliseconds: 100));
-          return FakePostgrestBuilder([]);
-        });
+        when(mockDatabaseService.select(any)).thenReturn(
+          FakePostgrestBuilder([])
+        );
 
         // Start fetching
+        final notifier = container.read(registryHighlightsProvider.notifier);
         final fetchFuture =
             notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify loading state
-        expect(notifier.state.isLoading, isTrue);
+        expect(container.read(registryHighlightsProvider).isLoading, isTrue);
 
         await fetchFuture;
       });
@@ -74,13 +89,15 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify state updated
-        expect(notifier.state.items, hasLength(1));
-        expect(notifier.state.items.first.item.id, equals('item_1'));
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
+        final state = container.read(registryHighlightsProvider);
+        expect(state.items, hasLength(1));
+        expect(state.items.first.item.id, equals('item_1'));
+        expect(state.isLoading, isFalse);
+        expect(state.error, isNull);
       });
 
       test('loads items from cache when available', () async {
@@ -92,14 +109,16 @@ void main() {
         };
         when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify database was not called
         verifyNever(mockDatabaseService.select(any));
 
         // Verify state updated from cache
-        expect(notifier.state.items, hasLength(1));
-        expect(notifier.state.items.first.item.id, equals('item_1'));
+        final state = container.read(registryHighlightsProvider);
+        expect(state.items, hasLength(1));
+        expect(state.items.first.item.id, equals('item_1'));
       });
 
       test('handles errors gracefully', () async {
@@ -108,12 +127,14 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify error state
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, contains('Database error'));
-        expect(notifier.state.items, isEmpty);
+        final state = container.read(registryHighlightsProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.error, contains('Database error'));
+        expect(state.items, isEmpty);
       });
 
       test('force refresh bypasses cache', () async {
@@ -127,6 +148,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(
           babyProfileId: 'profile_1',
           forceRefresh: true,
@@ -141,6 +163,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify cache put was called
@@ -161,12 +184,14 @@ void main() {
           item3.toJson(),
         ]));
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Items should be sorted by priority descending
-        expect(notifier.state.items[0].item.priority, equals(5));
-        expect(notifier.state.items[1].item.priority, equals(3));
-        expect(notifier.state.items[2].item.priority, equals(1));
+        final state = container.read(registryHighlightsProvider);
+        expect(state.items[0].item.priority, equals(5));
+        expect(state.items[1].item.priority, equals(3));
+        expect(state.items[2].item.priority, equals(1));
       });
     });
 
@@ -181,6 +206,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
@@ -194,10 +220,12 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Initially not purchased
-        expect(notifier.state.items.first.isPurchased, isFalse);
+        final state = container.read(registryHighlightsProvider);
+        expect(state.items.first.isPurchased, isFalse);
       });
 
       test('filters unpurchased items only', () async {
@@ -205,10 +233,12 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // All items should be unpurchased in highlights
-        for (final item in notifier.state.items) {
+        final state = container.read(registryHighlightsProvider);
+        for (final item in state.items) {
           expect(item.isPurchased, isFalse);
         }
       });
@@ -227,25 +257,15 @@ void main() {
           FakePostgrestBuilder(items.map((i) => i.toJson()).toList()),
         );
 
+        final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Should only have 10 items
-        expect(notifier.state.items.length, lessThanOrEqualTo(10));
+        final state = container.read(registryHighlightsProvider);
+        expect(state.items.length, lessThanOrEqualTo(10));
       });
     });
   });
 }
 
-// Fake builders for Postgrest operations (test doubles)
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-
-  FakePostgrestBuilder(this.data);
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder isNull(String column) => this;
-  FakePostgrestBuilder order(String column, {bool ascending = true}) => this;
-  FakePostgrestBuilder limit(int count) => this;
-
-  Future<List<Map<String, dynamic>>> call() async => data;
-}
+// Note: FakePostgrestBuilder is imported from test/helpers/fake_postgrest_builders.dart
