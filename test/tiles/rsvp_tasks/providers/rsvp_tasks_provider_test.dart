@@ -92,9 +92,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -159,9 +159,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -179,9 +179,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -201,9 +201,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
         await notifier.fetchRSVPTasks(
@@ -237,9 +237,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -259,9 +259,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -304,9 +304,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 

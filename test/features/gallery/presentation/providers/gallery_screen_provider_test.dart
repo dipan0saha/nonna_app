@@ -64,8 +64,7 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
 
@@ -96,8 +95,7 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
 
@@ -122,8 +120,7 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any)).thenReturn(
             FakePostgrestBuilder(photos.map((p) => p.toJson()).toList()));
 
@@ -141,8 +138,7 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
 
@@ -174,8 +170,7 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
 
@@ -185,7 +180,6 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
         )).called(1);
       });
     });
@@ -289,8 +283,7 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
 
@@ -314,8 +307,7 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
 
@@ -342,7 +334,6 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
         )).thenAnswer((invocation) async {
           realtimeCallback = invocation.namedArguments[#callback] as Function;
           return 'sub_1';
@@ -377,7 +368,6 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
         )).thenAnswer((invocation) async {
           realtimeCallback = invocation.namedArguments[#callback] as Function;
           return 'sub_1';
@@ -408,7 +398,6 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
         )).thenAnswer((invocation) async {
           realtimeCallback = invocation.namedArguments[#callback] as Function;
           return 'sub_1';
@@ -440,8 +429,7 @@ void main() {
           channelName: anyNamed('channelName'),
           table: anyNamed('table'),
           filter: anyNamed('filter'),
-          callback: anyNamed('callback'),
-        )).thenAnswer((_) async => 'sub_1');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
