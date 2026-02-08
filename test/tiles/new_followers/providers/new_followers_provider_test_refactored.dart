@@ -108,12 +108,8 @@ void main() {
       });
 
       test('loads followers from cache when available', () async {
-        // Setup cache hit
-        MockHelpers.setupCacheGet(
-          mocks.cache,
-          any,
-          [sampleFollower.toJson()],
-        );
+        // Setup cache hit - use when directly with any matcher
+        when(mocks.cache.get(any)).thenAnswer((_) async => [sampleFollower.toJson()]);
 
         await container
             .read(newFollowersProvider.notifier)
@@ -151,12 +147,8 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
-        // Setup cache with data
-        MockHelpers.setupCacheGet(
-          mocks.cache,
-          any,
-          [sampleFollower.toJson()],
-        );
+        // Setup cache with data - use when directly with any matcher
+        when(mocks.cache.get(any)).thenAnswer((_) async => [sampleFollower.toJson()]);
 
         // Setup realtime subscription
         MockHelpers.setupRealtimeSubscription(
@@ -284,12 +276,8 @@ void main() {
 
     group('refresh', () {
       test('refreshes followers with force refresh', () async {
-        // Setup cache with data
-        MockHelpers.setupCacheGet(
-          mocks.cache,
-          any,
-          [sampleFollower.toJson()],
-        );
+        // Setup cache with data - use when directly with any matcher
+        when(mocks.cache.get(any)).thenAnswer((_) async => [sampleFollower.toJson()]);
 
         // Setup realtime subscription
         MockHelpers.setupRealtimeSubscription(

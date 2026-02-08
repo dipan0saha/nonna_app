@@ -1,3 +1,5 @@
+import 'package:nonna_app/core/enums/gender.dart';
+import 'package:nonna_app/core/enums/notification_type.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/baby_membership.dart';
 import 'package:nonna_app/core/models/baby_profile.dart';
@@ -32,19 +34,21 @@ class TestDataFactory {
 
   /// Create a test User instance
   static User createUser({
-    String? id,
-    String? email,
+    String? userId,
     String? displayName,
-    String? profilePictureUrl,
+    String? avatarUrl,
+    bool? biometricEnabled,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
+    final now = DateTime.now();
     return User(
-      id: id ?? 'test-user-${DateTime.now().millisecondsSinceEpoch}',
-      email: email ?? 'testuser@example.com',
+      userId: userId ?? 'test-user-${now.millisecondsSinceEpoch}',
       displayName: displayName ?? 'Test User',
-      profilePictureUrl:
-          profilePictureUrl ?? 'https://example.com/avatar.jpg',
-      createdAt: createdAt ?? DateTime.now(),
+      avatarUrl: avatarUrl ?? 'https://example.com/avatar.jpg',
+      biometricEnabled: biometricEnabled ?? false,
+      createdAt: createdAt ?? now,
+      updatedAt: updatedAt ?? now,
     );
   }
 
@@ -56,22 +60,27 @@ class TestDataFactory {
   static BabyProfile createBabyProfile({
     String? id,
     String? name,
-    DateTime? dueDate,
-    DateTime? birthDate,
-    String? gender,
-    String? profilePictureUrl,
-    String? ownerId,
+    String? defaultLastNameSource,
+    String? profilePhotoUrl,
+    DateTime? expectedBirthDate,
+    DateTime? actualBirthDate,
+    Gender? gender,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? deletedAt,
   }) {
+    final now = DateTime.now();
     return BabyProfile(
-      id: id ?? 'test-baby-${DateTime.now().millisecondsSinceEpoch}',
+      id: id ?? 'test-baby-${now.millisecondsSinceEpoch}',
       name: name ?? 'Baby Test',
-      dueDate: dueDate,
-      birthDate: birthDate,
-      gender: gender,
-      profilePictureUrl: profilePictureUrl,
-      ownerId: ownerId ?? 'test-owner-id',
-      createdAt: createdAt ?? DateTime.now(),
+      defaultLastNameSource: defaultLastNameSource,
+      profilePhotoUrl: profilePhotoUrl,
+      expectedBirthDate: expectedBirthDate,
+      actualBirthDate: actualBirthDate,
+      gender: gender ?? Gender.unknown,
+      createdAt: createdAt ?? now,
+      updatedAt: updatedAt ?? now,
+      deletedAt: deletedAt,
     );
   }
 
@@ -103,24 +112,33 @@ class TestDataFactory {
   static Event createEvent({
     String? id,
     String? babyProfileId,
+    String? createdByUserId,
     String? title,
+    DateTime? startsAt,
+    DateTime? endsAt,
     String? description,
-    DateTime? eventDate,
     String? location,
-    String? createdBy,
+    String? videoLink,
+    String? coverPhotoUrl,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? deletedAt,
   }) {
+    final now = DateTime.now();
     return Event(
-      id: id ?? 'test-event-${DateTime.now().millisecondsSinceEpoch}',
-      babyProfileId:
-          babyProfileId ?? 'test-baby-${DateTime.now().millisecondsSinceEpoch}',
+      id: id ?? 'test-event-${now.millisecondsSinceEpoch}',
+      babyProfileId: babyProfileId ?? 'test-baby-${now.millisecondsSinceEpoch}',
+      createdByUserId: createdByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
       title: title ?? 'Test Event',
+      startsAt: startsAt ?? now.add(const Duration(days: 30)),
+      endsAt: endsAt,
       description: description ?? 'This is a test event',
-      eventDate: eventDate ?? DateTime.now().add(const Duration(days: 30)),
       location: location ?? 'Test Location',
-      createdBy:
-          createdBy ?? 'test-user-${DateTime.now().millisecondsSinceEpoch}',
-      createdAt: createdAt ?? DateTime.now(),
+      videoLink: videoLink,
+      coverPhotoUrl: coverPhotoUrl,
+      createdAt: createdAt ?? now,
+      updatedAt: updatedAt ?? now,
+      deletedAt: deletedAt,
     );
   }
 
@@ -132,24 +150,27 @@ class TestDataFactory {
   static Photo createPhoto({
     String? id,
     String? babyProfileId,
-    String? uploadedBy,
-    String? url,
-    String? thumbnailUrl,
+    String? uploadedByUserId,
+    String? storagePath,
+    String? thumbnailPath,
     String? caption,
-    DateTime? takenAt,
-    DateTime? uploadedAt,
+    List<String>? tags,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? deletedAt,
   }) {
+    final now = DateTime.now();
     return Photo(
-      id: id ?? 'test-photo-${DateTime.now().millisecondsSinceEpoch}',
-      babyProfileId:
-          babyProfileId ?? 'test-baby-${DateTime.now().millisecondsSinceEpoch}',
-      uploadedBy:
-          uploadedBy ?? 'test-user-${DateTime.now().millisecondsSinceEpoch}',
-      url: url ?? 'https://example.com/photo.jpg',
-      thumbnailUrl: thumbnailUrl ?? 'https://example.com/photo-thumb.jpg',
+      id: id ?? 'test-photo-${now.millisecondsSinceEpoch}',
+      babyProfileId: babyProfileId ?? 'test-baby-${now.millisecondsSinceEpoch}',
+      uploadedByUserId: uploadedByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
+      storagePath: storagePath ?? 'baby_test/photo_${now.millisecondsSinceEpoch}.jpg',
+      thumbnailPath: thumbnailPath,
       caption: caption,
-      takenAt: takenAt ?? DateTime.now(),
-      uploadedAt: uploadedAt ?? DateTime.now(),
+      tags: tags ?? const [],
+      createdAt: createdAt ?? now,
+      updatedAt: updatedAt ?? now,
+      deletedAt: deletedAt,
     );
   }
 
@@ -161,27 +182,27 @@ class TestDataFactory {
   static RegistryItem createRegistryItem({
     String? id,
     String? babyProfileId,
+    String? createdByUserId,
     String? name,
     String? description,
-    double? price,
-    String? url,
-    String? imageUrl,
-    bool? isPurchased,
-    String? purchasedBy,
+    String? linkUrl,
+    int? priority,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? deletedAt,
   }) {
+    final now = DateTime.now();
     return RegistryItem(
-      id: id ?? 'test-item-${DateTime.now().millisecondsSinceEpoch}',
-      babyProfileId:
-          babyProfileId ?? 'test-baby-${DateTime.now().millisecondsSinceEpoch}',
+      id: id ?? 'test-item-${now.millisecondsSinceEpoch}',
+      babyProfileId: babyProfileId ?? 'test-baby-${now.millisecondsSinceEpoch}',
+      createdByUserId: createdByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
       name: name ?? 'Test Registry Item',
       description: description ?? 'This is a test registry item',
-      price: price ?? 29.99,
-      url: url ?? 'https://example.com/product',
-      imageUrl: imageUrl ?? 'https://example.com/product.jpg',
-      isPurchased: isPurchased ?? false,
-      purchasedBy: purchasedBy,
-      createdAt: createdAt ?? DateTime.now(),
+      linkUrl: linkUrl ?? 'https://example.com/product',
+      priority: priority ?? 3,
+      createdAt: createdAt ?? now,
+      updatedAt: updatedAt ?? now,
+      deletedAt: deletedAt,
     );
   }
 
@@ -192,22 +213,25 @@ class TestDataFactory {
   /// Create a test Notification instance
   static Notification createNotification({
     String? id,
-    String? userId,
-    String? type,
+    String? recipientUserId,
+    String? babyProfileId,
+    NotificationType? type,
     String? title,
-    String? message,
-    Map<String, dynamic>? metadata,
-    bool? isRead,
+    String? body,
+    Map<String, dynamic>? payload,
+    DateTime? readAt,
     DateTime? createdAt,
   }) {
+    final now = DateTime.now();
     return Notification(
-      id: id ?? 'test-notif-${DateTime.now().millisecondsSinceEpoch}',
-      userId: userId ?? 'test-user-${DateTime.now().millisecondsSinceEpoch}',
-      type: type ?? 'info',
+      id: id ?? 'test-notif-${now.millisecondsSinceEpoch}',
+      recipientUserId: recipientUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
+      babyProfileId: babyProfileId,
+      type: type ?? NotificationType.general,
       title: title ?? 'Test Notification',
-      message: message ?? 'This is a test notification',
-      metadata: metadata ?? {},
-      isRead: isRead ?? false,
+      body: body ?? 'This is a test notification',
+      payload: payload,
+      readAt: readAt,
       createdAt: createdAt ?? DateTime.now(),
     );
   }
@@ -221,8 +245,7 @@ class TestDataFactory {
     return List.generate(
       count,
       (index) => createUser(
-        id: 'test-user-$index',
-        email: 'testuser$index@example.com',
+        userId: 'test-user-$index',
         displayName: 'Test User $index',
       ),
     );
@@ -247,7 +270,7 @@ class TestDataFactory {
         id: 'test-event-$index',
         babyProfileId: babyProfileId ?? 'test-baby-1',
         title: 'Test Event $index',
-        eventDate: DateTime.now().add(Duration(days: index + 1)),
+        startsAt: DateTime.now().add(Duration(days: index + 1)),
       ),
     );
   }
@@ -259,7 +282,7 @@ class TestDataFactory {
       (index) => createPhoto(
         id: 'test-photo-$index',
         babyProfileId: babyProfileId ?? 'test-baby-1',
-        url: 'https://example.com/photo$index.jpg',
+        storagePath: 'baby_test/photo$index.jpg',
       ),
     );
   }
@@ -275,20 +298,20 @@ class TestDataFactory {
         id: 'test-item-$index',
         babyProfileId: babyProfileId ?? 'test-baby-1',
         name: 'Test Item $index',
-        price: (index + 1) * 10.0,
+        priority: 3,
       ),
     );
   }
 
   /// Create multiple notifications at once
-  static List<Notification> createNotifications(int count, {String? userId}) {
+  static List<Notification> createNotifications(int count, {String? recipientUserId}) {
     return List.generate(
       count,
       (index) => createNotification(
         id: 'test-notif-$index',
-        userId: userId ?? 'test-user-1',
+        recipientUserId: recipientUserId ?? 'test-user-1',
         title: 'Test Notification $index',
-        isRead: index.isEven, // Alternate read status
+        readAt: index.isEven ? DateTime.now() : null, // Alternate read status
       ),
     );
   }

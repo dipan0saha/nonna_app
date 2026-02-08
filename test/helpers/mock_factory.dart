@@ -45,7 +45,6 @@ class MockFactory {
   /// - `isInitialized` returns true
   /// - `get()` returns null (cache miss)
   /// - `put()` completes successfully
-  /// - `invalidate()` completes successfully
   static MockCacheService createCacheService({
     bool isInitialized = true,
     Map<String, dynamic>? defaultGetData,
@@ -61,9 +60,6 @@ class MockFactory {
     // Default put behavior - success
     when(mock.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
         .thenAnswer((_) async => null);
-
-    // Default invalidate behavior - success
-    when(mock.invalidate(any)).thenAnswer((_) async => null);
 
     // Default clear behavior - success
     when(mock.clear()).thenAnswer((_) async => null);
@@ -102,7 +98,7 @@ class MockFactory {
   /// Create a StorageService mock with common default behaviors
   ///
   /// Default behaviors:
-  /// - `uploadImage()` returns test URL
+  /// - `uploadFile()` returns test URL
   /// - `deleteFile()` completes successfully
   /// - `getPublicUrl()` returns test URL
   static MockStorageService createStorageService({
@@ -110,24 +106,18 @@ class MockFactory {
   }) {
     final mock = MockStorageService();
 
-    // Default upload behavior
-    when(mock.uploadImage(
+    // Default upload behavior using uploadFile
+    when(mock.uploadFile(
+      filePath: anyNamed('filePath'),
+      storageKey: anyNamed('storageKey'),
       bucket: anyNamed('bucket'),
-      path: anyNamed('path'),
-      file: anyNamed('file'),
     )).thenAnswer((_) async => defaultUploadUrl);
 
     // Default delete behavior - success
-    when(mock.deleteFile(
-      bucket: anyNamed('bucket'),
-      path: anyNamed('path'),
-    )).thenAnswer((_) async => null);
+    when(mock.deleteFile(any, any)).thenAnswer((_) async => null);
 
     // Default getPublicUrl behavior
-    when(mock.getPublicUrl(
-      bucket: anyNamed('bucket'),
-      path: anyNamed('path'),
-    )).thenReturn(defaultUploadUrl);
+    when(mock.getPublicUrl(any, any)).thenReturn(defaultUploadUrl);
 
     return mock;
   }
@@ -169,17 +159,17 @@ class MockFactory {
     // Default initialization state
     when(mock.isInitialized).thenReturn(isInitialized);
 
-    // Default getString behavior
-    when(mock.getString(any)).thenAnswer((_) async => null);
+    // Default getString behavior - synchronous
+    when(mock.getString(any)).thenReturn(null);
 
     // Default setString behavior
-    when(mock.setString(any, any)).thenAnswer((_) async => true);
+    when(mock.setString(any, any)).thenAnswer((_) async => null);
 
-    // Default getBool behavior
-    when(mock.getBool(any)).thenAnswer((_) async => null);
+    // Default getBool behavior - synchronous
+    when(mock.getBool(any)).thenReturn(null);
 
     // Default setBool behavior
-    when(mock.setBool(any, any)).thenAnswer((_) async => true);
+    when(mock.setBool(any, any)).thenAnswer((_) async => null);
 
     return mock;
   }
@@ -188,11 +178,7 @@ class MockFactory {
   static MockBackupService createBackupService() {
     final mock = MockBackupService();
 
-    // Default backup behavior - success
-    when(mock.createBackup()).thenAnswer((_) async => 'backup-id-123');
-
-    // Default restore behavior - success
-    when(mock.restoreBackup(any)).thenAnswer((_) async => null);
+    // Add default behaviors as needed based on actual BackupService methods
 
     return mock;
   }
@@ -209,11 +195,8 @@ class MockFactory {
   static MockAnalyticsService createAnalyticsService() {
     final mock = MockAnalyticsService();
 
-    // Default log event behavior - success
-    when(mock.logEvent(
-      name: anyNamed('name'),
-      parameters: anyNamed('parameters'),
-    )).thenAnswer((_) async => null);
+    // Add default behaviors as needed based on actual AnalyticsService methods
+    // Note: logEvent is not exposed directly; use specific methods like logSignUp, logLogin, etc.
 
     return mock;
   }
@@ -369,8 +352,8 @@ class MockHelpers {
     String table,
     Map<String, dynamic> returnData,
   ) {
-    when(mock.update(table, any, any))
-        .thenAnswer((_) async => [returnData]);
+    when(mock.update(table, any))
+        .thenAnswer((_) => FakePostgrestBuilder([returnData]));
   }
 
   // ==========================================
@@ -455,10 +438,10 @@ class MockHelpers {
     String bucket,
     String url,
   ) {
-    when(mock.uploadImage(
+    when(mock.uploadFile(
+      filePath: anyNamed('filePath'),
+      storageKey: anyNamed('storageKey'),
       bucket: bucket,
-      path: anyNamed('path'),
-      file: anyNamed('file'),
     )).thenAnswer((_) async => url);
   }
 
@@ -468,10 +451,10 @@ class MockHelpers {
     String bucket,
     Exception error,
   ) {
-    when(mock.uploadImage(
+    when(mock.uploadFile(
+      filePath: anyNamed('filePath'),
+      storageKey: anyNamed('storageKey'),
       bucket: bucket,
-      path: anyNamed('path'),
-      file: anyNamed('file'),
     )).thenThrow(error);
   }
 
