@@ -1,8 +1,8 @@
 # Nonna App Project Structure (Dynamic Tile-Based Architecture)
 
-**Document Version**: 2.0  
-**Last Updated**: January 4, 2026  
-**Location**: `docs/App_Structure_Nonna.md`  
+**Document Version**: 2.1
+**Last Updated**: February 8, 2026
+**Location**: `docs/99_master_reference_docs/App_Structure_Nonna.md`
 **Status**: Living Document - Updated to reflect current implementation state
 
 This structure is optimized for the Nonna app's dynamic, tile-based UI with role-driven content, Supabase backend, and support for owner/follower aggregation. Tiles are parameterized, reusable widgets placed at the top level (`lib/tiles/`) for maximum reusability across screens, while features handle screen-specific logic and composition.
@@ -11,35 +11,81 @@ This structure is optimized for the Nonna app's dynamic, tile-based UI with role
 
 **IMPORTANT**: This document describes both the **current state** and **planned architecture** of the Nonna App. The project is currently in early development phases with core infrastructure being established.
 
-### Current State (As of January 4, 2026)
+### Current State (As of February 8, 2026)
 
-The project currently has the following implemented structure:
+The project has progressed significantly with core infrastructure, tiles layer, and features layer implemented:
 
 ```
 nonna_app/
 ├── lib/
-│   ├── core/
-│   │   ├── config/
-│   │   │   └── supabase_config.dart
-│   │   └── router/
-│   │       └── app_router.dart
-│   ├── l10n/
+│   ├── core/                     # Shared across the entire app
+│   │   ├── config/               # Environment configurations
+│   │   ├── constants/            # App-wide constants
+│   │   ├── contracts/            # Shared interfaces
+│   │   ├── di/                   # Dependency injection (Riverpod providers)
+│   │   ├── enums/                # Global enums
+│   │   ├── examples/             # Example implementations
+│   │   ├── exceptions/           # Custom exception classes
+│   │   ├── extensions/           # Dart/Flutter extensions
+│   │   ├── middleware/           # App-level middleware
+│   │   ├── mixins/               # Reusable behaviors
+│   │   ├── models/               # Shared domain models
+│   │   ├── network/              # Supabase client and configuration
+│   │   ├── providers/            # Global providers
+│   │   ├── repositories/         # Shared repository contracts
+│   │   ├── router/               # App navigation (GoRouter)
+│   │   ├── services/             # Shared services
+│   │   ├── themes/               # App-wide theming
+│   │   ├── typedefs/             # Type aliases
+│   │   ├── utils/                # Helper functions
+│   │   └── widgets/              # Shared UI widgets
+│   ├── features/                 # Screen-specific features
+│   │   ├── auth/                 # Authentication feature
+│   │   ├── baby_profile/         # Baby profile management
+│   │   ├── calendar/             # Calendar feature
+│   │   ├── fun/                  # Fun activities feature
+│   │   ├── gallery/              # Photo gallery feature
+│   │   ├── home/                 # Home screen feature
+│   │   ├── photo_gallery/        # Photo gallery feature
+│   │   ├── profile/              # User profile feature
+│   │   └── registry/             # Registry feature
+│   ├── flutter_gen/              # Generated code
+│   ├── l10n/                     # Localization
 │   │   └── app_en.arb
-│   └── main.dart
-├── test/
-│   ├── README.md
-│   └── project_initialization_test.dart
-├── docs/                    # Comprehensive documentation (completed)
-├── supabase/               # Supabase configuration and migrations
+│   ├── main.dart
+│   └── tiles/                    # Reusable tile widgets
+│       ├── checklist/            # Checklist tiles
+│       ├── core/                 # Shared tile infrastructure
+│       ├── due_date_countdown/   # Due date countdown tile
+│       ├── engagement_recap/     # Engagement recap tile
+│       ├── gallery_favorites/    # Gallery favorites tile
+│       ├── invites_status/       # Invites status tile
+│       ├── new_followers/        # New followers tile
+│       ├── notifications/        # Notifications tile
+│       ├── recent_photos/        # Recent photos tile
+│       ├── recent_purchases/     # Recent purchases tile
+│       ├── registry_deals/       # Registry deals tile
+│       ├── registry_highlights/  # Registry highlights tile
+│       ├── rsvp_tasks/           # RSVP tasks tile
+│       ├── storage_usage/        # Storage usage tile
+│       ├── system_announcements/ # System announcements tile
+│       └── upcoming_events/      # Upcoming events tile
+├── test/                         # Comprehensive test coverage
+│   ├── core/                     # Core layer tests
+│   ├── features/                 # Feature layer tests
+│   ├── tiles/                    # Tile layer tests
+│   └── helpers/                  # Test helpers
+├── docs/                         # Comprehensive documentation
+├── supabase/                     # Supabase configuration and migrations
 ├── android/, ios/, linux/, macos/, windows/  # Platform-specific code
-└── discovery/              # Discovery phase documentation
+└── discovery/                    # Discovery phase documentation
 ```
 
-**Next Development Steps**:
-- Tiles layer implementation (`lib/tiles/`)
-- Features layer implementation (`lib/features/`)
-- Core layer expansion (models, services, repositories)
-- Comprehensive test coverage
+**Current Development Focus**:
+- Expanding tile implementations and testing
+- Feature layer completion and integration
+- Comprehensive test coverage (currently ~90 errors remaining in flutter analyze)
+- Performance optimization and caching
 
 ## Architecture Overview
 
@@ -924,7 +970,7 @@ nonna_app/
 ## FAQ
 
 ### Q: How do I add a new tile?
-**A**: 
+**A**:
 1. Create folder under `lib/tiles/` (e.g., `new_tile/`).
 2. Add `models/`, `providers/`, `data/`, `widgets/`.
 3. Implement datasource with Supabase query.
@@ -950,7 +996,7 @@ if (params.role == UserRole.owner) {
 ```
 
 ### Q: How do I test a tile independently?
-**A**: 
+**A**:
 1. Mock datasource in `test/tiles/tile_name/`.
 2. Test provider logic with mocked data.
 3. Test widget with `ProviderScope` and mocked provider.
@@ -979,7 +1025,7 @@ test('should load events for owner', () async {
 - Use Hive/Isar for fast local storage.
 
 ### Q: What happens if a tile query is slow?
-**A**: 
+**A**:
 - Show shimmer placeholder via `tile_state` (loading).
 - Optimize Supabase query (indexes, RLS).
 - Implement pagination for large datasets.
