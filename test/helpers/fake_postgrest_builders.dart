@@ -116,10 +116,19 @@ class FakePostgrestBuilder extends PostgrestFilterBuilder<List<Map<String, dynam
 
   @override
   Future<U> then<U>(FutureOr<U> Function(List<Map<String, dynamic>> value) onValue, {Function? onError}) async {
+    // Note: This is a simplified implementation for testing.
+    // In real usage, single() and maybeSingle() change the generic type,
+    // but for our mock purposes, we cast appropriately.
     if (_isMaybeSingle) {
-      return onValue(_data.isEmpty ? null as List<Map<String, dynamic>> : [_data.first]);
+      // Return null if empty, otherwise return the data
+      final result = _data.isEmpty ? [] : _data;
+      return onValue(result);
     } else if (_isSingle) {
-      return onValue([_data.first]);
+      // Return the first item
+      if (_data.isEmpty) {
+        throw Exception('No data found for single()');
+      }
+      return onValue(_data);
     }
     return onValue(_data);
   }
