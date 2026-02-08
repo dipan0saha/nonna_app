@@ -70,19 +70,14 @@ class RSVPTasksState {
 /// RSVP Tasks provider
 ///
 /// Manages events needing RSVP with status tracking and real-time updates.
-class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  RSVPTasksNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const RSVPTasksState());
+class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
+  @override
+  RSVPTasksState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscriptions();
+    });
+    return const RSVPTasksState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'rsvp_tasks';
@@ -172,10 +167,7 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscriptions();
-  }
+
 
   // ==========================================
   // Private Methods
@@ -189,7 +181,7 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
     final now = DateTime.now();
 
     // Fetch upcoming events for this baby profile
-    final eventsResponse = await _databaseService
+    final eventsResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -204,7 +196,7 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
     final eventIds = events.map((e) => e.id).toList();
     if (eventIds.isEmpty) return [];
 
-    final rsvpsResponse = await _databaseService
+    final rsvpsResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.eventRSVPs)
         .eq(SupabaseTables.userId, userId)
         .inFilter(SupabaseTables.eventId, eventIds);
@@ -233,11 +225,11 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
     String userId,
     String babyProfileId,
   ) async {
-    if (!_cacheService.isInitialized) return null;
+    if (!ref.read(cacheServiceProvider).isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(userId, babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await ref.read(cacheServiceProvider).get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -264,7 +256,7 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
     String babyProfileId,
     List<EventWithRSVP> events,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    if (!ref.read(cacheServiceProvider).isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(userId, babyProfileId);
@@ -275,7 +267,7 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
           'needsResponse': eventWithRSVP.needsResponse,
         };
       }).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await ref.read(cacheServiceProvider).put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -295,7 +287,7 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
       _cancelRealtimeSubscriptions();
 
       // Subscribe to events
-      _eventsSubscriptionId = await _realtimeService.subscribe(
+      _eventsSubscriptionId = await ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.events,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -304,7 +296,7 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
       );
 
       // Subscribe to RSVPs
-      _rsvpsSubscriptionId = await _realtimeService.subscribe(
+      _rsvpsSubscriptionId = await ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.eventRSVPs,
         filter: '${SupabaseTables.userId}=eq.$userId',
         callback: (payload) {
@@ -341,11 +333,11 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
   /// Cancel real-time subscriptions
   void _cancelRealtimeSubscriptions() {
     if (_eventsSubscriptionId != null) {
-      _realtimeService.unsubscribe(_eventsSubscriptionId!);
+      ref.read(realtimeServiceProvider).unsubscribe(_eventsSubscriptionId!);
       _eventsSubscriptionId = null;
     }
     if (_rsvpsSubscriptionId != null) {
-      _realtimeService.unsubscribe(_rsvpsSubscriptionId!);
+      ref.read(realtimeServiceProvider).unsubscribe(_rsvpsSubscriptionId!);
       _rsvpsSubscriptionId = null;
     }
     debugPrint('✅ Real-time subscriptions cancelled');
@@ -361,22 +353,6 @@ class RSVPTasksNotifier extends StateNotifier<RSVPTasksState> {
 /// await notifier.fetchRSVPTasks(userId: 'user123', babyProfileId: 'abc');
 /// ```
 final rsvpTasksProvider =
-    StateNotifierProvider.autoDispose<RSVPTasksNotifier, RSVPTasksState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = RSVPTasksNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+    NotifierProvider.autoDispose<RSVPTasksNotifier, RSVPTasksState>(
+  RSVPTasksNotifier.new,
 );

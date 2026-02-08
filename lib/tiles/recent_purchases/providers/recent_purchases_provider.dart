@@ -54,25 +54,21 @@ class RecentPurchasesState {
 /// Recent Purchases provider
 ///
 /// Manages recent purchases with thank you status tracking and real-time updates.
-class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  RecentPurchasesNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const RecentPurchasesState());
+class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'recent_purchases';
   static const int _maxPurchases = 20;
 
   String? _subscriptionId;
+
+  @override
+  RecentPurchasesState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const RecentPurchasesState();
+  }
 
   // ==========================================
   // Public Methods
@@ -145,11 +141,6 @@ class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscription();
-  }
-
   // ==========================================
   // Private Methods
   // ==========================================
@@ -159,7 +150,7 @@ class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
     String babyProfileId,
   ) async {
     // First get all registry items for this baby profile
-    final itemsResponse = await _databaseService
+    final itemsResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt);
@@ -171,7 +162,7 @@ class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
     if (itemIds.isEmpty) return [];
 
     // Then fetch purchases for these items
-    final response = await _databaseService
+    final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
         .inFilter(SupabaseTables.registryItemId, itemIds)
         .isNull(SupabaseTables.deletedAt)
@@ -185,11 +176,12 @@ class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
 
   /// Load purchases from cache
   Future<List<RegistryPurchase>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -208,12 +200,13 @@ class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
     String babyProfileId,
     List<RegistryPurchase> purchases,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = purchases.map((p) => p.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -229,7 +222,7 @@ class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.registryPurchases,
         callback: (payload) {
           _handleRealtimeUpdate(payload, babyProfileId);
@@ -292,7 +285,7 @@ class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
@@ -307,23 +300,7 @@ class RecentPurchasesNotifier extends StateNotifier<RecentPurchasesState> {
 /// final notifier = ref.read(recentPurchasesProvider.notifier);
 /// await notifier.fetchPurchases(babyProfileId: 'abc');
 /// ```
-final recentPurchasesProvider = StateNotifierProvider.autoDispose<
+final recentPurchasesProvider = NotifierProvider.autoDispose<
     RecentPurchasesNotifier, RecentPurchasesState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = RecentPurchasesNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+  RecentPurchasesNotifier.new,
 );

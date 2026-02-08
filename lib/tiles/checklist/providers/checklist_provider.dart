@@ -106,13 +106,11 @@ class ChecklistState {
 /// Checklist provider
 ///
 /// Manages onboarding checklist with local storage and completion tracking.
-class ChecklistNotifier extends StateNotifier<ChecklistState> {
-  final CacheService _cacheService;
-
-  ChecklistNotifier({
-    required CacheService cacheService,
-  })  : _cacheService = cacheService,
-        super(const ChecklistState());
+class ChecklistNotifier extends Notifier<ChecklistState> {
+  @override
+  ChecklistState build() {
+    return const ChecklistState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'checklist';
@@ -272,13 +270,14 @@ class ChecklistNotifier extends StateNotifier<ChecklistState> {
 
   /// Load checklist from cache
   Future<List<ChecklistItem>> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) {
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) {
       return _defaultItems;
     }
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) {
         // First time loading, save default items
@@ -300,13 +299,14 @@ class ChecklistNotifier extends StateNotifier<ChecklistState> {
     String babyProfileId,
     List<ChecklistItem> items,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = items.map((item) => item.toJson()).toList();
       // No TTL - checklist should persist indefinitely
-      await _cacheService.put(cacheKey, jsonData);
+      await cacheService.put(cacheKey, jsonData);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -327,12 +327,6 @@ class ChecklistNotifier extends StateNotifier<ChecklistState> {
 /// await notifier.loadChecklist(babyProfileId: 'abc');
 /// ```
 final checklistProvider =
-    StateNotifierProvider.autoDispose<ChecklistNotifier, ChecklistState>(
-  (ref) {
-    final cacheService = ref.watch(cacheServiceProvider);
-
-    return ChecklistNotifier(
-      cacheService: cacheService,
-    );
-  },
+    NotifierProvider.autoDispose<ChecklistNotifier, ChecklistState>(
+  ChecklistNotifier.new,
 );

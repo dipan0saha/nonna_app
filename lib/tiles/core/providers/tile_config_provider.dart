@@ -51,16 +51,11 @@ class TileConfigState {
 /// Tile configuration provider
 ///
 /// Manages tile configurations with caching and role-based filtering.
-class TileConfigNotifier extends StateNotifier<TileConfigState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-
-  TileConfigNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        super(const TileConfigState());
+class TileConfigNotifier extends Notifier<TileConfigState> {
+  @override
+  TileConfigState build() {
+    return const TileConfigState();
+  }
 
   // Cache configuration
   static const String _cacheKeyPrefix = 'tile_configs';
@@ -138,7 +133,7 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
       }
 
       // Fetch from database
-      final response = await _databaseService
+      final response = await ref.read(databaseServiceProvider)
           .select(SupabaseTables.tileConfigs)
           .order(SupabaseTables.displayOrder);
 
@@ -198,7 +193,7 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
   }) async {
     try {
       // Update in database
-      await _databaseService
+      await ref.read(databaseServiceProvider)
           .update(SupabaseTables.tileConfigs)
           .eq(SupabaseTables.id, configId)
           .update({SupabaseTables.isVisible: isVisible});
@@ -247,7 +242,7 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
     String screenId,
     UserRole role,
   ) async {
-    final response = await _databaseService
+    final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.tileConfigs)
         .eq(SupabaseTables.screenId, screenId)
         .eq(SupabaseTables.role, role.toJson())
@@ -263,11 +258,11 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
     String screenId,
     UserRole role,
   ) async {
-    if (!_cacheService.isInitialized) return null;
+    if (!ref.read(cacheServiceProvider).isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(screenId, role);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await ref.read(cacheServiceProvider).get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -286,12 +281,12 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
     UserRole role,
     List<TileConfig> configs,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    if (!ref.read(cacheServiceProvider).isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(screenId, role);
       final jsonData = configs.map((config) => config.toJson()).toList();
-      await _cacheService.put(
+      await ref.read(cacheServiceProvider).put(
         cacheKey,
         jsonData,
         ttlMinutes: PerformanceLimits.tileConfigCacheDuration.inMinutes,
@@ -303,11 +298,11 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
 
   /// Load all configurations from cache
   Future<List<TileConfig>?> _loadAllFromCache() async {
-    if (!_cacheService.isInitialized) return null;
+    if (!ref.read(cacheServiceProvider).isInitialized) return null;
 
     try {
       final cacheKey = '${_cacheKeyPrefix}_all';
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await ref.read(cacheServiceProvider).get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -322,12 +317,12 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
 
   /// Save all configurations to cache
   Future<void> _saveAllToCache(List<TileConfig> configs) async {
-    if (!_cacheService.isInitialized) return;
+    if (!ref.read(cacheServiceProvider).isInitialized) return;
 
     try {
       final cacheKey = '${_cacheKeyPrefix}_all';
       final jsonData = configs.map((config) => config.toJson()).toList();
-      await _cacheService.put(
+      await ref.read(cacheServiceProvider).put(
         cacheKey,
         jsonData,
         ttlMinutes: PerformanceLimits.tileConfigCacheDuration.inMinutes,
@@ -344,12 +339,12 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
 
   /// Invalidate all tile config caches
   Future<void> _invalidateCache() async {
-    if (!_cacheService.isInitialized) return;
+    if (!ref.read(cacheServiceProvider).isInitialized) return;
 
     try {
       // In a real implementation, you'd want to track all cache keys
       // For now, we'll clear the all cache
-      await _cacheService.delete('${_cacheKeyPrefix}_all');
+      await ref.read(cacheServiceProvider).delete('${_cacheKeyPrefix}_all');
       debugPrint('✅ Invalidated tile config cache');
     } catch (e) {
       debugPrint('⚠️  Failed to invalidate cache: $e');
@@ -366,12 +361,4 @@ class TileConfigNotifier extends StateNotifier<TileConfigState> {
 /// await notifier.fetchConfigs(screenId: 'home', role: UserRole.owner);
 /// ```
 final tileConfigProvider =
-    StateNotifierProvider<TileConfigNotifier, TileConfigState>((ref) {
-  final databaseService = ref.watch(databaseServiceProvider);
-  final cacheService = ref.watch(cacheServiceProvider);
-  
-  return TileConfigNotifier(
-    databaseService: databaseService,
-    cacheService: cacheService,
-  );
-});
+    NotifierProvider<TileConfigNotifier, TileConfigState>(TileConfigNotifier.new);

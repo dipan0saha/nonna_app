@@ -70,22 +70,14 @@ class ProfileState {
 }
 
 /// Profile Provider Notifier
-class ProfileNotifier extends StateNotifier<ProfileState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final StorageService _storageService;
-
-  ProfileNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required StorageService storageService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _storageService = storageService,
-        super(const ProfileState());
-
+class ProfileNotifier extends Notifier<ProfileState> {
   // Configuration
   static const String _cacheKeyPrefix = 'user_profile';
+
+  @override
+  ProfileState build() {
+    return const ProfileState();
+  }
 
   // ==========================================
   // Public Methods
@@ -114,7 +106,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       }
 
       // Fetch from database
-      final response = await _databaseService
+      final response = await ref.read(databaseServiceProvider)
           .select(SupabaseTables.profiles)
           .eq('user_id', userId)
           .maybeSingle();
@@ -150,7 +142,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   /// Load user stats
   Future<void> _loadUserStats(String userId) async {
     try {
-      final response = await _databaseService
+      final response = await ref.read(databaseServiceProvider)
           .select(SupabaseTables.userStats)
           .eq('user_id', userId)
           .maybeSingle();
@@ -204,7 +196,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         updateData['avatar_url'] = avatarUrl;
       }
 
-      await _databaseService
+      await ref.read(databaseServiceProvider)
           .update(SupabaseTables.profiles, updateData)
           .eq('user_id', userId);
 
@@ -239,7 +231,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
       final storageKey = 'avatars/$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      final avatarUrl = await _storageService.uploadFile(
+      final avatarUrl = await ref.read(storageServiceProvider).uploadFile(
         filePath: filePath,
         storageKey: storageKey,
         bucket: 'avatars',
@@ -259,7 +251,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     required bool enabled,
   }) async {
     try {
-      await _databaseService
+      await ref.read(databaseServiceProvider)
           .update(SupabaseTables.profiles, {
             'biometric_enabled': enabled,
             'updated_at': DateTime.now().toIso8601String(),
@@ -287,11 +279,11 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
   /// Load profile from cache
   Future<User?> _loadFromCache(String userId) async {
-    if (!_cacheService.isInitialized) return null;
+    if (!ref.read(cacheServiceProvider).isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(userId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await ref.read(cacheServiceProvider).get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -304,11 +296,11 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
   /// Save profile to cache
   Future<void> _saveToCache(String userId, User profile) async {
-    if (!_cacheService.isInitialized) return;
+    if (!ref.read(cacheServiceProvider).isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(userId);
-      await _cacheService.put(
+      await ref.read(cacheServiceProvider).put(
         cacheKey,
         profile.toJson(),
         ttlMinutes: PerformanceLimits.profileCacheDuration.inMinutes,
@@ -332,16 +324,6 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 /// final notifier = ref.read(profileProvider.notifier);
 /// await notifier.loadProfile(userId: 'abc');
 /// ```
-final profileProvider = StateNotifierProvider.autoDispose<ProfileNotifier, ProfileState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final storageService = ref.watch(storageServiceProvider);
-
-    return ProfileNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      storageService: storageService,
-    );
-  },
+final profileProvider = NotifierProvider.autoDispose<ProfileNotifier, ProfileState>(
+  ProfileNotifier.new,
 );

@@ -37,20 +37,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ///   operation: () => fetchData(),
 /// );
 /// ```
-class LoadingStateHandler extends StateNotifier<LoadingState> {
-  LoadingStateHandler() : super(LoadingState.initial());
-
+class LoadingStateHandler extends Notifier<LoadingState> {
   // Timers for cancellation
   final Map<String, Timer> _timers = {};
 
   @override
-  void dispose() {
-    // Cancel all timers
-    for (final timer in _timers.values) {
-      timer.cancel();
-    }
-    _timers.clear();
-    super.dispose();
+  LoadingState build() {
+    ref.onDispose(() {
+      // Cancel all timers
+      for (final timer in _timers.values) {
+        timer.cancel();
+      }
+      _timers.clear();
+    });
+    return LoadingState.initial();
   }
 
   // ==========================================
@@ -451,6 +451,4 @@ class LoadingOperation {
 
 /// Provider for loading state handler
 final loadingStateHandlerProvider =
-    StateNotifierProvider<LoadingStateHandler, LoadingState>((ref) {
-  return LoadingStateHandler();
-});
+    NotifierProvider<LoadingStateHandler, LoadingState>(LoadingStateHandler.new);

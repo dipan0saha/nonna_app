@@ -103,16 +103,11 @@ class StorageUsageState {
 /// Storage Usage provider
 ///
 /// Manages storage quota tracking and usage visualization.
-class StorageUsageNotifier extends StateNotifier<StorageUsageState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-
-  StorageUsageNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        super(const StorageUsageState());
+class StorageUsageNotifier extends Notifier<StorageUsageState> {
+  @override
+  StorageUsageState build() {
+    return const StorageUsageState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'storage_usage';
@@ -197,7 +192,7 @@ class StorageUsageNotifier extends StateNotifier<StorageUsageState> {
   /// Calculate storage usage from database
   Future<StorageUsageInfo> _calculateUsage(String babyProfileId) async {
     // Count photos for this baby profile
-    final photosResponse = await _databaseService
+    final photosResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt);
@@ -222,11 +217,11 @@ class StorageUsageNotifier extends StateNotifier<StorageUsageState> {
 
   /// Load usage info from cache
   Future<StorageUsageInfo?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    if (!ref.read(cacheServiceProvider).isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await ref.read(cacheServiceProvider).get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -242,12 +237,12 @@ class StorageUsageNotifier extends StateNotifier<StorageUsageState> {
     String babyProfileId,
     StorageUsageInfo info,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    if (!ref.read(cacheServiceProvider).isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = info.toJson();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await ref.read(cacheServiceProvider).put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -268,14 +263,6 @@ class StorageUsageNotifier extends StateNotifier<StorageUsageState> {
 /// await notifier.fetchUsage(babyProfileId: 'abc');
 /// ```
 final storageUsageProvider =
-    StateNotifierProvider.autoDispose<StorageUsageNotifier, StorageUsageState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-
-    return StorageUsageNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-    );
-  },
+    NotifierProvider.autoDispose<StorageUsageNotifier, StorageUsageState>(
+  StorageUsageNotifier.new,
 );

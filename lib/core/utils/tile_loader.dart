@@ -58,21 +58,21 @@ class TileLoader {
     }
 
     // Fetch from database
-    final query = databaseService
-        .from(SupabaseTables.tileConfigs)
-        .select()
+    final response = await databaseService
+        .select(SupabaseTables.tileConfigs)
         .eq('screen_id', screenId)
         .eq('role', role.name);
 
-    final response = await query as List<dynamic>;
-    final configs = response.map((json) => TileConfig.fromJson(json as Map<String, dynamic>)).toList();
+    final configs = (response as List)
+        .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))
+        .toList();
 
     // Cache the results using standardized TTL from PerformanceLimits
     final cacheKey = _getCacheKey(screenId, role);
-    await cacheService.set(
+    await cacheService.put(
       cacheKey,
       configs.map((c) => c.toJson()).toList(),
-      ttl: PerformanceLimits.screenCacheDuration,
+      ttlMinutes: PerformanceLimits.screenCacheDuration.inMinutes,
     );
 
     return _filterAndSortConfigs(configs);
@@ -81,9 +81,9 @@ class TileLoader {
   /// Filter enabled tiles and sort by order
   static List<TileConfig> _filterAndSortConfigs(List<TileConfig> configs) {
     return configs
-        .where((config) => config.isEnabled)
+        .where((config) => config.isVisible)
         .toList()
-      ..sort((a, b) => a.order.compareTo(b.order));
+      ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
   }
 
   /// Generate cache key for screen and role

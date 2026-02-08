@@ -88,20 +88,15 @@ class EngagementRecapState {
 /// Engagement Recap provider
 ///
 /// Manages engagement metrics aggregation and activity summary.
-class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-
-  EngagementRecapNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        super(const EngagementRecapState());
-
+class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
   // Configuration
   static const String _cacheKeyPrefix = 'engagement_recap';
   static const int _defaultDaysBack = 30; // Default to last 30 days
+
+  @override
+  EngagementRecapState build() {
+    return const EngagementRecapState();
+  }
 
   // ==========================================
   // Public Methods
@@ -177,10 +172,11 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
     String babyProfileId,
     int daysBack,
   ) async {
+    final databaseService = ref.read(databaseServiceProvider);
     final cutoffDate = DateTime.now().subtract(Duration(days: daysBack));
 
     // Get all photos for this baby profile
-    final photosResponse = await _databaseService
+    final photosResponse = await databaseService
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt);
@@ -192,7 +188,7 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
     // Count photo squishes
     int photoSquishesCount = 0;
     if (photoIds.isNotEmpty) {
-      final squishesResponse = await _databaseService
+      final squishesResponse = await databaseService
           .select(SupabaseTables.photoSquishes)
           .inFilter(SupabaseTables.photoId, photoIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
@@ -203,7 +199,7 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
     // Count photo comments
     int photoCommentsCount = 0;
     if (photoIds.isNotEmpty) {
-      final commentsResponse = await _databaseService
+      final commentsResponse = await databaseService
           .select(SupabaseTables.photoComments)
           .inFilter(SupabaseTables.photoId, photoIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
@@ -212,7 +208,7 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
     }
 
     // Get all events for this baby profile
-    final eventsResponse = await _databaseService
+    final eventsResponse = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt);
@@ -224,7 +220,7 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
     // Count event RSVPs
     int eventRSVPsCount = 0;
     if (eventIds.isNotEmpty) {
-      final rsvpsResponse = await _databaseService
+      final rsvpsResponse = await databaseService
           .select(SupabaseTables.eventRSVPs)
           .inFilter(SupabaseTables.eventId, eventIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
@@ -249,11 +245,12 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
     String babyProfileId,
     int daysBack,
   ) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId, daysBack);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -270,12 +267,13 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
     int daysBack,
     EngagementMetrics metrics,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId, daysBack);
       final jsonData = metrics.toJson();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -295,15 +293,7 @@ class EngagementRecapNotifier extends StateNotifier<EngagementRecapState> {
 /// final notifier = ref.read(engagementRecapProvider.notifier);
 /// await notifier.fetchEngagement(babyProfileId: 'abc', daysBack: 30);
 /// ```
-final engagementRecapProvider = StateNotifierProvider.autoDispose<
+final engagementRecapProvider = NotifierProvider.autoDispose<
     EngagementRecapNotifier, EngagementRecapState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-
-    return EngagementRecapNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-    );
-  },
+  EngagementRecapNotifier.new,
 );

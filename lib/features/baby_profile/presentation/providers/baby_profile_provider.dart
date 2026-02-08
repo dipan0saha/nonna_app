@@ -86,19 +86,11 @@ class BabyProfileState {
 }
 
 /// Baby Profile Provider Notifier
-class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final StorageService _storageService;
-
-  BabyProfileNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required StorageService storageService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _storageService = storageService,
-        super(const BabyProfileState());
+class BabyProfileNotifier extends Notifier<BabyProfileState> {
+  @override
+  BabyProfileState build() {
+    return const BabyProfileState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'baby_profile';
@@ -116,24 +108,27 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
     try {
       state = state.copyWith(isLoading: true, error: null);
 
+      final databaseService = ref.read(databaseServiceProvider);
+      final cacheService = ref.read(cacheServiceProvider);
+
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedProfile = await _loadFromCache(babyProfileId);
         if (cachedProfile != null) {
-          final isOwner = await _checkIsOwner(babyProfileId, currentUserId);
+          final isOwner = await _checkIsOwner(babyProfileId, currentUserId, databaseService);
           state = state.copyWith(
             profile: cachedProfile,
             isLoading: false,
             isOwner: isOwner,
           );
           // Load memberships in background
-          _loadMemberships(babyProfileId);
+          _loadMemberships(babyProfileId, databaseService);
           return;
         }
       }
 
       // Fetch from database
-      final response = await _databaseService
+      final response = await databaseService
           .select(SupabaseTables.babyProfiles)
           .eq('id', babyProfileId)
           .isNull(SupabaseTables.deletedAt)
@@ -146,7 +141,7 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
       final profile = BabyProfile.fromJson(response as Map<String, dynamic>);
 
       // Check if current user is owner
-      final isOwner = await _checkIsOwner(babyProfileId, currentUserId);
+      final isOwner = await _checkIsOwner(babyProfileId, currentUserId, databaseService);
 
       // Save to cache
       await _saveToCache(babyProfileId, profile);
@@ -158,7 +153,7 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
       );
 
       // Load memberships
-      await _loadMemberships(babyProfileId);
+      await _loadMemberships(babyProfileId, databaseService);
 
       debugPrint('✅ Loaded baby profile: $babyProfileId');
     } catch (e) {
@@ -172,9 +167,9 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
   }
 
   /// Check if user is owner
-  Future<bool> _checkIsOwner(String babyProfileId, String userId) async {
+  Future<bool> _checkIsOwner(String babyProfileId, String userId, DatabaseService databaseService) async {
     try {
-      final response = await _databaseService
+      final response = await databaseService
           .select(SupabaseTables.babyMemberships)
           .eq(SupabaseTables.babyProfileId, babyProfileId)
           .eq('user_id', userId)
@@ -189,9 +184,9 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
   }
 
   /// Load memberships
-  Future<void> _loadMemberships(String babyProfileId) async {
+  Future<void> _loadMemberships(String babyProfileId, DatabaseService databaseService) async {
     try {
-      final response = await _databaseService
+      final response = await databaseService
           .select(SupabaseTables.babyMemberships)
           .eq(SupabaseTables.babyProfileId, babyProfileId)
           .order('created_at', ascending: true);
@@ -242,6 +237,8 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
       }
 
       // Create profile in database
+      final databaseService = ref.read(databaseServiceProvider);
+
       final profileData = {
         'name': name,
         'expected_birth_date': expectedBirthDate?.toIso8601String(),
@@ -253,7 +250,7 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
         'updated_at': DateTime.now().toIso8601String(),
       };
 
-      final response = await _databaseService
+      final response = await databaseService
           .insert(SupabaseTables.babyProfiles, profileData)
           .select()
           .single();
@@ -261,7 +258,7 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
       final profile = BabyProfile.fromJson(response as Map<String, dynamic>);
 
       // Create owner membership
-      await _databaseService.insert(SupabaseTables.babyMemberships, {
+      await databaseService.insert(SupabaseTables.babyMemberships, {
         'baby_profile_id': profile.id,
         'user_id': userId,
         'role': UserRole.owner.name,
@@ -313,6 +310,9 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
         throw Exception('Baby name is required');
       }
 
+      final databaseService = ref.read(databaseServiceProvider);
+      final cacheService = ref.read(cacheServiceProvider);
+
       // Update in database
       final updateData = {
         'name': name,
@@ -324,12 +324,12 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
         'updated_at': DateTime.now().toIso8601String(),
       };
 
-      await _databaseService
+      await databaseService
           .update(SupabaseTables.babyProfiles, updateData)
           .eq('id', babyProfileId);
 
       // Reload profile
-      final response = await _databaseService
+      final response = await databaseService
           .select(SupabaseTables.babyProfiles)
           .eq('id', babyProfileId)
           .isNull(SupabaseTables.deletedAt)
@@ -369,7 +369,9 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
     }
 
     try {
-      await _databaseService
+      final databaseService = ref.read(databaseServiceProvider);
+      
+      await databaseService
           .update(SupabaseTables.babyProfiles, {
             'deleted_at': DateTime.now().toIso8601String(),
             'updated_at': DateTime.now().toIso8601String(),
@@ -392,9 +394,10 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
     try {
       debugPrint('📤 Uploading profile photo...');
 
+      final storageService = ref.read(storageServiceProvider);
       final storageKey = 'baby_profiles/$babyProfileId/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      final photoUrl = await _storageService.uploadFile(
+      final photoUrl = await storageService.uploadFile(
         filePath: filePath,
         storageKey: storageKey,
         bucket: 'baby_profiles',
@@ -419,12 +422,14 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
     }
 
     try {
-      await _databaseService
+      final databaseService = ref.read(databaseServiceProvider);
+      
+      await databaseService
           .delete(SupabaseTables.babyMemberships)
           .eq('id', membershipId);
 
       // Reload memberships
-      await _loadMemberships(babyProfileId);
+      await _loadMemberships(babyProfileId, databaseService);
 
       debugPrint('✅ Follower removed');
       return true;
@@ -449,11 +454,12 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
 
   /// Load profile from cache
   Future<BabyProfile?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -466,11 +472,12 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
 
   /// Save profile to cache
   Future<void> _saveToCache(String babyProfileId, BabyProfile profile) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      await _cacheService.put(
+      await cacheService.put(
         cacheKey,
         profile.toJson(),
         ttlMinutes: PerformanceLimits.profileCacheDuration.inMinutes,
@@ -494,17 +501,5 @@ class BabyProfileNotifier extends StateNotifier<BabyProfileState> {
 /// final notifier = ref.read(babyProfileProvider.notifier);
 /// await notifier.loadProfile(babyProfileId: 'abc', currentUserId: 'user123');
 /// ```
-final babyProfileProvider = StateNotifierProvider.autoDispose<
-    BabyProfileNotifier, BabyProfileState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final storageService = ref.watch(storageServiceProvider);
-
-    return BabyProfileNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      storageService: storageService,
-    );
-  },
-);
+final babyProfileProvider = NotifierProvider.autoDispose<
+    BabyProfileNotifier, BabyProfileState>(BabyProfileNotifier.new);

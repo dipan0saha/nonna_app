@@ -55,25 +55,21 @@ class NotificationsState {
 /// Notifications provider
 ///
 /// Manages notifications with read/unread state and real-time updates.
-class NotificationsNotifier extends StateNotifier<NotificationsState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  NotificationsNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const NotificationsState());
+class NotificationsNotifier extends Notifier<NotificationsState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'notifications';
   static const int _maxNotifications = 50;
 
   String? _subscriptionId;
+
+  @override
+  NotificationsState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const NotificationsState();
+  }
 
   // ==========================================
   // Public Methods
@@ -141,7 +137,7 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
   }) async {
     try {
       // Update in database
-      await _databaseService
+      await ref.read(databaseServiceProvider)
           .update(SupabaseTables.notifications)
           .eq(SupabaseTables.id, notificationId)
           .update({SupabaseTables.isRead: true});
@@ -185,7 +181,7 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
   Future<void> markAllAsRead({required String userId}) async {
     try {
       // Update in database
-      await _databaseService
+      await ref.read(databaseServiceProvider)
           .update(SupabaseTables.notifications)
           .eq(SupabaseTables.userId, userId)
           .eq(SupabaseTables.isRead, false)
@@ -229,11 +225,6 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscription();
-  }
-
   // ==========================================
   // Private Methods
   // ==========================================
@@ -242,7 +233,7 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
   Future<List<app_notification.Notification>> _fetchFromDatabase(
     String userId,
   ) async {
-    final response = await _databaseService
+    final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.notifications)
         .eq(SupabaseTables.userId, userId)
         .order(SupabaseTables.createdAt, ascending: false)
@@ -258,11 +249,12 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
   Future<List<app_notification.Notification>?> _loadFromCache(
     String userId,
   ) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(userId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -281,12 +273,13 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
     String userId,
     List<app_notification.Notification> notifications,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(userId);
       final jsonData = notifications.map((n) => n.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.highFrequencyCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.highFrequencyCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -302,7 +295,7 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.notifications,
         filter: '${SupabaseTables.userId}=eq.$userId',
         callback: (payload) {
@@ -354,7 +347,7 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
@@ -370,22 +363,6 @@ class NotificationsNotifier extends StateNotifier<NotificationsState> {
 /// await notifier.fetchNotifications(userId: 'abc');
 /// ```
 final notificationsProvider =
-    StateNotifierProvider.autoDispose<NotificationsNotifier, NotificationsState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = NotificationsNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+    NotifierProvider.autoDispose<NotificationsNotifier, NotificationsState>(
+  NotificationsNotifier.new,
 );

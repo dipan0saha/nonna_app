@@ -54,16 +54,11 @@ class TileVisibilityState {
 /// Tile visibility notifier
 ///
 /// Manages tile visibility preferences and feature flags.
-class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
-  final CacheService _cacheService;
-  final LocalStorageService _localStorageService;
-
-  TileVisibilityNotifier({
-    required CacheService cacheService,
-    required LocalStorageService localStorageService,
-  })  : _cacheService = cacheService,
-        _localStorageService = localStorageService,
-        super(const TileVisibilityState());
+class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
+  @override
+  TileVisibilityState build() {
+    return const TileVisibilityState();
+  }
 
   // Storage keys
   static const String _visibilityStorageKey = 'tile_visibility_preferences';
@@ -197,7 +192,7 @@ class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
           ? '${_visibilityStorageKey}_$userId'
           : _visibilityStorageKey;
 
-      await _localStorageService.remove(visibilityKey);
+      await ref.read(localStorageServiceProvider).remove(visibilityKey);
 
       debugPrint('✅ Reset tile visibility preferences');
     } catch (e) {
@@ -311,12 +306,13 @@ class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
 
   /// Load visibility preferences from storage
   Future<Map<String, bool>> _loadVisibilityFromStorage(String key) async {
-    if (!_localStorageService.isInitialized) {
+    final localStorageService = ref.read(localStorageServiceProvider);
+    if (!localStorageService.isInitialized) {
       return {};
     }
 
     try {
-      final data = await _localStorageService.getObject(key);
+      final data = await localStorageService.getObject(key);
       if (data == null) return {};
 
       // Parse object to Map<String, bool>
@@ -333,10 +329,12 @@ class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
     String key,
     Map<String, bool> visibilityMap,
   ) async {
-    if (!_localStorageService.isInitialized) return;
+    final localStorageService = ref.read(localStorageServiceProvider);
+  ) async {
+    if (!localStorageService.isInitialized) return;
 
     try {
-      await _localStorageService.setObject(key, visibilityMap);
+      await localStorageService.setObject(key, visibilityMap);
     } catch (e) {
       debugPrint('⚠️  Failed to save visibility to storage: $e');
     }
@@ -344,12 +342,13 @@ class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
 
   /// Load feature flags from storage
   Future<Map<String, bool>> _loadFeatureFlagsFromStorage() async {
-    if (!_localStorageService.isInitialized) {
+    final localStorageService = ref.read(localStorageServiceProvider);
+    if (!localStorageService.isInitialized) {
       return {};
     }
 
     try {
-      final data = await _localStorageService.getObject(_featureFlagsStorageKey);
+      final data = await localStorageService.getObject(_featureFlagsStorageKey);
       if (data == null) return {};
 
       final Map<String, dynamic> jsonMap = Map<String, dynamic>.from(data);
@@ -362,10 +361,11 @@ class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
 
   /// Save feature flags to storage
   Future<void> _saveFeatureFlagsToStorage(Map<String, bool> featureFlags) async {
-    if (!_localStorageService.isInitialized) return;
+    final localStorageService = ref.read(localStorageServiceProvider);
+    if (!localStorageService.isInitialized) return;
 
     try {
-      await _localStorageService.setObject(_featureFlagsStorageKey, featureFlags);
+      await localStorageService.setObject(_featureFlagsStorageKey, featureFlags);
     } catch (e) {
       debugPrint('⚠️  Failed to save feature flags to storage: $e');
     }
@@ -381,12 +381,4 @@ class TileVisibilityNotifier extends StateNotifier<TileVisibilityState> {
 /// await notifier.loadPreferences(userId: currentUserId);
 /// ```
 final tileVisibilityProvider =
-    StateNotifierProvider<TileVisibilityNotifier, TileVisibilityState>((ref) {
-  final cacheService = ref.watch(cacheServiceProvider);
-  final localStorageService = ref.watch(localStorageServiceProvider);
-  
-  return TileVisibilityNotifier(
-    cacheService: cacheService,
-    localStorageService: localStorageService,
-  );
-});
+    NotifierProvider<TileVisibilityNotifier, TileVisibilityState>(TileVisibilityNotifier.new);
