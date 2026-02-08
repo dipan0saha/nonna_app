@@ -10,7 +10,7 @@ import 'package:nonna_app/features/profile/presentation/providers/profile_provid
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/di/providers.dart';
 
-import '../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService, StorageService])
 import 'profile_provider_test.mocks.dart';
@@ -176,8 +176,7 @@ void main() {
 
         await notifier.loadProfile(userId: 'user_1');
 
-        verify(mockCacheService.put(any, any,
-                ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
@@ -310,9 +309,9 @@ void main() {
     group('uploadAvatar', () {
       test('uploads avatar successfully', () async {
         when(mockStorageService.uploadFile(
-          filePath: anyNamed('filePath'),
-          storageKey: anyNamed('storageKey'),
-          bucket: anyNamed('bucket'),
+          filePath: any,
+          storageKey: any,
+          bucket: any,
         )).thenAnswer((_) async => 'https://example.com/uploaded-avatar.jpg');
 
         final result = await notifier.uploadAvatar(
@@ -326,9 +325,9 @@ void main() {
 
       test('handles upload error gracefully', () async {
         when(mockStorageService.uploadFile(
-          filePath: anyNamed('filePath'),
-          storageKey: anyNamed('storageKey'),
-          bucket: anyNamed('bucket'),
+          filePath: any,
+          storageKey: any,
+          bucket: any,
         )).thenThrow(Exception('Upload failed'));
 
         final result = await notifier.uploadAvatar(

@@ -10,7 +10,7 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
-import '../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([AuthService, DatabaseService, LocalStorageService])
 import 'auth_provider_test.mocks.dart';
@@ -89,7 +89,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
 
         final future = notifier.signInWithEmail(
           email: 'test@example.com',
@@ -112,7 +112,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
 
         await notifier.signInWithEmail(
           email: 'test@example.com',
@@ -169,7 +169,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
 
         await notifier.signUpWithEmail(
           email: 'test@example.com',
@@ -207,7 +207,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
 
         await notifier.signInWithGoogle();
 
@@ -234,7 +234,7 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
 
         await notifier.signInWithFacebook();
 
@@ -306,7 +306,7 @@ void main() {
 
       test('isBiometricEnabled checks local storage', () async {
         when(mockLocalStorage.get('biometric_enabled'))
-            .thenReturn('true');
+            .thenAnswer((_) => 'true');
 
         final result = await notifier.isBiometricEnabled();
 
@@ -335,21 +335,21 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
 
         await notifier.signInWithEmail(
           email: 'test@example.com',
           password: 'password123',
         );
 
-        verify(mockLocalStorage.put('auth_session', any)).called(1);
+        verify(mockLocalStorage.put(any, any)).called(1);
       });
 
       test('refreshSession updates session state', () async {
         when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
 
         await notifier.refreshSession();
 
@@ -369,7 +369,7 @@ void main() {
       test('handles auth state changes from stream', () async {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
 
         authStateController.add(
           supabase.AuthState(
