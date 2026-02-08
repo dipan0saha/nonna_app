@@ -7,7 +7,7 @@ void main() {
     const testEventId = 'event_456';
     const testUserId = 'user_789';
     const testCommentId = 'comment_101';
-    const testCurrentDate = '2024-01-01T00:00:00.000Z';
+    const testCurrentDate = '2024-06-15T00:00:00.000Z';
     const testStartDate = '2024-01-01T00:00:00.000Z';
     const testEndDate = '2024-12-31T23:59:59.999Z';
 
