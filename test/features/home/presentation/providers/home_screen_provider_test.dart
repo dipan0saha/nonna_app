@@ -70,11 +70,11 @@ void main() {
       test('loads tiles from database when cache is empty', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put(argThat(isA<String>()), any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
-        when(mockDatabaseService.select(argThat(isA<String>()))).thenReturn(builder);
+        when(mockDatabaseService.select(any)).thenReturn(builder);
 
         final notifier = container.read(homeScreenProvider.notifier);
         await notifier.loadTiles(
@@ -112,7 +112,7 @@ void main() {
       test('handles errors gracefully', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
-        when(mockDatabaseService.select(argThat(isA<String>())))
+        when(mockDatabaseService.select(any))
             .thenThrow(Exception('Network error'));
 
         final notifier = container.read(homeScreenProvider.notifier);
@@ -132,11 +132,11 @@ void main() {
       test('refreshes tiles with force refresh', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put(argThat(isA<String>()), any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
-        when(mockDatabaseService.select(argThat(isA<String>()))).thenReturn(builder);
+        when(mockDatabaseService.select(any)).thenReturn(builder);
 
         final notifier = container.read(homeScreenProvider.notifier);
         
@@ -159,7 +159,7 @@ void main() {
         await notifier.refresh();
 
         // Should not throw or call database
-        verifyNever(mockDatabaseService.select(argThat(isA<String>())));
+        verifyNever(mockDatabaseService.select(any));
       });
     });
 
@@ -167,11 +167,11 @@ void main() {
       test('loads tiles for new baby profile', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put(argThat(isA<String>()), any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
-        when(mockDatabaseService.select(argThat(isA<String>()))).thenReturn(builder);
+        when(mockDatabaseService.select(any)).thenReturn(builder);
 
         final notifier = container.read(homeScreenProvider.notifier);
         await notifier.switchBabyProfile(
@@ -189,11 +189,11 @@ void main() {
       test('toggles user role', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put(argThat(isA<String>()), any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
-        when(mockDatabaseService.select(argThat(isA<String>()))).thenReturn(builder);
+        when(mockDatabaseService.select(any)).thenReturn(builder);
 
         final notifier = container.read(homeScreenProvider.notifier);
         
@@ -214,7 +214,7 @@ void main() {
         final notifier = container.read(homeScreenProvider.notifier);
         await notifier.toggleRole(UserRole.follower);
 
-        verifyNever(mockDatabaseService.select(argThat(isA<String>())));
+        verifyNever(mockDatabaseService.select(any));
       });
     });
 
@@ -222,11 +222,11 @@ void main() {
       test('retries loading tiles after error', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put(argThat(isA<String>()), any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
-        when(mockDatabaseService.select(argThat(isA<String>()))).thenReturn(builder);
+        when(mockDatabaseService.select(any)).thenReturn(builder);
 
         final notifier = container.read(homeScreenProvider.notifier);
         
