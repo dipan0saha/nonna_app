@@ -226,7 +226,7 @@ void main() {
         );
 
         // Setup insert mock
-        when(mockDatabaseService.insert(any))
+        when(mockDatabaseService.insert(any, any))
             .thenAnswer((_) async => FakePostgrestInsertBuilder([sampleRSVP.toJson()]));
 
         // Note: submitRSVP method may not exist, skip actual test
