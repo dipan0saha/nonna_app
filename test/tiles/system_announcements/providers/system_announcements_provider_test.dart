@@ -1,6 +1,8 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/system_announcement.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
@@ -12,6 +14,7 @@ import 'system_announcements_provider_test.mocks.dart';
 
 void main() {
   group('SystemAnnouncementsProvider Tests', () {
+    late ProviderContainer container;
     late SystemAnnouncementsNotifier notifier;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
@@ -21,12 +24,9 @@ void main() {
     final sampleAnnouncement = SystemAnnouncement(
       id: 'announcement_1',
       title: 'New Feature Release',
-      message: 'Check out our new photo editing features!',
-      type: 'feature',
-      priority: 'high',
-      isActive: true,
+      body: 'Check out our new photo editing features!',
+      priority: AnnouncementPriority.high,
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
     );
 
     setUp(() {
@@ -37,11 +37,19 @@ void main() {
       // Setup mock cache service
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = SystemAnnouncementsNotifier(
-        databaseService: mockDatabaseService,
-        cacheService: mockCacheService,
-        realtimeService: mockRealtimeService,
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
       );
+
+      notifier = container.read(systemAnnouncementsProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
@@ -52,17 +60,16 @@ void main() {
       });
     });
 
-    group('fetchAnnouncements', () {
+    group('loadAnnouncements', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async {
+        when(mockCacheService.get(any)).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
-          return FakePostgrestBuilder([]);
+          return null;
         });
 
         // Start fetching
-        final fetchFuture = notifier.fetchAnnouncements();
+        final fetchFuture = notifier.loadAnnouncements(userId: 'test_user');
 
         // Verify loading state
         expect(notifier.state.isLoading, isTrue);
@@ -70,21 +77,14 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches announcements from database when cache is empty', () async {
+      test('loads announcements when cache is empty', () async {
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleAnnouncement.toJson()]));
 
-        await notifier.fetchAnnouncements();
+        await notifier.loadAnnouncements(userId: 'test_user');
 
-        // Verify state updated
-        expect(notifier.state.announcements, hasLength(1));
-        expect(notifier.state.announcements.first.id, equals('announcement_1'));
+        // Verify state updated with mock announcements
+        expect(notifier.state.announcements, isNotEmpty);
         expect(notifier.state.isLoading, isFalse);
         expect(notifier.state.error, isNull);
       });
@@ -94,10 +94,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
 
-        await notifier.fetchAnnouncements();
-
-        // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        await notifier.loadAnnouncements(userId: 'test_user');
 
         // Verify state updated from cache
         expect(notifier.state.announcements, hasLength(1));
@@ -106,261 +103,266 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mockCacheService.get(any)).thenThrow(Exception('Cache error'));
 
-        await notifier.fetchAnnouncements();
+        await notifier.loadAnnouncements(userId: 'test_user');
 
-        // Verify error state
+        // Verify error state - should fall back to mock announcements
         expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, contains('Database error'));
-        expect(notifier.state.announcements, isEmpty);
+        expect(notifier.state.announcements, isNotEmpty);
       });
 
-      test('force refresh bypasses cache', () async {
-        // Setup mocks
-        when(mockCacheService.get(any))
-            .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleAnnouncement.toJson()]));
+      test('filters expired announcements', () async {
+        final activeAnnouncement = SystemAnnouncement(
+          id: 'ann_1',
+          title: 'Active',
+          body: 'This is active',
+          priority: AnnouncementPriority.high,
+          createdAt: DateTime.now(),
+        );
+        final expiredAnnouncement = SystemAnnouncement(
+          id: 'ann_2',
+          title: 'Expired',
+          body: 'This is expired',
+          priority: AnnouncementPriority.high,
+          createdAt: DateTime.now(),
+          expiresAt: DateTime.now().subtract(const Duration(days: 1)),
+        );
 
-        await notifier.fetchAnnouncements(forceRefresh: true);
+        when(mockCacheService.get(any)).thenAnswer(
+            (_) async => [activeAnnouncement.toJson(), expiredAnnouncement.toJson()]);
 
-        // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(1);
-      });
+        await notifier.loadAnnouncements(userId: 'test_user');
 
-      test('filters only active announcements', () async {
-        final activeAnnouncement =
-            sampleAnnouncement.copyWith(id: 'ann_1', isActive: true);
-
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([activeAnnouncement.toJson()]));
-
-        await notifier.fetchAnnouncements();
-
-        // Should only have active announcements
+        // Should only have non-expired announcements
         expect(notifier.state.announcements, hasLength(1));
-        expect(notifier.state.announcements.first.isActive, isTrue);
+        expect(notifier.state.announcements.first.id, equals('ann_1'));
       });
 
       test('sorts announcements by priority', () async {
-        final highPriority =
-            sampleAnnouncement.copyWith(id: 'ann_1', priority: 'high');
-        final mediumPriority =
-            sampleAnnouncement.copyWith(id: 'ann_2', priority: 'medium');
-        final lowPriority =
-            sampleAnnouncement.copyWith(id: 'ann_3', priority: 'low');
+        final highPriority = SystemAnnouncement(
+          id: 'ann_1',
+          title: 'High',
+          body: 'High priority',
+          priority: AnnouncementPriority.high,
+          createdAt: DateTime.now(),
+        );
+        final mediumPriority = SystemAnnouncement(
+          id: 'ann_2',
+          title: 'Medium',
+          body: 'Medium priority',
+          priority: AnnouncementPriority.medium,
+          createdAt: DateTime.now(),
+        );
+        final lowPriority = SystemAnnouncement(
+          id: 'ann_3',
+          title: 'Low',
+          body: 'Low priority',
+          priority: AnnouncementPriority.low,
+          createdAt: DateTime.now(),
+        );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
-          lowPriority.toJson(),
-          highPriority.toJson(),
-          mediumPriority.toJson(),
-        ]));
+        when(mockCacheService.get(any)).thenAnswer((_) async => [
+              lowPriority.toJson(),
+              highPriority.toJson(),
+              mediumPriority.toJson(),
+            ]);
 
-        await notifier.fetchAnnouncements();
+        await notifier.loadAnnouncements(userId: 'test_user');
 
-        // Should be sorted by priority
-        expect(notifier.state.announcements[0].priority, equals('high'));
-        expect(notifier.state.announcements[1].priority, equals('medium'));
-        expect(notifier.state.announcements[2].priority, equals('low'));
+        // Should be sorted by priority (high first)
+        expect(notifier.state.announcements[0].priority,
+            equals(AnnouncementPriority.high));
+        expect(notifier.state.announcements[1].priority,
+            equals(AnnouncementPriority.medium));
+        expect(notifier.state.announcements[2].priority,
+            equals(AnnouncementPriority.low));
       });
 
-      test('saves fetched announcements to cache', () async {
+      test('saves announcements to cache', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleAnnouncement.toJson()]));
+        when(mockCacheService.put(any, any))
+            .thenAnswer((_) async => Future.value());
 
-        await notifier.fetchAnnouncements();
+        await notifier.loadAnnouncements(userId: 'test_user');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any,
-                ttlMinutes: anyNamed('ttlMinutes')))
-            .called(1);
+        verify(mockCacheService.put(any, any)).called(greaterThanOrEqualTo(1));
       });
     });
 
     group('dismissAnnouncement', () {
       test('dismisses announcement locally', () async {
-        // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleAnnouncement.toJson()]));
-        await notifier.fetchAnnouncements();
+        // Setup initial state with announcements
+        when(mockCacheService.get(any))
+            .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
+        when(mockCacheService.put(any, any))
+            .thenAnswer((_) async => Future.value());
+        await notifier.loadAnnouncements(userId: 'test_user');
 
-        expect(notifier.state.announcements, hasLength(1));
+        final initialCount = notifier.getActiveAnnouncements().length;
 
-        notifier.dismissAnnouncement(announcementId: 'announcement_1');
+        await notifier.dismissAnnouncement(
+          announcementId: 'announcement_1',
+          userId: 'test_user',
+        );
 
-        // Verify announcement was removed
-        expect(notifier.state.announcements, isEmpty);
+        // Verify announcement was dismissed
+        expect(notifier.state.dismissedIds, contains('announcement_1'));
+        expect(
+            notifier.getActiveAnnouncements().length, equals(initialCount - 1));
       });
 
       test('saves dismissed state to cache', () async {
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleAnnouncement.toJson()]));
-        await notifier.fetchAnnouncements();
+        when(mockCacheService.get(any))
+            .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
+        when(mockCacheService.put(any, any))
+            .thenAnswer((_) async => Future.value());
+        await notifier.loadAnnouncements(userId: 'test_user');
 
-        notifier.dismissAnnouncement(announcementId: 'announcement_1');
+        await notifier.dismissAnnouncement(
+          announcementId: 'announcement_1',
+          userId: 'test_user',
+        );
 
         // Verify cache was updated
         verify(mockCacheService.put(any, any)).called(greaterThanOrEqualTo(1));
       });
     });
 
-    group('refresh', () {
-      test('refreshes announcements with force refresh', () async {
+    group('getActiveAnnouncements', () {
+      test('returns only non-dismissed, non-expired announcements', () async {
+        final announcement1 = SystemAnnouncement(
+          id: 'ann_1',
+          title: 'Active 1',
+          body: 'Active announcement 1',
+          priority: AnnouncementPriority.high,
+          createdAt: DateTime.now(),
+        );
+        final announcement2 = SystemAnnouncement(
+          id: 'ann_2',
+          title: 'Active 2',
+          body: 'Active announcement 2',
+          priority: AnnouncementPriority.medium,
+          createdAt: DateTime.now(),
+        );
+
+        when(mockCacheService.get(any)).thenAnswer(
+            (_) async => [announcement1.toJson(), announcement2.toJson()]);
+        when(mockCacheService.put(any, any))
+            .thenAnswer((_) async => Future.value());
+        await notifier.loadAnnouncements(userId: 'test_user');
+
+        // Dismiss one announcement
+        await notifier.dismissAnnouncement(
+          announcementId: 'ann_1',
+          userId: 'test_user',
+        );
+
+        final activeAnnouncements = notifier.getActiveAnnouncements();
+
+        // Should only return non-dismissed announcements
+        expect(activeAnnouncements, hasLength(1));
+        expect(activeAnnouncements.first.id, equals('ann_2'));
+      });
+    });
+
+    group('getCriticalAnnouncements', () {
+      test('returns only critical priority announcements', () async {
+        final criticalAnnouncement = SystemAnnouncement(
+          id: 'ann_1',
+          title: 'Critical',
+          body: 'Critical announcement',
+          priority: AnnouncementPriority.critical,
+          createdAt: DateTime.now(),
+        );
+        final highAnnouncement = SystemAnnouncement(
+          id: 'ann_2',
+          title: 'High',
+          body: 'High announcement',
+          priority: AnnouncementPriority.high,
+          createdAt: DateTime.now(),
+        );
+
+        when(mockCacheService.get(any)).thenAnswer((_) async =>
+            [criticalAnnouncement.toJson(), highAnnouncement.toJson()]);
+        await notifier.loadAnnouncements(userId: 'test_user');
+
+        final criticalAnnouncements = notifier.getCriticalAnnouncements();
+
+        expect(criticalAnnouncements, hasLength(1));
+        expect(criticalAnnouncements.first.priority,
+            equals(AnnouncementPriority.critical));
+      });
+    });
+
+    group('clearDismissals', () {
+      test('clears all dismissals for a user', () async {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleAnnouncement.toJson()]));
+        when(mockCacheService.put(any, any))
+            .thenAnswer((_) async => Future.value());
+        await notifier.loadAnnouncements(userId: 'test_user');
 
-        await notifier.refresh();
+        // Dismiss an announcement
+        await notifier.dismissAnnouncement(
+          announcementId: 'announcement_1',
+          userId: 'test_user',
+        );
+        expect(notifier.state.dismissedIds, isNotEmpty);
 
-        // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(any)).called(1);
+        // Clear dismissals
+        await notifier.clearDismissals(userId: 'test_user');
+
+        expect(notifier.state.dismissedIds, isEmpty);
       });
     });
 
-    group('Real-time Updates', () {
-      test('handles INSERT announcement', () async {
-        // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleAnnouncement.toJson()]));
-
-        await notifier.fetchAnnouncements();
-
-        final initialCount = notifier.state.announcements.length;
-
-        // Simulate real-time INSERT
-        final newAnnouncement =
-            sampleAnnouncement.copyWith(id: 'announcement_2');
-        notifier.state = notifier.state.copyWith(
-          announcements: [newAnnouncement, ...notifier.state.announcements],
+    group('Announcement Priority', () {
+      test('supports different announcement priorities', () async {
+        final criticalAnnouncement = SystemAnnouncement(
+          id: 'ann_1',
+          title: 'Critical',
+          body: 'Critical announcement',
+          priority: AnnouncementPriority.critical,
+          createdAt: DateTime.now(),
+        );
+        final highAnnouncement = SystemAnnouncement(
+          id: 'ann_2',
+          title: 'High',
+          body: 'High announcement',
+          priority: AnnouncementPriority.high,
+          createdAt: DateTime.now(),
+        );
+        final mediumAnnouncement = SystemAnnouncement(
+          id: 'ann_3',
+          title: 'Medium',
+          body: 'Medium announcement',
+          priority: AnnouncementPriority.medium,
+          createdAt: DateTime.now(),
         );
 
-        expect(notifier.state.announcements.length, equals(initialCount + 1));
-      });
+        when(mockCacheService.get(any)).thenAnswer((_) async => [
+              criticalAnnouncement.toJson(),
+              highAnnouncement.toJson(),
+              mediumAnnouncement.toJson(),
+            ]);
 
-      test('handles UPDATE announcement', () async {
-        // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleAnnouncement.toJson()]));
-
-        await notifier.fetchAnnouncements();
-
-        // Simulate real-time UPDATE
-        final updatedAnnouncement =
-            sampleAnnouncement.copyWith(title: 'Updated Title');
-        notifier.state = notifier.state.copyWith(
-          announcements: notifier.state.announcements
-              .map((a) =>
-                  a.id == updatedAnnouncement.id ? updatedAnnouncement : a)
-              .toList(),
-        );
-
-        expect(
-            notifier.state.announcements.first.title, equals('Updated Title'));
-      });
-    });
-
-    group('dispose', () {
-      test('cancels real-time subscription on dispose', () {
-        when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
-
-        notifier.dispose();
-
-        expect(notifier.state, isNotNull);
-      });
-    });
-
-    group('Announcement Types', () {
-      test('supports different announcement types', () async {
-        final featureAnnouncement =
-            sampleAnnouncement.copyWith(id: 'ann_1', type: 'feature');
-        final maintenanceAnnouncement =
-            sampleAnnouncement.copyWith(id: 'ann_2', type: 'maintenance');
-        final updateAnnouncement =
-            sampleAnnouncement.copyWith(id: 'ann_3', type: 'update');
-
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
-          featureAnnouncement.toJson(),
-          maintenanceAnnouncement.toJson(),
-          updateAnnouncement.toJson(),
-        ]));
-
-        await notifier.fetchAnnouncements();
+        await notifier.loadAnnouncements(userId: 'test_user');
 
         expect(notifier.state.announcements, hasLength(3));
         expect(
-          notifier.state.announcements.any((a) => a.type == 'feature'),
+          notifier.state.announcements
+              .any((a) => a.priority == AnnouncementPriority.critical),
           isTrue,
         );
         expect(
-          notifier.state.announcements.any((a) => a.type == 'maintenance'),
+          notifier.state.announcements
+              .any((a) => a.priority == AnnouncementPriority.high),
           isTrue,
         );
       });
     });
   });
-}
-
-// Fake builders for Postgrest operations (test doubles)
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-
-  FakePostgrestBuilder(this.data);
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder order(String column, {bool ascending = true}) => this;
-
-  Future<List<Map<String, dynamic>>> call() async => data;
 }
