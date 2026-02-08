@@ -581,4 +581,51 @@ class MockLocalStorageService extends _i1.Mock
         ),
         returnValue: <String>{},
       ) as Set<String>);
+
+  @override
+  _i3.Future<void> setObject(
+    String? key,
+    Map<String, dynamic>? value,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setObject,
+          [
+            key,
+            value,
+          ],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+
+  @override
+  Map<String, dynamic>? getObject(String? key) =>
+      (super.noSuchMethod(Invocation.method(
+        #getObject,
+        [key],
+      )) as Map<String, dynamic>?);
+
+  @override
+  _i3.Future<void> put(
+    String? key,
+    String? value,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #put,
+          [
+            key,
+            value,
+          ],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+
+  @override
+  String? get(String? key) => (super.noSuchMethod(Invocation.method(
+        #get,
+        [key],
+      )) as String?);
 }

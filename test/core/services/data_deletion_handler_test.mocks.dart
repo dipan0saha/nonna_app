@@ -521,6 +521,36 @@ class MockStorageService extends _i1.Mock implements _i6.StorageService {
       ) as _i5.Future<_i7.Uint8List?>);
 
   @override
+  _i5.Future<String> uploadFile({
+    required String? filePath,
+    required String? storageKey,
+    required String? bucket,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #uploadFile,
+          [],
+          {
+            #filePath: filePath,
+            #storageKey: storageKey,
+            #bucket: bucket,
+          },
+        ),
+        returnValue: _i5.Future<String>.value(_i8.dummyValue<String>(
+          this,
+          Invocation.method(
+            #uploadFile,
+            [],
+            {
+              #filePath: filePath,
+              #storageKey: storageKey,
+              #bucket: bucket,
+            },
+          ),
+        )),
+      ) as _i5.Future<String>);
+
+  @override
   _i5.Future<String> uploadGalleryPhoto({
     required _i4.File? imageFile,
     required String? babyProfileId,

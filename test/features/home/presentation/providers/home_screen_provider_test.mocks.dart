@@ -6,10 +6,10 @@
 import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i5;
-import 'package:nonna_app/core/services/cache_service.dart' as _i3;
-import 'package:nonna_app/core/services/database_service.dart' as _i2;
-import 'package:supabase_flutter/supabase_flutter.dart' as _i6;
+import 'package:nonna_app/core/models/owner_update_marker.dart' as _i6;
+import 'package:nonna_app/core/services/cache_service.dart' as _i5;
+import 'package:nonna_app/core/services/database_service.dart' as _i3;
+import 'package:supabase_flutter/supabase_flutter.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,8 +25,19 @@ import 'package:supabase_flutter/supabase_flutter.dart' as _i6;
 // ignore_for_file: subtype_of_sealed_class
 
 class _FakePostgrestFilterBuilder_0<T> extends _i1.SmartFake
-    implements _i6.PostgrestFilterBuilder<T> {
+    implements _i2.PostgrestFilterBuilder<T> {
   _FakePostgrestFilterBuilder_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakePaginatedResult_1 extends _i1.SmartFake
+    implements _i3.PaginatedResult {
+  _FakePaginatedResult_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -38,41 +49,36 @@ class _FakePostgrestFilterBuilder_0<T> extends _i1.SmartFake
 /// A class which mocks [DatabaseService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDatabaseService extends _i1.Mock implements _i2.DatabaseService {
+class MockDatabaseService extends _i1.Mock implements _i3.DatabaseService {
   MockDatabaseService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<void> initialize() => (super.noSuchMethod(
-        Invocation.method(
-          #initialize,
-          [],
-        ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
-
-  @override
-  _i6.PostgrestFilterBuilder<dynamic> select(String table) =>
+  _i2.PostgrestFilterBuilder<List<Map<String, dynamic>>> select(
+    String? table, {
+    String? columns = r'*',
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #select,
           [table],
+          {#columns: columns},
         ),
-        returnValue: _FakePostgrestFilterBuilder_0<dynamic>(
+        returnValue: _FakePostgrestFilterBuilder_0<List<Map<String, dynamic>>>(
           this,
           Invocation.method(
             #select,
             [table],
+            {#columns: columns},
           ),
         ),
-      ) as _i6.PostgrestFilterBuilder<dynamic>);
+      ) as _i2.PostgrestFilterBuilder<List<Map<String, dynamic>>>);
 
   @override
   _i4.Future<List<Map<String, dynamic>>> insert(
-    String table,
-    Map<String, dynamic> data,
+    String? table,
+    Map<String, dynamic>? data,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -87,13 +93,13 @@ class MockDatabaseService extends _i1.Mock implements _i2.DatabaseService {
       ) as _i4.Future<List<Map<String, dynamic>>>);
 
   @override
-  _i4.Future<List<Map<String, dynamic>>> update(
-    String table,
-    Map<String, dynamic> data,
+  _i4.Future<List<Map<String, dynamic>>> insertMany(
+    String? table,
+    List<Map<String, dynamic>>? data,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
-          #update,
+          #insertMany,
           [
             table,
             data,
@@ -104,23 +110,211 @@ class MockDatabaseService extends _i1.Mock implements _i2.DatabaseService {
       ) as _i4.Future<List<Map<String, dynamic>>>);
 
   @override
-  _i4.Future<void> delete(String table) => (super.noSuchMethod(
+  _i2.PostgrestFilterBuilder<dynamic> update(
+    String? table,
+    Map<String, dynamic>? data,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #update,
+          [
+            table,
+            data,
+          ],
+        ),
+        returnValue: _FakePostgrestFilterBuilder_0<dynamic>(
+          this,
+          Invocation.method(
+            #update,
+            [
+              table,
+              data,
+            ],
+          ),
+        ),
+      ) as _i2.PostgrestFilterBuilder<dynamic>);
+
+  @override
+  _i4.Future<List<Map<String, dynamic>>> upsert(
+    String? table,
+    Map<String, dynamic>? data, {
+    String? onConflict,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #upsert,
+          [
+            table,
+            data,
+          ],
+          {#onConflict: onConflict},
+        ),
+        returnValue: _i4.Future<List<Map<String, dynamic>>>.value(
+            <Map<String, dynamic>>[]),
+      ) as _i4.Future<List<Map<String, dynamic>>>);
+
+  @override
+  _i4.Future<List<Map<String, dynamic>>> upsertMany(
+    String? table,
+    List<Map<String, dynamic>>? data, {
+    String? onConflict,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #upsertMany,
+          [
+            table,
+            data,
+          ],
+          {#onConflict: onConflict},
+        ),
+        returnValue: _i4.Future<List<Map<String, dynamic>>>.value(
+            <Map<String, dynamic>>[]),
+      ) as _i4.Future<List<Map<String, dynamic>>>);
+
+  @override
+  _i2.PostgrestFilterBuilder<dynamic> delete(String? table) =>
+      (super.noSuchMethod(
         Invocation.method(
           #delete,
           [table],
         ),
+        returnValue: _FakePostgrestFilterBuilder_0<dynamic>(
+          this,
+          Invocation.method(
+            #delete,
+            [table],
+          ),
+        ),
+      ) as _i2.PostgrestFilterBuilder<dynamic>);
+
+  @override
+  _i4.Future<dynamic> rpc(
+    String? functionName, {
+    Map<String, dynamic>? params,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #rpc,
+          [functionName],
+          {#params: params},
+        ),
+        returnValue: _i4.Future<dynamic>.value(),
+      ) as _i4.Future<dynamic>);
+
+  @override
+  _i4.Future<_i3.PaginatedResult> getPaginated(
+    String? table, {
+    required int? page,
+    required int? pageSize,
+    String? columns = r'*',
+    String? orderBy,
+    bool? ascending = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getPaginated,
+          [table],
+          {
+            #page: page,
+            #pageSize: pageSize,
+            #columns: columns,
+            #orderBy: orderBy,
+            #ascending: ascending,
+          },
+        ),
+        returnValue:
+            _i4.Future<_i3.PaginatedResult>.value(_FakePaginatedResult_1(
+          this,
+          Invocation.method(
+            #getPaginated,
+            [table],
+            {
+              #page: page,
+              #pageSize: pageSize,
+              #columns: columns,
+              #orderBy: orderBy,
+              #ascending: ascending,
+            },
+          ),
+        )),
+      ) as _i4.Future<_i3.PaginatedResult>);
+
+  @override
+  _i4.Future<void> executeTransaction(
+    String? transactionFunctionName, {
+    Map<String, dynamic>? params,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #executeTransaction,
+          [transactionFunctionName],
+          {#params: params},
+        ),
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> batchInsert(
+    String? table,
+    List<Map<String, dynamic>>? data, {
+    int? batchSize = 100,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #batchInsert,
+          [
+            table,
+            data,
+          ],
+          {#batchSize: batchSize},
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<bool> exists(
+    String? table, {
+    required String? column,
+    required dynamic value,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #exists,
+          [table],
+          {
+            #column: column,
+            #value: value,
+          },
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<int> count(String? table) => (super.noSuchMethod(
+        Invocation.method(
+          #count,
+          [table],
+        ),
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
 }
 
 /// A class which mocks [CacheService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCacheService extends _i1.Mock implements _i3.CacheService {
+class MockCacheService extends _i1.Mock implements _i5.CacheService {
   MockCacheService() {
     _i1.throwOnMissingStub(this);
   }
+
+  @override
+  bool get isInitialized => (super.noSuchMethod(
+        Invocation.getter(#isInitialized),
+        returnValue: false,
+      ) as bool);
 
   @override
   _i4.Future<void> initialize() => (super.noSuchMethod(
@@ -133,7 +327,36 @@ class MockCacheService extends _i1.Mock implements _i3.CacheService {
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<T?> get<T>(String key) => (super.noSuchMethod(
+  _i4.Future<void> dispose() => (super.noSuchMethod(
+        Invocation.method(
+          #dispose,
+          [],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> put(
+    String? key,
+    dynamic data, {
+    int? ttlMinutes,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #put,
+          [
+            key,
+            data,
+          ],
+          {#ttlMinutes: ttlMinutes},
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<T?> get<T>(String? key) => (super.noSuchMethod(
         Invocation.method(
           #get,
           [key],
@@ -142,26 +365,7 @@ class MockCacheService extends _i1.Mock implements _i3.CacheService {
       ) as _i4.Future<T?>);
 
   @override
-  _i4.Future<void> set<T>(
-    String key,
-    T value, {
-    Duration? ttl,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #set,
-          [
-            key,
-            value,
-          ],
-          {#ttl: ttl},
-        ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
-
-  @override
-  _i4.Future<void> delete(String key) => (super.noSuchMethod(
+  _i4.Future<void> delete(String? key) => (super.noSuchMethod(
         Invocation.method(
           #delete,
           [key],
@@ -179,4 +383,69 @@ class MockCacheService extends _i1.Mock implements _i3.CacheService {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<bool> has(String? key) => (super.noSuchMethod(
+        Invocation.method(
+          #has,
+          [key],
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<void> invalidateByOwnerUpdate(
+    String? babyProfileId,
+    _i6.OwnerUpdateMarker? ownerUpdateMarker,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #invalidateByOwnerUpdate,
+          [
+            babyProfileId,
+            ownerUpdateMarker,
+          ],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> invalidateByBabyProfile(String? babyProfileId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #invalidateByBabyProfile,
+          [babyProfileId],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<int> getCacheSize() => (super.noSuchMethod(
+        Invocation.method(
+          #getCacheSize,
+          [],
+        ),
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
+
+  @override
+  _i4.Future<void> cleanupExpired() => (super.noSuchMethod(
+        Invocation.method(
+          #cleanupExpired,
+          [],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
+
+  @override
+  List<String> getAllKeys() => (super.noSuchMethod(
+        Invocation.method(
+          #getAllKeys,
+          [],
+        ),
+        returnValue: <String>[],
+      ) as List<String>);
 }

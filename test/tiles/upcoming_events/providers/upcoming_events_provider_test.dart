@@ -1,16 +1,18 @@
 import 'dart:async';
-import 'package:flutter_test/flutter_test.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
-import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/upcoming_events/providers/upcoming_events_provider.dart';
 
+import '../../../helpers/fake_postgrest_builders.dart';
 @GenerateMocks([DatabaseService, CacheService, RealtimeService])
 import 'upcoming_events_provider_test.mocks.dart';
 
@@ -73,7 +75,8 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -98,7 +101,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -167,7 +170,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -189,7 +192,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -215,7 +218,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -227,7 +230,7 @@ void main() {
         final event2 =
             sampleEvent.copyWith(id: 'event_2', title: 'Gender Reveal');
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [event2.toJson()]);
+            .thenReturn(FakePostgrestBuilder([event2.toJson()]));
 
         await notifier.loadMore(babyProfileId: 'profile_1');
 
@@ -246,7 +249,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -303,7 +306,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -327,7 +330,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -336,7 +339,8 @@ void main() {
           role: UserRole.owner,
         );
 
-        final initialCount = container.read(upcomingEventsProvider).events.length;
+        final initialCount =
+            container.read(upcomingEventsProvider).events.length;
 
         // Simulate real-time INSERT
         final newEvent =
@@ -345,7 +349,8 @@ void main() {
           events: [newEvent, ...notifier.state.events],
         );
 
-        expect(container.read(upcomingEventsProvider).events.length, equals(initialCount + 1));
+        expect(container.read(upcomingEventsProvider).events.length,
+            equals(initialCount + 1));
       });
 
       test('handles UPDATE event', () async {
@@ -357,7 +362,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -374,7 +379,8 @@ void main() {
               .toList(),
         );
 
-        expect(container.read(upcomingEventsProvider).events.first.title, equals('Updated Event'));
+        expect(container.read(upcomingEventsProvider).events.first.title,
+            equals('Updated Event'));
       });
 
       test('handles DELETE event', () async {
@@ -386,7 +392,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => [sampleEvent.toJson()]);
+            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 

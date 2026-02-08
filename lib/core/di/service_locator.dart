@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../services/analytics_service.dart';
 import '../services/auth_service.dart';
@@ -234,7 +233,7 @@ class ServiceLocator {
   ///   ),
   /// );
   /// ```
-  static List<Override> getTestOverrides({
+  static List getTestOverrides({
     AuthService? mockAuth,
     DatabaseService? mockDatabase,
     CacheService? mockCache,
@@ -245,7 +244,7 @@ class ServiceLocator {
     ObservabilityService? mockObservability,
     LocalStorageService? mockLocalStorage,
   }) {
-    final overrides = <Override>[];
+    final overrides = [];
 
     if (mockAuth != null) {
       overrides.add(authServiceProvider.overrideWithValue(mockAuth));

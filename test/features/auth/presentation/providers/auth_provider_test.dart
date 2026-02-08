@@ -11,7 +11,6 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-
 @GenerateMocks([AuthService, DatabaseService, LocalStorageService])
 import 'auth_provider_test.mocks.dart';
 
@@ -40,7 +39,7 @@ void main() {
     setUp(() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
-      
+
       mockAuthService = MockAuthService();
       mockDatabaseService = MockDatabaseService();
       mockLocalStorage = MockLocalStorageService();
@@ -83,8 +82,8 @@ void main() {
     group('signInWithEmail', () {
       test('sets loading state while signing in', () async {
         when(mockAuthService.signInWithEmail(
-          email: any,
-          password: any,
+          email: anyNamed('email'),
+          password: anyNamed('password'),
         )).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
           return supabase.AuthResponse(session: mockSession, user: mockUser);
@@ -92,7 +91,8 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put('any_key', 'any_value'))
+            .thenAnswer((_) async => {});
 
         final future = notifier.signInWithEmail(
           email: 'test@example.com',
@@ -107,15 +107,16 @@ void main() {
 
       test('successfully signs in with email and password', () async {
         when(mockAuthService.signInWithEmail(
-          email: any,
-          password: any,
+          email: anyNamed('email'),
+          password: anyNamed('password'),
         )).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put('any_key', 'any_value'))
+            .thenAnswer((_) async => {});
 
         await notifier.signInWithEmail(
           email: 'test@example.com',
@@ -129,8 +130,8 @@ void main() {
 
       test('handles sign in error', () async {
         when(mockAuthService.signInWithEmail(
-          email: any,
-          password: any,
+          email: anyNamed('email'),
+          password: anyNamed('password'),
         )).thenThrow(Exception('Invalid credentials'));
 
         await notifier.signInWithEmail(
@@ -144,8 +145,8 @@ void main() {
 
       test('handles null user response', () async {
         when(mockAuthService.signInWithEmail(
-          email: any,
-          password: any,
+          email: anyNamed('email'),
+          password: anyNamed('password'),
         )).thenAnswer((_) async {
           return supabase.AuthResponse();
         });
@@ -163,16 +164,17 @@ void main() {
     group('signUpWithEmail', () {
       test('successfully signs up with email', () async {
         when(mockAuthService.signUpWithEmail(
-          email: any,
-          password: any,
-          displayName: any,
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+          displayName: anyNamed('displayName'),
         )).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put('any_key', 'any_value'))
+            .thenAnswer((_) async => {});
 
         await notifier.signUpWithEmail(
           email: 'test@example.com',
@@ -186,9 +188,9 @@ void main() {
 
       test('handles sign up error', () async {
         when(mockAuthService.signUpWithEmail(
-          email: any,
-          password: any,
-          displayName: any,
+          email: anyNamed('email'),
+          password: anyNamed('password'),
+          displayName: anyNamed('displayName'),
         )).thenThrow(Exception('Email already exists'));
 
         await notifier.signUpWithEmail(
@@ -210,7 +212,8 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put('any_key', 'any_value'))
+            .thenAnswer((_) async => {});
 
         await notifier.signInWithGoogle();
 
@@ -237,7 +240,8 @@ void main() {
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put('any_key', 'any_value'))
+            .thenAnswer((_) async => {});
 
         await notifier.signInWithFacebook();
 
@@ -330,29 +334,31 @@ void main() {
     group('Session Management', () {
       test('persists session to local storage on successful auth', () async {
         when(mockAuthService.signInWithEmail(
-          email: any,
-          password: any,
+          email: anyNamed('email'),
+          password: anyNamed('password'),
         )).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put('any_key', 'any_value'))
+            .thenAnswer((_) async => {});
 
         await notifier.signInWithEmail(
           email: 'test@example.com',
           password: 'password123',
         );
 
-        verify(mockLocalStorage.put(any, any)).called(1);
+        verify(mockLocalStorage.put('any_key', 'any_value')).called(1);
       });
 
       test('refreshSession updates session state', () async {
         when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put('any_key', 'any_value'))
+            .thenAnswer((_) async => {});
 
         await notifier.refreshSession();
 
@@ -372,7 +378,8 @@ void main() {
       test('handles auth state changes from stream', () async {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockLocalStorage.put(any, any)).thenAnswer((_) async => {});
+        when(mockLocalStorage.put('any_key', 'any_value'))
+            .thenAnswer((_) async => {});
 
         authStateController.add(
           supabase.AuthState(
