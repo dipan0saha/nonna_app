@@ -28,23 +28,23 @@ import 'auth_state.dart';
 /// Dependencies: AuthService, DatabaseService, LocalStorageService
 
 /// Auth Provider Notifier
-class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthService _authService;
-  final DatabaseService _databaseService;
-  final LocalStorageService _localStorage;
-
-  StreamSubscription<supabase.AuthState>? _authSubscription;
+class AuthNotifier extends Notifier<AuthState> {
   final LocalAuthentication _localAuth = LocalAuthentication();
+  StreamSubscription<supabase.AuthState>? _authSubscription;
 
-  AuthNotifier({
-    required AuthService authService,
-    required DatabaseService databaseService,
-    required LocalStorageService localStorage,
-  })  : _authService = authService,
-        _databaseService = databaseService,
-        _localStorage = localStorage,
-        super(const AuthState.unauthenticated()) {
-    _initialize();
+  @override
+  AuthState build() {
+    final authService = ref.watch(authServiceProvider);
+    final databaseService = ref.watch(databaseServiceProvider);
+    final localStorage = ref.watch(localStorageServiceProvider);
+
+    _initialize(authService, databaseService, localStorage);
+    
+    ref.onDispose(() {
+      _authSubscription?.cancel();
+    });
+
+    return const AuthState.unauthenticated();
   }
 
   // Configuration
@@ -56,39 +56,50 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // ==========================================
 
   /// Initialize auth state
-  void _initialize() {
+  void _initialize(
+    AuthService authService,
+    DatabaseService databaseService,
+    LocalStorageService localStorage,
+  ) {
     // Listen to auth state changes
-    _authSubscription = _authService.authStateChanges.listen((authState) {
-      _handleAuthStateChange(authState);
+    _authSubscription = authService.authStateChanges.listen((authState) {
+      _handleAuthStateChange(authState, authService, databaseService, localStorage);
     });
 
     // Check current auth state
-    final currentUser = _authService.currentUser;
+    final currentUser = authService.currentUser;
     if (currentUser != null) {
-      _loadUserProfile(currentUser);
-    } else {
-      state = const AuthState.unauthenticated();
+      _loadUserProfile(currentUser, databaseService, localStorage);
     }
   }
 
   /// Handle auth state changes
-  void _handleAuthStateChange(supabase.AuthState authState) async {
+  void _handleAuthStateChange(
+    supabase.AuthState authState,
+    AuthService authService,
+    DatabaseService databaseService,
+    LocalStorageService localStorage,
+  ) async {
     final user = authState.session?.user;
 
     if (user != null) {
-      await _loadUserProfile(user);
+      await _loadUserProfile(user, databaseService, localStorage);
     } else {
       state = const AuthState.unauthenticated();
     }
   }
 
   /// Load user profile from database
-  Future<void> _loadUserProfile(supabase.User user) async {
+  Future<void> _loadUserProfile(
+    supabase.User user,
+    DatabaseService databaseService,
+    LocalStorageService localStorage,
+  ) async {
     try {
       state = const AuthState.loading();
 
       // Fetch user model from database
-      final response = await _databaseService
+      final response = await databaseService
           .select(SupabaseTables.users)
           .eq(SupabaseTables.id, user.id)
           .maybeSingle();
@@ -98,7 +109,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         userModel = app_user.User.fromJson(response as Map<String, dynamic>);
       }
 
-      final session = _authService.currentUser != null
+      final authService = ref.read(authServiceProvider);
+      final session = authService.currentUser != null
           ? supabase.Supabase.instance.client.auth.currentSession
           : null;
 
@@ -109,7 +121,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
 
       // Persist session
-      await _persistSession(session);
+      await _persistSession(session, localStorage);
 
       debugPrint('✅ User profile loaded: ${user.id}');
     } catch (e) {
@@ -130,13 +142,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = const AuthState.loading();
 
-      final response = await _authService.signInWithEmail(
+      final authService = ref.read(authServiceProvider);
+      final databaseService = ref.read(databaseServiceProvider);
+      final localStorage = ref.read(localStorageServiceProvider);
+
+      final response = await authService.signInWithEmail(
         email: email,
         password: password,
       );
 
       if (response.user != null) {
-        await _loadUserProfile(response.user!);
+        await _loadUserProfile(response.user!, databaseService, localStorage);
       } else {
         state = const AuthState.error('Sign in failed');
       }
@@ -155,14 +171,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = const AuthState.loading();
 
-      final response = await _authService.signUpWithEmail(
+      final authService = ref.read(authServiceProvider);
+      final databaseService = ref.read(databaseServiceProvider);
+      final localStorage = ref.read(localStorageServiceProvider);
+
+      final response = await authService.signUpWithEmail(
         email: email,
         password: password,
         displayName: displayName,
       );
 
       if (response.user != null) {
-        await _loadUserProfile(response.user!);
+        await _loadUserProfile(response.user!, databaseService, localStorage);
       } else {
         state = const AuthState.error('Sign up failed');
       }
@@ -177,10 +197,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = const AuthState.loading();
 
-      final response = await _authService.signInWithGoogle();
+      final authService = ref.read(authServiceProvider);
+      final databaseService = ref.read(databaseServiceProvider);
+      final localStorage = ref.read(localStorageServiceProvider);
+
+      final response = await authService.signInWithGoogle();
 
       if (response.user != null) {
-        await _loadUserProfile(response.user!);
+        await _loadUserProfile(response.user!, databaseService, localStorage);
       } else {
         state = const AuthState.error('Google sign in failed');
       }
@@ -195,10 +219,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = const AuthState.loading();
 
-      final response = await _authService.signInWithFacebook();
+      final authService = ref.read(authServiceProvider);
+      final databaseService = ref.read(databaseServiceProvider);
+      final localStorage = ref.read(localStorageServiceProvider);
+
+      final response = await authService.signInWithFacebook();
 
       if (response.user != null) {
-        await _loadUserProfile(response.user!);
+        await _loadUserProfile(response.user!, databaseService, localStorage);
       } else {
         state = const AuthState.error('Facebook sign in failed');
       }
@@ -213,8 +241,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       state = const AuthState.loading();
 
-      await _authService.signOut();
-      await _clearSession();
+      final authService = ref.read(authServiceProvider);
+      final localStorage = ref.read(localStorageServiceProvider);
+
+      await authService.signOut();
+      await _clearSession(localStorage);
 
       state = const AuthState.unauthenticated();
       debugPrint('✅ User signed out');
@@ -227,7 +258,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Reset password
   Future<void> resetPassword(String email) async {
     try {
-      await _authService.resetPassword(email);
+      final authService = ref.read(authServiceProvider);
+      await authService.resetPassword(email);
       debugPrint('✅ Password reset email sent');
     } catch (e) {
       debugPrint('❌ Password reset error: $e');
@@ -252,6 +284,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Enable biometric authentication
   Future<bool> enableBiometric() async {
     try {
+      final localStorage = ref.read(localStorageServiceProvider);
       final isAvailable = await isBiometricAvailable();
       if (!isAvailable) return false;
 
@@ -264,7 +297,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
 
       if (authenticated) {
-        await _localStorage.put(_biometricEnabledKey, true);
+        await localStorage.put(_biometricEnabledKey, true);
         debugPrint('✅ Biometric authentication enabled');
         return true;
       }
@@ -278,13 +311,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   /// Disable biometric authentication
   Future<void> disableBiometric() async {
-    await _localStorage.remove(_biometricEnabledKey);
+    final localStorage = ref.read(localStorageServiceProvider);
+    await localStorage.remove(_biometricEnabledKey);
     debugPrint('✅ Biometric authentication disabled');
   }
 
   /// Check if biometric is enabled
   Future<bool> isBiometricEnabled() async {
-    return await _localStorage.get(_biometricEnabledKey) ?? false;
+    final localStorage = ref.read(localStorageServiceProvider);
+    return await localStorage.get(_biometricEnabledKey) ?? false;
   }
 
   /// Authenticate with biometric
@@ -311,8 +346,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // ==========================================
 
   /// Persist session to local storage
-  Future<void> _persistSession(supabase.Session session) async {
-    if (!_localStorage.isInitialized) return;
+  Future<void> _persistSession(supabase.Session session, LocalStorageService localStorage) async {
+    if (!localStorage.isInitialized) return;
 
     try {
       final sessionData = {
@@ -322,7 +357,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         'user_id': session.user.id,
       };
 
-      await _localStorage.put(_sessionKey, sessionData);
+      await localStorage.put(_sessionKey, sessionData);
       debugPrint('✅ Session persisted');
     } catch (e) {
       debugPrint('⚠️  Failed to persist session: $e');
@@ -330,11 +365,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   /// Clear persisted session
-  Future<void> _clearSession() async {
-    if (!_localStorage.isInitialized) return;
+  Future<void> _clearSession(LocalStorageService localStorage) async {
+    if (!localStorage.isInitialized) return;
 
     try {
-      await _localStorage.remove(_sessionKey);
+      await localStorage.remove(_sessionKey);
       debugPrint('✅ Session cleared');
     } catch (e) {
       debugPrint('⚠️  Failed to clear session: $e');
@@ -344,25 +379,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Refresh session
   Future<void> refreshSession() async {
     try {
-      final session = await _authService.refreshSession();
+      final authService = ref.read(authServiceProvider);
+      final databaseService = ref.read(databaseServiceProvider);
+      final localStorage = ref.read(localStorageServiceProvider);
+      
+      final session = await authService.refreshSession();
       if (session?.user != null) {
-        await _loadUserProfile(session!.user);
+        await _loadUserProfile(session!.user, databaseService, localStorage);
       }
       debugPrint('✅ Session refreshed');
     } catch (e) {
       debugPrint('❌ Session refresh error: $e');
       state = AuthState.error(e.toString());
     }
-  }
-
-  // ==========================================
-  // Cleanup
-  // ==========================================
-
-  @override
-  void dispose() {
-    _authSubscription?.cancel();
-    super.dispose();
   }
 }
 
@@ -374,23 +403,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 /// final notifier = ref.read(authProvider.notifier);
 /// await notifier.signInWithEmail(email: 'user@example.com', password: 'password');
 /// ```
-final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  final authService = ref.watch(authServiceProvider);
-  final databaseService = ref.watch(databaseServiceProvider);
-  final localStorage = ref.watch(localStorageServiceProvider);
-
-  final notifier = AuthNotifier(
-    authService: authService,
-    databaseService: databaseService,
-    localStorage: localStorage,
-  );
-
-  ref.onDispose(() {
-    notifier.dispose();
-  });
-
-  return notifier;
-});
+final authProvider = NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);
 
 /// Convenience provider for checking if user is authenticated
 final isAuthenticatedProvider = Provider<bool>((ref) {

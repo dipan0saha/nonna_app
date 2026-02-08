@@ -95,24 +95,20 @@ class CalendarScreenState {
 }
 
 /// Calendar Screen Provider Notifier
-class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
+class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
   String? _subscriptionId;
 
-  CalendarScreenNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(CalendarScreenState(
-          selectedDate: DateTime.now(),
-          focusedMonth: DateTime.now(),
-        ));
+  @override
+  CalendarScreenState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    
+    return CalendarScreenState(
+      selectedDate: DateTime.now(),
+      focusedMonth: DateTime.now(),
+    );
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'calendar_events';
@@ -179,7 +175,9 @@ class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
     DateTime start,
     DateTime end,
   ) async {
-    final response = await _databaseService
+    final databaseService = ref.read(databaseServiceProvider);
+    
+    final response = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -281,11 +279,12 @@ class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
 
   /// Load events from cache
   Future<List<Event>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -300,12 +299,13 @@ class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
 
   /// Save events to cache
   Future<void> _saveToCache(String babyProfileId, List<Event> events) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = events.map((event) => event.toJson()).toList();
-      await _cacheService.put(
+      await cacheService.put(
         cacheKey,
         jsonData,
         ttlMinutes: PerformanceLimits.screenCacheDuration.inMinutes,
@@ -325,7 +325,8 @@ class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      final realtimeService = ref.read(realtimeServiceProvider);
+      _subscriptionId = await realtimeService.subscribe(
         table: SupabaseTables.events,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -393,20 +394,11 @@ class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      final realtimeService = ref.read(realtimeServiceProvider);
+      realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
-  }
-
-  // ==========================================
-  // Cleanup
-  // ==========================================
-
-  @override
-  void dispose() {
-    _cancelRealtimeSubscription();
-    super.dispose();
   }
 }
 
@@ -418,23 +410,5 @@ class CalendarScreenNotifier extends StateNotifier<CalendarScreenState> {
 /// final notifier = ref.read(calendarScreenProvider.notifier);
 /// await notifier.loadEvents(babyProfileId: 'abc');
 /// ```
-final calendarScreenProvider = StateNotifierProvider.autoDispose<
-    CalendarScreenNotifier, CalendarScreenState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = CalendarScreenNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
-);
+final calendarScreenProvider = NotifierProvider.autoDispose<
+    CalendarScreenNotifier, CalendarScreenState>(CalendarScreenNotifier.new);

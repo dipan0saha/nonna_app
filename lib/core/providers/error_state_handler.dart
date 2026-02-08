@@ -38,8 +38,11 @@ import '../middleware/error_handler.dart';
 /// // Clear error
 /// errorHandler.clearError('fetch_data');
 /// ```
-class ErrorStateHandler extends StateNotifier<ErrorState> {
-  ErrorStateHandler() : super(ErrorState.initial());
+class ErrorStateHandler extends Notifier<ErrorState> {
+  @override
+  ErrorState build() {
+    return ErrorState.initial();
+  }
 
   // Maximum retry attempts
   static const int maxRetryAttempts = 3;
@@ -396,6 +399,4 @@ class ErrorInfo {
 
 /// Provider for error state handler
 final errorStateHandlerProvider =
-    StateNotifierProvider<ErrorStateHandler, ErrorState>((ref) {
-  return ErrorStateHandler();
-});
+    NotifierProvider<ErrorStateHandler, ErrorState>(ErrorStateHandler.new);

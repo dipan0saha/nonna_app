@@ -84,21 +84,16 @@ class GalleryScreenState {
 }
 
 /// Gallery Screen Provider Notifier
-class GalleryScreenNotifier extends StateNotifier<GalleryScreenState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
+class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
   String? _subscriptionId;
 
-  GalleryScreenNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const GalleryScreenState());
+  @override
+  GalleryScreenState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const GalleryScreenState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'gallery_photos';
@@ -270,7 +265,7 @@ class GalleryScreenNotifier extends StateNotifier<GalleryScreenState> {
     required int limit,
     required int offset,
   }) async {
-    final response = await _databaseService
+    final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -287,7 +282,7 @@ class GalleryScreenNotifier extends StateNotifier<GalleryScreenState> {
     required String babyProfileId,
     required String tag,
   }) async {
-    final response = await _databaseService
+    final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -301,11 +296,12 @@ class GalleryScreenNotifier extends StateNotifier<GalleryScreenState> {
 
   /// Load photos from cache
   Future<List<Photo>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -320,12 +316,13 @@ class GalleryScreenNotifier extends StateNotifier<GalleryScreenState> {
 
   /// Save photos to cache
   Future<void> _saveToCache(String babyProfileId, List<Photo> photos) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = photos.map((photo) => photo.toJson()).toList();
-      await _cacheService.put(
+      await cacheService.put(
         cacheKey,
         jsonData,
         ttlMinutes: PerformanceLimits.screenCacheDuration.inMinutes,
@@ -345,7 +342,7 @@ class GalleryScreenNotifier extends StateNotifier<GalleryScreenState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.photos,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -399,20 +396,10 @@ class GalleryScreenNotifier extends StateNotifier<GalleryScreenState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
-  }
-
-  // ==========================================
-  // Cleanup
-  // ==========================================
-
-  @override
-  void dispose() {
-    _cancelRealtimeSubscription();
-    super.dispose();
   }
 }
 
@@ -424,23 +411,7 @@ class GalleryScreenNotifier extends StateNotifier<GalleryScreenState> {
 /// final notifier = ref.read(galleryScreenProvider.notifier);
 /// await notifier.loadPhotos(babyProfileId: 'abc');
 /// ```
-final galleryScreenProvider = StateNotifierProvider.autoDispose<
+final galleryScreenProvider = NotifierProvider.autoDispose<
     GalleryScreenNotifier, GalleryScreenState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = GalleryScreenNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+  GalleryScreenNotifier.new,
 );
