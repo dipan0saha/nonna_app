@@ -22,6 +22,7 @@ git push
 ## Run all commands in one single line
 ```bash
 git status && git add . && git commit --no-verify -m "Misc changes" && git push
+flutter analyze > flutter_analyze_results.txt
 ```
 
 

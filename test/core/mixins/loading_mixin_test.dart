@@ -41,10 +41,12 @@ class _TestWidgetState extends State<TestWidget> with LoadingMixin {
               child: const Text('Test'),
             ),
             buildLoadingButton(
+              key: const Key('loading_button'),
               onPressed: () {},
               child: const Text('Loading Button'),
             ),
             buildOperationButton(
+              key: const Key('operation_button'),
               operation: 'test_operation',
               onPressed: () {},
               child: const Text('Operation Button'),
@@ -151,140 +153,158 @@ void main() {
     });
 
     testWidgets('withLoading executes async operation', (tester) async {
-      late _TestWidgetState state;
+      await tester.runAsync(() async {
+        late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
-      state = tester.state(find.byType(TestWidget));
+        await tester.pumpWidget(const TestWidget());
+        state = tester.state(find.byType(TestWidget));
 
-      expect(state.isLoading, false);
+        expect(state.isLoading, false);
 
-      final future = state.withLoading(() => state.asyncOperation());
-      await tester.pump();
+        final future = state.withLoading(() => state.asyncOperation());
+        await tester.pump();
 
-      expect(state.isLoading, true);
+        expect(state.isLoading, true);
 
-      final result = await future;
-      await tester.pump();
+        final result = await future;
+        await tester.pump();
 
-      expect(state.isLoading, false);
-      expect(result, 'success');
+        expect(state.isLoading, false);
+        expect(result, 'success');
+      });
     });
 
     testWidgets('withLoading prevents concurrent execution', (tester) async {
-      late _TestWidgetState state;
+      await tester.runAsync(() async {
+        late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
-      state = tester.state(find.byType(TestWidget));
+        await tester.pumpWidget(const TestWidget());
+        state = tester.state(find.byType(TestWidget));
 
-      final future1 = state.withLoading(() => state.asyncOperation());
-      await tester.pump();
+        final future1 = state.withLoading(() => state.asyncOperation());
+        await tester.pump();
 
-      expect(state.isLoading, true);
+        expect(state.isLoading, true);
 
-      // Try to execute while already loading
-      final future2 = state.withLoading(() => state.asyncOperation());
+        // Try to execute while already loading
+        final future2 = state.withLoading(() => state.asyncOperation());
 
-      expect(await future2, null); // Should return null
-      expect(await future1, 'success');
-      await tester.pump();
+        expect(await future2, null); // Should return null
+        expect(await future1, 'success');
+        await tester.pump();
+      });
     });
 
     testWidgets('withLoadingFor executes with operation key', (tester) async {
-      late _TestWidgetState state;
+      await tester.runAsync(() async {
+        late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
-      state = tester.state(find.byType(TestWidget));
+        await tester.pumpWidget(const TestWidget());
+        state = tester.state(find.byType(TestWidget));
 
-      expect(state.isLoadingFor('test_op'), false);
+        expect(state.isLoadingFor('test_op'), false);
 
-      final future =
-          state.withLoadingFor('test_op', () => state.asyncOperation());
-      await tester.pump();
+        final future =
+            state.withLoadingFor('test_op', () => state.asyncOperation());
+        await tester.pump();
 
-      expect(state.isLoadingFor('test_op'), true);
+        expect(state.isLoadingFor('test_op'), true);
 
-      final result = await future;
-      await tester.pump();
+        final result = await future;
+        await tester.pump();
 
-      expect(state.isLoadingFor('test_op'), false);
-      expect(result, 'success');
+        expect(state.isLoadingFor('test_op'), false);
+        expect(result, 'success');
+      });
     });
 
     testWidgets('withLoadingFor prevents concurrent execution for same key',
         (tester) async {
-      late _TestWidgetState state;
+      await tester.runAsync(() async {
+        late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
-      state = tester.state(find.byType(TestWidget));
+        await tester.pumpWidget(const TestWidget());
+        state = tester.state(find.byType(TestWidget));
 
-      final future1 =
-          state.withLoadingFor('test_op', () => state.asyncOperation());
-      await tester.pump();
+        final future1 =
+            state.withLoadingFor('test_op', () => state.asyncOperation());
+        await tester.pump();
 
-      expect(state.isLoadingFor('test_op'), true);
+        expect(state.isLoadingFor('test_op'), true);
 
-      // Try to execute with same key
-      final future2 =
-          state.withLoadingFor('test_op', () => state.asyncOperation());
+        // Try to execute with same key
+        final future2 =
+            state.withLoadingFor('test_op', () => state.asyncOperation());
 
-      expect(await future2, null);
-      expect(await future1, 'success');
-      await tester.pump();
+        expect(await future2, null);
+        expect(await future1, 'success');
+        await tester.pump();
+      });
     });
 
     testWidgets('withLoadingFor allows different keys concurrently',
         (tester) async {
-      late _TestWidgetState state;
+      await tester.runAsync(() async {
+        late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
-      state = tester.state(find.byType(TestWidget));
+        await tester.pumpWidget(const TestWidget());
+        state = tester.state(find.byType(TestWidget));
 
-      final future1 = state.withLoadingFor('op1', () => state.asyncOperation());
-      final future2 = state.withLoadingFor('op2', () => state.asyncOperation());
-      await tester.pump();
+        final future1 =
+            state.withLoadingFor('op1', () => state.asyncOperation());
+        final future2 =
+            state.withLoadingFor('op2', () => state.asyncOperation());
+        await tester.pump();
 
-      expect(state.isLoadingFor('op1'), true);
-      expect(state.isLoadingFor('op2'), true);
+        expect(state.isLoadingFor('op1'), true);
+        expect(state.isLoadingFor('op2'), true);
 
-      expect(await future1, 'success');
-      expect(await future2, 'success');
-      await tester.pump();
+        expect(await future1, 'success');
+        expect(await future2, 'success');
+        await tester.pump();
+      });
     });
 
     testWidgets('withLoadingAndError handles errors with callback',
         (tester) async {
-      late _TestWidgetState state;
-      Object? capturedError;
+      await tester.runAsync(() async {
+        late _TestWidgetState state;
+        Object? capturedError;
 
-      await tester.pumpWidget(const TestWidget());
-      state = tester.state(find.byType(TestWidget));
+        await tester.pumpWidget(const TestWidget());
+        state = tester.state(find.byType(TestWidget));
 
-      final result = await state.withLoadingAndError(
-        () => state.failingOperation(),
-        onError: (error) {
-          capturedError = error;
-        },
-      );
+        final result = await state.withLoadingAndError(
+          () => state.failingOperation(),
+          onError: (error) {
+            capturedError = error;
+          },
+        );
 
-      await tester.pump();
+        await tester.pump();
 
-      expect(result, null);
-      expect(capturedError, isA<Exception>());
-      expect(capturedError.toString(), contains('Test error'));
+        expect(result, null);
+        expect(capturedError, isA<Exception>());
+        expect(capturedError.toString(), contains('Test error'));
+      });
     });
 
     testWidgets('withLoadingAndError shows default error message',
         (tester) async {
-      late _TestWidgetState state;
+      await tester.runAsync(() async {
+        late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
-      state = tester.state(find.byType(TestWidget));
+        await tester.pumpWidget(ScaffoldMessenger(
+          child: const TestWidget(),
+        ));
+        state = tester.state(find.byType(TestWidget));
 
-      await state.withLoadingAndError(() => state.failingOperation());
-      await tester.pump();
+        await state.withLoadingAndError(() => state.failingOperation());
+        await tester.pump();
 
-      expect(find.byType(SnackBar), findsOneWidget);
-      expect(find.textContaining('An error occurred'), findsOneWidget);
+        expect(find.byType(SnackBar), findsOneWidget);
+        expect(find.textContaining('An error occurred'), findsOneWidget);
+      });
     });
 
     testWidgets('buildWithLoading shows overlay when loading', (tester) async {

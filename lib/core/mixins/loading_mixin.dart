@@ -172,6 +172,7 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
 
   /// Build button with loading state
   Widget buildLoadingButton({
+    Key? key,
     required VoidCallback? onPressed,
     required Widget child,
     bool? enabled,
@@ -179,6 +180,7 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
     final isEnabled = (enabled ?? true) && !isLoading;
 
     return ElevatedButton(
+      key: key,
       onPressed: isEnabled ? onPressed : null,
       child: isLoading
           ? const SizedBox(
@@ -195,6 +197,7 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
 
   /// Build button for specific operation
   Widget buildOperationButton({
+    Key? key,
     required String operation,
     required VoidCallback? onPressed,
     required Widget child,
@@ -204,6 +207,7 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
     final isEnabled = (enabled ?? true) && !isOperationLoading;
 
     return ElevatedButton(
+      key: key,
       onPressed: isEnabled ? onPressed : null,
       child: isOperationLoading
           ? const SizedBox(
