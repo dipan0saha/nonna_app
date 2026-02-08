@@ -216,15 +216,19 @@ void main() {
 
       test('handles year boundary', () {
         final now = DateTime.now();
-        final future = DateTime(now.year + 1, 2, 15);
-        expect(DateHelpers.monthsUntil(future), greaterThanOrEqualTo(0));
+        // Always use a future date by adding 12 months
+        final future = DateTime(now.year + 1, now.month, now.day);
+        expect(DateHelpers.monthsUntil(future), 12);
       });
 
       test('adjusts for day of month', () {
         final now = DateTime.now();
-        // Set future date to be in the next year
-        final future = DateTime(now.year + 1, 2, 10);
-        expect(DateHelpers.monthsUntil(future), greaterThanOrEqualTo(0));
+        // Test with a date 14 months in the future
+        final targetMonth = now.month + 2;
+        final targetYear = now.year + 1 + (targetMonth > 12 ? 1 : 0);
+        final adjustedMonth = targetMonth > 12 ? targetMonth - 12 : targetMonth;
+        final future = DateTime(targetYear, adjustedMonth, now.day);
+        expect(DateHelpers.monthsUntil(future), 14);
       });
     });
 
