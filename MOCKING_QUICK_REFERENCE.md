@@ -305,6 +305,22 @@ when(mock.method()).thenAnswer((_) async => data);
 
 ---
 
+### ❌ DON'T: Use thenReturn with FakePostgrestBuilder
+```dart
+// ❌ BAD - FakePostgrestBuilder implements then(), making it Future-like
+when(mockDatabase.select(any)).thenReturn(FakePostgrestBuilder(data));
+```
+
+### ✅ DO: Use thenAnswer with FakePostgrestBuilder
+```dart
+// ✅ GOOD - Always use thenAnswer for Future-like objects
+when(mockDatabase.select(any)).thenAnswer((_) => FakePostgrestBuilder(data));
+```
+
+**Why?** `FakePostgrestBuilder` implements the `then()` method, which makes it a "Future-like" or "thenable" object. Mockito requires `thenAnswer` (not `thenReturn`) for any object that implements `then()`.
+
+---
+
 ### ❌ DON'T: Create test data manually
 ```dart
 // ❌ BAD
