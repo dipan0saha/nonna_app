@@ -63,16 +63,11 @@ class RegistryHighlightsState {
 /// Registry Highlights provider
 ///
 /// Manages registry highlights with priority sorting and purchase status.
-class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-
-  RegistryHighlightsNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        super(const RegistryHighlightsState());
+class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
+  @override
+  RegistryHighlightsState build() {
+    return const RegistryHighlightsState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'registry_highlights';
@@ -156,7 +151,7 @@ class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> 
 
   /// Fetch registry items from database
   Future<List<RegistryItem>> _fetchFromDatabase(String babyProfileId) async {
-    final response = await _databaseService
+    final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -180,7 +175,7 @@ class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> 
     for (final item in items) {
       try {
         // Fetch purchases for this item
-        final response = await _databaseService
+        final response = await ref.read(databaseServiceProvider)
             .select(SupabaseTables.registryPurchases)
             .eq(SupabaseTables.registryItemId, item.id)
             .isNull(SupabaseTables.deletedAt);
@@ -217,11 +212,11 @@ class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> 
   Future<List<RegistryItemWithStatus>?> _loadFromCache(
     String babyProfileId,
   ) async {
-    if (!_cacheService.isInitialized) return null;
+    if (!ref.read(cacheServiceProvider).isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await ref.read(cacheServiceProvider).get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -249,7 +244,7 @@ class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> 
     String babyProfileId,
     List<RegistryItemWithStatus> items,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    if (!ref.read(cacheServiceProvider).isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
@@ -260,7 +255,7 @@ class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> 
           'purchases': itemWithStatus.purchases.map((p) => p.toJson()).toList(),
         };
       }).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await ref.read(cacheServiceProvider).put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -280,15 +275,7 @@ class RegistryHighlightsNotifier extends StateNotifier<RegistryHighlightsState> 
 /// final notifier = ref.read(registryHighlightsProvider.notifier);
 /// await notifier.fetchHighlights(babyProfileId: 'abc');
 /// ```
-final registryHighlightsProvider = StateNotifierProvider.autoDispose<
+final registryHighlightsProvider = NotifierProvider.autoDispose<
     RegistryHighlightsNotifier, RegistryHighlightsState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-
-    return RegistryHighlightsNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-    );
-  },
+  RegistryHighlightsNotifier.new,
 );

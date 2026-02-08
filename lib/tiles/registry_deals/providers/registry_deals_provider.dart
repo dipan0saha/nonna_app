@@ -51,19 +51,14 @@ class RegistryDealsState {
 /// Registry Deals provider
 ///
 /// Manages registry deals (high priority unpurchased items) with real-time updates.
-class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  RegistryDealsNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const RegistryDealsState());
+class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
+  @override
+  RegistryDealsState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const RegistryDealsState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'registry_deals';
@@ -139,10 +134,7 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscription();
-  }
+
 
   // ==========================================
   // Private Methods
@@ -151,7 +143,7 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
   /// Fetch unpurchased high-priority items from database
   Future<List<RegistryItem>> _fetchFromDatabase(String babyProfileId) async {
     // Get all registry items for this profile
-    final itemsResponse = await _databaseService
+    final itemsResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -167,7 +159,7 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
 
     // Check which items have been purchased
     final itemIds = items.map((item) => item.id).toList();
-    final purchasesResponse = await _databaseService
+    final purchasesResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
         .inFilter(SupabaseTables.registryItemId, itemIds)
         .isNull(SupabaseTables.deletedAt);
@@ -187,11 +179,11 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
 
   /// Load deals from cache
   Future<List<RegistryItem>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    if (!ref.read(cacheServiceProvider).isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await ref.read(cacheServiceProvider).get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -209,12 +201,12 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
     String babyProfileId,
     List<RegistryItem> deals,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    if (!ref.read(cacheServiceProvider).isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = deals.map((item) => item.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await ref.read(cacheServiceProvider).put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -230,7 +222,7 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.registryItems,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -265,7 +257,7 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
@@ -281,22 +273,6 @@ class RegistryDealsNotifier extends StateNotifier<RegistryDealsState> {
 /// await notifier.fetchDeals(babyProfileId: 'abc');
 /// ```
 final registryDealsProvider =
-    StateNotifierProvider.autoDispose<RegistryDealsNotifier, RegistryDealsState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = RegistryDealsNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+    NotifierProvider.autoDispose<RegistryDealsNotifier, RegistryDealsState>(
+  RegistryDealsNotifier.new,
 );
