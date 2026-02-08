@@ -260,7 +260,10 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
       final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.events,
         channelName: channelName,
-        
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
+        },
       );
       
       _subscriptionId = channelName;

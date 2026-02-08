@@ -229,7 +229,10 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
       final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.invitations,
         channelName: channelName,
-        
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
+        },
       );
       
       _subscriptionId = channelName;
