@@ -55,19 +55,7 @@ class NewFollowersState {
 /// New Followers provider
 ///
 /// Manages recent followers with active/removed status tracking and real-time updates.
-class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  NewFollowersNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const NewFollowersState());
+class NewFollowersNotifier extends Notifier<NewFollowersState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'new_followers';
@@ -75,6 +63,14 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
   static const int _recentDaysThreshold = 30; // Show followers from last 30 days
 
   String? _subscriptionId;
+
+  @override
+  NewFollowersState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const NewFollowersState();
+  }
 
   // ==========================================
   // Public Methods
@@ -152,11 +148,6 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscription();
-  }
-
   // ==========================================
   // Private Methods
   // ==========================================
@@ -167,7 +158,7 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
       Duration(days: _recentDaysThreshold),
     );
 
-    final response = await _databaseService
+    final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.babyMemberships)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String())
@@ -182,11 +173,12 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
 
   /// Load followers from cache
   Future<List<BabyMembership>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -204,12 +196,13 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
     String babyProfileId,
     List<BabyMembership> followers,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = followers.map((f) => f.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -225,7 +218,7 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.babyMemberships,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -313,7 +306,7 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
@@ -329,22 +322,6 @@ class NewFollowersNotifier extends StateNotifier<NewFollowersState> {
 /// await notifier.fetchFollowers(babyProfileId: 'abc');
 /// ```
 final newFollowersProvider =
-    StateNotifierProvider.autoDispose<NewFollowersNotifier, NewFollowersState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = NewFollowersNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+    NotifierProvider.autoDispose<NewFollowersNotifier, NewFollowersState>(
+  NewFollowersNotifier.new,
 );

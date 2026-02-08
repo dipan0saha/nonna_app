@@ -60,25 +60,21 @@ class RecentPhotosState {
 /// Recent Photos provider
 ///
 /// Manages recent photos with infinite scroll, thumbnail loading, and real-time updates.
-class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
-  RecentPhotosNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const RecentPhotosState());
+class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
 
   // Configuration
   static const String _cacheKeyPrefix = 'recent_photos';
   static const int _pageSize = 30;
 
   String? _subscriptionId;
+
+  @override
+  RecentPhotosState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscription();
+    });
+    return const RecentPhotosState();
+  }
 
   // ==========================================
   // Public Methods
@@ -182,11 +178,6 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
     );
   }
 
-  /// Dispose and cleanup subscriptions
-  void dispose() {
-    _cancelRealtimeSubscription();
-  }
-
   // ==========================================
   // Private Methods
   // ==========================================
@@ -197,7 +188,7 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
     required int limit,
     required int offset,
   }) async {
-    final response = await _databaseService
+    final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -211,11 +202,12 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
 
   /// Load photos from cache
   Future<List<Photo>?> _loadFromCache(String babyProfileId) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -230,12 +222,13 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
 
   /// Save photos to cache
   Future<void> _saveToCache(String babyProfileId, List<Photo> photos) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = photos.map((photo) => photo.toJson()).toList();
-      await _cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
+      await cacheService.put(cacheKey, jsonData, ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
     }
@@ -251,7 +244,7 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await _realtimeService.subscribe(
+      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.photos,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -302,7 +295,7 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
@@ -318,22 +311,6 @@ class RecentPhotosNotifier extends StateNotifier<RecentPhotosState> {
 /// await notifier.fetchPhotos(babyProfileId: 'abc');
 /// ```
 final recentPhotosProvider =
-    StateNotifierProvider.autoDispose<RecentPhotosNotifier, RecentPhotosState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = RecentPhotosNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+    NotifierProvider.autoDispose<RecentPhotosNotifier, RecentPhotosState>(
+  RecentPhotosNotifier.new,
 );
