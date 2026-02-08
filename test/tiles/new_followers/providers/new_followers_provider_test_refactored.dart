@@ -37,13 +37,12 @@ void main() {
       mockCache = MockCacheService();
       mockRealtime = MockRealtimeService();
 
-      // Setup default mock behaviors
-      // Note: Set cache to initialized to avoid triggering property access
-      // during other mock setups (avoids "Cannot call when within a stub response")
+      // Setup cache mock FIRST, before any other operations that might access it
+      // This prevents "Cannot call when within a stub response" errors
       when(mockCache.isInitialized).thenReturn(true);
       when(mockCache.get(any)).thenAnswer((_) async => null);
       when(mockCache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async => Future.value());
+          .thenAnswer((_) async {});
 
       // Setup realtime service to return empty stream by default
       when(mockRealtime.subscribe(
@@ -99,7 +98,7 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockDatabase.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabase.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
         final fetchFuture = container
@@ -245,8 +244,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabase.select(any)).thenReturn(
-          FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
+        when(mockDatabase.select(any)).thenAnswer(
+          (_) => FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
         );
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
@@ -275,7 +274,6 @@ void main() {
         when(mockCache.get<List<Map<String, dynamic>>>(
                 'new_followers_$testBabyProfileId'))
             .thenAnswer((_) async => cachedJson);
-        when(mockCache.isInitialized).thenReturn(true);
 
         // Act
         final notifier = container.read(newFollowersProvider.notifier);
