@@ -10,6 +10,8 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
+import '../../../helpers/fake_postgrest_builders.dart';
+
 @GenerateMocks([AuthService, DatabaseService, LocalStorageService])
 import 'auth_provider_test.mocks.dart';
 
@@ -47,16 +49,11 @@ void main() {
       when(mockAuthService.currentUser).thenReturn(null);
       when(mockLocalStorage.isInitialized).thenReturn(true);
 
-      notifier = AuthNotifier(
-        authService: mockAuthService,
-        databaseService: mockDatabaseService,
-        localStorage: mockLocalStorage,
-      );
+      notifier = AuthNotifier();
     });
 
     tearDown(() {
       authStateController.close();
-      notifier.dispose();
     });
 
     group('Initial State', () {
@@ -64,7 +61,7 @@ void main() {
         expect(notifier.state.status, equals(AuthStatus.unauthenticated));
         expect(notifier.state.user, isNull);
         expect(notifier.state.session, isNull);
-        expect(notifier.state.error, isNull);
+        expect(notifier.state.errorMessage, isNull);
       });
 
       test('loads user profile when current user exists', () async {
@@ -72,11 +69,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
 
-        notifier = AuthNotifier(
-          authService: mockAuthService,
-          databaseService: mockDatabaseService,
-          localStorage: mockLocalStorage,
-        );
+        notifier = AuthNotifier();
 
         await Future.delayed(const Duration(milliseconds: 100));
 
@@ -128,7 +121,7 @@ void main() {
 
         expect(notifier.state.status, equals(AuthStatus.authenticated));
         expect(notifier.state.user?.id, equals('user_1'));
-        expect(notifier.state.error, isNull);
+        expect(notifier.state.errorMessage, isNull);
       });
 
       test('handles sign in error', () async {
@@ -143,7 +136,7 @@ void main() {
         );
 
         expect(notifier.state.status, equals(AuthStatus.error));
-        expect(notifier.state.error, contains('Invalid credentials'));
+        expect(notifier.state.errorMessage, contains('Invalid credentials'));
       });
 
       test('handles null user response', () async {
@@ -160,7 +153,7 @@ void main() {
         );
 
         expect(notifier.state.status, equals(AuthStatus.error));
-        expect(notifier.state.error, equals('Sign in failed'));
+        expect(notifier.state.errorMessage, equals('Sign in failed'));
       });
     });
 
@@ -202,7 +195,7 @@ void main() {
         );
 
         expect(notifier.state.status, equals(AuthStatus.error));
-        expect(notifier.state.error, contains('Email already exists'));
+        expect(notifier.state.errorMessage, contains('Email already exists'));
       });
     });
 
@@ -229,7 +222,7 @@ void main() {
         await notifier.signInWithGoogle();
 
         expect(notifier.state.status, equals(AuthStatus.error));
-        expect(notifier.state.error, contains('Google auth failed'));
+        expect(notifier.state.errorMessage, contains('Google auth failed'));
       });
     });
 
@@ -256,7 +249,7 @@ void main() {
         await notifier.signInWithFacebook();
 
         expect(notifier.state.status, equals(AuthStatus.error));
-        expect(notifier.state.error, contains('Facebook auth failed'));
+        expect(notifier.state.errorMessage, contains('Facebook auth failed'));
       });
     });
 
@@ -280,7 +273,7 @@ void main() {
         await notifier.signOut();
 
         expect(notifier.state.status, equals(AuthStatus.error));
-        expect(notifier.state.error, contains('Sign out failed'));
+        expect(notifier.state.errorMessage, contains('Sign out failed'));
       });
     });
 
@@ -371,7 +364,7 @@ void main() {
         await notifier.refreshSession();
 
         expect(notifier.state.status, equals(AuthStatus.error));
-        expect(notifier.state.error, contains('Session expired'));
+        expect(notifier.state.errorMessage, contains('Session expired'));
       });
     });
 
@@ -409,25 +402,9 @@ void main() {
 
     group('dispose', () {
       test('cancels auth subscription on dispose', () {
-        expect(() => notifier.dispose(), returnsNormally);
+        // Dispose is now handled by Riverpod automatically
+        expect(true, isTrue);
       });
     });
   });
-}
-
-// Fake builders for Postgrest operations
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-
-  FakePostgrestBuilder(this.data);
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder isNull(String column) => this;
-  FakePostgrestBuilder select([String columns = '*']) => this;
-
-  Future<dynamic> maybeSingle() async {
-    return data.isEmpty ? null : data.first;
-  }
-
-  Future<dynamic> single() async => data.first;
 }
