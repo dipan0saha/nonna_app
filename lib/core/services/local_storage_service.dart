@@ -32,19 +32,21 @@ class LocalStorageService {
   // ==========================================
 
   /// Initialize the local storage service
-  Future<void> initialize() async {
+  Future<void> initialize({bool testMode = false}) async {
     if (_isInitialized) {
       debugPrint('⚠️  LocalStorageService already initialized');
       return;
     }
 
     try {
-      _prefs = await SharedPreferences.getInstance();
-      _secureStorage = const FlutterSecureStorage(
-        aOptions: AndroidOptions(
-          encryptedSharedPreferences: true,
-        ),
-      );
+      if (!testMode) {
+        _prefs = await SharedPreferences.getInstance();
+        _secureStorage = const FlutterSecureStorage(
+          aOptions: AndroidOptions(
+            encryptedSharedPreferences: true,
+          ),
+        );
+      }
 
       _isInitialized = true;
 

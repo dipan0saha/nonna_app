@@ -1,4 +1,6 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/analytics_service.dart';
 import '../services/auth_service.dart';
@@ -56,7 +58,10 @@ class ServiceLocator {
   ///
   /// Registers all core services for manual dependency injection.
   /// Must be called before using [get] method.
-  static Future<void> initialize() async {
+  static Future<void> initialize(
+      [SupabaseClient? supabaseClient,
+      FirebaseAnalytics? analytics,
+      bool testMode = false]) async {
     if (_isInitialized) {
       debugPrint('⚠️  ServiceLocator already initialized');
       return;
@@ -66,13 +71,13 @@ class ServiceLocator {
       debugPrint('🔧 Initializing ServiceLocator...');
 
       // Register services in dependency order
-      _registerCoreServices();
-      _registerDataServices();
-      _registerRealtimeServices();
-      _registerMonitoringServices();
+      _registerCoreServices(supabaseClient);
+      _registerDataServices(supabaseClient);
+      _registerRealtimeServices(supabaseClient);
+      _registerMonitoringServices(analytics);
 
       // Initialize services that require async initialization
-      await _initializeAsyncServices();
+      await _initializeAsyncServices(testMode);
 
       _isInitialized = true;
       debugPrint('✅ ServiceLocator initialized successfully');
@@ -84,42 +89,42 @@ class ServiceLocator {
   }
 
   /// Register core services
-  static void _registerCoreServices() {
-    register<AuthService>(AuthService());
+  static void _registerCoreServices([SupabaseClient? supabaseClient]) {
+    register<AuthService>(AuthService(supabaseClient));
   }
 
   /// Register data services
-  static void _registerDataServices() {
-    register<DatabaseService>(DatabaseService());
+  static void _registerDataServices([SupabaseClient? supabaseClient]) {
+    register<DatabaseService>(DatabaseService(supabaseClient));
     register<CacheService>(CacheService());
     register<LocalStorageService>(LocalStorageService());
-    register<StorageService>(StorageService());
+    register<StorageService>(StorageService(supabaseClient));
   }
 
   /// Register realtime and notification services
-  static void _registerRealtimeServices() {
-    register<RealtimeService>(RealtimeService());
+  static void _registerRealtimeServices([SupabaseClient? supabaseClient]) {
+    register<RealtimeService>(RealtimeService(supabaseClient));
     register<NotificationService>(NotificationService.instance);
   }
 
   /// Register monitoring and analytics services
-  static void _registerMonitoringServices() {
-    register<AnalyticsService>(AnalyticsService.instance);
+  static void _registerMonitoringServices([FirebaseAnalytics? analytics]) {
+    register<AnalyticsService>(AnalyticsService(analytics));
     register<ObservabilityService>(ObservabilityService());
   }
 
   /// Initialize services that require async initialization
-  static Future<void> _initializeAsyncServices() async {
+  static Future<void> _initializeAsyncServices(bool testMode) async {
     // Initialize cache service
     final cacheService = get<CacheService>();
     if (!cacheService.isInitialized) {
-      await cacheService.initialize();
+      await cacheService.initialize(testMode: testMode);
     }
 
     // Initialize local storage service
     final localStorageService = get<LocalStorageService>();
     if (!localStorageService.isInitialized) {
-      await localStorageService.initialize();
+      await localStorageService.initialize(testMode: testMode);
     }
   }
 

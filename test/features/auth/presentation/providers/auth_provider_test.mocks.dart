@@ -520,10 +520,11 @@ class MockLocalStorageService extends _i1.Mock
       ) as bool);
 
   @override
-  _i5.Future<void> initialize() => (super.noSuchMethod(
+  _i5.Future<void> initialize({bool? testMode = false}) => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
+          {#testMode: testMode},
         ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),

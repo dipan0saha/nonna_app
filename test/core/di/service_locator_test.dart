@@ -4,11 +4,18 @@ import 'package:nonna_app/core/services/auth_service.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 
+import '../../mocks/supabase_mocks.mocks.dart';
+
 void main() {
   group('ServiceLocator Tests', () {
+    late MockSupabaseClient mockSupabaseClient;
+    late MockFirebaseAnalytics mockFirebaseAnalytics;
+
     setUp(() {
       // Reset before each test
       ServiceLocator.reset();
+      mockSupabaseClient = MockSupabaseClient();
+      mockFirebaseAnalytics = MockFirebaseAnalytics();
     });
 
     tearDown(() {
@@ -22,20 +29,23 @@ void main() {
       });
 
       test('initialize() sets isInitialized to true', () async {
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
         expect(ServiceLocator.isInitialized, isTrue);
       });
 
       test('initialize() can be called multiple times safely', () async {
-        await ServiceLocator.initialize();
-        await ServiceLocator.initialize(); // Should not throw
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
+        await ServiceLocator.initialize(mockSupabaseClient,
+            mockFirebaseAnalytics, true); // Should not throw
         expect(ServiceLocator.isInitialized, isTrue);
       });
     });
 
     group('Service Registration', () {
       test('register() adds service to registry', () {
-        final testService = AuthService();
+        final testService = AuthService(mockSupabaseClient);
         ServiceLocator.register<AuthService>(testService);
 
         final retrieved = ServiceLocator.get<AuthService>();
@@ -43,7 +53,8 @@ void main() {
       });
 
       test('registerLazy() adds factory to registry', () {
-        ServiceLocator.registerLazy<AuthService>(() => AuthService());
+        ServiceLocator.registerLazy<AuthService>(
+            () => AuthService(mockSupabaseClient));
 
         final service = ServiceLocator.get<AuthService>();
         expect(service, isA<AuthService>());
@@ -53,7 +64,7 @@ void main() {
         var creationCount = 0;
         ServiceLocator.registerLazy<AuthService>(() {
           creationCount++;
-          return AuthService();
+          return AuthService(mockSupabaseClient);
         });
 
         final service1 = ServiceLocator.get<AuthService>();
@@ -64,7 +75,7 @@ void main() {
       });
 
       test('unregister() removes service from registry', () {
-        final testService = AuthService();
+        final testService = AuthService(mockSupabaseClient);
         ServiceLocator.register<AuthService>(testService);
 
         ServiceLocator.unregister<AuthService>();
@@ -78,7 +89,8 @@ void main() {
 
     group('Service Retrieval', () {
       test('get() returns registered service', () async {
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
         final service = ServiceLocator.get<AuthService>();
         expect(service, isA<AuthService>());
       });
@@ -96,7 +108,8 @@ void main() {
       });
 
       test('tryGet() returns service when registered', () async {
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
         final service = ServiceLocator.tryGet<AuthService>();
         expect(service, isA<AuthService>());
       });
@@ -109,7 +122,7 @@ void main() {
       });
 
       test('getTestOverrides() returns overrides for provided mocks', () {
-        final mockAuth = AuthService();
+        final mockAuth = AuthService(mockSupabaseClient);
 
         final overrides = ServiceLocator.getTestOverrides(
           mockAuth: mockAuth,
@@ -120,8 +133,8 @@ void main() {
       });
 
       test('getTestOverrides() supports multiple service overrides', () {
-        final mockAuth = AuthService();
-        final mockDatabase = DatabaseService();
+        final mockAuth = AuthService(mockSupabaseClient);
+        final mockDatabase = DatabaseService(mockSupabaseClient);
         final mockCache = CacheService();
 
         final overrides = ServiceLocator.getTestOverrides(
@@ -147,7 +160,8 @@ void main() {
 
     group('Reset and Dispose', () {
       test('reset() clears all services', () async {
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
         expect(ServiceLocator.isInitialized, isTrue);
 
         ServiceLocator.reset();
@@ -160,12 +174,14 @@ void main() {
       });
 
       test('dispose() can be called safely', () async {
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
         await ServiceLocator.dispose(); // Should not throw
       });
 
       test('dispose() cleans up initialized services', () async {
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
 
         // Get services to ensure they're initialized
         final cacheService = ServiceLocator.get<CacheService>();
@@ -181,7 +197,8 @@ void main() {
 
     group('Service Dependencies', () {
       test('services are registered in correct order', () async {
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
 
         // Verify all expected services are available
         expect(ServiceLocator.tryGet<AuthService>(), isNotNull);
@@ -190,7 +207,8 @@ void main() {
       });
 
       test('async services are initialized', () async {
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
 
         final cacheService = ServiceLocator.get<CacheService>();
 
@@ -214,12 +232,14 @@ void main() {
         // it doesn't leave the ServiceLocator in a bad state
 
         // First successful initialization
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
         expect(ServiceLocator.isInitialized, isTrue);
 
         // Reset and try again
         ServiceLocator.reset();
-        await ServiceLocator.initialize();
+        await ServiceLocator.initialize(
+            mockSupabaseClient, mockFirebaseAnalytics, true);
         expect(ServiceLocator.isInitialized, isTrue);
       });
     });

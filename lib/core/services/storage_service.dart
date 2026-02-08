@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,11 +16,12 @@ import 'analytics_service.dart';
 /// Storage service for managing file uploads/downloads
 /// Handles photo compression, upload to Supabase Storage, and URL generation
 class StorageService {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  final SupabaseClient _supabase;
   final ImagePicker _picker = ImagePicker();
   late final AuthInterceptor _authInterceptor;
 
-  StorageService() {
+  StorageService([SupabaseClient? client])
+      : _supabase = client ?? Supabase.instance.client {
     _authInterceptor = AuthInterceptor(_supabase);
   }
 

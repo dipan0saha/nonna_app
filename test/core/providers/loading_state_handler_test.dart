@@ -1,12 +1,23 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/providers/loading_state_handler.dart';
 
 void main() {
   group('LoadingStateHandler', () {
+    late ProviderContainer container;
     late LoadingStateHandler loadingHandler;
 
     setUp(() {
-      loadingHandler = LoadingStateHandler();
+      // Create a ProviderContainer for testing
+      container = ProviderContainer();
+
+      // Get the notifier from the container (properly initialized)
+      loadingHandler = container.read(loadingStateHandlerProvider.notifier);
+    });
+
+    tearDown(() {
+      // Dispose the container after each test
+      container.dispose();
     });
 
     group('Initial State', () {
@@ -495,11 +506,14 @@ void main() {
         loadingHandler.stopLoading('test');
       });
 
-      test('handles zero timeout', () {
+      test('handles zero timeout', () async {
         loadingHandler.startLoading(
           'test',
           timeout: Duration.zero,
         );
+
+        // Allow zero-duration timer to fire
+        await Future.delayed(Duration.zero);
 
         // Should immediately timeout
         expect(loadingHandler.isLoading('test'), isFalse);

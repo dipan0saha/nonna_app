@@ -25,10 +25,11 @@ class DatabaseException implements Exception {
 ///
 /// Provides query builder wrapper, pagination helpers, and error mapping
 class DatabaseService {
-  final SupabaseClient _client = SupabaseClientManager.instance;
+  final SupabaseClient _client;
   late final AuthInterceptor _authInterceptor;
 
-  DatabaseService() {
+  DatabaseService([SupabaseClient? client])
+      : _client = client ?? SupabaseClientManager.instance {
     _authInterceptor = AuthInterceptor(_client);
   }
 

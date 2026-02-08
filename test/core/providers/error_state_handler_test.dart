@@ -1,12 +1,23 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/providers/error_state_handler.dart';
 
 void main() {
   group('ErrorStateHandler', () {
+    late ProviderContainer container;
     late ErrorStateHandler errorHandler;
 
     setUp(() {
-      errorHandler = ErrorStateHandler();
+      // Create a ProviderContainer for testing
+      container = ProviderContainer();
+
+      // Get the notifier from the container (properly initialized)
+      errorHandler = container.read(errorStateHandlerProvider.notifier);
+    });
+
+    tearDown(() {
+      // Dispose the container after each test
+      container.dispose();
     });
 
     group('Initial State', () {
@@ -250,6 +261,9 @@ void main() {
         // First retry (will fail)
         await errorHandler.retry('test');
 
+        // Allow async retry operation to complete
+        await Future.delayed(const Duration(milliseconds: 10));
+
         final errorInfo = errorHandler.getError('test');
         expect(errorInfo?.retryAttempts, greaterThan(0));
       });
@@ -268,8 +282,8 @@ void main() {
         // Retry multiple times
         for (var i = 0; i < 5; i++) {
           await errorHandler.retry('test');
-          // Small delay to allow async operations
-          await Future.delayed(const Duration(milliseconds: 10));
+          // Allow retry operation and delays to complete
+          await Future.delayed(const Duration(seconds: 1));
         }
 
         // Should stop at max attempts (3)

@@ -39,10 +39,11 @@ class MockCacheService extends _i1.Mock implements _i2.CacheService {
       ) as bool);
 
   @override
-  _i3.Future<void> initialize() => (super.noSuchMethod(
+  _i3.Future<void> initialize({bool? testMode = false}) => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
+          {#testMode: testMode},
         ),
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
@@ -221,10 +222,11 @@ class MockLocalStorageService extends _i1.Mock
       ) as bool);
 
   @override
-  _i3.Future<void> initialize() => (super.noSuchMethod(
+  _i3.Future<void> initialize({bool? testMode = false}) => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
+          {#testMode: testMode},
         ),
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),

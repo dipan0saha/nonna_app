@@ -1,0 +1,13 @@
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:00 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/l10n/localization_test.dart

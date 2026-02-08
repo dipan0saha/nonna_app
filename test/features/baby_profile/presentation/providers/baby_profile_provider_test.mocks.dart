@@ -331,10 +331,11 @@ class MockCacheService extends _i1.Mock implements _i6.CacheService {
       ) as bool);
 
   @override
-  _i5.Future<void> initialize() => (super.noSuchMethod(
+  _i5.Future<void> initialize({bool? testMode = false}) => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
+          {#testMode: testMode},
         ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -22,8 +23,8 @@ void main() {
       // Mock the storage getter
       when(mockSupabaseClient.storage).thenReturn(mockStorage);
 
-      // Initialize service
-      storageService = StorageService();
+      // Initialize service with mock client
+      storageService = StorageService(mockSupabaseClient);
     });
 
     group('File Validation', () {

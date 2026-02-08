@@ -18,12 +18,16 @@ class RealtimeService {
   bool _isConnected = false;
 
   /// Constructor - initializes client from SupabaseClientManager or fallback to Supabase.instance
-  RealtimeService() {
-    try {
-      _client = SupabaseClientManager.instance;
-    } catch (e) {
-      // Fallback for tests where SupabaseClientManager may not be initialized
-      _client = Supabase.instance.client;
+  RealtimeService([SupabaseClient? client]) {
+    if (client != null) {
+      _client = client;
+    } else {
+      try {
+        _client = SupabaseClientManager.instance;
+      } catch (e) {
+        // Fallback for tests where SupabaseClientManager may not be initialized
+        _client = Supabase.instance.client;
+      }
     }
   }
 

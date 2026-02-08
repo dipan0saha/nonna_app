@@ -26,21 +26,23 @@ class CacheService {
   /// Initialize the cache service
   ///
   /// Must be called before using the service
-  Future<void> initialize() async {
+  Future<void> initialize({bool testMode = false}) async {
     if (_isInitialized) {
       debugPrint('⚠️  CacheService already initialized');
       return;
     }
 
     try {
-      await Hive.initFlutter();
+      if (!testMode) {
+        await Hive.initFlutter();
 
-      _cacheBox = await Hive.openBox(_cacheBoxName);
-      _metadataBox = await Hive.openBox<Map>(_metadataBoxName);
+        _cacheBox = await Hive.openBox(_cacheBoxName);
+        _metadataBox = await Hive.openBox<Map>(_metadataBoxName);
+      }
 
       _isInitialized = true;
 
-      debugPrint('✅ CacheService initialized');
+      debugPrint('✅ CacheService initialized${testMode ? ' (test mode)' : ''}');
     } catch (e) {
       debugPrint('❌ Error initializing CacheService: $e');
       rethrow;

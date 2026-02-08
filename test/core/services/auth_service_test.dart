@@ -21,8 +21,8 @@ void main() {
       // Mock the auth getter
       when(mockSupabaseClient.auth).thenReturn(mockAuth);
 
-      // Initialize service
-      authService = AuthService();
+      // Initialize service with mock client
+      authService = AuthService(mockSupabaseClient);
     });
 
     group('currentUser', () {

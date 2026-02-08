@@ -1,27 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+@GenerateMocks([SupabaseClient, RealtimeChannel])
+// ignore: unused_import
+import 'realtime_service_test.mocks.dart';
 
 void main() {
   group('RealtimeService', () {
     late RealtimeService realtimeService;
+    late MockSupabaseClient mockSupabaseClient;
 
-    setUp(() async {
-      // Initialize Supabase for testing
-      try {
-        await Supabase.initialize(
-          url: 'https://test.supabase.co',
-          anonKey: 'test-anon-key',
-        );
-      } catch (e) {
-        // Already initialized, ignore
-      }
+    setUp(() {
+      mockSupabaseClient = MockSupabaseClient();
 
-      // Note: SupabaseClientManager.initialize() reads from .env file
-      // For tests, we use the Supabase.instance directly via the setUp above
-      // The RealtimeService will need to be mocked or refactored for proper testing
-      // For now, we skip these tests as they require proper mocking
-      realtimeService = RealtimeService();
+      // Initialize service with mock client
+      realtimeService = RealtimeService(mockSupabaseClient);
     });
 
     tearDown(() async {

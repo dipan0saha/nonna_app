@@ -10,7 +10,10 @@ import 'app_initialization_service.dart';
 /// Authentication service for managing user authentication
 /// Handles email/password, Google OAuth, and Facebook OAuth
 class AuthService {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  final SupabaseClient _supabase;
+
+  AuthService([SupabaseClient? client])
+      : _supabase = client ?? Supabase.instance.client;
 
   // Google Sign-In configuration
   final GoogleSignIn _googleSignIn = GoogleSignIn(

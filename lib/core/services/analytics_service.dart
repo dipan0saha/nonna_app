@@ -6,13 +6,17 @@ import 'observability_service.dart';
 /// Analytics service wrapper for Firebase Analytics
 /// Provides methods to track user events and properties
 class AnalyticsService {
-  static final AnalyticsService _instance = AnalyticsService._internal();
-  factory AnalyticsService() => _instance;
-  AnalyticsService._internal();
+  static AnalyticsService? _instance;
+  factory AnalyticsService([FirebaseAnalytics? analytics]) {
+    _instance ??= AnalyticsService._internal(analytics);
+    return _instance!;
+  }
+  AnalyticsService._internal([FirebaseAnalytics? analytics])
+      : _analytics = analytics ?? FirebaseAnalytics.instance;
 
-  static AnalyticsService get instance => _instance;
+  static AnalyticsService get instance => AnalyticsService();
 
-  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
+  final FirebaseAnalytics _analytics;
   bool _isEnabled = false;
 
   /// Get Firebase Analytics observer for navigation tracking

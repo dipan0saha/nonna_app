@@ -92,7 +92,12 @@ class ErrorStateHandler extends Notifier<ErrorState> {
 
     // Add to state
     final errors = Map<String, ErrorInfo>.from(state.errors);
-    errors[errorKey] = errorInfo;
+    final existingError = errors[errorKey];
+
+    // Preserve retry attempts from existing error
+    final retryAttempts = existingError?.retryAttempts ?? 0;
+
+    errors[errorKey] = errorInfo.copyWith(retryAttempts: retryAttempts);
 
     // Add to history
     final history = List<ErrorInfo>.from(state.history);
