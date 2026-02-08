@@ -179,10 +179,6 @@ void main() {
           id: 'recent',
           createdAt: DateTime.now().subtract(const Duration(days: 3)),
         );
-        final oldActivity = sampleActivity.copyWith(
-          id: 'old',
-          createdAt: DateTime.now().subtract(const Duration(days: 10)),
-        );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any)).thenReturn(

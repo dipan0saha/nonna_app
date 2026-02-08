@@ -6,9 +6,6 @@ import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/models/registry_item.dart';
 import '../../../../core/models/registry_purchase.dart';
-import '../../../../core/services/cache_service.dart';
-import '../../../../core/services/database_service.dart';
-import '../../../../core/services/realtime_service.dart';
 
 /// Registry Screen Provider for managing registry state
 ///
@@ -106,7 +103,6 @@ class RegistryScreenState {
         filtered = items.where((i) => !i.isPurchased).toList();
         break;
       case RegistryFilter.all:
-      default:
         break;
     }
 
@@ -250,8 +246,8 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     final itemsResponse = await databaseService
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
-        .order(SupabaseTables.priority, ascending: false);
+        .is_(SupabaseTables.deletedAt, null)
+        .order('priority', ascending: false);
 
     final items = (itemsResponse as List)
         .map((json) => RegistryItem.fromJson(json as Map<String, dynamic>))
@@ -344,21 +340,34 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
       final realtimeService = ref.read(realtimeServiceProvider);
 
       // Subscribe to registry items changes
-      _itemsSubscriptionId = await realtimeService.subscribe(
+      final itemsChannelName = 'registry-items-channel-$babyProfileId';
+      final itemsStream = realtimeService.subscribe(
         table: SupabaseTables.registryItems,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleItemsUpdate(payload, babyProfileId);
+        channelName: itemsChannelName,
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
         },
       );
+      
+      _itemsSubscriptionId = itemsChannelName;
+      
+      itemsStream.listen((payload) {
+        _handleItemsUpdate(payload, babyProfileId);
+      });
 
       // Subscribe to purchases changes
-      _purchasesSubscriptionId = await realtimeService.subscribe(
+      final purchasesChannelName = 'registry-purchases-channel-$babyProfileId';
+      final purchasesStream = realtimeService.subscribe(
         table: SupabaseTables.registryPurchases,
-        callback: (payload) {
-          _handlePurchasesUpdate(payload, babyProfileId);
-        },
+        channelName: purchasesChannelName,
       );
+      
+      _purchasesSubscriptionId = purchasesChannelName;
+      
+      purchasesStream.listen((payload) {
+        _handlePurchasesUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscriptions setup for registry');
     } catch (e) {

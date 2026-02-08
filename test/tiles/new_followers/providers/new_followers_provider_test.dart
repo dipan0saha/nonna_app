@@ -144,10 +144,6 @@ void main() {
           id: 'user_1',
           createdAt: DateTime.now().subtract(const Duration(days: 3)),
         );
-        final oldFollower = sampleFollower.copyWith(
-          id: 'user_2',
-          createdAt: DateTime.now().subtract(const Duration(days: 60)),
-        );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(

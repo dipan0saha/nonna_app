@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'cache_service.dart';
 import 'local_storage_service.dart';
-import 'persistence_strategies.dart';
 import 'supabase_service.dart';
 
 /// State Persistence Manager for Riverpod
@@ -153,14 +151,14 @@ class StatePersistenceManager {
       if (_diskStrategy != null &&
           (strategy == PersistenceLevel.disk ||
               strategy == PersistenceLevel.all)) {
-        await _diskStrategy!.save(key, data, ttl: ttl);
+        await _diskStrategy.save(key, data, ttl: ttl);
       }
 
       // Save to cloud if available and requested
       if (_cloudStrategy != null &&
           (strategy == PersistenceLevel.cloud ||
               strategy == PersistenceLevel.all)) {
-        await _cloudStrategy!.save(key, data, ttl: ttl);
+        await _cloudStrategy.save(key, data, ttl: ttl);
       }
 
       debugPrint('💾 State saved: $key');
@@ -190,11 +188,11 @@ class StatePersistenceManager {
 
       // Fallback order: cloud → disk → memory
       if (_cloudStrategy != null) {
-        final cloudData = await _cloudStrategy!.load(key);
+        final cloudData = await _cloudStrategy.load(key);
         if (cloudData != null) {
           // Sync to lower levels
           if (_diskStrategy != null) {
-            await _diskStrategy!.save(key, cloudData);
+            await _diskStrategy.save(key, cloudData);
           }
           await _memoryStrategy.save(key, cloudData);
           return cloudData;
@@ -202,7 +200,7 @@ class StatePersistenceManager {
       }
 
       if (_diskStrategy != null) {
-        final diskData = await _diskStrategy!.load(key);
+        final diskData = await _diskStrategy.load(key);
         if (diskData != null) {
           // Sync to memory
           await _memoryStrategy.save(key, diskData);
@@ -236,13 +234,13 @@ class StatePersistenceManager {
       if (_diskStrategy != null &&
           (strategy == PersistenceLevel.disk ||
               strategy == PersistenceLevel.all)) {
-        await _diskStrategy!.delete(key);
+        await _diskStrategy.delete(key);
       }
 
       if (_cloudStrategy != null &&
           (strategy == PersistenceLevel.cloud ||
               strategy == PersistenceLevel.all)) {
-        await _cloudStrategy!.delete(key);
+        await _cloudStrategy.delete(key);
       }
 
       debugPrint('💾 State deleted: $key');
@@ -265,10 +263,10 @@ class StatePersistenceManager {
       if (strategy == null) {
         // Check any strategy
         if (await _memoryStrategy.has(key)) return true;
-        if (_diskStrategy != null && await _diskStrategy!.has(key)) {
+        if (_diskStrategy != null && await _diskStrategy.has(key)) {
           return true;
         }
-        if (_cloudStrategy != null && await _cloudStrategy!.has(key)) {
+        if (_cloudStrategy != null && await _cloudStrategy.has(key)) {
           return true;
         }
         return false;
@@ -298,13 +296,13 @@ class StatePersistenceManager {
       if (_diskStrategy != null &&
           (strategy == PersistenceLevel.disk ||
               strategy == PersistenceLevel.all)) {
-        await _diskStrategy!.clear();
+        await _diskStrategy.clear();
       }
 
       if (_cloudStrategy != null &&
           (strategy == PersistenceLevel.cloud ||
               strategy == PersistenceLevel.all)) {
-        await _cloudStrategy!.clear();
+        await _cloudStrategy.clear();
       }
 
       debugPrint('💾 All state cleared');
@@ -327,12 +325,12 @@ class StatePersistenceManager {
           return await _memoryStrategy.getAllKeys();
         case PersistenceLevel.disk:
           if (_diskStrategy != null) {
-            return await _diskStrategy!.getAllKeys();
+            return await _diskStrategy.getAllKeys();
           }
           return [];
         case PersistenceLevel.cloud:
           if (_cloudStrategy != null) {
-            return await _cloudStrategy!.getAllKeys();
+            return await _cloudStrategy.getAllKeys();
           }
           return [];
         case PersistenceLevel.all:
@@ -340,10 +338,10 @@ class StatePersistenceManager {
           final keys = <String>{};
           keys.addAll(await _memoryStrategy.getAllKeys());
           if (_diskStrategy != null) {
-            keys.addAll(await _diskStrategy!.getAllKeys());
+            keys.addAll(await _diskStrategy.getAllKeys());
           }
           if (_cloudStrategy != null) {
-            keys.addAll(await _cloudStrategy!.getAllKeys());
+            keys.addAll(await _cloudStrategy.getAllKeys());
           }
           return keys.toList();
       }
@@ -384,17 +382,17 @@ class StatePersistenceManager {
 
         // Sync to disk
         if (_diskStrategy != null) {
-          final hasDisk = await _diskStrategy!.has(key);
+          final hasDisk = await _diskStrategy.has(key);
           if (!hasDisk) {
-            await _diskStrategy!.save(key, data);
+            await _diskStrategy.save(key, data);
           }
         }
 
         // Sync to cloud
         if (_cloudStrategy != null) {
-          final hasCloud = await _cloudStrategy!.has(key);
+          final hasCloud = await _cloudStrategy.has(key);
           if (!hasCloud) {
-            await _cloudStrategy!.save(key, data);
+            await _cloudStrategy.save(key, data);
           }
         }
       }
@@ -428,7 +426,7 @@ class StatePersistenceManager {
     if (!_isInitialized) return;
 
     if (_memoryStrategy is MemoryPersistenceStrategy) {
-      (_memoryStrategy as MemoryPersistenceStrategy).evict();
+      _memoryStrategy.evict();
     }
   }
 
@@ -480,22 +478,22 @@ class StatePersistenceManager {
         return await _memoryStrategy.load(key);
       case PersistenceLevel.disk:
         if (_diskStrategy != null) {
-          return await _diskStrategy!.load(key);
+          return await _diskStrategy.load(key);
         }
         return null;
       case PersistenceLevel.cloud:
         if (_cloudStrategy != null) {
-          return await _cloudStrategy!.load(key);
+          return await _cloudStrategy.load(key);
         }
         return null;
       case PersistenceLevel.all:
         // Check all strategies (cloud first)
         if (_cloudStrategy != null) {
-          final data = await _cloudStrategy!.load(key);
+          final data = await _cloudStrategy.load(key);
           if (data != null) return data;
         }
         if (_diskStrategy != null) {
-          final data = await _diskStrategy!.load(key);
+          final data = await _diskStrategy.load(key);
           if (data != null) return data;
         }
         return await _memoryStrategy.load(key);
@@ -511,21 +509,21 @@ class StatePersistenceManager {
         return await _memoryStrategy.has(key);
       case PersistenceLevel.disk:
         if (_diskStrategy != null) {
-          return await _diskStrategy!.has(key);
+          return await _diskStrategy.has(key);
         }
         return false;
       case PersistenceLevel.cloud:
         if (_cloudStrategy != null) {
-          return await _cloudStrategy!.has(key);
+          return await _cloudStrategy.has(key);
         }
         return false;
       case PersistenceLevel.all:
         // Check any strategy
         if (await _memoryStrategy.has(key)) return true;
-        if (_diskStrategy != null && await _diskStrategy!.has(key)) {
+        if (_diskStrategy != null && await _diskStrategy.has(key)) {
           return true;
         }
-        if (_cloudStrategy != null && await _cloudStrategy!.has(key)) {
+        if (_cloudStrategy != null && await _cloudStrategy.has(key)) {
           return true;
         }
         return false;

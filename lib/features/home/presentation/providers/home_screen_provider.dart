@@ -6,7 +6,6 @@ import '../../../../core/di/providers.dart';
 import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/tile_config.dart';
 import '../../../../core/services/cache_service.dart';
-import '../../../../core/services/database_service.dart';
 import '../../../../core/utils/tile_loader.dart';
 
 /// Home Screen Provider for managing home screen state
@@ -207,29 +206,6 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
   // ==========================================
   // Private Methods
   // ==========================================
-
-  /// Load tiles from cache
-  Future<List<TileConfig>?> _loadFromCache(
-    String babyProfileId,
-    UserRole role,
-  ) async {
-    final cacheService = ref.read(cacheServiceProvider);
-    if (!cacheService.isInitialized) return null;
-
-    try {
-      final cacheKey = _getCacheKey(babyProfileId, role);
-      final cachedData = await cacheService.get(cacheKey);
-
-      if (cachedData == null) return null;
-
-      return (cachedData as List)
-          .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      debugPrint('⚠️  Failed to load from cache: $e');
-      return null;
-    }
-  }
 
   /// Save tiles to cache
   Future<void> _saveToCache(

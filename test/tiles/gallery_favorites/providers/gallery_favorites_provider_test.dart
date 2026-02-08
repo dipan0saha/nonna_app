@@ -144,8 +144,6 @@ void main() {
 
       test('filters only favorite photos', () async {
         final favoritePhoto = samplePhoto.copyWith(id: 'photo_1', isFavorite: true);
-        final nonFavoritePhoto =
-            samplePhoto.copyWith(id: 'photo_2', isFavorite: false);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(

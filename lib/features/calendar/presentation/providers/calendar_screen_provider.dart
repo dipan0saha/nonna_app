@@ -4,11 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
-import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/event.dart';
-import '../../../../core/services/cache_service.dart';
-import '../../../../core/services/database_service.dart';
-import '../../../../core/services/realtime_service.dart';
 
 /// Calendar Screen Provider for managing calendar view state
 ///
@@ -180,10 +176,10 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
     final response = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
-        .gte(SupabaseTables.startsAt, start.toIso8601String())
-        .lte(SupabaseTables.startsAt, end.toIso8601String())
-        .order(SupabaseTables.startsAt, ascending: true);
+        .is_(SupabaseTables.deletedAt, null)
+        .gte('starts_at', start.toIso8601String())
+        .lte('starts_at', end.toIso8601String())
+        .order('starts_at', ascending: true);
 
     final events = (response as List)
         .map((json) => Event.fromJson(json as Map<String, dynamic>))
@@ -326,13 +322,22 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
       _cancelRealtimeSubscription();
 
       final realtimeService = ref.read(realtimeServiceProvider);
-      _subscriptionId = await realtimeService.subscribe(
+      final channelName = 'events-channel-$babyProfileId';
+      
+      final stream = realtimeService.subscribe(
         table: SupabaseTables.events,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
+        channelName: channelName,
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
         },
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for calendar events');
     } catch (e) {

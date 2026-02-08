@@ -6,9 +6,6 @@ import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/models/user.dart';
 import '../../../../core/models/user_stats.dart';
-import '../../../../core/services/cache_service.dart';
-import '../../../../core/services/database_service.dart';
-import '../../../../core/services/storage_service.dart';
 
 /// Profile Provider for managing user profile state
 ///
@@ -107,7 +104,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
       // Fetch from database
       final response = await ref.read(databaseServiceProvider)
-          .select(SupabaseTables.profiles)
+          .select(SupabaseTables.userProfiles)
           .eq('user_id', userId)
           .maybeSingle();
 
@@ -197,7 +194,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
       }
 
       await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.profiles, updateData)
+          .update(SupabaseTables.userProfiles, updateData)
           .eq('user_id', userId);
 
       // Reload profile
@@ -252,7 +249,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
   }) async {
     try {
       await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.profiles, {
+          .update(SupabaseTables.userProfiles, {
             'biometric_enabled': enabled,
             'updated_at': DateTime.now().toIso8601String(),
           })

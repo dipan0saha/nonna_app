@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
 
 /// Storage usage information
 class StorageUsageInfo {
@@ -195,7 +193,7 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
     final photosResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt);
+        .is_(SupabaseTables.deletedAt, null);
 
     final photoCount = (photosResponse as List).length;
 

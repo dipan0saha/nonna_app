@@ -106,7 +106,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
       app_user.User? userModel;
       if (response != null) {
-        userModel = app_user.User.fromJson(response as Map<String, dynamic>);
+        userModel = app_user.User.fromJson(response);
       }
 
       final authService = ref.read(authServiceProvider);
@@ -203,8 +203,8 @@ class AuthNotifier extends Notifier<AuthState> {
 
       final response = await authService.signInWithGoogle();
 
-      if (response.user != null) {
-        await _loadUserProfile(response.user!, databaseService, localStorage);
+      if (response?.user != null) {
+        await _loadUserProfile(response!.user!, databaseService, localStorage);
       } else {
         state = const AuthState.error('Google sign in failed');
       }
@@ -225,8 +225,8 @@ class AuthNotifier extends Notifier<AuthState> {
 
       final response = await authService.signInWithFacebook();
 
-      if (response.user != null) {
-        await _loadUserProfile(response.user!, databaseService, localStorage);
+      if (response?.user != null) {
+        await _loadUserProfile(response!.user!, databaseService, localStorage);
       } else {
         state = const AuthState.error('Facebook sign in failed');
       }
@@ -290,14 +290,10 @@ class AuthNotifier extends Notifier<AuthState> {
 
       final authenticated = await _localAuth.authenticate(
         localizedReason: 'Enable biometric authentication',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          stickyAuth: true,
-        ),
       );
 
       if (authenticated) {
-        await localStorage.put(_biometricEnabledKey, true);
+        await localStorage.setBool(_biometricEnabledKey, true);
         debugPrint('✅ Biometric authentication enabled');
         return true;
       }
@@ -319,7 +315,7 @@ class AuthNotifier extends Notifier<AuthState> {
   /// Check if biometric is enabled
   Future<bool> isBiometricEnabled() async {
     final localStorage = ref.read(localStorageServiceProvider);
-    return await localStorage.get(_biometricEnabledKey) ?? false;
+    return localStorage.getBool(_biometricEnabledKey) ?? false;
   }
 
   /// Authenticate with biometric
@@ -330,10 +326,6 @@ class AuthNotifier extends Notifier<AuthState> {
 
       return await _localAuth.authenticate(
         localizedReason: 'Authenticate to access the app',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          stickyAuth: true,
-        ),
       );
     } catch (e) {
       debugPrint('❌ Biometric authentication failed: $e');
@@ -357,7 +349,7 @@ class AuthNotifier extends Notifier<AuthState> {
         'user_id': session.user.id,
       };
 
-      await localStorage.put(_sessionKey, sessionData);
+      await localStorage.setObject(_sessionKey, sessionData);
       debugPrint('✅ Session persisted');
     } catch (e) {
       debugPrint('⚠️  Failed to persist session: $e');
@@ -383,9 +375,10 @@ class AuthNotifier extends Notifier<AuthState> {
       final databaseService = ref.read(databaseServiceProvider);
       final localStorage = ref.read(localStorageServiceProvider);
       
-      final session = await authService.refreshSession();
-      if (session?.user != null) {
-        await _loadUserProfile(session!.user, databaseService, localStorage);
+      // Get current session from Supabase
+      final currentSession = authService.currentSession;
+      if (currentSession?.user != null) {
+        await _loadUserProfile(currentSession!.user, databaseService, localStorage);
       }
       debugPrint('✅ Session refreshed');
     } catch (e) {

@@ -5,9 +5,6 @@ import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/models/photo.dart';
-import '../../../../core/services/cache_service.dart';
-import '../../../../core/services/database_service.dart';
-import '../../../../core/services/realtime_service.dart';
 
 /// Gallery Screen Provider for managing photo gallery state
 ///
@@ -268,7 +265,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
     final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
+        .is_(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false)
         .range(offset, offset + limit - 1);
 
@@ -285,7 +282,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
     final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
+        .is_(SupabaseTables.deletedAt, null)
         .contains('tags', [tag])
         .order(SupabaseTables.createdAt, ascending: false);
 
@@ -342,13 +339,21 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
     try {
       _cancelRealtimeSubscription();
 
-      _subscriptionId = await ref.read(realtimeServiceProvider).subscribe(
+      final channelName = 'photos-channel-$babyProfileId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.photos,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
+        channelName: channelName,
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
         },
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for photos');
     } catch (e) {

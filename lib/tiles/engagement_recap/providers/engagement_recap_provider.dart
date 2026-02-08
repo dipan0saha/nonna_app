@@ -4,11 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
-import '../../../core/models/event_rsvp.dart';
-import '../../../core/models/photo_comment.dart';
-import '../../../core/models/photo_squish.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
 
 /// Engagement metrics
 class EngagementMetrics {
@@ -179,7 +174,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     final photosResponse = await databaseService
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt);
+        .is_(SupabaseTables.deletedAt, null);
 
     final photoIds = (photosResponse as List)
         .map((json) => json['id'] as String)
@@ -190,7 +185,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     if (photoIds.isNotEmpty) {
       final squishesResponse = await databaseService
           .select(SupabaseTables.photoSquishes)
-          .inFilter(SupabaseTables.photoId, photoIds)
+          .inFilter('photo_id', photoIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
 
       photoSquishesCount = (squishesResponse as List).length;
@@ -201,7 +196,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     if (photoIds.isNotEmpty) {
       final commentsResponse = await databaseService
           .select(SupabaseTables.photoComments)
-          .inFilter(SupabaseTables.photoId, photoIds)
+          .inFilter('photo_id', photoIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
 
       photoCommentsCount = (commentsResponse as List).length;
@@ -211,7 +206,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     final eventsResponse = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt);
+        .is_(SupabaseTables.deletedAt, null);
 
     final eventIds = (eventsResponse as List)
         .map((json) => json['id'] as String)
@@ -221,8 +216,8 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     int eventRSVPsCount = 0;
     if (eventIds.isNotEmpty) {
       final rsvpsResponse = await databaseService
-          .select(SupabaseTables.eventRSVPs)
-          .inFilter(SupabaseTables.eventId, eventIds)
+          .select('event_rsvps')
+          .inFilter('event_id', eventIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
 
       eventRSVPsCount = (rsvpsResponse as List).length;

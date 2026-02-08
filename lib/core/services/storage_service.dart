@@ -131,6 +131,70 @@ class StorageService {
   // File Upload
   // ==========================================
 
+  /// Generic file upload method
+  /// 
+  /// Upload a file to a specified bucket with a custom storage key
+  /// 
+  /// [filePath] - Local file path to upload
+  /// [storageKey] - Storage path/key for the file in the bucket
+  /// [bucket] - Bucket name to upload to
+  /// 
+  /// Returns the public URL of the uploaded file
+  Future<String> uploadFile({
+    required String filePath,
+    required String storageKey,
+    required String bucket,
+  }) async {
+    return await _authInterceptor.executeWithRetry(() async {
+      try {
+        final file = File(filePath);
+        if (!await file.exists()) {
+          throw Exception('File not found: $filePath');
+        }
+
+        // Read file bytes
+        final fileBytes = await file.readAsBytes();
+        final fileSizeKb = (fileBytes.length / 1024).round();
+
+        debugPrint('📤 Uploading file: $storageKey (${fileSizeKb}KB)');
+
+        // Determine content type from file extension
+        final extension = path.extension(filePath).toLowerCase();
+        String contentType = 'application/octet-stream';
+        if (extension == '.jpg' || extension == '.jpeg') {
+          contentType = 'image/jpeg';
+        } else if (extension == '.png') {
+          contentType = 'image/png';
+        } else if (extension == '.gif') {
+          contentType = 'image/gif';
+        } else if (extension == '.webp') {
+          contentType = 'image/webp';
+        }
+
+        // Upload to Supabase Storage
+        await _supabase.storage.from(bucket).uploadBinary(
+              storageKey,
+              fileBytes,
+              fileOptions: FileOptions(
+                contentType: contentType,
+                upsert: false,
+              ),
+            );
+
+        // Get public URL
+        final publicUrl = _supabase.storage.from(bucket).getPublicUrl(storageKey);
+
+        debugPrint('✅ File uploaded successfully: $publicUrl');
+
+        return publicUrl;
+      } catch (e) {
+        final message = ErrorHandler.mapErrorToMessage(e);
+        debugPrint('❌ Error uploading file: $message');
+        throw Exception(message);
+      }
+    });
+  }
+
   /// Upload photo to gallery bucket
   Future<String> uploadGalleryPhoto({
     required File imageFile,

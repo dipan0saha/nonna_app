@@ -5,9 +5,6 @@ import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/photo.dart';
-import '../../../core/models/photo_squish.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
 
 /// Photo with squish count
 class PhotoWithSquishes {
@@ -158,7 +155,7 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
     final photosResponse = await databaseService
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
+        .is_(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false);
 
     final photos = (photosResponse as List)
@@ -171,12 +168,12 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
     final photoIds = photos.map((p) => p.id).toList();
     final squishesResponse = await databaseService
         .select(SupabaseTables.photoSquishes)
-        .inFilter(SupabaseTables.photoId, photoIds);
+        .inFilter('photo_id', photoIds);
 
     // Count squishes per photo
     final squishCounts = <String, int>{};
     for (final squishJson in (squishesResponse as List)) {
-      final photoId = squishJson[SupabaseTables.photoId] as String;
+      final photoId = squishJson['photo_id'] as String;
       squishCounts[photoId] = (squishCounts[photoId] ?? 0) + 1;
     }
 

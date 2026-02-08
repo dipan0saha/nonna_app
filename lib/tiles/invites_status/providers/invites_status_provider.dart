@@ -6,9 +6,6 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/invitation_status.dart';
 import '../../../core/models/invitation.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
-import '../../../core/services/realtime_service.dart';
 
 /// Invites Status provider for the Invites Status tile
 ///
@@ -225,13 +222,21 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
       _cancelRealtimeSubscription();
 
       final realtimeService = ref.read(realtimeServiceProvider);
-      _subscriptionId = await realtimeService.subscribe(
+      final channelName = 'invitations-channel-$babyProfileId';
+      final stream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.invitations,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, babyProfileId);
+        channelName: channelName,
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
         },
       );
+      
+      _subscriptionId = channelName;
+      
+      stream.listen((payload) {
+        _handleRealtimeUpdate(payload, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscription setup for invitations');
     } catch (e) {

@@ -6,8 +6,6 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/user_role.dart';
 import '../../../core/models/tile_config.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
 
 /// Tile configuration provider for managing dynamic tile configurations
 ///
@@ -135,7 +133,7 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
       // Fetch from database
       final response = await ref.read(databaseServiceProvider)
           .select(SupabaseTables.tileConfigs)
-          .order(SupabaseTables.displayOrder);
+          .order('display_order');
 
       final configs = (response as List)
           .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))
@@ -194,9 +192,8 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
     try {
       // Update in database
       await ref.read(databaseServiceProvider)
-          .update(SupabaseTables.tileConfigs)
-          .eq(SupabaseTables.id, configId)
-          .update({SupabaseTables.isVisible: isVisible});
+          .update(SupabaseTables.tileConfigs, {'is_visible': isVisible})
+          .eq(SupabaseTables.id, configId);
 
       // Update local state
       final updatedConfigs = state.configs.map((config) {
@@ -244,9 +241,9 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
   ) async {
     final response = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.tileConfigs)
-        .eq(SupabaseTables.screenId, screenId)
+        .eq('screen_id', screenId)
         .eq(SupabaseTables.role, role.toJson())
-        .order(SupabaseTables.displayOrder);
+        .order('display_order');
 
     return (response as List)
         .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))

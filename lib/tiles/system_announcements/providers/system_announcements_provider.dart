@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/providers.dart';
-import '../../../core/services/cache_service.dart';
 
 /// Announcement priority levels
 enum AnnouncementPriority {

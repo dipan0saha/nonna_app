@@ -184,9 +184,9 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
     final eventsResponse = await ref.read(databaseServiceProvider)
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .isNull(SupabaseTables.deletedAt)
-        .gte(SupabaseTables.startsAt, now.toIso8601String())
-        .order(SupabaseTables.startsAt, ascending: true);
+        .is_(SupabaseTables.deletedAt, null)
+        .gte('starts_at', now.toIso8601String())
+        .order('starts_at', ascending: true);
 
     final events = (eventsResponse as List)
         .map((json) => Event.fromJson(json as Map<String, dynamic>))
@@ -197,9 +197,9 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
     if (eventIds.isEmpty) return [];
 
     final rsvpsResponse = await ref.read(databaseServiceProvider)
-        .select(SupabaseTables.eventRSVPs)
+        .select('event_rsvps')
         .eq(SupabaseTables.userId, userId)
-        .inFilter(SupabaseTables.eventId, eventIds);
+        .inFilter('event_id', eventIds);
 
     final rsvps = (rsvpsResponse as List)
         .map((json) => EventRSVP.fromJson(json as Map<String, dynamic>))
@@ -287,22 +287,38 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
       _cancelRealtimeSubscriptions();
 
       // Subscribe to events
-      _eventsSubscriptionId = await ref.read(realtimeServiceProvider).subscribe(
+      final eventsChannelName = 'events-channel-$babyProfileId';
+      final eventsStream = ref.read(realtimeServiceProvider).subscribe(
         table: SupabaseTables.events,
-        filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, userId, babyProfileId);
+        channelName: eventsChannelName,
+        filter: {
+          'column': SupabaseTables.babyProfileId,
+          'value': babyProfileId,
         },
       );
+      
+      _eventsSubscriptionId = eventsChannelName;
+      
+      eventsStream.listen((payload) {
+        _handleRealtimeUpdate(payload, userId, babyProfileId);
+      });
 
       // Subscribe to RSVPs
-      _rsvpsSubscriptionId = await ref.read(realtimeServiceProvider).subscribe(
-        table: SupabaseTables.eventRSVPs,
-        filter: '${SupabaseTables.userId}=eq.$userId',
-        callback: (payload) {
-          _handleRealtimeUpdate(payload, userId, babyProfileId);
+      final rsvpsChannelName = 'event-rsvps-channel-$userId';
+      final rsvpsStream = ref.read(realtimeServiceProvider).subscribe(
+        table: 'event_rsvps',
+        channelName: rsvpsChannelName,
+        filter: {
+          'column': SupabaseTables.userId,
+          'value': userId,
         },
       );
+      
+      _rsvpsSubscriptionId = rsvpsChannelName;
+      
+      rsvpsStream.listen((payload) {
+        _handleRealtimeUpdate(payload, userId, babyProfileId);
+      });
 
       debugPrint('✅ Real-time subscriptions setup for RSVP tasks');
     } catch (e) {

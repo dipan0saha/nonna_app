@@ -138,8 +138,6 @@ void main() {
       test('filters only active announcements', () async {
         final activeAnnouncement =
             sampleAnnouncement.copyWith(id: 'ann_1', isActive: true);
-        final inactiveAnnouncement =
-            sampleAnnouncement.copyWith(id: 'ann_2', isActive: false);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
