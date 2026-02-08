@@ -10,7 +10,7 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
-import '../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([AuthService, DatabaseService, LocalStorageService])
 import 'auth_provider_test.mocks.dart';

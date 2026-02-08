@@ -212,7 +212,7 @@ void main() {
         await notifier.fetchNotifications(userId: 'user_1');
 
         // Setup update mock
-        when(mockDatabaseService.update(any))
+        when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAsRead(
@@ -221,7 +221,7 @@ void main() {
         );
 
         // Verify database update
-        verify(mockDatabaseService.update(any)).called(1);
+        verify(mockDatabaseService.update(any, any)).called(1);
 
         // Verify state updated
         final state = container.read(notificationsProvider);
@@ -245,7 +245,7 @@ void main() {
             .thenReturn(FakePostgrestBuilder([sampleNotification.toJson()]));
         await notifier.fetchNotifications(userId: 'user_1');
 
-        when(mockDatabaseService.update(any))
+        when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAsRead(
@@ -281,13 +281,13 @@ void main() {
         ]));
         await notifier.fetchNotifications(userId: 'user_1');
 
-        when(mockDatabaseService.update(any))
+        when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAllAsRead(userId: 'user_1');
 
         // Verify database update
-        verify(mockDatabaseService.update(any)).called(1);
+        verify(mockDatabaseService.update(any, any)).called(1);
 
         // Verify all notifications are read
         final state = container.read(notificationsProvider);
@@ -339,6 +339,7 @@ void main() {
         final initialCount = state.notifications.length;
 
         // Simulate real-time INSERT
+        // ignore: unused_local_variable
         final newNotification = sampleNotification.copyWith(id: 'notif_2');
         // Note: This test is checking the structure but can't easily simulate real-time
         // updates without exposing the internal _handleRealtimeUpdate method

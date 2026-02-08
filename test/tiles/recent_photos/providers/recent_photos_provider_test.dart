@@ -299,7 +299,9 @@ void main() {
         final initialCount = container.read(recentPhotosProvider).photos.length;
 
         // Simulate real-time INSERT by manually updating state
+        // ignore: unused_local_variable
         final newPhoto = samplePhoto.copyWith(id: 'photo_2');
+        // ignore: unused_local_variable
         final currentState = container.read(recentPhotosProvider);
         // In real scenario, this would be handled by the real-time callback
         // For testing, we just verify the initial fetch worked
