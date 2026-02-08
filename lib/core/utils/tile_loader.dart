@@ -6,7 +6,6 @@ import '../di/providers.dart';
 import '../enums/user_role.dart';
 import '../models/tile_config.dart';
 import '../services/cache_service.dart';
-import '../services/database_service.dart';
 
 /// Utility class for loading tile configurations
 ///
