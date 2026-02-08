@@ -1,6 +1,12 @@
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Helper method to create a base PostgrestBuilder for testing purposes
+PostgrestBuilder<dynamic, dynamic, dynamic> _createBaseBuilder() {
+  final client = SupabaseClient('http://localhost', 'fake-key');
+  return client.from('fake_table');
+}
+
 /// Fake Postgrest Builder for testing
 /// 
 /// This builder implements the PostgrestFilterBuilder interface
@@ -132,11 +138,6 @@ class FakePostgrestBuilder extends PostgrestFilterBuilder<List<Map<String, dynam
     }
     return onValue(_data);
   }
-
-  static PostgrestBuilder<dynamic, dynamic, dynamic> _createBaseBuilder() {
-    final client = SupabaseClient('http://localhost', 'fake-key');
-    return client.from('fake_table');
-  }
 }
 
 /// Fake Postgrest Update Builder for testing
@@ -245,11 +246,6 @@ class FakePostgrestUpdateBuilder extends PostgrestFilterBuilder<List<Map<String,
   Future<U> then<U>(FutureOr<U> Function(List<Map<String, dynamic>> value) onValue, {Function? onError}) async {
     return onValue(_data != null ? [_data] : []);
   }
-
-  static PostgrestBuilder<dynamic, dynamic, dynamic> _createBaseBuilder() {
-    final client = SupabaseClient('http://localhost', 'fake-key');
-    return client.from('fake_table');
-  }
 }
 
 /// Fake Postgrest Delete Builder for testing
@@ -355,11 +351,6 @@ class FakePostgrestDeleteBuilder extends PostgrestFilterBuilder<List<Map<String,
   @override
   Future<U> then<U>(FutureOr<U> Function(List<Map<String, dynamic>> value) onValue, {Function? onError}) async {
     return onValue([]);
-  }
-
-  static PostgrestBuilder<dynamic, dynamic, dynamic> _createBaseBuilder() {
-    final client = SupabaseClient('http://localhost', 'fake-key');
-    return client.from('fake_table');
   }
 }
 
