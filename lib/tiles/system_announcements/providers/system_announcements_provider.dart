@@ -182,6 +182,14 @@ class SystemAnnouncementsNotifier extends StateNotifier<SystemAnnouncementsState
     }
   }
 
+  /// Fetch system announcements (alias for loadAnnouncements with default userId)
+  ///
+  /// This method is provided for backward compatibility with tests.
+  /// In production, use loadAnnouncements with a specific userId.
+  Future<void> fetchAnnouncements() async {
+    await loadAnnouncements(userId: 'default_user');
+  }
+
   /// Dismiss an announcement for a specific user
   Future<void> dismissAnnouncement({
     required String announcementId,

@@ -27,7 +27,7 @@ void main() {
       startsAt: DateTime.now().add(const Duration(days: 7)),
       endsAt: DateTime.now().add(const Duration(days: 7, hours: 3)),
       location: '123 Main St',
-      createdBy: 'user_1',
+      createdByUserId: 'user_1',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
