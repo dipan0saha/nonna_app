@@ -71,7 +71,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final future = notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -102,7 +102,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -145,7 +145,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(
           babyProfileId: 'profile_1',
@@ -177,7 +177,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -200,7 +200,7 @@ void main() {
 
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           samplePhoto.copyWith(id: 'photo_2').toJson(),
         ]));
 
@@ -264,7 +264,7 @@ void main() {
         );
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.filterByTag('milestone');
 
@@ -290,7 +290,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.clearFilters();
 
@@ -314,7 +314,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.refresh();
 
@@ -342,7 +342,7 @@ void main() {
         )).thenAnswer((_) => streamController.stream);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -377,7 +377,7 @@ void main() {
         )).thenAnswer((_) => streamController.stream);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -408,7 +408,7 @@ void main() {
         )).thenAnswer((_) => streamController.stream);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -440,7 +440,7 @@ void main() {
         )).thenAnswer((_) => Stream.value({}));
         when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => {});
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 

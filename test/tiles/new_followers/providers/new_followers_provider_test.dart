@@ -68,7 +68,7 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
         final fetchFuture = container
@@ -90,7 +90,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container
             .read(newFollowersProvider.notifier)
@@ -149,7 +149,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
               babyProfileId: 'profile_1',
@@ -173,7 +173,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([recentFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([recentFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
               babyProfileId: 'profile_1',
@@ -193,7 +193,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container
             .read(newFollowersProvider.notifier)
@@ -245,7 +245,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).refresh(
               babyProfileId: 'profile_1',
@@ -266,7 +266,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container
             .read(newFollowersProvider.notifier)
@@ -289,7 +289,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container
             .read(newFollowersProvider.notifier)
@@ -311,7 +311,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
               babyProfileId: 'profile_1',
@@ -328,7 +328,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
               babyProfileId: 'profile_1',
@@ -359,7 +359,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           follower1.toJson(),
           follower2.toJson(),
           follower3.toJson(),

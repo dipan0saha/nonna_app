@@ -75,7 +75,7 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
         final fetchFuture =
@@ -98,7 +98,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
@@ -161,7 +161,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(
           babyProfileId: 'profile_1',
@@ -188,7 +188,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           invite1.toJson(),
           invite2.toJson(),
           invite3.toJson(),
@@ -212,7 +212,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.refresh(babyProfileId: 'profile_1');
 
@@ -233,7 +233,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
@@ -264,7 +264,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
@@ -308,7 +308,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleInvitation.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 

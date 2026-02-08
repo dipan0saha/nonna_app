@@ -65,7 +65,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -83,7 +83,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -136,7 +136,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(
@@ -158,7 +158,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -207,7 +207,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
@@ -228,7 +228,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -249,7 +249,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePurchase.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -290,7 +290,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           purchase1.toJson(),
           purchase2.toJson(),
           purchase3.toJson(),

@@ -64,7 +64,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -77,7 +77,7 @@ void main() {
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleDeal.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -125,7 +125,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleDeal.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(
@@ -142,7 +142,7 @@ void main() {
       test('saves fetched deals to cache', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleDeal.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -159,7 +159,7 @@ void main() {
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           deal1.toJson(),
           deal2.toJson(),
           deal3.toJson(),
@@ -178,7 +178,7 @@ void main() {
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           deal1.toJson(),
           deal2.toJson(),
           deal3.toJson(),
@@ -197,7 +197,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleDeal.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
@@ -216,7 +216,7 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([highPriorityDeal.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([highPriorityDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -233,7 +233,7 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');

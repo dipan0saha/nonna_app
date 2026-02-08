@@ -66,7 +66,7 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
         final notifier = container.read(tileConfigProvider.notifier);
@@ -88,7 +88,7 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         final notifier = container.read(tileConfigProvider.notifier);
         await notifier.fetchConfigs(
@@ -150,7 +150,7 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         final notifier = container.read(tileConfigProvider.notifier);
         await notifier.fetchConfigs(
@@ -176,7 +176,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           config1.toJson(),
           config2.toJson(),
         ]));
@@ -208,7 +208,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           config1.toJson(),
           config2.toJson(),
           config3.toJson(),
@@ -240,7 +240,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           visibleConfig.toJson(),
           hiddenConfig.toJson(),
           followerConfig.toJson(),
@@ -269,7 +269,7 @@ void main() {
             .thenAnswer((_) async => {});
         when(mockCacheService.delete(any)).thenAnswer((_) async => {});
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         final notifier = container.read(tileConfigProvider.notifier);
         await notifier.fetchAllConfigs();
@@ -299,7 +299,7 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         final notifier = container.read(tileConfigProvider.notifier);
         await notifier.fetchConfigs(

@@ -179,7 +179,7 @@ void main() {
       test('handles profile not found error', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         await notifier.loadProfile(
           babyProfileId: 'baby_1',

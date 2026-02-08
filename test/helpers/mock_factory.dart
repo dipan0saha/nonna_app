@@ -34,7 +34,7 @@ class MockFactory {
 
     // Default select behavior - return empty or provided data
     when(mock.select(any, columns: anyNamed('columns')))
-        .thenReturn(FakePostgrestBuilder(defaultSelectData ?? []));
+        .thenAnswer((_) => FakePostgrestBuilder(defaultSelectData ?? []));
 
     return mock;
   }
@@ -324,7 +324,7 @@ class MockHelpers {
     List<Map<String, dynamic>> data,
   ) {
     when(mock.select(table, columns: anyNamed('columns')))
-        .thenReturn(FakePostgrestBuilder(data));
+        .thenAnswer((_) => FakePostgrestBuilder(data));
   }
 
   /// Configure a database mock to throw an error

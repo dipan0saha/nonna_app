@@ -121,7 +121,7 @@ void _dummyFunction() {
 ///
 /// // Configure database mock
 /// when(mockDatabase.select(any))
-///   .thenReturn(FakePostgrestBuilder([...]));
+///   .thenAnswer((_) => FakePostgrestBuilder([...]));
 ///
 /// // Configure cache mock
 /// when(mockCache.get(any))
