@@ -10,7 +10,7 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 
-import '../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService, StorageService])
 import 'baby_profile_provider_test.mocks.dart';
@@ -176,7 +176,7 @@ void main() {
       test('handles profile not found error', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([], returnNull: true));
+            .thenReturn(FakePostgrestBuilder([]));
 
         await notifier.loadProfile(
           babyProfileId: 'baby_1',
@@ -325,7 +325,6 @@ void main() {
           userId: 'user_1',
           expectedBirthDate: DateTime.now().add(const Duration(days: 90)),
           gender: Gender.female,
-          relationshipLabel: '',
         );
 
         expect(result, isNotNull);
@@ -339,7 +338,6 @@ void main() {
         final result = await notifier.createProfile(
           name: '   ',
           userId: 'user_1',
-          relationshipLabel: '',
         );
 
         expect(result, isNull);
@@ -355,7 +353,6 @@ void main() {
         final result = await notifier.createProfile(
           name: 'Baby Jane',
           userId: 'user_1',
-          relationshipLabel: '',
         );
 
         expect(result, isNull);
@@ -535,9 +532,9 @@ void main() {
     group('uploadProfilePhoto', () {
       test('uploads profile photo successfully', () async {
         when(mockStorageService.uploadFile(
-          filePath: anyNamed('filePath'),
-          storageKey: anyNamed('storageKey'),
-          bucket: anyNamed('bucket'),
+          filePath: 'filePath',
+          storageKey: 'storageKey',
+          bucket: 'bucket',
         )).thenAnswer((_) async => 'https://example.com/uploaded-photo.jpg');
 
         final result = await notifier.uploadProfilePhoto(
@@ -551,9 +548,9 @@ void main() {
 
       test('handles upload error gracefully', () async {
         when(mockStorageService.uploadFile(
-          filePath: anyNamed('filePath'),
-          storageKey: anyNamed('storageKey'),
-          bucket: anyNamed('bucket'),
+          filePath: 'filePath',
+          storageKey: 'storageKey',
+          bucket: 'bucket',
         )).thenThrow(Exception('Upload failed'));
 
         final result = await notifier.uploadProfilePhoto(
