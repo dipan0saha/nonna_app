@@ -244,7 +244,7 @@ class FakePostgrestUpdateBuilder extends PostgrestFilterBuilder<List<Map<String,
 
   @override
   Future<U> then<U>(FutureOr<U> Function(List<Map<String, dynamic>> value) onValue, {Function? onError}) async {
-    return onValue(_data != null ? [_data] : []);
+    return onValue(_data != null ? [_data!] : []);
   }
 }
 
