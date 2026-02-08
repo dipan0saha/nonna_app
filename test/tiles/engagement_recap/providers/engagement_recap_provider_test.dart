@@ -99,7 +99,7 @@ void main() {
         };
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedData);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Test would require provider container to verify behavior
       });

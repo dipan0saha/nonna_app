@@ -72,7 +72,7 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
         final fetchFuture = notifier.fetchNotifications(userId: 'user_1');
@@ -94,7 +94,7 @@ void main() {
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleNotification.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
         await notifier.fetchNotifications(userId: 'user_1');
 
@@ -154,7 +154,7 @@ void main() {
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleNotification.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
         await notifier.fetchNotifications(
           userId: 'user_1',
@@ -179,7 +179,7 @@ void main() {
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           notif1.toJson(),
           notif2.toJson(),
           notif3.toJson(),
@@ -204,7 +204,7 @@ void main() {
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleNotification.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
         await notifier.fetchNotifications(userId: 'user_1');
 
         // Setup update mock
@@ -238,7 +238,7 @@ void main() {
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleNotification.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
         await notifier.fetchNotifications(userId: 'user_1');
 
         when(mockDatabaseService.update(any, any))
@@ -269,7 +269,7 @@ void main() {
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           notif1.toJson(),
           notif2.toJson(),
         ]));
@@ -304,7 +304,7 @@ void main() {
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleNotification.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
         await notifier.refresh(userId: 'user_1');
 
@@ -325,7 +325,7 @@ void main() {
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleNotification.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
         await notifier.fetchNotifications(userId: 'user_1');
 

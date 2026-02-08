@@ -20,15 +20,15 @@ PostgrestBuilder<List<Map<String, dynamic>>, List<Map<String, dynamic>>,
 /// ```dart
 /// // Return data from a mock select
 /// when(mockDatabase.select(any))
-///   .thenReturn(FakePostgrestBuilder([{'id': '1', 'name': 'Test'}]));
+///   .thenAnswer((_) => FakePostgrestBuilder([{'id': '1', 'name': 'Test'}]));
 ///
 /// // Simulate an error
 /// when(mockDatabase.select(any))
-///   .thenReturn(FakePostgrestBuilder.withError(Exception('Test error')));
+///   .thenAnswer((_) => FakePostgrestBuilder.withError(Exception('Test error')));
 ///
 /// // Simulate a delayed response
 /// when(mockDatabase.select(any))
-///   .thenReturn(FakePostgrestBuilder.withDelay(
+///   .thenAnswer((_) => FakePostgrestBuilder.withDelay(
 ///     [{'id': '1'}],
 ///     delay: Duration(seconds: 1),
 ///   ));

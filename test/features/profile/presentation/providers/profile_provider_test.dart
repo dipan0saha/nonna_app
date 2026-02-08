@@ -82,7 +82,7 @@ void main() {
       test('sets loading state while loading', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleUser.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleUser.toJson()]));
 
         final loadFuture = notifier.loadProfile(userId: 'user_1');
 
@@ -115,7 +115,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleStats.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleStats.toJson()]));
 
         await notifier.loadProfile(userId: 'user_1');
 
@@ -126,7 +126,7 @@ void main() {
       test('handles profile not found error', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         await notifier.loadProfile(userId: 'user_1');
 

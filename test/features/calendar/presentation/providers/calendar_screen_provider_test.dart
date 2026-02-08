@@ -69,7 +69,7 @@ void main() {
           filter: any,
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final future = notifier.loadEvents(babyProfileId: 'profile_1');
 
@@ -100,7 +100,7 @@ void main() {
           filter: any,
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
@@ -144,7 +144,7 @@ void main() {
           filter: any,
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final startDate = DateTime(2024, 5, 1);
         final endDate = DateTime(2024, 7, 31);
@@ -180,7 +180,7 @@ void main() {
           filter: any,
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
@@ -211,7 +211,7 @@ void main() {
           filter: any,
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
         notifier.selectDate(DateTime(2024, 6, 15));
@@ -311,7 +311,7 @@ void main() {
           filter: any,
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.refresh();
 
@@ -351,7 +351,7 @@ void main() {
         )).thenAnswer((_) => streamController);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
@@ -389,7 +389,7 @@ void main() {
         )).thenAnswer((_) => streamController);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
@@ -416,7 +416,7 @@ void main() {
         )).thenAnswer((_) => streamController);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
@@ -441,7 +441,7 @@ void main() {
         )).thenAnswer((_) => Stream.value({}));
         when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
 

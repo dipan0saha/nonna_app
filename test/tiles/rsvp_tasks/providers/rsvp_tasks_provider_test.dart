@@ -82,7 +82,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -103,7 +103,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -173,7 +173,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -196,7 +196,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -219,7 +219,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -252,7 +252,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.refresh(
@@ -276,7 +276,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -308,7 +308,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(

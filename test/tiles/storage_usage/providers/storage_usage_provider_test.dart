@@ -62,7 +62,7 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
         final notifier = container.read(storageUsageProvider.notifier);
@@ -77,7 +77,7 @@ void main() {
       test('calculates storage usage from database', () async {
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000}, // 1 MB
           {'file_size': 2048000}, // 2 MB
           {'file_size': 3072000}, // 3 MB
@@ -131,7 +131,7 @@ void main() {
         // Setup mocks
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleStorageInfo.toJson());
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
         ]));
 
@@ -147,7 +147,7 @@ void main() {
 
       test('saves calculated storage to cache', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
         ]));
 
@@ -162,7 +162,7 @@ void main() {
 
       test('calculates usage percentage correctly', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 5368709120}, // 5 GB out of 10 GB
         ]));
 
@@ -179,7 +179,7 @@ void main() {
       test('refreshes storage usage with force refresh', () async {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleStorageInfo.toJson());
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
         ]));
 
@@ -278,7 +278,7 @@ void main() {
     group('Photo Count', () {
       test('counts photos correctly', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
           {'file_size': 2048000},
           {'file_size': 3072000},
@@ -296,7 +296,7 @@ void main() {
       test('handles zero photos', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(storageUsageProvider.notifier);
         await notifier.fetchUsage(babyProfileId: 'profile_1');
@@ -310,7 +310,7 @@ void main() {
     group('Role-based Access', () {
       test('owner can fetch storage usage', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
         ]));
 

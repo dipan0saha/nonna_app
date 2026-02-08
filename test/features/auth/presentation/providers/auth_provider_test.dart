@@ -69,7 +69,7 @@ void main() {
       test('loads user profile when current user exists', () async {
         when(mockAuthService.currentUser).thenReturn(mockUser);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         notifier = AuthNotifier();
 
@@ -90,7 +90,7 @@ void main() {
         });
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
 
@@ -114,7 +114,7 @@ void main() {
         });
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
 
@@ -172,7 +172,7 @@ void main() {
         });
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
 
@@ -211,7 +211,7 @@ void main() {
         });
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
 
@@ -239,7 +239,7 @@ void main() {
         });
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
 
@@ -341,7 +341,7 @@ void main() {
         });
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
 
@@ -356,7 +356,7 @@ void main() {
       test('refreshSession updates session state', () async {
         when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
 
@@ -377,7 +377,7 @@ void main() {
     group('Auth State Changes', () {
       test('handles auth state changes from stream', () async {
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
 

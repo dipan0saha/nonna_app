@@ -71,7 +71,7 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -92,7 +92,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'INSERT'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -149,7 +149,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'INSERT'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(
@@ -169,7 +169,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'INSERT'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -191,14 +191,14 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'INSERT'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
 
         final photo2 = samplePhoto.copyWith(id: 'photo_2');
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([photo2.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([photo2.toJson()]));
 
         await notifier.loadMore(babyProfileId: 'profile_1');
 
@@ -217,7 +217,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'INSERT'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -247,7 +247,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'INSERT'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -270,7 +270,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'INSERT'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
@@ -290,7 +290,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'INSERT'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -316,7 +316,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'UPDATE'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -335,7 +335,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({'eventType': 'DELETE'}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
