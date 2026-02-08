@@ -8,7 +8,7 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 
-import '../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService, RealtimeService])
 import 'registry_screen_provider_test.mocks.dart';
@@ -65,7 +65,7 @@ void main() {
       test('sets loading state while loading', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) async => FakePostgrestBuilder([]));
 
         final loadFuture = notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -83,7 +83,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -139,7 +139,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(
           babyProfileId: 'profile_1',
@@ -157,7 +157,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -175,7 +175,7 @@ void main() {
         )).thenAnswer((_) => Stream.value({}));
 
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any)).thenAnswer((_) async {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleItem.toJson()]);
@@ -314,7 +314,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -343,7 +343,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -356,9 +356,9 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) async => 'sub_2');
+        )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -368,7 +368,7 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscriptions on dispose', () {
-        when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => {});
 
         expect(notifier.state, isNotNull);
       });

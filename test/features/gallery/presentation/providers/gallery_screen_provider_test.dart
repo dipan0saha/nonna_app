@@ -7,7 +7,7 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/gallery_screen_provider.dart';
 
-import '../../../../../helpers/fake_postgrest_builders.dart';
+import '../../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService, RealtimeService])
 import 'gallery_screen_provider_test.mocks.dart';
@@ -61,12 +61,12 @@ void main() {
       test('sets loading state while fetching', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([]));
+            .thenAnswer((_) async => FakePostgrestBuilder([]));
 
         final future = notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -92,12 +92,12 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -117,11 +117,11 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(
+        when(mockDatabaseService.select(any)).thenAnswer((_) async =>
             FakePostgrestBuilder(photos.map((p) => p.toJson()).toList()));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -135,12 +135,12 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(
           babyProfileId: 'profile_1',
@@ -167,18 +167,18 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         verify(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).called(1);
       });
@@ -195,7 +195,7 @@ void main() {
 
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) async => FakePostgrestBuilder([
           samplePhoto.copyWith(id: 'photo_2').toJson(),
         ]));
 
@@ -259,7 +259,7 @@ void main() {
         );
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.filterByTag('milestone');
 
@@ -280,12 +280,12 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.clearFilters();
 
@@ -304,12 +304,12 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.refresh();
 
@@ -329,18 +329,15 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
-        Function? realtimeCallback;
+        final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((invocation) async {
-          realtimeCallback = invocation.namedArguments[#callback] as Function;
-          return 'sub_1';
-        });
+        )).thenAnswer((_) => streamController.stream);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
@@ -349,13 +346,17 @@ void main() {
         // Simulate INSERT
         final newPhoto =
             samplePhoto.copyWith(id: 'photo_2', caption: 'New photo');
-        realtimeCallback!({
+        streamController.add({
           'eventType': 'INSERT',
           'new': newPhoto.toJson(),
         });
 
+        await Future.delayed(const Duration(milliseconds: 100));
+
         expect(notifier.state.photos.length, equals(initialCount + 1));
         expect(notifier.state.photos.first.id, equals('photo_2'));
+        
+        streamController.close();
       });
 
       test('handles UPDATE event', () async {
@@ -363,29 +364,30 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
-        Function? realtimeCallback;
+        final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((invocation) async {
-          realtimeCallback = invocation.namedArguments[#callback] as Function;
-          return 'sub_1';
-        });
+        )).thenAnswer((_) => streamController.stream);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         // Simulate UPDATE
         final updatedPhoto = samplePhoto.copyWith(caption: 'Updated photo');
-        realtimeCallback!({
+        streamController.add({
           'eventType': 'UPDATE',
           'new': updatedPhoto.toJson(),
         });
 
+        await Future.delayed(const Duration(milliseconds: 100));
+
         expect(notifier.state.photos.first.caption, equals('Updated photo'));
+        
+        streamController.close();
       });
 
       test('handles DELETE event', () async {
@@ -393,30 +395,31 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
-        Function? realtimeCallback;
+        final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((invocation) async {
-          realtimeCallback = invocation.namedArguments[#callback] as Function;
-          return 'sub_1';
-        });
+        )).thenAnswer((_) => streamController.stream);
 
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         expect(notifier.state.photos, hasLength(1));
 
         // Simulate DELETE
-        realtimeCallback!({
+        streamController.add({
           'eventType': 'DELETE',
           'old': {'id': 'photo_1'},
         });
 
+        await Future.delayed(const Duration(milliseconds: 100));
+
         expect(notifier.state.photos, isEmpty);
+        
+        streamController.close();
       });
     });
 
@@ -426,13 +429,13 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          channelName: anyNamed('channelName'),
           table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => {});
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([samplePhoto.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 

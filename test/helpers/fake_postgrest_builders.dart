@@ -10,7 +10,7 @@ class FakePostgrestBuilder extends PostgrestFilterBuilder<dynamic> {
   bool _isMaybeSingle = false;
   bool _isSingle = false;
 
-  FakePostgrestBuilder(this._data) : super(PostgrestBuilder(url: Uri.parse('http://localhost')));
+  FakePostgrestBuilder(this._data) : super(url: Uri.parse('http://localhost'));
 
   @override
   PostgrestFilterBuilder<dynamic> eq(String column, dynamic value) => this;
@@ -129,7 +129,7 @@ class FakePostgrestBuilder extends PostgrestFilterBuilder<dynamic> {
 class FakePostgrestUpdateBuilder extends PostgrestFilterBuilder<dynamic> {
   final Map<String, dynamic>? _data;
 
-  FakePostgrestUpdateBuilder([this._data]) : super(PostgrestBuilder(url: Uri.parse('http://localhost')));
+  FakePostgrestUpdateBuilder([this._data]) : super(url: Uri.parse('http://localhost'));
 
   @override
   PostgrestFilterBuilder<dynamic> eq(String column, dynamic value) => this;
@@ -235,7 +235,7 @@ class FakePostgrestUpdateBuilder extends PostgrestFilterBuilder<dynamic> {
 
 /// Fake Postgrest Delete Builder for testing
 class FakePostgrestDeleteBuilder extends PostgrestFilterBuilder<dynamic> {
-  FakePostgrestDeleteBuilder() : super(PostgrestBuilder(url: Uri.parse('http://localhost')));
+  FakePostgrestDeleteBuilder() : super(url: Uri.parse('http://localhost'));
 
   @override
   PostgrestFilterBuilder<dynamic> eq(String column, dynamic value) => this;

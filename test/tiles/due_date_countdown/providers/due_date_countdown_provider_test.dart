@@ -91,7 +91,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
@@ -158,7 +158,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.fetchCountdowns(
           babyProfileIds: ['profile_1'],
@@ -181,7 +181,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([futureProfile.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([futureProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
@@ -202,7 +202,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([pastProfile.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([pastProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
@@ -219,7 +219,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenAnswer((_) async => FakePostgrestBuilder([
           sampleProfile.toJson(),
           profile2.toJson(),
         ]));
@@ -247,7 +247,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.refresh(babyProfileIds: ['profile_1']);
 
@@ -266,7 +266,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
@@ -296,7 +296,7 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
-        when(mockRealtimeService.unsubscribe(any)).thenReturn(null);
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => {});
 
         // Notifier handles cleanup automatically, no manual dispose needed
 
@@ -313,7 +313,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([sampleProfile.toJson()]));
+            .thenAnswer((_) async => FakePostgrestBuilder([sampleProfile.toJson()]));
 
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
