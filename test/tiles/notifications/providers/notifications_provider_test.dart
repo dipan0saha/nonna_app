@@ -56,7 +56,6 @@ void main() {
 
     group('Initial State', () {
       test('initial state has empty notifications', () {
-        final notifier = container.read(notificationsProvider.notifier);
         final state = container.read(notificationsProvider);
         
         expect(state.notifications, isEmpty);

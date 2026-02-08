@@ -1,16 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/storage_usage/providers/storage_usage_provider.dart';
+
+import '../../../helpers/fake_postgrest_builders.dart';
 
 @GenerateMocks([DatabaseService, CacheService])
 import 'storage_usage_provider_test.mocks.dart';
 
 void main() {
   group('StorageUsageProvider Tests', () {
-    late StorageUsageNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
 
@@ -31,35 +35,42 @@ void main() {
       // Setup mock cache service
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = StorageUsageNotifier(
-        databaseService: mockDatabaseService,
-        cacheService: mockCacheService,
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+        ],
       );
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
       test('initial state has no storage info', () {
-        expect(notifier.state.info, isNull);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
+        final state = container.read(storageUsageProvider);
+        
+        expect(state.info, isNull);
+        expect(state.isLoading, isFalse);
+        expect(state.error, isNull);
       });
     });
 
-    group('fetchStorageUsage', () {
+    group('fetchUsage', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async {
-          await Future.delayed(const Duration(milliseconds: 100));
-          return FakePostgrestBuilder([]);
-        });
+        when(mockDatabaseService.select(any)).thenReturn(
+          FakePostgrestBuilder([])
+        );
 
         // Start fetching
-        final fetchFuture =
-            notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        final fetchFuture = notifier.fetchUsage(babyProfileId: 'profile_1');
 
         // Verify loading state
-        expect(notifier.state.isLoading, isTrue);
+        expect(container.read(storageUsageProvider).isLoading, isTrue);
 
         await fetchFuture;
       });
@@ -73,13 +84,15 @@ void main() {
           {'file_size': 3072000}, // 3 MB
         ]));
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
         // Verify state updated
-        expect(notifier.state.info, isNotNull);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
-        expect(notifier.state.info!.photoCount, equals(3));
+        final state = container.read(storageUsageProvider);
+        expect(state.info, isNotNull);
+        expect(state.isLoading, isFalse);
+        expect(state.error, isNull);
+        expect(state.info!.photoCount, equals(3));
       });
 
       test('loads storage info from cache when available', () async {
@@ -87,14 +100,16 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleStorageInfo.toJson());
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
         // Verify database was not called
         verifyNever(mockDatabaseService.select(any));
 
         // Verify state updated from cache
-        expect(notifier.state.info, isNotNull);
-        expect(notifier.state.info!.totalBytes, equals(10737418240));
+        final state = container.read(storageUsageProvider);
+        expect(state.info, isNotNull);
+        expect(state.info!.totalBytes, equals(10737418240));
       });
 
       test('handles errors gracefully', () async {
@@ -103,12 +118,14 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
         // Verify error state
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, contains('Database error'));
-        expect(notifier.state.info, isNull);
+        final state = container.read(storageUsageProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.error, contains('Database error'));
+        expect(state.info, isNull);
       });
 
       test('force refresh bypasses cache', () async {
@@ -119,7 +136,8 @@ void main() {
           {'file_size': 1024000},
         ]));
 
-        await notifier.fetchStorageUsage(
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(
           babyProfileId: 'profile_1',
           forceRefresh: true,
         );
@@ -134,7 +152,8 @@ void main() {
           {'file_size': 1024000},
         ]));
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
         // Verify cache put was called
         verify(mockCacheService.put(any, any,
@@ -148,10 +167,12 @@ void main() {
           {'file_size': 5368709120}, // 5 GB out of 10 GB
         ]));
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
-        expect(notifier.state.info!.usagePercentage, lessThanOrEqualTo(100.0));
-        expect(notifier.state.info!.usagePercentage, greaterThanOrEqualTo(0.0));
+        final state = container.read(storageUsageProvider);
+        expect(state.info!.usagePercentage, lessThanOrEqualTo(100.0));
+        expect(state.info!.usagePercentage, greaterThanOrEqualTo(0.0));
       });
     });
 
@@ -163,6 +184,7 @@ void main() {
           {'file_size': 1024000},
         ]));
 
+        final notifier = container.read(storageUsageProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
@@ -225,9 +247,11 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => nearFullInfo.toJson());
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
-        expect(notifier.state.info!.usagePercentage, greaterThan(90.0));
+        final state = container.read(storageUsageProvider);
+        expect(state.info!.usagePercentage, greaterThan(90.0));
       });
 
       test('handles full storage', () async {
@@ -243,10 +267,12 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => fullInfo.toJson());
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
-        expect(notifier.state.info!.usagePercentage, equals(100.0));
-        expect(notifier.state.info!.availableBytes, equals(0));
+        final state = container.read(storageUsageProvider);
+        expect(state.info!.usagePercentage, equals(100.0));
+        expect(state.info!.availableBytes, equals(0));
       });
     });
 
@@ -261,9 +287,11 @@ void main() {
           {'file_size': 5120000},
         ]));
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
-        expect(notifier.state.info!.photoCount, equals(5));
+        final state = container.read(storageUsageProvider);
+        expect(state.info!.photoCount, equals(5));
       });
 
       test('handles zero photos', () async {
@@ -271,10 +299,12 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([]));
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
-        expect(notifier.state.info!.photoCount, equals(0));
-        expect(notifier.state.info!.usedBytes, equals(0));
+        final state = container.read(storageUsageProvider);
+        expect(state.info!.photoCount, equals(0));
+        expect(state.info!.usedBytes, equals(0));
       });
     });
 
@@ -285,23 +315,14 @@ void main() {
           {'file_size': 1024000},
         ]));
 
-        await notifier.fetchStorageUsage(babyProfileId: 'profile_1');
+        final notifier = container.read(storageUsageProvider.notifier);
+        await notifier.fetchUsage(babyProfileId: 'profile_1');
 
-        expect(notifier.state.info, isNotNull);
+        final state = container.read(storageUsageProvider);
+        expect(state.info, isNotNull);
       });
     });
   });
 }
 
-// Fake builders for Postgrest operations (test doubles)
-class FakePostgrestBuilder {
-  final List<Map<String, dynamic>> data;
-
-  FakePostgrestBuilder(this.data);
-
-  FakePostgrestBuilder eq(String column, dynamic value) => this;
-  FakePostgrestBuilder isNull(String column) => this;
-  FakePostgrestBuilder select(String columns) => this;
-
-  Future<List<Map<String, dynamic>>> call() async => data;
-}
+// Note: FakePostgrestBuilder is imported from test/helpers/fake_postgrest_builders.dart

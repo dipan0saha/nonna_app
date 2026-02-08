@@ -18,6 +18,10 @@ void main() {
     late ProviderContainer container;
 
     setUp(() {
+      // Provide dummy values for mockito null-safety
+      provideDummy<String>('');
+      provideDummy<Map<String, dynamic>>({});
+      
       mockCacheService = MockCacheService();
       mockLocalStorageService = MockLocalStorageService();
 

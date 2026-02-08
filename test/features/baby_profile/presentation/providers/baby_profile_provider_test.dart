@@ -50,6 +50,9 @@ void main() {
     );
 
     setUp(() {
+      // Provide dummy values for mockito null-safety
+      provideDummy<String>('');
+      
       mockDatabaseService = MockDatabaseService();
       mockCacheService = MockCacheService();
       mockStorageService = MockStorageService();
@@ -318,7 +321,7 @@ void main() {
     group('createProfile', () {
       test('creates baby profile successfully', () async {
         when(mockDatabaseService.insert(any, any))
-            .thenReturn(FakePostgrestInsertBuilder([sampleProfile.toJson()]));
+            .thenAnswer((_) async => [sampleProfile.toJson()]);
 
         final result = await notifier.createProfile(
           name: 'Baby Jane',

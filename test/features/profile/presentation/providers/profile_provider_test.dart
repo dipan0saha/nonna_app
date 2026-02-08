@@ -41,6 +41,9 @@ void main() {
     );
 
     setUp(() {
+      // Provide dummy values for mockito null-safety
+      provideDummy<String>('');
+      
       mockDatabaseService = MockDatabaseService();
       mockCacheService = MockCacheService();
       mockStorageService = MockStorageService();

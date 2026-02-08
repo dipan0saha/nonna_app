@@ -1,6 +1,12 @@
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Helper method to create a base PostgrestBuilder for testing purposes
+PostgrestBuilder<dynamic, dynamic, dynamic> _createBaseBuilder() {
+  final client = SupabaseClient('http://localhost', 'fake-key');
+  return client.from('fake_table');
+}
+
 /// Fake Postgrest Builder for testing
 /// 
 /// This builder implements the PostgrestFilterBuilder interface
@@ -10,7 +16,7 @@ class FakePostgrestBuilder extends PostgrestFilterBuilder<List<Map<String, dynam
   bool _isMaybeSingle = false;
   bool _isSingle = false;
 
-  FakePostgrestBuilder(this._data) : super(Uri.parse('http://localhost'));
+  FakePostgrestBuilder(this._data) : super(_createBaseBuilder());
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(String column, dynamic value) => this;
@@ -121,7 +127,7 @@ class FakePostgrestBuilder extends PostgrestFilterBuilder<List<Map<String, dynam
     // but for our mock purposes, we cast appropriately.
     if (_isMaybeSingle) {
       // Return null if empty, otherwise return the data
-      final result = _data.isEmpty ? [] : _data;
+      final List<Map<String, dynamic>> result = _data.isEmpty ? [] : _data;
       return onValue(result);
     } else if (_isSingle) {
       // Return the first item
@@ -138,7 +144,7 @@ class FakePostgrestBuilder extends PostgrestFilterBuilder<List<Map<String, dynam
 class FakePostgrestUpdateBuilder extends PostgrestFilterBuilder<List<Map<String, dynamic>>> {
   final Map<String, dynamic>? _data;
 
-  FakePostgrestUpdateBuilder([this._data]) : super(Uri.parse('http://localhost'));
+  FakePostgrestUpdateBuilder([this._data]) : super(_createBaseBuilder());
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(String column, dynamic value) => this;
@@ -244,7 +250,7 @@ class FakePostgrestUpdateBuilder extends PostgrestFilterBuilder<List<Map<String,
 
 /// Fake Postgrest Delete Builder for testing
 class FakePostgrestDeleteBuilder extends PostgrestFilterBuilder<List<Map<String, dynamic>>> {
-  FakePostgrestDeleteBuilder() : super(Uri.parse('http://localhost'));
+  FakePostgrestDeleteBuilder() : super(_createBaseBuilder());
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(String column, dynamic value) => this;

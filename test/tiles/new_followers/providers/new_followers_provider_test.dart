@@ -55,7 +55,6 @@ void main() {
 
     group('Initial State', () {
       test('initial state has empty followers', () {
-        final notifier = container.read(newFollowersProvider.notifier);
         final state = container.read(newFollowersProvider);
         
         expect(state.followers, isEmpty);
