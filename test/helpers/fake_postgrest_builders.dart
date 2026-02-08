@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Helper method to create a base PostgrestBuilder for testing purposes
-dynamic _createBaseBuilder() {
+PostgrestBuilder<List<Map<String, dynamic>>, List<Map<String, dynamic>>,
+    List<Map<String, dynamic>>> _createBaseBuilder() {
   final client = SupabaseClient('http://localhost', 'fake-key');
-  return client.from('fake_table');
+  // Call select() to get a PostgrestFilterBuilder which extends PostgrestBuilder
+  return client.from('fake_table').select();
 }
 
 /// Fake Postgrest Builder for testing
@@ -434,11 +436,7 @@ class FakePostgrestUpdateBuilder
 /// Fake Postgrest Delete Builder for testing
 class FakePostgrestDeleteBuilder
     extends PostgrestFilterBuilder<List<Map<String, dynamic>>> {
-  FakePostgrestDeleteBuilder()
-      : super(_createBaseBuilder() as PostgrestBuilder<
-            List<Map<String, dynamic>>,
-            List<Map<String, dynamic>>,
-            List<Map<String, dynamic>>>);
+  FakePostgrestDeleteBuilder() : super(_createBaseBuilder());
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(
