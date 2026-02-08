@@ -38,8 +38,12 @@ void main() {
       mockRealtime = MockRealtimeService();
 
       // Setup default mock behaviors
-      when(mockCache.isInitialized)
-          .thenReturn(false); // Default to not initialized
+      // Note: Set cache to initialized to avoid triggering property access
+      // during other mock setups (avoids "Cannot call when within a stub response")
+      when(mockCache.isInitialized).thenReturn(true);
+      when(mockCache.get(any)).thenAnswer((_) async => null);
+      when(mockCache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+          .thenAnswer((_) async => Future.value());
 
       // Setup realtime service to return empty stream by default
       when(mockRealtime.subscribe(
