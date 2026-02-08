@@ -143,22 +143,17 @@ class RegistryScreenState {
 }
 
 /// Registry Screen Provider Notifier
-class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
-  final DatabaseService _databaseService;
-  final CacheService _cacheService;
-  final RealtimeService _realtimeService;
-
+class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
   String? _itemsSubscriptionId;
   String? _purchasesSubscriptionId;
 
-  RegistryScreenNotifier({
-    required DatabaseService databaseService,
-    required CacheService cacheService,
-    required RealtimeService realtimeService,
-  })  : _databaseService = databaseService,
-        _cacheService = cacheService,
-        _realtimeService = realtimeService,
-        super(const RegistryScreenState());
+  @override
+  RegistryScreenState build() {
+    ref.onDispose(() {
+      _cancelRealtimeSubscriptions();
+    });
+    return const RegistryScreenState();
+  }
 
   // Configuration
   static const String _cacheKeyPrefix = 'registry_items';
@@ -249,8 +244,10 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
   Future<List<RegistryItemWithStatus>> _fetchItemsWithStatus(
     String babyProfileId,
   ) async {
+    final databaseService = ref.read(databaseServiceProvider);
+    
     // Fetch registry items
-    final itemsResponse = await _databaseService
+    final itemsResponse = await databaseService
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isNull(SupabaseTables.deletedAt)
@@ -261,7 +258,7 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
         .toList();
 
     // Fetch purchases
-    final purchasesResponse = await _databaseService
+    final purchasesResponse = await databaseService
         .select(SupabaseTables.registryPurchases)
         .order(SupabaseTables.createdAt, ascending: false);
 
@@ -286,11 +283,12 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
   Future<List<RegistryItemWithStatus>?> _loadFromCache(
     String babyProfileId,
   ) async {
-    if (!_cacheService.isInitialized) return null;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await _cacheService.get(cacheKey);
+      final cachedData = await cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -313,7 +311,8 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
     String babyProfileId,
     List<RegistryItemWithStatus> items,
   ) async {
-    if (!_cacheService.isInitialized) return;
+    final cacheService = ref.read(cacheServiceProvider);
+    if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
@@ -322,7 +321,7 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
         'isPurchased': itemWithStatus.isPurchased,
         'purchaseCount': itemWithStatus.purchaseCount,
       }).toList();
-      await _cacheService.put(
+      await cacheService.put(
         cacheKey,
         jsonData,
         ttlMinutes: PerformanceLimits.screenCacheDuration.inMinutes,
@@ -342,8 +341,10 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
     try {
       _cancelRealtimeSubscriptions();
 
+      final realtimeService = ref.read(realtimeServiceProvider);
+
       // Subscribe to registry items changes
-      _itemsSubscriptionId = await _realtimeService.subscribe(
+      _itemsSubscriptionId = await realtimeService.subscribe(
         table: SupabaseTables.registryItems,
         filter: '${SupabaseTables.babyProfileId}=eq.$babyProfileId',
         callback: (payload) {
@@ -352,7 +353,7 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
       );
 
       // Subscribe to purchases changes
-      _purchasesSubscriptionId = await _realtimeService.subscribe(
+      _purchasesSubscriptionId = await realtimeService.subscribe(
         table: SupabaseTables.registryPurchases,
         callback: (payload) {
           _handlePurchasesUpdate(payload, babyProfileId);
@@ -395,25 +396,16 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
 
   /// Cancel real-time subscriptions
   void _cancelRealtimeSubscriptions() {
+    final realtimeService = ref.read(realtimeServiceProvider);
     if (_itemsSubscriptionId != null) {
-      _realtimeService.unsubscribe(_itemsSubscriptionId!);
+      realtimeService.unsubscribe(_itemsSubscriptionId!);
       _itemsSubscriptionId = null;
     }
     if (_purchasesSubscriptionId != null) {
-      _realtimeService.unsubscribe(_purchasesSubscriptionId!);
+      realtimeService.unsubscribe(_purchasesSubscriptionId!);
       _purchasesSubscriptionId = null;
     }
     debugPrint('✅ Real-time subscriptions cancelled');
-  }
-
-  // ==========================================
-  // Cleanup
-  // ==========================================
-
-  @override
-  void dispose() {
-    _cancelRealtimeSubscriptions();
-    super.dispose();
   }
 }
 
@@ -425,23 +417,7 @@ class RegistryScreenNotifier extends StateNotifier<RegistryScreenState> {
 /// final notifier = ref.read(registryScreenProvider.notifier);
 /// await notifier.loadItems(babyProfileId: 'abc');
 /// ```
-final registryScreenProvider = StateNotifierProvider.autoDispose<
+final registryScreenProvider = NotifierProvider.autoDispose<
     RegistryScreenNotifier, RegistryScreenState>(
-  (ref) {
-    final databaseService = ref.watch(databaseServiceProvider);
-    final cacheService = ref.watch(cacheServiceProvider);
-    final realtimeService = ref.watch(realtimeServiceProvider);
-
-    final notifier = RegistryScreenNotifier(
-      databaseService: databaseService,
-      cacheService: cacheService,
-      realtimeService: realtimeService,
-    );
-
-    ref.onDispose(() {
-      notifier.dispose();
-    });
-
-    return notifier;
-  },
+  RegistryScreenNotifier.new,
 );
