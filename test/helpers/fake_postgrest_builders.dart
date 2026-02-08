@@ -1,11 +1,15 @@
 import 'dart:async';
 
+import 'package:mockito/mockito.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+class _MockPostgrestBuilder extends Mock
+    implements PostgrestBuilder<List<Map<String, dynamic>>,
+        List<Map<String, dynamic>>, List<Map<String, dynamic>>> {}
 
 /// Helper method to create a base PostgrestBuilder for testing purposes
 dynamic _createBaseBuilder() {
-  final client = SupabaseClient('http://localhost', 'fake-key');
-  return client.from('fake_table');
+  return _MockPostgrestBuilder();
 }
 
 /// Fake Postgrest Builder for testing
