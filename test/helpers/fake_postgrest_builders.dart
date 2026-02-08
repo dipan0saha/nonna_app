@@ -169,21 +169,21 @@ class FakePostgrestBuilder
       this;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> order(String column,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> order(String column,
           {bool ascending = false,
           bool nullsFirst = false,
           String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> limit(int count,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> limit(int count,
           {String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> range(int from, int to,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> range(int from, int to,
           {String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>> single() {
@@ -217,9 +217,9 @@ class FakePostgrestBuilder
       this as PostgrestBuilder<String, String, String>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> select(
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> select(
           [String columns = '*']) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
   Future<U> then<U>(
@@ -227,7 +227,7 @@ class FakePostgrestBuilder
       {Function? onError}) async {
     // Handle delay if specified
     if (_delay != null) {
-      await Future.delayed(_delay!);
+      await Future.delayed(_delay);
     }
 
     // Handle error if specified
@@ -235,7 +235,7 @@ class FakePostgrestBuilder
       if (onError != null) {
         return onError(_error, StackTrace.current);
       }
-      throw _error!;
+      throw _error;
     }
 
     // Note: This is a simplified implementation for testing.
@@ -375,21 +375,21 @@ class FakePostgrestUpdateBuilder
       this;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> order(String column,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> order(String column,
           {bool ascending = false,
           bool nullsFirst = false,
           String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> limit(int count,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> limit(int count,
           {String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> range(int from, int to,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> range(int from, int to,
           {String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>> single() =>
@@ -419,9 +419,9 @@ class FakePostgrestUpdateBuilder
       this as PostgrestBuilder<String, String, String>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> select(
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> select(
           [String columns = '*']) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
   Future<U> then<U>(
@@ -552,21 +552,21 @@ class FakePostgrestDeleteBuilder
       this;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> order(String column,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> order(String column,
           {bool ascending = false,
           bool nullsFirst = false,
           String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> limit(int count,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> limit(int count,
           {String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> range(int from, int to,
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> range(int from, int to,
           {String? referencedTable}) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>> single() =>
@@ -596,9 +596,9 @@ class FakePostgrestDeleteBuilder
       this as PostgrestBuilder<String, String, String>;
 
   @override
-  PostgrestTransformBuilder<List<Map<String, dynamic>>> select(
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> select(
           [String columns = '*']) =>
-      this as PostgrestTransformBuilder<List<Map<String, dynamic>>>;
+      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
 
   @override
   Future<U> then<U>(
