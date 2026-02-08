@@ -113,7 +113,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
 
       // Try to load from cache first
       if (!forceRefresh) {
-        final cachedProfile = await _loadFromCache(babyProfileId, cacheService);
+        final cachedProfile = await _loadFromCache(babyProfileId);
         if (cachedProfile != null) {
           final isOwner = await _checkIsOwner(babyProfileId, currentUserId, databaseService);
           state = state.copyWith(
@@ -144,7 +144,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       final isOwner = await _checkIsOwner(babyProfileId, currentUserId, databaseService);
 
       // Save to cache
-      await _saveToCache(babyProfileId, profile, cacheService);
+      await _saveToCache(babyProfileId, profile);
 
       state = state.copyWith(
         profile: profile,
@@ -338,7 +338,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       final profile = BabyProfile.fromJson(response as Map<String, dynamic>);
 
       // Update cache
-      await _saveToCache(babyProfileId, profile, cacheService);
+      await _saveToCache(babyProfileId, profile);
 
       state = state.copyWith(
         profile: profile,
@@ -453,7 +453,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
   // ==========================================
 
   /// Load profile from cache
-  Future<BabyProfile?> _loadFromCache(String babyProfileId, CacheService cacheService) async {
+  Future<BabyProfile?> _loadFromCache(String babyProfileId) async {
+    final cacheService = ref.read(cacheServiceProvider);
     if (!cacheService.isInitialized) return null;
 
     try {
@@ -470,7 +471,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
   }
 
   /// Save profile to cache
-  Future<void> _saveToCache(String babyProfileId, BabyProfile profile, CacheService cacheService) async {
+  Future<void> _saveToCache(String babyProfileId, BabyProfile profile) async {
+    final cacheService = ref.read(cacheServiceProvider);
     if (!cacheService.isInitialized) return;
 
     try {

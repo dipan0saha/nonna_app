@@ -34,9 +34,9 @@ class AuthNotifier extends Notifier<AuthState> {
 
   @override
   AuthState build() {
-    final authService = ref.watch(authServiceProvider);
-    final databaseService = ref.watch(databaseServiceProvider);
-    final localStorage = ref.watch(localStorageServiceProvider);
+    final authService = ref.read(authServiceProvider);
+    final databaseService = ref.read(databaseServiceProvider);
+    final localStorage = ref.read(localStorageServiceProvider);
 
     _initialize(authService, databaseService, localStorage);
     

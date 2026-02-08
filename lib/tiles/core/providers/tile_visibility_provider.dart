@@ -81,11 +81,11 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
           : _visibilityStorageKey;
 
       final Map<String, bool> visibilityMap =
-          await _loadVisibilityFromStorage(visibilityKey, ref.read(localStorageServiceProvider));
+          await _loadVisibilityFromStorage(visibilityKey);
 
       // Load feature flags
       final Map<String, bool> featureFlags =
-          await _loadFeatureFlagsFromStorage(ref.read(localStorageServiceProvider));
+          await _loadFeatureFlagsFromStorage();
 
       state = state.copyWith(
         visibilityMap: visibilityMap,
@@ -138,7 +138,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
           ? '${_visibilityStorageKey}_$userId'
           : _visibilityStorageKey;
 
-      await _saveVisibilityToStorage(visibilityKey, updatedMap, ref.read(localStorageServiceProvider));
+      await _saveVisibilityToStorage(visibilityKey, updatedMap);
 
       debugPrint('✅ Updated visibility for tile: $tileId to $isVisible');
     } catch (e) {
@@ -229,7 +229,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
       state = state.copyWith(featureFlags: updatedFlags);
 
       // Persist to storage
-      await _saveFeatureFlagsToStorage(updatedFlags, ref.read(localStorageServiceProvider));
+      await _saveFeatureFlagsToStorage(updatedFlags);
 
       debugPrint('✅ Updated feature flag: $featureName to $isEnabled');
     } catch (e) {
@@ -246,7 +246,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
     try {
       // TODO: Implement remote config fetching
       // For now, we'll use local storage
-      final flags = await _loadFeatureFlagsFromStorage(ref.read(localStorageServiceProvider));
+      final flags = await _loadFeatureFlagsFromStorage();
       state = state.copyWith(featureFlags: flags);
 
       debugPrint('✅ Loaded remote feature flags');
@@ -305,7 +305,8 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
   // ==========================================
 
   /// Load visibility preferences from storage
-  Future<Map<String, bool>> _loadVisibilityFromStorage(String key, LocalStorageService localStorageService) async {
+  Future<Map<String, bool>> _loadVisibilityFromStorage(String key) async {
+    final localStorageService = ref.read(localStorageServiceProvider);
     if (!localStorageService.isInitialized) {
       return {};
     }
@@ -327,7 +328,8 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
   Future<void> _saveVisibilityToStorage(
     String key,
     Map<String, bool> visibilityMap,
-    LocalStorageService localStorageService,
+  ) async {
+    final localStorageService = ref.read(localStorageServiceProvider);
   ) async {
     if (!localStorageService.isInitialized) return;
 
@@ -339,7 +341,8 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
   }
 
   /// Load feature flags from storage
-  Future<Map<String, bool>> _loadFeatureFlagsFromStorage(LocalStorageService localStorageService) async {
+  Future<Map<String, bool>> _loadFeatureFlagsFromStorage() async {
+    final localStorageService = ref.read(localStorageServiceProvider);
     if (!localStorageService.isInitialized) {
       return {};
     }
@@ -357,7 +360,8 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
   }
 
   /// Save feature flags to storage
-  Future<void> _saveFeatureFlagsToStorage(Map<String, bool> featureFlags, LocalStorageService localStorageService) async {
+  Future<void> _saveFeatureFlagsToStorage(Map<String, bool> featureFlags) async {
+    final localStorageService = ref.read(localStorageServiceProvider);
     if (!localStorageService.isInitialized) return;
 
     try {
