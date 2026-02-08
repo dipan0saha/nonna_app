@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'cache_service.dart';
 import 'local_storage_service.dart';
 import 'supabase_service.dart';
 
@@ -171,7 +170,7 @@ class DiskPersistenceStrategy implements PersistenceStrategy {
   @override
   Future<Map<String, dynamic>?> load(String key) async {
     final storageKey = _keyPrefix + key;
-    final jsonData = await _localStorage.getString(storageKey);
+    final jsonData = _localStorage.getString(storageKey);
 
     if (jsonData == null) {
       debugPrint('💾 Disk: $key not found');
@@ -179,7 +178,7 @@ class DiskPersistenceStrategy implements PersistenceStrategy {
     }
 
     // Check TTL
-    final ttl = await _localStorage.getInt(storageKey + _ttlSuffix);
+    final ttl = _localStorage.getInt(storageKey + _ttlSuffix);
     if (ttl != null) {
       final expiresAt = DateTime.fromMillisecondsSinceEpoch(ttl);
       if (DateTime.now().isAfter(expiresAt)) {
@@ -211,12 +210,12 @@ class DiskPersistenceStrategy implements PersistenceStrategy {
   @override
   Future<bool> has(String key) async {
     final storageKey = _keyPrefix + key;
-    final jsonData = await _localStorage.getString(storageKey);
+    final jsonData = _localStorage.getString(storageKey);
 
     if (jsonData == null) return false;
 
     // Check TTL
-    final ttl = await _localStorage.getInt(storageKey + _ttlSuffix);
+    final ttl = _localStorage.getInt(storageKey + _ttlSuffix);
     if (ttl != null) {
       final expiresAt = DateTime.fromMillisecondsSinceEpoch(ttl);
       if (DateTime.now().isAfter(expiresAt)) {
@@ -239,7 +238,7 @@ class DiskPersistenceStrategy implements PersistenceStrategy {
 
   @override
   Future<List<String>> getAllKeys() async {
-    final allKeys = await _localStorage.getAllKeys();
+    final allKeys = _localStorage.getAllKeys();
     return allKeys
         .where((key) => key.startsWith(_keyPrefix))
         .map((key) => key.substring(_keyPrefix.length))

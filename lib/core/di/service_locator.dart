@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 
 import '../services/analytics_service.dart';
 import '../services/auth_service.dart';
@@ -313,11 +313,8 @@ class ServiceLocator {
         await cacheService.dispose();
       }
 
-      // Dispose local storage service
-      final localStorageService = tryGet<LocalStorageService>();
-      if (localStorageService != null && localStorageService.isInitialized) {
-        await localStorageService.dispose();
-      }
+      // Local storage service doesn't have dispose method
+      // It uses SharedPreferences which doesn't need explicit disposal
 
       debugPrint('✅ ServiceLocator disposed');
     } catch (e) {

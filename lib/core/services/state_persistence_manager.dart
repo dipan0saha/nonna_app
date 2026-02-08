@@ -438,13 +438,13 @@ class StatePersistenceManager {
 
   /// Hydrate a provider with persisted state
   ///
-  /// [ref] ProviderRef to override
+  /// [ref] Ref to override
   /// [key] State key to load
   /// [fromJson] Function to convert JSON to provider state
   ///
   /// Returns the hydrated state or null if not found
   Future<T?> hydrateProvider<T>(
-    ProviderRef ref,
+    Ref ref,
     String key,
     T Function(Map<String, dynamic>) fromJson,
   ) async {
