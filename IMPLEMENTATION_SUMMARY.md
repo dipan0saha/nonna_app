@@ -277,8 +277,8 @@ void main() {
 }
 
 // AFTER: ~10 lines
-import 'package:nonna_app/test/mocks/mock_services.mocks.dart';
-import 'package:nonna_app/test/helpers/mock_factory.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   late MockServiceContainer mocks;
@@ -406,9 +406,9 @@ flutter pub run build_runner build --delete-conflicting-outputs
 ### For New Tests
 
 ```dart
-import 'package:nonna_app/test/mocks/mock_services.mocks.dart';
-import 'package:nonna_app/test/helpers/mock_factory.dart';
-import 'package:nonna_app/test/helpers/test_data_factory.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
+import '../../helpers/test_data_factory.dart';
 
 void main() {
   group('MyNewTest', () {

@@ -73,7 +73,7 @@ import 'package:nonna_app/core/services/supabase_service.dart';
   // ==========================================
   File,
 ])
-// Import generated mocks
+// Forward reference to generated mocks file (created by build_runner)
 // ignore: unused_import
 import 'mock_services.mocks.dart';
 

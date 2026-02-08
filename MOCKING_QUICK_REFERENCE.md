@@ -3,9 +3,9 @@
 ## 🚀 Quick Start
 
 ```dart
-import 'package:nonna_app/test/mocks/mock_services.mocks.dart';
-import 'package:nonna_app/test/helpers/mock_factory.dart';
-import 'package:nonna_app/test/helpers/test_data_factory.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
+import '../../helpers/test_data_factory.dart';
 
 void main() {
   group('MyTest', () {
@@ -263,9 +263,9 @@ import 'my_test.mocks.dart';
 
 ### ✅ DO: Use centralized mocks
 ```dart
-// ✅ GOOD
-import 'package:nonna_app/test/mocks/mock_services.mocks.dart';
-import 'package:nonna_app/test/helpers/mock_factory.dart';
+// ✅ GOOD (use relative imports in test files)
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 ```
 
 ---

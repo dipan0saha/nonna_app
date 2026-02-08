@@ -1,6 +1,6 @@
 import 'package:mockito/mockito.dart';
-import 'package:nonna_app/test/helpers/fake_postgrest_builders.dart';
-import 'package:nonna_app/test/mocks/mock_services.mocks.dart';
+import '../mocks/mock_services.mocks.dart';
+import 'fake_postgrest_builders.dart';
 
 /// Factory for creating pre-configured mock service instances
 ///
