@@ -354,4 +354,10 @@ class LocalStorageService {
     await clearSecureStorage();
     debugPrint('✅ Cleared all local storage');
   }
+
+  /// Get all keys from preferences
+  Set<String> getAllKeys() {
+    _ensureInitialized();
+    return _prefs!.getKeys();
+  }
 }

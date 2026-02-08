@@ -60,8 +60,8 @@ class Notification {
       body: json['body'] as String,
       payload: json['payload'] != null
           ? (json['payload'] is String
-              ? jsonDecode(json['payload'] as String) as Map<String, dynamic>
-              : json['payload'] as Map<String, dynamic>)
+              ? Map<String, dynamic>.from(jsonDecode(json['payload'] as String) as Map)
+              : Map<String, dynamic>.from(json['payload'] as Map))
           : null,
       readAt: json['read_at'] != null
           ? DateTime.parse(json['read_at'] as String)

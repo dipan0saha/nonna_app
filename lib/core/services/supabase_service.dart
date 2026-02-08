@@ -14,6 +14,9 @@ class SupabaseService {
   /// Get the current authenticated user
   User? get currentUser => client.auth.currentUser;
 
+  /// Get the current user's ID
+  String? get currentUserId => currentUser?.id;
+
   /// Check if user is authenticated
   bool get isAuthenticated => currentUser != null;
 
