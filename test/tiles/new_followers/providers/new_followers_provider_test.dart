@@ -66,8 +66,8 @@ void main() {
     group('fetchFollowers', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) async {
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(any as String)).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
           return FakePostgrestBuilder([]);
         });
@@ -84,13 +84,13 @@ void main() {
 
       test('fetches followers from database when cache is empty', () async {
         // Setup mocks
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
@@ -104,13 +104,13 @@ void main() {
 
       test('loads followers from cache when available', () async {
         // Setup cache to return data
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(any as String))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(any as String));
 
         // Verify state updated from cache
         expect(container.read(newFollowersProvider).followers, hasLength(1));
@@ -119,8 +119,8 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(any as String))
             .thenThrow(Exception('Database error'));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
@@ -133,14 +133,14 @@ void main() {
 
       test('force refresh bypasses cache', () async {
         // Setup mocks
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(any as String))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
@@ -149,7 +149,7 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(any as String)).called(greaterThanOrEqualTo(1));
       });
 
       test('filters only recent followers', () async {
@@ -158,13 +158,13 @@ void main() {
           createdAt: DateTime.now().subtract(const Duration(days: 3)),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([recentFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
@@ -177,13 +177,13 @@ void main() {
       });
 
       test('saves fetched followers to cache', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
@@ -204,13 +204,13 @@ void main() {
           ),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any)).thenReturn(
+        when(mockDatabaseService.select(any as String)).thenReturn(
           FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
         );
 
@@ -225,14 +225,14 @@ void main() {
 
     group('refresh', () {
       test('refreshes followers with force refresh', () async {
-        when(mockCacheService.get(any))
+        when(mockCacheService.get(any as String))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).refresh(
@@ -240,20 +240,20 @@ void main() {
         );
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(any as String)).called(greaterThanOrEqualTo(1));
       });
     });
 
     group('Real-time Updates', () {
       test('handles new follower', () async {
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
@@ -267,13 +267,13 @@ void main() {
 
       test('handles follower removed', () async {
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
@@ -287,13 +287,13 @@ void main() {
 
     group('Time Period Options', () {
       test('supports 7-day period', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
@@ -304,13 +304,13 @@ void main() {
       });
 
       test('supports 30-day period', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any as String))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
@@ -336,13 +336,13 @@ void main() {
           createdAt: DateTime.now().subtract(const Duration(days: 1)),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any as String)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenReturn(Stream.empty());
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any as String)).thenReturn(FakePostgrestBuilder([
           follower1.toJson(),
           follower2.toJson(),
           follower3.toJson(),

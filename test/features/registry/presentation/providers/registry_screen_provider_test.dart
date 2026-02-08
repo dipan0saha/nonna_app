@@ -180,7 +180,7 @@ void main() {
         )).thenAnswer((_) => Stream.value({}));
 
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) async {
+        when(mockDatabaseService.select(any as String)).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleItem.toJson()]);
