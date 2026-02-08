@@ -56,7 +56,7 @@ void main() {
     group('Initial State', () {
       test('initial state has empty followers', () {
         final state = container.read(newFollowersProvider);
-        
+
         expect(state.followers, isEmpty);
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
@@ -67,11 +67,13 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         // Start fetching
-        final fetchFuture =
-            container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
+        final fetchFuture = container
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: 'profile_1');
 
         // Verify loading state
         expect(container.read(newFollowersProvider).isLoading, isTrue);
@@ -90,11 +92,14 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
-        await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
+        await container
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: 'profile_1');
 
         // Verify state updated
         expect(container.read(newFollowersProvider).followers, hasLength(1));
-        expect(container.read(newFollowersProvider).followers.first.userId, equals('user_1'));
+        expect(container.read(newFollowersProvider).followers.first.userId,
+            equals('user_1'));
         expect(container.read(newFollowersProvider).isLoading, isFalse);
         expect(container.read(newFollowersProvider).error, isNull);
       });
@@ -104,14 +109,17 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
 
-        await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
+        await container
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: 'profile_1');
 
         // Verify database was not called
         verifyNever(mockDatabaseService.select(any));
 
         // Verify state updated from cache
         expect(container.read(newFollowersProvider).followers, hasLength(1));
-        expect(container.read(newFollowersProvider).followers.first.userId, equals('user_1'));
+        expect(container.read(newFollowersProvider).followers.first.userId,
+            equals('user_1'));
       });
 
       test('handles errors gracefully', () async {
@@ -120,11 +128,14 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
-        await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
+        await container
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: 'profile_1');
 
         // Verify error state
         expect(container.read(newFollowersProvider).isLoading, isFalse);
-        expect(container.read(newFollowersProvider).error, contains('Database error'));
+        expect(container.read(newFollowersProvider).error,
+            contains('Database error'));
         expect(container.read(newFollowersProvider).followers, isEmpty);
       });
 
@@ -141,9 +152,9 @@ void main() {
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
-          babyProfileId: 'profile_1',
-          forceRefresh: true,
-        );
+              babyProfileId: 'profile_1',
+              forceRefresh: true,
+            );
 
         // Verify database was called despite cache
         verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
@@ -165,12 +176,13 @@ void main() {
             .thenReturn(FakePostgrestBuilder([recentFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
-          babyProfileId: 'profile_1',
-        );
+              babyProfileId: 'profile_1',
+            );
 
         // Should only have recent followers
         expect(container.read(newFollowersProvider).followers, hasLength(1));
-        expect(container.read(newFollowersProvider).followers.first.userId, equals('user_1'));
+        expect(container.read(newFollowersProvider).followers.first.userId,
+            equals('user_1'));
       });
 
       test('saves fetched followers to cache', () async {
@@ -183,7 +195,9 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
-        await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
+        await container
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: 'profile_1');
 
         // Verify cache put was called
         verify(mockCacheService.put(any, any,
@@ -212,11 +226,12 @@ void main() {
         );
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
-          babyProfileId: 'profile_1',
-        );
+              babyProfileId: 'profile_1',
+            );
 
         // Should limit results
-        expect(container.read(newFollowersProvider).followers.length, lessThanOrEqualTo(30));
+        expect(container.read(newFollowersProvider).followers.length,
+            lessThanOrEqualTo(30));
       });
     });
 
@@ -233,8 +248,8 @@ void main() {
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).refresh(
-          babyProfileId: 'profile_1',
-        );
+              babyProfileId: 'profile_1',
+            );
 
         // Verify database was called (bypassing cache)
         verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
@@ -253,9 +268,12 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
-        await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
+        await container
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: 'profile_1');
 
-        final initialCount = container.read(newFollowersProvider).followers.length;
+        final initialCount =
+            container.read(newFollowersProvider).followers.length;
 
         // Note: Real-time updates are handled internally by the provider
         // and cannot be easily tested with direct state manipulation
@@ -273,7 +291,9 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
-        await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
+        await container
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: 'profile_1');
 
         expect(container.read(newFollowersProvider).followers, hasLength(1));
 
@@ -294,8 +314,8 @@ void main() {
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
-          babyProfileId: 'profile_1',
-        );
+              babyProfileId: 'profile_1',
+            );
 
         expect(container.read(newFollowersProvider).followers, isNotEmpty);
       });
@@ -311,8 +331,8 @@ void main() {
             .thenReturn(FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(
-          babyProfileId: 'profile_1',
-        );
+              babyProfileId: 'profile_1',
+            );
 
         expect(container.read(newFollowersProvider).followers, isNotEmpty);
       });
@@ -345,12 +365,17 @@ void main() {
           follower3.toJson(),
         ]));
 
-        await container.read(newFollowersProvider.notifier).fetchFollowers(babyProfileId: 'profile_1');
+        await container
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: 'profile_1');
 
         // Most recent should be first
-        expect(container.read(newFollowersProvider).followers[0].userId, equals('user_3'));
-        expect(container.read(newFollowersProvider).followers[1].userId, equals('user_2'));
-        expect(container.read(newFollowersProvider).followers[2].userId, equals('user_1'));
+        expect(container.read(newFollowersProvider).followers[0].userId,
+            equals('user_3'));
+        expect(container.read(newFollowersProvider).followers[1].userId,
+            equals('user_2'));
+        expect(container.read(newFollowersProvider).followers[2].userId,
+            equals('user_1'));
       });
     });
   });

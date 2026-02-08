@@ -35,7 +35,7 @@ void main() {
     setUp(() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
-      
+
       mockDatabaseService = MockDatabaseService();
       mockCacheService = MockCacheService();
 
@@ -70,8 +70,11 @@ void main() {
       test('loads tiles from database when cache is empty', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put('test_key', 'test_data', ttlMinutes: anyNamed('ttlMinutes'),))
-            .thenAnswer((_) async => {});
+        when(mockCacheService.put(
+          'test_key',
+          'test_data',
+          ttlMinutes: anyNamed('ttlMinutes'),
+        )).thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
         when(mockDatabaseService.select('test_table')).thenReturn(builder);
@@ -132,14 +135,17 @@ void main() {
       test('refreshes tiles with force refresh', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put('test_key', 'test_data', ttlMinutes: anyNamed('ttlMinutes'),))
-            .thenAnswer((_) async => {});
+        when(mockCacheService.put(
+          'test_key',
+          'test_data',
+          ttlMinutes: anyNamed('ttlMinutes'),
+        )).thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
         when(mockDatabaseService.select('test_table')).thenReturn(builder);
 
         final notifier = container.read(homeScreenProvider.notifier);
-        
+
         // First load tiles
         await notifier.loadTiles(
           babyProfileId: 'profile_1',
@@ -167,8 +173,11 @@ void main() {
       test('loads tiles for new baby profile', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put('test_key', 'test_data', ttlMinutes: anyNamed('ttlMinutes'),))
-            .thenAnswer((_) async => {});
+        when(mockCacheService.put(
+          'test_key',
+          'test_data',
+          ttlMinutes: anyNamed('ttlMinutes'),
+        )).thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
         when(mockDatabaseService.select('test_table')).thenReturn(builder);
@@ -189,14 +198,17 @@ void main() {
       test('toggles user role', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put('test_key', 'test_data', ttlMinutes: anyNamed('ttlMinutes'),))
-            .thenAnswer((_) async => {});
+        when(mockCacheService.put(
+          'test_key',
+          'test_data',
+          ttlMinutes: anyNamed('ttlMinutes'),
+        )).thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
         when(mockDatabaseService.select('test_table')).thenReturn(builder);
 
         final notifier = container.read(homeScreenProvider.notifier);
-        
+
         // First load with owner role
         await notifier.loadTiles(
           babyProfileId: 'profile_1',
@@ -222,14 +234,17 @@ void main() {
       test('retries loading tiles after error', () async {
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
-        when(mockCacheService.put('test_key', 'test_data', ttlMinutes: anyNamed('ttlMinutes'),))
-            .thenAnswer((_) async => {});
+        when(mockCacheService.put(
+          'test_key',
+          'test_data',
+          ttlMinutes: anyNamed('ttlMinutes'),
+        )).thenAnswer((_) async => {});
 
         final builder = FakePostgrestBuilder([sampleTileConfig.toJson()]);
         when(mockDatabaseService.select('test_table')).thenReturn(builder);
 
         final notifier = container.read(homeScreenProvider.notifier);
-        
+
         // First load tiles
         await notifier.loadTiles(
           babyProfileId: 'profile_1',

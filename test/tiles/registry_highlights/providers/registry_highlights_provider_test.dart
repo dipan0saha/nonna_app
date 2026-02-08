@@ -57,7 +57,7 @@ void main() {
     group('Initial State', () {
       test('initial state has empty items', () {
         final state = container.read(registryHighlightsProvider);
-        
+
         expect(state.items, isEmpty);
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
@@ -68,9 +68,8 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(
-          FakePostgrestBuilder([])
-        );
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         // Start fetching
         final notifier = container.read(registryHighlightsProvider.notifier);

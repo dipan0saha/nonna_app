@@ -34,7 +34,7 @@ void main() {
           () async {
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        
+
         // Mock photo queries
         when(mockDatabaseService.select(any)).thenAnswer((invocation) {
           final table = invocation.positionalArguments[0] as String;

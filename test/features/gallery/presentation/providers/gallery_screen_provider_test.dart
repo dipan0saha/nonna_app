@@ -36,7 +36,7 @@ void main() {
     setUp(() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
-      
+
       mockDatabaseService = MockDatabaseService();
       mockCacheService = MockCacheService();
       mockRealtimeService = MockRealtimeService();
@@ -360,7 +360,7 @@ void main() {
 
         expect(notifier.state.photos.length, equals(initialCount + 1));
         expect(notifier.state.photos.first.id, equals('photo_2'));
-        
+
         streamController.close();
       });
 
@@ -391,7 +391,7 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 100));
 
         expect(notifier.state.photos.first.caption, equals('Updated photo'));
-        
+
         streamController.close();
       });
 
@@ -423,7 +423,7 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 100));
 
         expect(notifier.state.photos, isEmpty);
-        
+
         streamController.close();
       });
     });

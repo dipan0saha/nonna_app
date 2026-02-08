@@ -50,7 +50,7 @@ void main() {
     group('Initial State', () {
       test('initial state has no storage info', () {
         final state = container.read(storageUsageProvider);
-        
+
         expect(state.info, isNull);
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
@@ -61,9 +61,8 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(
-          FakePostgrestBuilder([])
-        );
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         // Start fetching
         final notifier = container.read(storageUsageProvider.notifier);

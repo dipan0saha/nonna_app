@@ -129,8 +129,8 @@ void main() {
           expiresAt: DateTime.now().subtract(const Duration(days: 1)),
         );
 
-        when(mockCacheService.get(any)).thenAnswer(
-            (_) async => [activeAnnouncement.toJson(), expiredAnnouncement.toJson()]);
+        when(mockCacheService.get(any)).thenAnswer((_) async =>
+            [activeAnnouncement.toJson(), expiredAnnouncement.toJson()]);
 
         await notifier.loadAnnouncements(userId: 'test_user');
 

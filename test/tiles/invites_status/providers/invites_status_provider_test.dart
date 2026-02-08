@@ -60,7 +60,7 @@ void main() {
     group('Initial State', () {
       test('initial state has empty invitations', () {
         final state = container.read(invitesStatusProvider);
-        
+
         expect(state.invitations, isEmpty);
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
@@ -71,10 +71,11 @@ void main() {
     group('fetchInvitations', () {
       test('sets loading state while fetching', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         // Start fetching
         final fetchFuture =
@@ -88,7 +89,7 @@ void main() {
 
       test('fetches invitations from database when cache is empty', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
@@ -102,7 +103,7 @@ void main() {
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
         final state = container.read(invitesStatusProvider);
-        
+
         // Verify state updated
         expect(state.invitations, hasLength(1));
         expect(state.invitations.first.id, equals('invite_1'));
@@ -113,7 +114,7 @@ void main() {
 
       test('loads invitations from cache when available', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         // Setup cache to return data
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
@@ -124,7 +125,7 @@ void main() {
         verifyNever(mockDatabaseService.select(any));
 
         final state = container.read(invitesStatusProvider);
-        
+
         // Verify state updated from cache
         expect(state.invitations, hasLength(1));
         expect(state.invitations.first.id, equals('invite_1'));
@@ -132,7 +133,7 @@ void main() {
 
       test('handles errors gracefully', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         // Setup mock to throw error
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
@@ -141,7 +142,7 @@ void main() {
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
         final state = container.read(invitesStatusProvider);
-        
+
         // Verify error state
         expect(state.isLoading, isFalse);
         expect(state.error, contains('Database error'));
@@ -150,7 +151,7 @@ void main() {
 
       test('force refresh bypasses cache', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         // Setup mocks
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
@@ -173,7 +174,7 @@ void main() {
 
       test('calculates pending count correctly', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         final invite1 = sampleInvitation.copyWith(
             id: 'invite_1', status: InvitationStatus.pending);
         final invite2 = sampleInvitation.copyWith(
@@ -202,7 +203,7 @@ void main() {
     group('refresh', () {
       test('refreshes invitations with force refresh', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
         when(mockRealtimeService.subscribe(
@@ -223,7 +224,7 @@ void main() {
     group('Real-time Updates', () {
       test('handles INSERT invitation', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
@@ -236,22 +237,25 @@ void main() {
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
-        final initialCount = container.read(invitesStatusProvider).invitations.length;
+        final initialCount =
+            container.read(invitesStatusProvider).invitations.length;
 
         // Simulate real-time INSERT
         final newInvitation = sampleInvitation.copyWith(id: 'invite_2');
         final currentState = container.read(invitesStatusProvider);
-        container.read(invitesStatusProvider.notifier).state = currentState.copyWith(
+        container.read(invitesStatusProvider.notifier).state =
+            currentState.copyWith(
           invitations: [newInvitation, ...currentState.invitations],
           pendingCount: currentState.pendingCount + 1,
         );
 
-        expect(container.read(invitesStatusProvider).invitations.length, equals(initialCount + 1));
+        expect(container.read(invitesStatusProvider).invitations.length,
+            equals(initialCount + 1));
       });
 
       test('handles UPDATE invitation status', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
@@ -270,7 +274,8 @@ void main() {
         final updatedInvitation =
             sampleInvitation.copyWith(status: InvitationStatus.accepted);
         final currentState = container.read(invitesStatusProvider);
-        container.read(invitesStatusProvider.notifier).state = currentState.copyWith(
+        container.read(invitesStatusProvider.notifier).state =
+            currentState.copyWith(
           invitations: currentState.invitations
               .map((i) => i.id == updatedInvitation.id ? updatedInvitation : i)
               .toList(),
@@ -295,7 +300,7 @@ void main() {
     group('Role-based Access', () {
       test('owner can fetch invitations', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
-        
+
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),

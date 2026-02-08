@@ -66,7 +66,8 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         // Start fetching
         final fetchFuture = notifier.fetchCountdowns(

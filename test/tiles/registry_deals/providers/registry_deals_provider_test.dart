@@ -63,7 +63,8 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');

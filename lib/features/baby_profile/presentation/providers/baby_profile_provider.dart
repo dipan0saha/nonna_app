@@ -254,8 +254,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
         'updated_at': DateTime.now().toIso8601String(),
       };
 
-      final response = await databaseService
-          .insert(SupabaseTables.babyProfiles, profileData);
+      final response = await databaseService.insert(
+          SupabaseTables.babyProfiles, profileData);
 
       final profile = BabyProfile.fromJson(response.first);
 

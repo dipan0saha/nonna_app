@@ -21,8 +21,9 @@ git push
 
 ## Run all commands in one single line
 ```bash
-flutter pub run build_runner build --delete-conflicting-outputs
 flutter analyze > flutter_analyze_results.txt
+flutter pub run build_runner build --delete-conflicting-outputs
+flutter test > flutter_test_results.txt
 git status && git add . && git commit --no-verify -m "Misc changes" && git push
 ```
 

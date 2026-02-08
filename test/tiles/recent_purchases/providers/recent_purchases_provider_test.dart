@@ -64,7 +64,8 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -232,7 +233,8 @@ void main() {
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
 
-        final initialCount = container.read(recentPurchasesProvider).purchases.length;
+        final initialCount =
+            container.read(recentPurchasesProvider).purchases.length;
 
         // Verify real-time setup occurred
         expect(initialCount, greaterThanOrEqualTo(0));

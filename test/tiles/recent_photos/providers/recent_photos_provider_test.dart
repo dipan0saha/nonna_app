@@ -57,7 +57,7 @@ void main() {
     group('Initial State', () {
       test('initial state has empty photos', () {
         final state = container.read(recentPhotosProvider);
-        
+
         expect(state.photos, isEmpty);
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
@@ -70,9 +70,8 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(
-          FakePostgrestBuilder([])
-        );
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         // Start fetching
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -228,10 +227,10 @@ void main() {
           await Future.delayed(const Duration(seconds: 1));
           return null;
         });
-        
+
         // Start a fetch (which sets loading to true)
         notifier.fetchPhotos(babyProfileId: 'profile_1', forceRefresh: true);
-        
+
         // Try to load more while loading
         await notifier.loadMore(babyProfileId: 'profile_1');
 

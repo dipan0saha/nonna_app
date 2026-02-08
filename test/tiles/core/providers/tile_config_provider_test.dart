@@ -76,7 +76,7 @@ void main() {
         );
 
         await fetchFuture;
-        
+
         // Verify final state
         final state = container.read(tileConfigProvider);
         expect(state.isLoading, isFalse);
@@ -176,8 +176,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
           config1.toJson(),
           config2.toJson(),
         ]));
@@ -209,8 +208,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
           config1.toJson(),
           config2.toJson(),
           config3.toJson(),
@@ -242,8 +240,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
-            .thenReturn(FakePostgrestBuilder([
+        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([
           visibleConfig.toJson(),
           hiddenConfig.toJson(),
           followerConfig.toJson(),
@@ -273,7 +270,7 @@ void main() {
         when(mockCacheService.delete(any)).thenAnswer((_) async => {});
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleTileConfig.toJson()]));
-        
+
         final notifier = container.read(tileConfigProvider.notifier);
         await notifier.fetchAllConfigs();
 

@@ -45,7 +45,7 @@ void main() {
     setUp(() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
-      
+
       mockDatabaseService = MockDatabaseService();
       mockCacheService = MockCacheService();
       mockRealtimeService = MockRealtimeService();
@@ -180,7 +180,8 @@ void main() {
         )).thenAnswer((_) => Stream.value({}));
 
         var callCount = 0;
-        when(mockDatabaseService.select(argThat(isA<String>()))).thenAnswer((_) {
+        when(mockDatabaseService.select(argThat(isA<String>())))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleItem.toJson()]);

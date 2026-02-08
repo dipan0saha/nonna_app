@@ -81,7 +81,8 @@ void main() {
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
-        when(mockDatabaseService.select(any)).thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(any))
+            .thenReturn(FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -219,7 +220,7 @@ void main() {
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
             .thenReturn(FakePostgrestBuilder([sampleEvent.toJson()]));
-        
+
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
           userId: 'user_1',
@@ -227,7 +228,8 @@ void main() {
         );
 
         // Setup insert mock
-        when(mockDatabaseService.insert(any, argThat(isA<Map<String, dynamic>>())))
+        when(mockDatabaseService.insert(
+                any, argThat(isA<Map<String, dynamic>>())))
             .thenAnswer((_) async => [sampleRSVP.toJson()]);
 
         // Note: submitRSVP method may not exist, skip actual test

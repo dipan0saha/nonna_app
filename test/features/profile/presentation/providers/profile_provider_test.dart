@@ -43,7 +43,7 @@ void main() {
     setUp(() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
-      
+
       mockDatabaseService = MockDatabaseService();
       mockCacheService = MockCacheService();
       mockStorageService = MockStorageService();
@@ -179,7 +179,8 @@ void main() {
 
         await notifier.loadProfile(userId: 'user_1');
 
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
