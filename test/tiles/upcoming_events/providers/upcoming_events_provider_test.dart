@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
@@ -38,6 +39,8 @@ void main() {
       mockDatabaseService = MockDatabaseService();
       mockCacheService = MockCacheService();
       mockRealtimeService = MockRealtimeService();
+
+      provideDummy<String>('');
 
       // Setup mock cache service
       when(mockCacheService.isInitialized).thenReturn(true);

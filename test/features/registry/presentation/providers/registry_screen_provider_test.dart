@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -41,6 +43,9 @@ void main() {
     );
 
     setUp(() {
+      // Provide dummy values for mockito null-safety
+      provideDummy<String>('');
+      
       mockDatabaseService = MockDatabaseService();
       mockCacheService = MockCacheService();
       mockRealtimeService = MockRealtimeService();
@@ -65,7 +70,7 @@ void main() {
       test('sets loading state while loading', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([]));
+            .thenReturn(FakePostgrestBuilder([]));
 
         final loadFuture = notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -83,7 +88,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -139,7 +144,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(
           babyProfileId: 'profile_1',
@@ -157,7 +162,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -314,7 +319,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -343,7 +348,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -358,7 +363,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
         when(mockDatabaseService.select(any))
-            .thenAnswer((_) async => FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenReturn(FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
