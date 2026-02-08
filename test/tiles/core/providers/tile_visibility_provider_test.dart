@@ -39,7 +39,6 @@ void main() {
     group('loadPreferences', () {
       test('loads visibility preferences from storage', () async {
         final testVisibilityMap = {'tile_1': true, 'tile_2': false};
-        final testFeatureFlags = {'feature_1': true};
 
         when(mockLocalStorageService.getString(any))
             .thenAnswer((_) async => null);
@@ -99,7 +98,7 @@ void main() {
     group('setTileVisibility', () {
       test('updates tile visibility in state', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setTileVisibility(
           tileId: 'tile_1',
@@ -111,7 +110,7 @@ void main() {
 
       test('persists visibility to storage', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setTileVisibility(
           tileId: 'tile_1',
@@ -123,7 +122,7 @@ void main() {
 
       test('handles user-specific preferences', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setTileVisibility(
           tileId: 'tile_1',
@@ -141,7 +140,7 @@ void main() {
     group('Convenience Methods', () {
       test('hideTile sets visibility to false', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.hideTile('tile_1');
 
@@ -150,7 +149,7 @@ void main() {
 
       test('showTile sets visibility to true', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         // First hide the tile
         await notifier.hideTile('tile_1');
@@ -163,7 +162,7 @@ void main() {
 
       test('toggleTileVisibility flips current state', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         // Initially true (default)
         expect(notifier.isTileVisible('tile_1'), isTrue);
@@ -182,8 +181,8 @@ void main() {
       test('clears visibility map', () async {
         // Setup initial state
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
-        when(mockLocalStorageService.remove(any)).thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
+        when(mockLocalStorageService.remove(any)).thenAnswer((_) async => null);
 
         await notifier.setTileVisibility(
           tileId: 'tile_1',
@@ -206,7 +205,7 @@ void main() {
 
       test('setFeatureFlag updates state', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setFeatureFlag(
           featureName: 'new_feature',
@@ -218,7 +217,7 @@ void main() {
 
       test('setFeatureFlag persists to storage', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setFeatureFlag(
           featureName: 'new_feature',
@@ -243,7 +242,7 @@ void main() {
     group('shouldRenderTile', () {
       test('returns false when tile is not visible', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setTileVisibility(
           tileId: 'tile_1',
@@ -255,7 +254,7 @@ void main() {
 
       test('returns false when required feature is disabled', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setFeatureFlag(
           featureName: 'premium',
@@ -274,7 +273,7 @@ void main() {
 
       test('returns true when tile visible and feature enabled', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setFeatureFlag(
           featureName: 'premium',
@@ -291,7 +290,7 @@ void main() {
     group('getVisibleTiles', () {
       test('returns list of visible tile IDs', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setTileVisibility(tileId: 'tile_1', isVisible: true);
         await notifier.setTileVisibility(tileId: 'tile_2', isVisible: false);
@@ -309,7 +308,7 @@ void main() {
     group('getHiddenTiles', () {
       test('returns list of hidden tile IDs', () async {
         when(mockLocalStorageService.setObject(any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => null);
 
         await notifier.setTileVisibility(tileId: 'tile_1', isVisible: true);
         await notifier.setTileVisibility(tileId: 'tile_2', isVisible: false);

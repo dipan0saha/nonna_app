@@ -6,9 +6,6 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/invitation_status.dart';
 import '../../../core/models/invitation.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
-import '../../../core/services/realtime_service.dart';
 
 /// Invites Status provider for the Invites Status tile
 ///

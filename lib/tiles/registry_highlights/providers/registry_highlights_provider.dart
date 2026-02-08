@@ -6,8 +6,6 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/registry_item.dart';
 import '../../../core/models/registry_purchase.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
 
 /// Registry item with purchase status
 class RegistryItemWithStatus {

@@ -5,9 +5,6 @@ import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/photo.dart';
-import '../../../core/models/photo_squish.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
 
 /// Photo with squish count
 class PhotoWithSquishes {

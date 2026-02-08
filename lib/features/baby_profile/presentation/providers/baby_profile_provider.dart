@@ -8,9 +8,7 @@ import '../../../../core/enums/gender.dart';
 import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/baby_membership.dart';
 import '../../../../core/models/baby_profile.dart';
-import '../../../../core/services/cache_service.dart';
 import '../../../../core/services/database_service.dart';
-import '../../../../core/services/storage_service.dart';
 
 /// Baby Profile Provider for managing baby profile state
 ///
@@ -109,7 +107,6 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       state = state.copyWith(isLoading: true, error: null);
 
       final databaseService = ref.read(databaseServiceProvider);
-      final cacheService = ref.read(cacheServiceProvider);
 
       // Try to load from cache first
       if (!forceRefresh) {
@@ -311,7 +308,6 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       }
 
       final databaseService = ref.read(databaseServiceProvider);
-      final cacheService = ref.read(cacheServiceProvider);
 
       // Update in database
       final updateData = {

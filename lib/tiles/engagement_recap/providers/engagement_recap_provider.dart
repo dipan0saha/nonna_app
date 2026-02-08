@@ -4,11 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
-import '../../../core/models/event_rsvp.dart';
-import '../../../core/models/photo_comment.dart';
-import '../../../core/models/photo_squish.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
 
 /// Engagement metrics
 class EngagementMetrics {

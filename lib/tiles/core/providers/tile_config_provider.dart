@@ -6,8 +6,6 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/user_role.dart';
 import '../../../core/models/tile_config.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
 
 /// Tile configuration provider for managing dynamic tile configurations
 ///

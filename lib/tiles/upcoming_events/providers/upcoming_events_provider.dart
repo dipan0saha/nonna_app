@@ -6,9 +6,6 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/user_role.dart';
 import '../../../core/models/event.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
-import '../../../core/services/realtime_service.dart';
 
 /// Upcoming Events provider for the Upcoming Events tile
 ///

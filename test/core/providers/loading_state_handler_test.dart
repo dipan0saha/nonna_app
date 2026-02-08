@@ -309,7 +309,7 @@ void main() {
       });
 
       test('respects timeout', () async {
-        final result = await loadingHandler.executeWithLoading(
+        await loadingHandler.executeWithLoading(
           operation: () async {
             await Future.delayed(const Duration(milliseconds: 200));
             return 'done';

@@ -5,9 +5,6 @@ import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/notification.dart' as app_notification;
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/database_service.dart';
-import '../../../core/services/realtime_service.dart';
 
 /// Notifications provider for the Notifications tile
 ///

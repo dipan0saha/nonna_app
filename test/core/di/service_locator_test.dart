@@ -196,8 +196,6 @@ void main() {
         await ServiceLocator.initialize();
 
         final cacheService = ServiceLocator.get<CacheService>();
-        final localStorageService =
-            ServiceLocator.get<CacheService>(); // Using cache as proxy
 
         expect(cacheService.isInitialized, isTrue);
       });

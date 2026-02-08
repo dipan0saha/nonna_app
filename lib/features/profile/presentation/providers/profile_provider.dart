@@ -6,9 +6,6 @@ import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/models/user.dart';
 import '../../../../core/models/user_stats.dart';
-import '../../../../core/services/cache_service.dart';
-import '../../../../core/services/database_service.dart';
-import '../../../../core/services/storage_service.dart';
 
 /// Profile Provider for managing user profile state
 ///

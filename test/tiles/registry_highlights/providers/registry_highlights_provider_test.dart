@@ -190,14 +190,6 @@ void main() {
 
     group('Purchase Status', () {
       test('tracks purchase status correctly', () async {
-        final purchase = RegistryPurchase(
-          id: 'purchase_1',
-          registryItemId: 'item_1',
-          userId: 'user_1',
-          quantity: 1,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
