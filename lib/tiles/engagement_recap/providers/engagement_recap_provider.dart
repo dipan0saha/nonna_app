@@ -174,7 +174,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     final photosResponse = await databaseService
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null);
+        .is(SupabaseTables.deletedAt, null);
 
     final photoIds =
         (photosResponse as List).map((json) => json['id'] as String).toList();
@@ -205,7 +205,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
     final eventsResponse = await databaseService
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null);
+        .is(SupabaseTables.deletedAt, null);
 
     final eventIds =
         (eventsResponse as List).map((json) => json['id'] as String).toList();

@@ -142,10 +142,10 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
         .toList();
   }
 
-  /// Get declined invitations
+  /// Get revoked invitations
   List<Invitation> getDeclinedInvitations() {
     return state.invitations
-        .where((inv) => inv.status == InvitationStatus.declined)
+        .where((inv) => inv.status == InvitationStatus.revoked)
         .toList();
   }
 

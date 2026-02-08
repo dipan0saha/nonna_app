@@ -162,7 +162,7 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
         .select(SupabaseTables.babyMemberships)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String())
-        .is_('removed_at', null) // Only get active members
+        .is('removed_at', null) // Only get active members
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxFollowers);
 

@@ -14,7 +14,7 @@ import '../../../core/services/realtime_service.dart';
 /// Event with RSVP status
 class EventWithRSVP {
   final Event event;
-  final EventRSVP? rsvp;
+  final EventRsvp? rsvp;
   final bool needsResponse;
 
   const EventWithRSVP({
@@ -36,7 +36,7 @@ class EventWithRSVP {
 /// - Real-time updates via Supabase subscriptions
 /// - Local caching with TTL
 ///
-/// Dependencies: DatabaseService, CacheService, RealtimeService, Event model, EventRSVP model
+/// Dependencies: DatabaseService, CacheService, RealtimeService, Event model, EventRsvp model
 
 /// State class for RSVP tasks
 class RSVPTasksState {
@@ -184,7 +184,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.events)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null)
+        .is(SupabaseTables.deletedAt, null)
         .gte('starts_at', now.toIso8601String())
         .order('starts_at', ascending: true);
 
@@ -203,7 +203,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
         .inFilter('event_id', eventIds);
 
     final rsvps = (rsvpsResponse as List)
-        .map((json) => EventRSVP.fromJson(json as Map<String, dynamic>))
+        .map((json) => EventRsvp.fromJson(json as Map<String, dynamic>))
         .toList();
 
     // Create RSVP map for quick lookup
@@ -212,7 +212,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
     // Combine events with RSVPs
     return events.map((event) {
       final rsvp = rsvpMap[event.id];
-      final needsResponse = rsvp == null || rsvp.status == RSVPStatus.pending;
+      final needsResponse = rsvp == null || rsvp.status == RsvpStatus.pending;
       return EventWithRSVP(
         event: event,
         rsvp: rsvp,
@@ -241,7 +241,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
 
         return EventWithRSVP(
           event: Event.fromJson(eventData),
-          rsvp: rsvpData != null ? EventRSVP.fromJson(rsvpData) : null,
+          rsvp: rsvpData != null ? EventRsvp.fromJson(rsvpData) : null,
           needsResponse: needsResponse,
         );
       }).toList();

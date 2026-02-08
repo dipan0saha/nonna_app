@@ -195,7 +195,7 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null);
+        .is(SupabaseTables.deletedAt, null);
 
     final photoCount = (photosResponse as List).length;
 

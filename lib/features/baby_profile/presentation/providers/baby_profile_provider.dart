@@ -129,7 +129,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       final response = await databaseService
           .select(SupabaseTables.babyProfiles)
           .eq('id', babyProfileId)
-          .is_(SupabaseTables.deletedAt, null)
+          .is(SupabaseTables.deletedAt, null)
           .maybeSingle();
 
       if (response == null) {
@@ -336,7 +336,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       final response = await databaseService
           .select(SupabaseTables.babyProfiles)
           .eq('id', babyProfileId)
-          .is_(SupabaseTables.deletedAt, null)
+          .is(SupabaseTables.deletedAt, null)
           .single();
 
       final profile = BabyProfile.fromJson(response as Map<String, dynamic>);

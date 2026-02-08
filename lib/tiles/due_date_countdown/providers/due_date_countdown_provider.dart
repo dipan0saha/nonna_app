@@ -160,7 +160,7 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
     final response = await databaseService
         .select(SupabaseTables.babyProfiles)
         .inFilter(SupabaseTables.id, babyProfileIds)
-        .is_(SupabaseTables.deletedAt, null);
+        .is(SupabaseTables.deletedAt, null);
 
     final profiles = (response as List)
         .map((json) => BabyProfile.fromJson(json as Map<String, dynamic>))

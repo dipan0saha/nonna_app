@@ -23,6 +23,9 @@ class AuthService {
   /// Get current user
   User? get currentUser => _supabase.auth.currentUser;
 
+  /// Get current session
+  Session? get currentSession => _supabase.auth.currentSession;
+
   /// Check if user is authenticated
   bool get isAuthenticated => currentUser != null;
 

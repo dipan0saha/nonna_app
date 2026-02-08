@@ -269,7 +269,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null)
+        .is(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false)
         .range(offset, offset + limit - 1);
 
@@ -287,7 +287,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null)
+        .is(SupabaseTables.deletedAt, null)
         .contains('tags', [tag]).order(SupabaseTables.createdAt,
             ascending: false);
 

@@ -153,7 +153,7 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null)
+        .is(SupabaseTables.deletedAt, null)
         .order('priority', ascending: false)
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxItems);
@@ -178,7 +178,7 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
             .read(databaseServiceProvider)
             .select(SupabaseTables.registryPurchases)
             .eq('registry_item_id', item.id)
-            .is_(SupabaseTables.deletedAt, null);
+            .is(SupabaseTables.deletedAt, null);
 
         final purchases = (response as List)
             .map((json) =>

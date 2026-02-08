@@ -141,17 +141,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
       // Update local state
       final updatedNotifications = state.notifications.map((n) {
         if (n.id == notificationId) {
-          return app_notification.Notification(
-            id: n.id,
-            userId: n.userId,
-            type: n.type,
-            title: n.title,
-            body: n.body,
-            data: n.data,
-            isRead: true,
-            createdAt: n.createdAt,
-            updatedAt: DateTime.now(),
-          );
+          return n.markAsRead();
         }
         return n;
       }).toList();
@@ -185,17 +175,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
 
       // Update local state
       final updatedNotifications = state.notifications.map((n) {
-        return app_notification.Notification(
-          id: n.id,
-          userId: n.userId,
-          type: n.type,
-          title: n.title,
-          body: n.body,
-          data: n.data,
-          isRead: true,
-          createdAt: n.createdAt,
-          updatedAt: DateTime.now(),
-        );
+        return n.markAsRead();
       }).toList();
 
       state = state.copyWith(

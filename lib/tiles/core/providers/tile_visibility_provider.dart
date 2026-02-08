@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/providers.dart';
-import '../../../core/services/cache_service.dart';
-import '../../../core/services/local_storage_service.dart';
 
 /// Tile visibility provider for managing user-specific tile visibility preferences
 ///

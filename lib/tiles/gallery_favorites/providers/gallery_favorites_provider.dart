@@ -155,7 +155,7 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
     final photosResponse = await databaseService
         .select(SupabaseTables.photos)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
-        .is_(SupabaseTables.deletedAt, null)
+        .is(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false);
 
     final photos = (photosResponse as List)
