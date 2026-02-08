@@ -96,8 +96,7 @@ void main() {
       });
 
       test('sets loading state while fetching', () async {
-        // Setup mock to delay response
-        when(mockCache.get(any)).thenAnswer((_) async => null);
+        // Setup mock for database (cache already configured in setUp)
         when(mockDatabase.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
@@ -112,7 +111,7 @@ void main() {
       });
 
       test('fetches followers from database when cache is empty', () async {
-        // Setup mocks
+        // Setup mocks (cache.get already returns null from setUp)
         final sampleFollower = BabyMembership(
           babyProfileId: testBabyProfileId,
           userId: 'user_1',
@@ -122,7 +121,6 @@ void main() {
           removedAt: null,
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -148,13 +146,9 @@ void main() {
           removedAt: null,
         );
 
+        // Setup cache hit (different from setUp default) - realtime already configured
         when(mockCache.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -177,12 +171,7 @@ void main() {
           removedAt: null,
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        // Database and realtime already configured in setUp
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([recentFollower.toJson()]));
 
@@ -206,12 +195,7 @@ void main() {
           removedAt: null,
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        // Setup database response (cache and realtime already configured in setUp)
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -238,12 +222,7 @@ void main() {
           ),
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        // Setup database response (cache and realtime already configured in setUp)
         when(mockDatabase.select(any)).thenAnswer(
           (_) => FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
         );
@@ -298,13 +277,9 @@ void main() {
           removedAt: null,
         );
 
+        // Setup cache hit (different from setUp default)
         when(mockCache.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -387,12 +362,7 @@ void main() {
           removedAt: null,
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        // Setup database response (cache and realtime already configured in setUp)
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -419,12 +389,7 @@ void main() {
           removedAt: null,
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        // Setup database response (cache and realtime already configured in setUp)
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -450,12 +415,7 @@ void main() {
           removedAt: null,
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        // Setup database response (cache and realtime already configured in setUp)
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -476,12 +436,7 @@ void main() {
           removedAt: null,
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        // Setup database response (cache and realtime already configured in setUp)
         when(mockDatabase.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -520,12 +475,7 @@ void main() {
           removedAt: null,
         );
 
-        when(mockCache.get(any)).thenAnswer((_) async => null);
-        when(mockRealtime.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        // Setup database response (cache and realtime already configured in setUp)
         when(mockDatabase.select(any)).thenAnswer((_) => FakePostgrestBuilder([
               follower1.toJson(),
               follower2.toJson(),
