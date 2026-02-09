@@ -178,9 +178,11 @@ flutter test test/tiles/checklist/providers/checklist_provider_test.dart
 
 ### Phase 4: Cleanup ✅ COMPLETE
 - [x] Remove old `@GenerateMocks` annotations (37 removed)
-- [x] Delete orphaned `.mocks.dart` files (27 deleted)
+- [x] Delete orphaned `.mocks.dart` files (27 deleted, plus 8 .bak files = 35 total)
 - [x] Verify centralized mock usage (100% adoption)
-- [x] Code reduction achieved (~23,862 lines removed)
+- [x] Code reduction achieved (~25,954 lines removed total)
+- [ ] Full test suite run (CI and/or local) to validate centralized mocks
+- [ ] Manual verification of critical user flows / regression checks
 
 ---
 

@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Successfully completed Phase 3 (Incremental Test Migration) and Phase 4 (Cleanup) of the centralized mocking implementation, migrating **37 test files** to use the centralized mocking infrastructure and removing **27 orphaned mock files**, resulting in a **~23,862 line reduction** in generated code.
+Successfully completed Phase 3 (Incremental Test Migration) and Phase 4 (Cleanup) of the centralized mocking implementation, migrating **37 test files** to use the centralized mocking infrastructure and removing **35 orphaned mock-related files** (27 generated `.mocks.dart` files + 8 `.bak` backup files), resulting in a **~25,954 line reduction** in generated code (aligned with `EXECUTIVE_SUMMARY_PHASE_3_4.md`).
 
 ---
 

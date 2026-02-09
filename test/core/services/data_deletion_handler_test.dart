@@ -15,8 +15,8 @@ void main() {
     late MockSupabaseClient mockSupabaseClient;
 
     setUp(() {
-      mockDatabaseService = MockDatabaseService();
-      mockStorageService = MockStorageService();
+      mockDatabaseService = MockFactory.createDatabaseService();
+      mockStorageService = MockFactory.createStorageService();
       mockSupabaseClient = MockFactory.createSupabaseClient();
 
       dataDeletionHandler = DataDeletionHandler(

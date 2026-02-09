@@ -13,7 +13,7 @@ void main() {
 
     setUp(() {
       mockSupabaseClient = MockFactory.createSupabaseClient();
-      mockStorage = MockSupabaseStorageClient();
+      mockStorage = MockFactory.createSupabaseStorageClient();
 
       // Mock the storage getter
       when(mockSupabaseClient.storage).thenReturn(mockStorage);
