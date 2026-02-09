@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/models/registry_purchase.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
@@ -13,6 +15,7 @@ import '../../../../helpers/mock_factory.dart';
 void main() {
   group('RegistryScreenProvider Tests', () {
     late RegistryScreenNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -44,7 +47,19 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = RegistryScreenNotifier();
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
+      );
+
+      notifier = container.read(registryScreenProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
@@ -78,7 +93,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
@@ -134,7 +149,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
@@ -152,7 +167,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
@@ -169,7 +184,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
 
         var callCount = 0;
         when(mockDatabaseService.select(argThat(isA<String>())))
@@ -310,7 +325,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
@@ -339,7 +354,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
@@ -354,7 +369,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 

@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/features/calendar/presentation/providers/calendar_screen_provider.dart';
 
@@ -10,6 +12,7 @@ import '../../../../helpers/mock_factory.dart';
 void main() {
   group('CalendarScreenNotifier Tests', () {
     late CalendarScreenNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -34,7 +37,19 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = CalendarScreenNotifier();
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
+      );
+
+      notifier = container.read(calendarScreenProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
@@ -59,10 +74,10 @@ void main() {
       test('sets loading state while fetching', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -87,13 +102,13 @@ void main() {
 
       test('fetches events from database when cache is empty', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -112,13 +127,13 @@ void main() {
         );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any)).thenReturn(
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
@@ -131,13 +146,13 @@ void main() {
 
       test('uses custom date range when provided', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -167,22 +182,22 @@ void main() {
 
       test('sets up real-time subscription', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         verify(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
         )).called(1);
       });
     });
@@ -198,13 +213,13 @@ void main() {
 
       test('eventsForSelectedDate returns correct events', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -223,13 +238,13 @@ void main() {
         );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any)).thenReturn(
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
@@ -298,13 +313,13 @@ void main() {
         );
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -323,10 +338,10 @@ void main() {
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
-        final streamController = Stream.value({
+        final streamController = Stream.value(<String, dynamic>{
           'eventType': 'INSERT',
           'new': {
             'id': 'event_2',
@@ -340,9 +355,9 @@ void main() {
         });
 
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController);
 
         when(mockDatabaseService.select(any))
@@ -358,10 +373,10 @@ void main() {
 
       test('handles UPDATE event', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
-        final streamController = Stream.value({
+        final streamController = Stream.value(<String, dynamic>{
           'eventType': 'UPDATE',
           'new': {
             'id': 'event_1',
@@ -378,9 +393,9 @@ void main() {
         });
 
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController);
 
         when(mockDatabaseService.select(any))
@@ -396,18 +411,18 @@ void main() {
 
       test('handles DELETE event', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
-        final streamController = Stream.value({
+        final streamController = Stream.value(<String, dynamic>{
           'eventType': 'DELETE',
           'old': {'id': 'event_1'},
         });
 
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController);
 
         when(mockDatabaseService.select(any))
@@ -427,13 +442,13 @@ void main() {
     group('dispose', () {
       test('cancels real-time subscription on dispose', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: any))
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
-        )).thenAnswer((_) => Stream.value({}));
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
@@ -445,9 +460,9 @@ void main() {
 
         // Just verify the subscription was created
         verify(mockRealtimeService.subscribe(
-          table: any,
-          channelName: any,
-          filter: any,
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
         )).called(1);
       });
     });

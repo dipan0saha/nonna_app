@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/tiles/checklist/providers/checklist_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
@@ -8,12 +10,23 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('ChecklistProvider Tests', () {
     late ChecklistNotifier notifier;
+    late ProviderContainer container;
     late MockCacheService mockCacheService;
 
     setUp(() {
       mockCacheService = MockFactory.createCacheService();
 
-      notifier = ChecklistNotifier();
+      container = ProviderContainer(
+        overrides: [
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+        ],
+      );
+
+      notifier = container.read(checklistProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
