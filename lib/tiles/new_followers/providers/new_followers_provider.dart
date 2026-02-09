@@ -89,6 +89,7 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedFollowers = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedFollowers != null && cachedFollowers.isNotEmpty) {
           final activeCount =
               cachedFollowers.where((follower) => follower.isActive).length;
@@ -103,11 +104,13 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
 
       // Fetch from database
       final followers = await _fetchFromDatabase(babyProfileId);
+      if (!ref.mounted) return;
       final activeCount =
           followers.where((follower) => follower.isActive).length;
 
       // Save to cache
       await _saveToCache(babyProfileId, followers);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         followers: followers,
@@ -117,11 +120,13 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
 
       // Setup real-time subscription
       await _setupRealtimeSubscription(babyProfileId);
+      if (!ref.mounted) return;
 
       debugPrint(
         '✅ Loaded ${followers.length} new followers ($activeCount active) for profile: $babyProfileId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch new followers: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

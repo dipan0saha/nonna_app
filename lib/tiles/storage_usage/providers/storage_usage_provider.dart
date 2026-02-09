@@ -133,6 +133,7 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedInfo = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedInfo != null) {
           state = state.copyWith(
             info: cachedInfo,
@@ -144,9 +145,11 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
 
       // Calculate usage from database
       final info = await _calculateUsage(babyProfileId);
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, info);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         info: info,
@@ -157,6 +160,7 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
         '✅ Loaded storage usage for profile: $babyProfileId (${info.usagePercentage.toStringAsFixed(1)}% used)',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch storage usage: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

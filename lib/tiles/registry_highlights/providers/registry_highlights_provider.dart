@@ -89,6 +89,7 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedItems = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedItems != null && cachedItems.isNotEmpty) {
           state = state.copyWith(
             items: cachedItems,
@@ -100,12 +101,15 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
 
       // Fetch registry items sorted by priority
       final items = await _fetchFromDatabase(babyProfileId);
+      if (!ref.mounted) return;
 
       // Fetch purchase status for each item
       final itemsWithStatus = await _fetchPurchaseStatus(items);
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, itemsWithStatus);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         items: itemsWithStatus,
@@ -116,6 +120,7 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
         '✅ Loaded ${itemsWithStatus.length} registry highlights for profile: $babyProfileId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch registry highlights: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

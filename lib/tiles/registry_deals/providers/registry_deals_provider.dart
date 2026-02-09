@@ -83,6 +83,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedDeals = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedDeals != null && cachedDeals.isNotEmpty) {
           state = state.copyWith(
             deals: cachedDeals,
@@ -94,9 +95,11 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
 
       // Fetch from database
       final deals = await _fetchFromDatabase(babyProfileId);
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, deals);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         deals: deals,
@@ -110,6 +113,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
         '✅ Loaded ${deals.length} registry deals for profile: $babyProfileId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch registry deals: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

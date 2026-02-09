@@ -91,6 +91,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedProfile = await _loadFromCache(userId);
+        if (!ref.mounted) return;
         if (cachedProfile != null) {
           state = state.copyWith(
             profile: cachedProfile,
@@ -108,6 +109,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
           .select(SupabaseTables.userProfiles)
           .eq('user_id', userId)
           .maybeSingle();
+      if (!ref.mounted) return;
 
       if (response == null) {
         throw Exception('Profile not found');
@@ -117,6 +119,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
       // Save to cache
       await _saveToCache(userId, profile);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         profile: profile,
@@ -125,9 +128,11 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
       // Load stats
       await _loadUserStats(userId);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Loaded profile for user: $userId');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load profile: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -148,6 +153,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
       if (response != null) {
         final stats = UserStats.fromJson(response);
+        if (!ref.mounted) return;
         state = state.copyWith(stats: stats);
         debugPrint('✅ Loaded user stats');
       }
@@ -205,6 +211,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
       // Reload profile
       await loadProfile(userId: userId, forceRefresh: true);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         isSaving: false,
@@ -214,6 +221,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
       debugPrint('✅ Profile updated successfully');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to update profile: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -240,6 +248,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
             storageKey: storageKey,
             bucket: 'avatars',
           );
+      if (!ref.mounted) return null;
 
       debugPrint('✅ Avatar uploaded: $avatarUrl');
       return avatarUrl;
@@ -264,6 +273,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
       // Reload profile
       await loadProfile(userId: userId, forceRefresh: true);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Biometric ${enabled ? 'enabled' : 'disabled'}');
     } catch (e) {

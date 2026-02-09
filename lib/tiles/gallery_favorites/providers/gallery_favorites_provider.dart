@@ -101,6 +101,7 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedFavorites = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedFavorites != null && cachedFavorites.isNotEmpty) {
           state = state.copyWith(
             favorites: cachedFavorites,
@@ -112,9 +113,11 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
 
       // Fetch and aggregate from database
       final favorites = await _fetchFromDatabase(babyProfileId);
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, favorites);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         favorites: favorites,
@@ -125,6 +128,7 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
         '✅ Loaded ${favorites.length} gallery favorites for profile: $babyProfileId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch gallery favorites: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

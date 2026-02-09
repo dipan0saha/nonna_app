@@ -105,9 +105,11 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
         role: role,
         forceRefresh: false,
       );
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, role, tiles);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         tiles: tiles,
@@ -117,6 +119,7 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
 
       debugPrint('✅ Loaded ${tiles.length} tiles for home screen');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load home screen: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -144,10 +147,12 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
         role: state.selectedRole!,
         forceRefresh: true,
       );
+      if (!ref.mounted) return;
 
       // Update cache
       await _saveToCache(
           state.selectedBabyProfileId!, state.selectedRole!, tiles);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         tiles: tiles,

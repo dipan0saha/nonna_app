@@ -111,9 +111,11 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedProfile = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedProfile != null) {
           final isOwner = await _checkIsOwner(
               babyProfileId, currentUserId, databaseService);
+          if (!ref.mounted) return;
           state = state.copyWith(
             profile: cachedProfile,
             isLoading: false,
@@ -131,6 +133,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
           .eq('id', babyProfileId)
           .isFilter(SupabaseTables.deletedAt, null)
           .maybeSingle();
+      if (!ref.mounted) return;
 
       if (response == null) {
         throw Exception('Baby profile not found');
@@ -141,9 +144,11 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       // Check if current user is owner
       final isOwner =
           await _checkIsOwner(babyProfileId, currentUserId, databaseService);
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, profile);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         profile: profile,
@@ -153,9 +158,11 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
 
       // Load memberships
       await _loadMemberships(babyProfileId, databaseService);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Loaded baby profile: $babyProfileId');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load baby profile: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -195,6 +202,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       final memberships = (response as List)
           .map((json) => BabyMembership.fromJson(json as Map<String, dynamic>))
           .toList();
+      if (!ref.mounted) return;
 
       state = state.copyWith(memberships: memberships);
       debugPrint('✅ Loaded ${memberships.length} memberships');
@@ -267,6 +275,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       });
+      if (!ref.mounted) return null;
 
       state = state.copyWith(
         profile: profile,
@@ -278,6 +287,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       debugPrint('✅ Baby profile created: ${profile.id}');
       return profile;
     } catch (e) {
+      if (!ref.mounted) return null;
       final errorMessage = 'Failed to create baby profile: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -336,11 +346,13 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
           .eq('id', babyProfileId)
           .isFilter(SupabaseTables.deletedAt, null)
           .single();
+      if (!ref.mounted) return;
 
       final profile = BabyProfile.fromJson(response);
 
       // Update cache
       await _saveToCache(babyProfileId, profile);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         profile: profile,
@@ -351,6 +363,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
 
       debugPrint('✅ Baby profile updated successfully');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to update baby profile: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -403,6 +416,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
         storageKey: storageKey,
         bucket: 'baby_profiles',
       );
+      if (!ref.mounted) return null;
 
       debugPrint('✅ Profile photo uploaded: $photoUrl');
       return photoUrl;
@@ -431,6 +445,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
 
       // Reload memberships
       await _loadMemberships(babyProfileId, databaseService);
+      if (!ref.mounted) return false;
 
       debugPrint('✅ Follower removed');
       return true;

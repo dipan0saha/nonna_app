@@ -104,6 +104,7 @@ class AuthNotifier extends Notifier<AuthState> {
           .select(SupabaseTables.users)
           .eq(SupabaseTables.id, user.id)
           .maybeSingle();
+      if (!ref.mounted) return;
 
       app_user.User? userModel;
       if (response != null) {
@@ -123,9 +124,11 @@ class AuthNotifier extends Notifier<AuthState> {
 
       // Persist session
       await _persistSession(session, localStorage);
+      if (!ref.mounted) return;
 
       debugPrint('✅ User profile loaded: ${user.id}');
     } catch (e) {
+      if (!ref.mounted) return;
       debugPrint('❌ Failed to load user profile: $e');
       state = AuthState.error('Failed to load user profile: $e');
     }
@@ -151,6 +154,7 @@ class AuthNotifier extends Notifier<AuthState> {
         email: email,
         password: password,
       );
+      if (!ref.mounted) return;
 
       if (response.user != null) {
         await _loadUserProfile(response.user!, databaseService, localStorage);
@@ -158,6 +162,7 @@ class AuthNotifier extends Notifier<AuthState> {
         state = const AuthState.error('Sign in failed');
       }
     } catch (e) {
+      if (!ref.mounted) return;
       debugPrint('❌ Sign in error: $e');
       state = AuthState.error(e.toString());
     }
@@ -181,6 +186,7 @@ class AuthNotifier extends Notifier<AuthState> {
         password: password,
         displayName: displayName,
       );
+      if (!ref.mounted) return;
 
       if (response.user != null) {
         await _loadUserProfile(response.user!, databaseService, localStorage);
@@ -188,6 +194,7 @@ class AuthNotifier extends Notifier<AuthState> {
         state = const AuthState.error('Sign up failed');
       }
     } catch (e) {
+      if (!ref.mounted) return;
       debugPrint('❌ Sign up error: $e');
       state = AuthState.error(e.toString());
     }
@@ -203,6 +210,7 @@ class AuthNotifier extends Notifier<AuthState> {
       final localStorage = ref.read(localStorageServiceProvider);
 
       final response = await authService.signInWithGoogle();
+      if (!ref.mounted) return;
 
       if (response?.user != null) {
         await _loadUserProfile(response!.user!, databaseService, localStorage);
@@ -210,6 +218,7 @@ class AuthNotifier extends Notifier<AuthState> {
         state = const AuthState.error('Google sign in failed');
       }
     } catch (e) {
+      if (!ref.mounted) return;
       debugPrint('❌ Google sign in error: $e');
       state = AuthState.error(e.toString());
     }
@@ -225,6 +234,7 @@ class AuthNotifier extends Notifier<AuthState> {
       final localStorage = ref.read(localStorageServiceProvider);
 
       final response = await authService.signInWithFacebook();
+      if (!ref.mounted) return;
 
       if (response?.user != null) {
         await _loadUserProfile(response!.user!, databaseService, localStorage);
@@ -232,6 +242,7 @@ class AuthNotifier extends Notifier<AuthState> {
         state = const AuthState.error('Facebook sign in failed');
       }
     } catch (e) {
+      if (!ref.mounted) return;
       debugPrint('❌ Facebook sign in error: $e');
       state = AuthState.error(e.toString());
     }
@@ -247,10 +258,12 @@ class AuthNotifier extends Notifier<AuthState> {
 
       await authService.signOut();
       await _clearSession(localStorage);
+      if (!ref.mounted) return;
 
       state = const AuthState.unauthenticated();
       debugPrint('✅ User signed out');
     } catch (e) {
+      if (!ref.mounted) return;
       debugPrint('❌ Sign out error: $e');
       state = AuthState.error(e.toString());
     }
@@ -382,9 +395,11 @@ class AuthNotifier extends Notifier<AuthState> {
       if (currentSession?.user != null) {
         await _loadUserProfile(
             currentSession!.user, databaseService, localStorage);
+        if (!ref.mounted) return;
       }
       debugPrint('✅ Session refreshed');
     } catch (e) {
+      if (!ref.mounted) return;
       debugPrint('❌ Session refresh error: $e');
       state = AuthState.error(e.toString());
     }

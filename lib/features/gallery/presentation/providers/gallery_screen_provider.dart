@@ -116,6 +116,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedPhotos = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedPhotos != null && cachedPhotos.isNotEmpty) {
           state = state.copyWith(
             photos: cachedPhotos,
@@ -132,9 +133,11 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
         limit: _pageSize,
         offset: 0,
       );
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, photos);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         photos: photos,
@@ -145,9 +148,11 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 
       // Setup real-time subscription
       await _setupRealtimeSubscription(babyProfileId);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Loaded ${photos.length} photos for gallery');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load photos: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -174,6 +179,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
         limit: _pageSize,
         offset: offset,
       );
+      if (!ref.mounted) return;
 
       final updatedPhotos = [...state.photos, ...newPhotos];
 
@@ -186,6 +192,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 
       // Update cache
       await _saveToCache(state.selectedBabyProfileId!, updatedPhotos);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Loaded ${newPhotos.length} more photos');
     } catch (e) {
@@ -209,6 +216,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
         babyProfileId: state.selectedBabyProfileId!,
         tag: tag,
       );
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         photos: photos,

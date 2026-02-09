@@ -113,6 +113,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedMetrics = await _loadFromCache(babyProfileId, daysBack);
+        if (!ref.mounted) return;
         if (cachedMetrics != null) {
           state = state.copyWith(
             metrics: cachedMetrics,
@@ -124,9 +125,11 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
 
       // Fetch and calculate metrics from database
       final metrics = await _calculateMetrics(babyProfileId, daysBack);
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, daysBack, metrics);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         metrics: metrics,
@@ -137,6 +140,7 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
         '✅ Loaded engagement metrics for profile: $babyProfileId (${metrics.totalEngagement} total)',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch engagement metrics: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

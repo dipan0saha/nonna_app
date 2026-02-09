@@ -84,6 +84,7 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedInvitations = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedInvitations != null && cachedInvitations.isNotEmpty) {
           final pendingCount = cachedInvitations
               .where((inv) => inv.status == InvitationStatus.pending)
@@ -99,12 +100,14 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
 
       // Fetch from database
       final invitations = await _fetchFromDatabase(babyProfileId);
+      if (!ref.mounted) return;
       final pendingCount = invitations
           .where((inv) => inv.status == InvitationStatus.pending)
           .length;
 
       // Save to cache
       await _saveToCache(babyProfileId, invitations);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         invitations: invitations,
@@ -119,6 +122,7 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
         '✅ Loaded ${invitations.length} invitations ($pendingCount pending) for profile: $babyProfileId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch invitations: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

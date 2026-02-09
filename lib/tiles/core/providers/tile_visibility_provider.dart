@@ -80,10 +80,12 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
 
       final Map<String, bool> visibilityMap =
           await _loadVisibilityFromStorage(visibilityKey);
+      if (!ref.mounted) return;
 
       // Load feature flags
       final Map<String, bool> featureFlags =
           await _loadFeatureFlagsFromStorage();
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         visibilityMap: visibilityMap,
@@ -93,6 +95,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
 
       debugPrint('✅ Loaded tile visibility preferences');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load visibility preferences: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -137,6 +140,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
           : _visibilityStorageKey;
 
       await _saveVisibilityToStorage(visibilityKey, updatedMap);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Updated visibility for tile: $tileId to $isVisible');
     } catch (e) {
@@ -191,6 +195,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
           : _visibilityStorageKey;
 
       await ref.read(localStorageServiceProvider).remove(visibilityKey);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Reset tile visibility preferences');
     } catch (e) {
@@ -228,6 +233,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
 
       // Persist to storage
       await _saveFeatureFlagsToStorage(updatedFlags);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Updated feature flag: $featureName to $isEnabled');
     } catch (e) {
@@ -245,6 +251,7 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
       // TODO: Implement remote config fetching
       // For now, we'll use local storage
       final flags = await _loadFeatureFlagsFromStorage();
+      if (!ref.mounted) return;
       state = state.copyWith(featureFlags: flags);
 
       debugPrint('✅ Loaded remote feature flags');

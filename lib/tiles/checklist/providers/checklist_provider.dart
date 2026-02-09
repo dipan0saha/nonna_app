@@ -173,6 +173,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 
       // Load from cache
       final items = await _loadFromCache(babyProfileId);
+      if (!ref.mounted) return;
 
       final completedCount = items.where((item) => item.isCompleted).length;
       final progressPercentage =
@@ -189,6 +190,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
         '✅ Loaded checklist for profile: $babyProfileId ($completedCount/${items.length} completed)',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load checklist: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -225,6 +227,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 
       // Save to cache
       await _saveToCache(babyProfileId, updatedItems);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Toggled checklist item: $itemId');
     } catch (e) {
@@ -247,6 +250,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 
       // Save to cache
       await _saveToCache(babyProfileId, _defaultItems);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Reset checklist for profile: $babyProfileId');
     } catch (e) {

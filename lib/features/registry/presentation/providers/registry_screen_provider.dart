@@ -176,6 +176,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedItems = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedItems != null && cachedItems.isNotEmpty) {
           state = state.copyWith(
             items: cachedItems,
@@ -187,9 +188,11 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
       // Fetch items and purchases from database
       final itemsWithStatus = await _fetchItemsWithStatus(babyProfileId);
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, itemsWithStatus);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         items: itemsWithStatus,
@@ -198,9 +201,11 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
       // Setup real-time subscriptions
       await _setupRealtimeSubscriptions(babyProfileId);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Loaded ${itemsWithStatus.length} registry items');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load registry items: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

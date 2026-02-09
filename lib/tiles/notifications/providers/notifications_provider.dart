@@ -86,6 +86,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedNotifications = await _loadFromCache(userId);
+        if (!ref.mounted) return;
         if (cachedNotifications != null && cachedNotifications.isNotEmpty) {
           final unreadCount =
               cachedNotifications.where((n) => !n.isRead).length;
@@ -100,10 +101,12 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
 
       // Fetch from database
       final notifications = await _fetchFromDatabase(userId);
+      if (!ref.mounted) return;
       final unreadCount = notifications.where((n) => !n.isRead).length;
 
       // Save to cache
       await _saveToCache(userId, notifications);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         notifications: notifications,
@@ -118,6 +121,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
         '✅ Loaded ${notifications.length} notifications ($unreadCount unread) for user: $userId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch notifications: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
