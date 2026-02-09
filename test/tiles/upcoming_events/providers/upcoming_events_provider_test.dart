@@ -12,9 +12,6 @@ import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
-  // Provide dummy values for mockito null-safety at module level
-  provideDummy<String>('');
-
   group('UpcomingEventsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;

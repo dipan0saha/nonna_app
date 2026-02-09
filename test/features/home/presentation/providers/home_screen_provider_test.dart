@@ -10,9 +10,6 @@ import '../../../../helpers/fake_postgrest_builders.dart';
 import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
 
-  // Provide dummy values for mockito null-safety at module level
-  provideDummy<String>('');
-
 void main() {
   group('HomeScreenNotifier Tests', () {
     late ProviderContainer container;
@@ -32,8 +29,6 @@ void main() {
     );
 
     setUp(() {
-      // Provide dummy values for mockito null-safety
-
       mockDatabaseService = MockFactory.createDatabaseService();
       mockCacheService = MockFactory.createCacheService();
 
