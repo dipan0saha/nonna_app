@@ -8,6 +8,10 @@ import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
+  // Provide dummy values for mockito null-safety at module level
+  provideDummy<String>('');
+  provideDummy<Map<String, dynamic>>({});
+
   group('TileVisibilityProvider Tests', () {
     late TileVisibilityNotifier notifier;
     late MockCacheService mockCacheService;
@@ -15,10 +19,6 @@ void main() {
     late ProviderContainer container;
 
     setUp(() {
-      // Provide dummy values for mockito null-safety
-      provideDummy<String>('');
-      provideDummy<Map<String, dynamic>>({});
-
       mockCacheService = MockFactory.createCacheService();
       mockLocalStorageService = MockFactory.createLocalStorageService();
 

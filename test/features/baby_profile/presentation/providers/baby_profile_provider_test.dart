@@ -11,6 +11,9 @@ import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
 
 void main() {
+  // Provide dummy values for mockito null-safety at module level
+  provideDummy<String>('');
+
   group('BabyProfileProvider Tests', () {
     late BabyProfileNotifier notifier;
     late MockDatabaseService mockDatabaseService;
@@ -45,9 +48,6 @@ void main() {
     );
 
     setUp(() {
-      // Provide dummy values for mockito null-safety
-      provideDummy<String>('');
-
       mockDatabaseService = MockFactory.createDatabaseService();
       mockCacheService = MockFactory.createCacheService();
       mockStorageService = MockFactory.createStorageService();

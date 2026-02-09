@@ -1,29 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/models/photo.dart';
-import 'package:nonna_app/tiles/gallery_favorites/providers/gallery_favorites_provider.dart';
-
-import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('GalleryFavoritesProvider Tests', () {
-    late MockServiceContainer mocks;
-
-    // Sample favorite photo data
-    final samplePhoto = Photo(
-      id: 'photo_1',
-      babyProfileId: 'profile_1',
-      uploadedByUserId: 'user_1',
-      storagePath: 'photos/photo.jpg',
-      thumbnailPath: 'photos/thumb.jpg',
-      caption: 'Favorite moment',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
     setUp(() {
-      mocks = MockFactory.createServiceContainer();
-
-      notifier = GalleryFavoritesNotifier();
+      // Setup will be needed when tests are implemented
     });
 
     group('Initial State', () {

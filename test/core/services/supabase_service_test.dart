@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/supabase_service.dart';
 
-import '../../mocks/mock_services.mocks.dart';
-
 void main() {
   group('SupabaseService', () {
     late SupabaseService supabaseService;
