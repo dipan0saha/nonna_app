@@ -4,6 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../helpers/mock_factory.dart';
+import '../../mocks/mock_services.mocks.dart';
+
 /// Integration tests for Photos real-time subscriptions
 ///
 /// Tests subscription lifecycle, data updates, reconnection scenarios,
@@ -11,11 +14,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 void main() {
   group('Photos Realtime Integration Tests', () {
     late RealtimeService realtimeService;
+    late MockSupabaseClient mockSupabaseClient;
     StreamSubscription<dynamic>? subscription;
     final testTimeout = const Duration(seconds: 30);
 
     setUp(() {
-      realtimeService = RealtimeService();
+      mockSupabaseClient = MockFactory.createSupabaseClient();
+      realtimeService = RealtimeService(mockSupabaseClient);
     });
 
     tearDown(() async {

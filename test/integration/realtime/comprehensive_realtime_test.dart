@@ -3,16 +3,21 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 
+import '../../helpers/mock_factory.dart';
+import '../../mocks/mock_services.mocks.dart';
+
 /// Integration tests for comprehensive real-time subscription scenarios
 ///
 /// Tests multiple table subscriptions, performance benchmarks, and edge cases
 void main() {
   group('Comprehensive Realtime Integration Tests', () {
     late RealtimeService realtimeService;
+    late MockSupabaseClient mockSupabaseClient;
     final testTimeout = const Duration(seconds: 60);
 
     setUp(() {
-      realtimeService = RealtimeService();
+      mockSupabaseClient = MockFactory.createSupabaseClient();
+      realtimeService = RealtimeService(mockSupabaseClient);
     });
 
     tearDown(() async {

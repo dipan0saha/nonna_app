@@ -4,17 +4,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../helpers/mock_factory.dart';
+import '../../mocks/mock_services.mocks.dart';
+
 /// Integration tests for Events real-time subscriptions
 ///
 /// Tests calendar event updates, RSVP changes, and baby-scoped filtering
 void main() {
   group('Events Realtime Integration Tests', () {
     late RealtimeService realtimeService;
+    late MockSupabaseClient mockSupabaseClient;
     StreamSubscription<dynamic>? subscription;
     const testTimeout = Duration(seconds: 30);
 
     setUp(() {
-      realtimeService = RealtimeService();
+      mockSupabaseClient = MockFactory.createSupabaseClient();
+      realtimeService = RealtimeService(mockSupabaseClient);
     });
 
     tearDown(() async {
