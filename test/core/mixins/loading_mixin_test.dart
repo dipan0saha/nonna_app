@@ -28,46 +28,49 @@ class _TestWidgetState extends State<TestWidget> with LoadingMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Column(
-          children: [
-            Text('Loading: $isLoading'),
-            Text('Result: ${result ?? "none"}'),
-            Text('Error: ${errorMessage ?? "none"}'),
-            ElevatedButton(
-              key: const Key('test_button'),
-              onPressed: widget.onButtonPressed,
-              child: const Text('Test'),
-            ),
-            buildLoadingButton(
-              key: const Key('loading_button'),
-              onPressed: () {},
-              child: const Text('Loading Button'),
-            ),
-            buildOperationButton(
-              key: const Key('operation_button'),
-              operation: 'test_operation',
-              onPressed: () {},
-              child: const Text('Operation Button'),
-            ),
-            buildWithLoading(
-              child: const Text('Content'),
-            ),
-            buildLoadingAware(
-              child: const Text('Aware Content'),
-            ),
-          ],
-        ),
+    return Scaffold(
+      body: Column(
+        children: [
+          Text('Loading: $isLoading'),
+          Text('Result: ${result ?? "none"}'),
+          Text('Error: ${errorMessage ?? "none"}'),
+          ElevatedButton(
+            key: const Key('test_button'),
+            onPressed: widget.onButtonPressed,
+            child: const Text('Test'),
+          ),
+          buildLoadingButton(
+            key: const Key('loading_button'),
+            onPressed: () {},
+            child: const Text('Loading Button'),
+          ),
+          buildOperationButton(
+            key: const Key('operation_button'),
+            operation: 'test_operation',
+            onPressed: () {},
+            child: const Text('Operation Button'),
+          ),
+          buildWithLoading(
+            child: const Text('Content'),
+          ),
+          buildLoadingAware(
+            child: const Text('Aware Content'),
+          ),
+        ],
       ),
     );
   }
 }
 
+// Helper to wrap test widget in MaterialApp
+Widget wrapWithMaterialApp(Widget child) {
+  return MaterialApp(home: child);
+}
+
 void main() {
   group('LoadingMixin', () {
     testWidgets('initializes with isLoading false', (tester) async {
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
 
       expect(find.text('Loading: false'), findsOneWidget);
     });
@@ -75,11 +78,11 @@ void main() {
     testWidgets('sets and gets loading state', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(TestWidget(
+      await tester.pumpWidget(wrapWithMaterialApp(TestWidget(
         onButtonPressed: () {
           state.isLoading = true;
         },
-      ));
+      )));
 
       state = tester.state(find.byType(TestWidget));
 
@@ -95,7 +98,7 @@ void main() {
     testWidgets('handles operation-specific loading state', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       expect(state.isLoadingFor('operation1'), false);
@@ -117,7 +120,7 @@ void main() {
     testWidgets('clears loading state for operation', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       state.setLoadingFor('operation1', true);
@@ -132,7 +135,7 @@ void main() {
     testWidgets('clears all loading states', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       state.isLoading = true;
@@ -156,7 +159,7 @@ void main() {
       await tester.runAsync(() async {
         late _TestWidgetState state;
 
-        await tester.pumpWidget(const TestWidget());
+        await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
         state = tester.state(find.byType(TestWidget));
 
         expect(state.isLoading, false);
@@ -178,7 +181,7 @@ void main() {
       await tester.runAsync(() async {
         late _TestWidgetState state;
 
-        await tester.pumpWidget(const TestWidget());
+        await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
         state = tester.state(find.byType(TestWidget));
 
         final future1 = state.withLoading(() => state.asyncOperation());
@@ -199,7 +202,7 @@ void main() {
       await tester.runAsync(() async {
         late _TestWidgetState state;
 
-        await tester.pumpWidget(const TestWidget());
+        await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
         state = tester.state(find.byType(TestWidget));
 
         expect(state.isLoadingFor('test_op'), false);
@@ -223,7 +226,7 @@ void main() {
       await tester.runAsync(() async {
         late _TestWidgetState state;
 
-        await tester.pumpWidget(const TestWidget());
+        await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
         state = tester.state(find.byType(TestWidget));
 
         final future1 =
@@ -247,7 +250,7 @@ void main() {
       await tester.runAsync(() async {
         late _TestWidgetState state;
 
-        await tester.pumpWidget(const TestWidget());
+        await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
         state = tester.state(find.byType(TestWidget));
 
         final future1 =
@@ -271,7 +274,7 @@ void main() {
         late _TestWidgetState state;
         Object? capturedError;
 
-        await tester.pumpWidget(const TestWidget());
+        await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
         state = tester.state(find.byType(TestWidget));
 
         final result = await state.withLoadingAndError(
@@ -310,7 +313,7 @@ void main() {
     testWidgets('buildWithLoading shows overlay when loading', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       // Not loading - no overlay
@@ -327,7 +330,7 @@ void main() {
         (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       expect(find.text('Aware Content'), findsOneWidget);
@@ -342,7 +345,7 @@ void main() {
         (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       final button = tester.widget<ElevatedButton>(
@@ -365,7 +368,7 @@ void main() {
         (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       final button = tester.widget<ElevatedButton>(
@@ -400,7 +403,7 @@ void main() {
       late _TestWidgetState state;
       var executed = false;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       state.executeIfNotLoading(() {
@@ -415,7 +418,7 @@ void main() {
       late _TestWidgetState state;
       var executed = false;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       state.isLoading = true;
@@ -433,7 +436,7 @@ void main() {
       late _TestWidgetState state;
       var executed = false;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       state.executeOperationIfNotLoading('my_op', () {
@@ -456,7 +459,7 @@ void main() {
     testWidgets('showLoadingDialog displays dialog', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog(message: 'Please wait...');
@@ -470,7 +473,7 @@ void main() {
     testWidgets('hideLoadingDialog closes dialog', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog(message: 'Loading...');
@@ -487,7 +490,7 @@ void main() {
     testWidgets('loading dialog is not dismissible', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog();
@@ -506,7 +509,7 @@ void main() {
     testWidgets('properly updates state when mounted', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       expect(state.mounted, true);
@@ -521,7 +524,7 @@ void main() {
     testWidgets('does not update state when not mounted', (tester) async {
       late _TestWidgetState state;
 
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
       state = tester.state(find.byType(TestWidget));
 
       // Remove the widget
@@ -534,7 +537,7 @@ void main() {
     });
 
     testWidgets('cleans up loading states on dispose', (tester) async {
-      await tester.pumpWidget(const TestWidget());
+      await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
 
       final state = tester.state<_TestWidgetState>(find.byType(TestWidget));
       state.setLoadingFor('op1', true);
