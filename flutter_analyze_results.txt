@@ -1,2 +1,91 @@
 Analyzing nonna_app...                                          
-No issues found! (ran in 3.9s)
+
+warning • Unused import: 'package:nonna_app/core/services/cache_service.dart' • test/core/middleware/cache_manager_test.dart:4:8 • unused_import
+warning • Unused import: 'package:supabase_flutter/supabase_flutter.dart' • test/core/middleware/rls_validator_test.dart:5:8 • unused_import
+warning • Unused import: 'package:supabase_flutter/supabase_flutter.dart' • test/core/network/interceptors/auth_interceptor_test.dart:4:8 • unused_import
+warning • Unused import: '../../mocks/mock_services.mocks.dart' • test/core/services/analytics_service_test.dart:4:8 • unused_import
+warning • Unused import: '../../helpers/mock_factory.dart' • test/core/services/analytics_service_test.dart:5:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/core/services/backup_service_test.dart:4:8 • unused_import
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:41:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:46:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:49:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:52:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:55:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:58:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:61:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:64:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:67:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:70:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:73:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:75:62 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:78:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:81:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:84:25 • argument_type_not_assignable
+  error • The argument type 'MockPostgrestFilterBuilder<dynamic>' can't be assigned to the parameter type 'PostgrestFilterBuilder<List<Map<String, dynamic>>>'.  • test/core/services/backup_service_test.dart:87:25 • argument_type_not_assignable
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/core/services/data_deletion_handler_test.dart:4:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/storage_service.dart' • test/core/services/data_deletion_handler_test.dart:5:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/backup_service.dart' • test/core/services/data_export_handler_test.dart:3:8 • unused_import
+warning • Unused import: '../../helpers/mock_factory.dart' • test/core/services/data_export_handler_test.dart:7:8 • unused_import
+warning • Unused import: '../../mocks/mock_services.mocks.dart' • test/core/services/database_service_test.dart:4:8 • unused_import
+warning • Unused import: '../../helpers/mock_factory.dart' • test/core/services/database_service_test.dart:5:8 • unused_import
+  error • Undefined name 'kDebugMode' • test/core/services/force_update_service_test.dart:58:24 • undefined_identifier
+  error • Undefined name 'kDebugMode' • test/core/services/force_update_service_test.dart:97:13 • undefined_identifier
+warning • Unused import: '../../mocks/mock_services.mocks.dart' • test/core/services/supabase_service_test.dart:4:8 • unused_import
+warning • Unused import: '../../helpers/mock_factory.dart' • test/core/services/supabase_service_test.dart:5:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/auth_service.dart' • test/features/auth/presentation/providers/auth_provider_test.dart:5:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/features/auth/presentation/providers/auth_provider_test.dart:6:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/local_storage_service.dart' • test/features/auth/presentation/providers/auth_provider_test.dart:7:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/cache_service.dart' • test/features/baby_profile/presentation/providers/baby_profile_provider_test.dart:7:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/features/baby_profile/presentation/providers/baby_profile_provider_test.dart:8:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/storage_service.dart' • test/features/baby_profile/presentation/providers/baby_profile_provider_test.dart:9:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/cache_service.dart' • test/features/calendar/presentation/providers/calendar_screen_provider_test.dart:4:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/features/calendar/presentation/providers/calendar_screen_provider_test.dart:5:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/realtime_service.dart' • test/features/calendar/presentation/providers/calendar_screen_provider_test.dart:6:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/cache_service.dart' • test/features/gallery/presentation/providers/gallery_screen_provider_test.dart:6:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/features/gallery/presentation/providers/gallery_screen_provider_test.dart:7:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/realtime_service.dart' • test/features/gallery/presentation/providers/gallery_screen_provider_test.dart:8:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/cache_service.dart' • test/features/home/presentation/providers/home_screen_provider_test.dart:7:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/features/home/presentation/providers/home_screen_provider_test.dart:8:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/cache_service.dart' • test/features/profile/presentation/providers/profile_provider_test.dart:5:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/features/profile/presentation/providers/profile_provider_test.dart:6:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/storage_service.dart' • test/features/profile/presentation/providers/profile_provider_test.dart:7:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/cache_service.dart' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:7:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:8:8 • unused_import
+warning • Unused import: 'package:nonna_app/core/services/realtime_service.dart' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:9:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/helpers/mock_factory.dart:62:25 • avoid_returning_null_for_void
+   info • Don't return 'null' from a function with a return type of 'void' • test/helpers/mock_factory.dart:65:39 • avoid_returning_null_for_void
+   info • Don't return 'null' from a function with a return type of 'void' • test/helpers/mock_factory.dart:93:48 • avoid_returning_null_for_void
+   info • Don't return 'null' from a function with a return type of 'void' • test/helpers/mock_factory.dart:117:52 • avoid_returning_null_for_void
+   info • Don't return 'null' from a function with a return type of 'void' • test/helpers/mock_factory.dart:166:51 • avoid_returning_null_for_void
+   info • Don't return 'null' from a function with a return type of 'void' • test/helpers/mock_factory.dart:172:49 • avoid_returning_null_for_void
+warning • The declaration '_dummyFunction' isn't referenced • test/mocks/mock_services.dart:82:6 • unused_element
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/core/providers/tile_config_provider_test.dart:10:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/core/providers/tile_config_provider_test.dart:17:29 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:10:8 • unused_import
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:6:8 • unused_import
+warning • Unused import: 'package:mockito/mockito.dart' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:2:8 • unused_import
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:6:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:11:35 • unused_local_variable
+warning • The value of the local variable 'mocks' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:12:31 • unused_local_variable
+warning • The value of the local variable 'samplePhoto' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:15:11 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/invites_status/providers/invites_status_provider_test.dart:11:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/invites_status/providers/invites_status_provider_test.dart:18:32 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/new_followers/providers/new_followers_provider_test.dart:10:8 • unused_import
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/notifications/providers/notifications_provider_test.dart:10:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/notifications/providers/notifications_provider_test.dart:17:32 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:9:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:16:31 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/recent_purchases/providers/recent_purchases_provider_test.dart:9:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/recent_purchases/providers/recent_purchases_provider_test.dart:16:34 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:9:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:16:32 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:9:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:16:37 • unused_local_variable
+  error • Undefined class 'RsvpTasksNotifier' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:18:10 • undefined_class
+warning • The value of the local variable 'notifier' isn't used • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:18:28 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:9:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:16:31 • unused_local_variable
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:8:8 • unused_import
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:12:8 • unused_import
+warning • The value of the local variable 'notifier' isn't used • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:19:33 • unused_local_variable
+
