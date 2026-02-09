@@ -25,7 +25,7 @@ flutter clean
 flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
 flutter analyze > flutter_analyze_results.txt
-flutter test > flutter_test_results.txt
+flutter test --reporter expanded > flutter_test_results.txt
 git status && git add . && git commit --no-verify -m "Misc changes" && git push
 ```
 
