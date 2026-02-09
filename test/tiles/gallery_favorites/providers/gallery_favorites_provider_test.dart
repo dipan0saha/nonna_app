@@ -8,14 +8,10 @@ import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('GalleryFavoritesProvider Tests', () {
-    // ignore: unused_local_variable
     late GalleryFavoritesNotifier notifier;
-    // ignore: unused_local_variable
-
-    // ignore: unused_local_variable
+    late MockServiceContainer mocks;
 
     // Sample favorite photo data
-    // ignore: unused_local_variable
     final samplePhoto = Photo(
       id: 'photo_1',
       babyProfileId: 'profile_1',
@@ -29,9 +25,6 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
-      
-      
-      
 
       notifier = GalleryFavoritesNotifier();
     });
