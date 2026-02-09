@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
@@ -8,9 +7,8 @@ import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/calendar/presentation/providers/calendar_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-
-@GenerateMocks([DatabaseService, CacheService, RealtimeService])
-import 'calendar_screen_provider_test.mocks.dart';
+import '../../../../mocks/mock_services.mocks.dart';
+import '../../../../helpers/mock_factory.dart';
 
 void main() {
   group('CalendarScreenNotifier Tests', () {
@@ -33,9 +31,9 @@ void main() {
     );
 
     setUp(() {
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-      mockRealtimeService = MockRealtimeService();
+      mockDatabaseService = MockFactory.createDatabaseService();
+      mockCacheService = MockFactory.createCacheService();
+      mockRealtimeService = MockFactory.createRealtimeService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
 

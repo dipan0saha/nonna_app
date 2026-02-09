@@ -1,11 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([SupabaseClient, RealtimeChannel])
-// ignore: unused_import
-import 'realtime_service_test.mocks.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   group('RealtimeService', () {
@@ -13,7 +10,7 @@ void main() {
     late MockSupabaseClient mockSupabaseClient;
 
     setUp(() {
-      mockSupabaseClient = MockSupabaseClient();
+      mockSupabaseClient = MockFactory.createSupabaseClient();
 
       // Initialize service with mock client
       realtimeService = RealtimeService(mockSupabaseClient);

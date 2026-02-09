@@ -215,6 +215,11 @@ class MockFactory {
     return MockGoTrueClient();
   }
 
+  /// Create a SupabaseStorageClient mock
+  static MockSupabaseStorageClient createSupabaseStorageClient() {
+    return MockSupabaseStorageClient();
+  }
+
   /// Create a RealtimeChannel mock
   static MockRealtimeChannel createRealtimeChannel() {
     return MockRealtimeChannel();

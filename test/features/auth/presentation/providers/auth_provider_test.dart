@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/auth_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
@@ -11,8 +10,8 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-@GenerateMocks([AuthService, DatabaseService, LocalStorageService])
-import 'auth_provider_test.mocks.dart';
+import '../../../../mocks/mock_services.mocks.dart';
+import '../../../../helpers/mock_factory.dart';
 
 void main() {
   group('AuthNotifier Tests', () {
@@ -40,9 +39,9 @@ void main() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
 
-      mockAuthService = MockAuthService();
-      mockDatabaseService = MockDatabaseService();
-      mockLocalStorage = MockLocalStorageService();
+      mockAuthService = MockFactory.createAuthService();
+      mockDatabaseService = MockFactory.createDatabaseService();
+      mockLocalStorage = MockFactory.createLocalStorageService();
 
       authStateController = StreamController<supabase.AuthState>.broadcast();
 

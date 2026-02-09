@@ -1,24 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/tile_config.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/tiles/core/providers/tile_config_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-
-@GenerateMocks([DatabaseService, CacheService])
-import 'tile_config_provider_test.mocks.dart';
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('TileConfigProvider Tests', () {
     late ProviderContainer container;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
+    late MockServiceContainer mocks;
+    late TileConfigNotifier notifier;
 
     // Sample tile config data
     final sampleTileConfig = TileConfig(
@@ -33,17 +29,13 @@ void main() {
     );
 
     setUp(() {
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-
-      // Setup mock cache service
-      when(mockCacheService.isInitialized).thenReturn(true);
+      mocks = MockFactory.createServiceContainer();
 
       // Create provider container with overrides
       container = ProviderContainer(
         overrides: [
-          databaseServiceProvider.overrideWithValue(mockDatabaseService),
-          cacheServiceProvider.overrideWithValue(mockCacheService),
+          databaseServiceProvider.overrideWithValue(mocks.database),
+          cacheServiceProvider.overrideWithValue(mocks.cache),
         ],
       );
     });
@@ -64,8 +56,8 @@ void main() {
     group('fetchConfigs', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
@@ -84,10 +76,10 @@ void main() {
 
       test('fetches configs from database when cache is empty', () async {
         // Setup mocks
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         final notifier = container.read(tileConfigProvider.notifier);
@@ -106,7 +98,7 @@ void main() {
 
       test('loads configs from cache when available', () async {
         // Setup cache to return data
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
 
         final notifier = container.read(tileConfigProvider.notifier);
@@ -116,7 +108,7 @@ void main() {
         );
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mocks.database.select(any));
 
         // Verify state updated from cache
         final state = container.read(tileConfigProvider);
@@ -126,8 +118,8 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
 
         final notifier = container.read(tileConfigProvider.notifier);
@@ -145,11 +137,11 @@ void main() {
 
       test('force refresh bypasses cache', () async {
         // Setup mocks
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         final notifier = container.read(tileConfigProvider.notifier);
@@ -160,7 +152,7 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mocks.database.select(any)).called(1);
       });
     });
 
@@ -173,10 +165,10 @@ void main() {
         );
 
         // Setup state with multiple configs
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
+        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           config1.toJson(),
           config2.toJson(),
         ]));
@@ -205,10 +197,10 @@ void main() {
           displayOrder: 2,
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
+        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           config1.toJson(),
           config2.toJson(),
           config3.toJson(),
@@ -237,10 +229,10 @@ void main() {
           isVisible: true,
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
+        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           visibleConfig.toJson(),
           hiddenConfig.toJson(),
           followerConfig.toJson(),
@@ -264,18 +256,18 @@ void main() {
     group('updateVisibility', () {
       test('updates visibility in database and state', () async {
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockCacheService.delete(any)).thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.delete(any)).thenAnswer((_) async => {});
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         final notifier = container.read(tileConfigProvider.notifier);
         await notifier.fetchAllConfigs();
 
         // Setup update mock
-        when(mockDatabaseService.update(any, any))
+        when(mocks.database.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.updateVisibility(
@@ -284,7 +276,7 @@ void main() {
         );
 
         // Verify database update
-        verify(mockDatabaseService.update(any, any)).called(1);
+        verify(mocks.database.update(any, any)).called(1);
 
         // Verify state updated
         final state = container.read(tileConfigProvider);
@@ -295,10 +287,10 @@ void main() {
 
     group('Cache Management', () {
       test('saves fetched configs to cache', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleTileConfig.toJson()]));
 
         final notifier = container.read(tileConfigProvider.notifier);
@@ -308,7 +300,7 @@ void main() {
         );
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any,
+        verify(mocks.cache.put(any, any,
                 ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });

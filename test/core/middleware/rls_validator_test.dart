@@ -1,12 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/middleware/rls_validator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([SupabaseClient, GoTrueClient, User])
-import 'rls_validator_test.mocks.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   late MockSupabaseClient mockClient;
@@ -14,8 +13,8 @@ void main() {
   late RlsValidator rlsValidator;
 
   setUp(() {
-    mockClient = MockSupabaseClient();
-    mockAuth = MockGoTrueClient();
+    mockClient = MockFactory.createSupabaseClient();
+    mockAuth = MockFactory.createGoTrueClient();
     when(mockClient.auth).thenReturn(mockAuth);
 
     rlsValidator = RlsValidator(mockClient);

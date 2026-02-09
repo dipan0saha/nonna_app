@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/models/registry_purchase.dart';
@@ -11,9 +10,8 @@ import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-
-@GenerateMocks([DatabaseService, CacheService, RealtimeService])
-import 'registry_screen_provider_test.mocks.dart';
+import '../../../../mocks/mock_services.mocks.dart';
+import '../../../../helpers/mock_factory.dart';
 
 void main() {
   group('RegistryScreenProvider Tests', () {
@@ -46,9 +44,9 @@ void main() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
 
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-      mockRealtimeService = MockRealtimeService();
+      mockDatabaseService = MockFactory.createDatabaseService();
+      mockCacheService = MockFactory.createCacheService();
+      mockRealtimeService = MockFactory.createRealtimeService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
 

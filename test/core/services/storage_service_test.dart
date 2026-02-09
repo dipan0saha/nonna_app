@@ -1,14 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([SupabaseClient, SupabaseStorageClient, StorageFileApi, File])
-// ignore: unused_import
-import 'storage_service_test.mocks.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   group('StorageService', () {
@@ -17,8 +12,8 @@ void main() {
     late MockSupabaseStorageClient mockStorage;
 
     setUp(() {
-      mockSupabaseClient = MockSupabaseClient();
-      mockStorage = MockSupabaseStorageClient();
+      mockSupabaseClient = MockFactory.createSupabaseClient();
+      mockStorage = MockFactory.createSupabaseStorageClient();
 
       // Mock the storage getter
       when(mockSupabaseClient.storage).thenReturn(mockStorage);

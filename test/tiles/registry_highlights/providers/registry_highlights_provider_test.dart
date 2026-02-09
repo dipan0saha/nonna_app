@@ -1,23 +1,19 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-
-@GenerateMocks([DatabaseService, CacheService])
-import 'registry_highlights_provider_test.mocks.dart';
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('RegistryHighlightsProvider Tests', () {
     late ProviderContainer container;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
+    late MockServiceContainer mocks;
+    late RegistryHighlightsNotifier notifier;
 
     // Sample registry item data
     final sampleItem = RegistryItem(
@@ -33,19 +29,15 @@ void main() {
     );
 
     setUp(() {
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-
-      // Setup mock cache service
-      when(mockCacheService.isInitialized).thenReturn(true);
+      mocks = MockFactory.createServiceContainer();
 
       // Setup dummy values for Mockito null-safety
       provideDummy<String>('');
 
       container = ProviderContainer(
         overrides: [
-          databaseServiceProvider.overrideWithValue(mockDatabaseService),
-          cacheServiceProvider.overrideWithValue(mockCacheService),
+          databaseServiceProvider.overrideWithValue(mocks.database),
+          cacheServiceProvider.overrideWithValue(mocks.cache),
         ],
       );
     });
@@ -67,8 +59,8 @@ void main() {
     group('fetchHighlights', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
@@ -84,8 +76,8 @@ void main() {
 
       test('fetches items from database when cache is empty', () async {
         // Setup mocks
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
@@ -106,13 +98,13 @@ void main() {
           'isPurchased': false,
           'purchases': [],
         };
-        when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
+        when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mocks.database.select(any));
 
         // Verify state updated from cache
         final state = container.read(registryHighlightsProvider);
@@ -122,8 +114,8 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
@@ -143,8 +135,8 @@ void main() {
           'isPurchased': false,
           'purchases': [],
         };
-        when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
@@ -154,19 +146,19 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
       });
 
       test('saves fetched items to cache', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any,
+        verify(mocks.cache.put(any, any,
                 ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
@@ -176,8 +168,8 @@ void main() {
         final item2 = sampleItem.copyWith(id: 'item_2', priority: 5);
         final item3 = sampleItem.copyWith(id: 'item_3', priority: 1);
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           item1.toJson(),
           item2.toJson(),
           item3.toJson(),
@@ -201,22 +193,22 @@ void main() {
           'isPurchased': false,
           'purchases': [],
         };
-        when(mockCacheService.get(any)).thenAnswer((_) async => [cachedData]);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
       });
     });
 
     group('Purchase Status', () {
       test('tracks purchase status correctly', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
@@ -228,8 +220,8 @@ void main() {
       });
 
       test('filters unpurchased items only', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
@@ -251,8 +243,8 @@ void main() {
           (i) => sampleItem.copyWith(id: 'item_$i', priority: i),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any)).thenReturn(
           FakePostgrestBuilder(items.map((i) => i.toJson()).toList()),
         );
 

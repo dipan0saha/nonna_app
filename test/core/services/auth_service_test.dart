@@ -1,12 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/auth_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([SupabaseClient, GoTrueClient, User, AuthResponse, Session])
-// ignore: unused_import
-import 'auth_service_test.mocks.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   group('AuthService', () {
@@ -15,8 +12,8 @@ void main() {
     late MockGoTrueClient mockAuth;
 
     setUp(() {
-      mockSupabaseClient = MockSupabaseClient();
-      mockAuth = MockGoTrueClient();
+      mockSupabaseClient = MockFactory.createSupabaseClient();
+      mockAuth = MockFactory.createGoTrueClient();
 
       // Mock the auth getter
       when(mockSupabaseClient.auth).thenReturn(mockAuth);

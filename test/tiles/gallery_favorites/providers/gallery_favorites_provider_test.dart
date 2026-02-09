@@ -1,27 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/photo.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/tiles/gallery_favorites/providers/gallery_favorites_provider.dart';
 
-@GenerateMocks([DatabaseService, CacheService, RealtimeService])
-import 'gallery_favorites_provider_test.mocks.dart';
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('GalleryFavoritesProvider Tests', () {
-    // ignore: unused_local_variable
     late GalleryFavoritesNotifier notifier;
-    // ignore: unused_local_variable
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    // ignore: unused_local_variable
-    late MockRealtimeService mockRealtimeService;
+    late MockServiceContainer mocks;
 
     // Sample favorite photo data
-    // ignore: unused_local_variable
     final samplePhoto = Photo(
       id: 'photo_1',
       babyProfileId: 'profile_1',
@@ -34,12 +24,7 @@ void main() {
     );
 
     setUp(() {
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-      mockRealtimeService = MockRealtimeService();
-
-      // Setup mock cache service
-      when(mockCacheService.isInitialized).thenReturn(true);
+      mocks = MockFactory.createServiceContainer();
 
       notifier = GalleryFavoritesNotifier();
     });

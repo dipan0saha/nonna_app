@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/user.dart';
 import 'package:nonna_app/core/models/user_stats.dart';
@@ -11,9 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-
-@GenerateMocks([DatabaseService, CacheService, StorageService])
-import 'profile_provider_test.mocks.dart';
+import '../../../../mocks/mock_services.mocks.dart';
+import '../../../../helpers/mock_factory.dart';
 
 void main() {
   group('ProfileProvider Tests', () {
@@ -44,9 +42,9 @@ void main() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
 
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-      mockStorageService = MockStorageService();
+      mockDatabaseService = MockFactory.createDatabaseService();
+      mockCacheService = MockFactory.createCacheService();
+      mockStorageService = MockFactory.createStorageService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
 

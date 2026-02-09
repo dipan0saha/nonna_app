@@ -1,11 +1,8 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:nonna_app/core/services/analytics_service.dart';
 
-@GenerateMocks([FirebaseAnalytics])
-// ignore: unused_import
-import 'analytics_service_test.mocks.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   group('AnalyticsService', () {
