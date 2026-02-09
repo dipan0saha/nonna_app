@@ -489,10 +489,11 @@ void main() {
         );
 
         // Setup database response (cache and realtime already configured in setUp)
+        // Database returns data sorted by created_at DESC (newest first)
         when(mockDatabase.select(any)).thenAnswer((_) => FakePostgrestBuilder([
-              follower1.toJson(),
-              follower2.toJson(),
-              follower3.toJson(),
+              follower3.toJson(), // newest (1 day old)
+              follower2.toJson(), // 2 days old
+              follower1.toJson(), // oldest (3 days old)
             ]));
 
         await container

@@ -60,6 +60,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       30; // Show followers from last 30 days
 
   String? _subscriptionId;
+  // Store realtime service reference to avoid ref.read() in onDispose
+  late final _realtimeService = ref.read(realtimeServiceProvider);
 
   @override
   NewFollowersState build() {
@@ -220,7 +222,7 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       _cancelRealtimeSubscription();
 
       final channelName = 'baby-memberships-channel-$babyProfileId';
-      final stream = ref.read(realtimeServiceProvider).subscribe(
+      final stream = _realtimeService.subscribe(
         table: SupabaseTables.babyMemberships,
         channelName: channelName,
         filter: {
@@ -319,7 +321,7 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }
