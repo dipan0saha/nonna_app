@@ -1,12 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/force_update_service.dart';
 
-@GenerateMocks([DatabaseService])
-import 'force_update_service_test.mocks.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   // Initialize Flutter test bindings

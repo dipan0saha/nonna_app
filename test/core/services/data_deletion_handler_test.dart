@@ -1,19 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/data_deletion_handler.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-@GenerateMocks([
-  DatabaseService,
-  StorageService,
-  SupabaseClient,
-  PostgrestFilterBuilder,
-  PostgrestBuilder
-])
-import 'data_deletion_handler_test.mocks.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   group('DataDeletionHandler', () {
@@ -25,7 +17,7 @@ void main() {
     setUp(() {
       mockDatabaseService = MockDatabaseService();
       mockStorageService = MockStorageService();
-      mockSupabaseClient = MockSupabaseClient();
+      mockSupabaseClient = MockFactory.createSupabaseClient();
 
       dataDeletionHandler = DataDeletionHandler(
         databaseService: mockDatabaseService,
