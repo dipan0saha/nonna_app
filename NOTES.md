@@ -27,13 +27,14 @@ flutter test > flutter_test_results.txt
 git status && git add . && git commit --no-verify -m "Misc changes" && git push
 ```
 
+```bash
+flutter analyze > flutter_analyze_results.txt && flutter test > flutter_test_results.txt && git status && git add . && git commit --no-verify -m "Misc changes" && git push
+```
 
 # Running Unit Tests
-
 To run Flutter unit tests by groups in the nonna_app project, you can organize them by directories (based on the test structure) or use tags if tests are annotated. Here are suggestions:
 
 ## By Directory Groups
-
 Run tests in specific subdirectories under `test/`:
 
 - **Core tests:** `flutter test test/core/`

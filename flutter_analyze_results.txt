@@ -1,12 +1,34 @@
 Analyzing nonna_app...                                          
 
-warning • Unused import: '../../mocks/mock_services.mocks.dart' • test/core/services/analytics_service_test.dart:4:8 • unused_import
-warning • Unused import: '../../mocks/mock_services.mocks.dart' • test/core/services/database_service_test.dart:4:8 • unused_import
-warning • Unused import: 'package:nonna_app/core/services/database_service.dart' • test/core/services/force_update_service_test.dart:4:8 • unused_import
-warning • Unused import: '../../helpers/mock_factory.dart' • test/core/services/force_update_service_test.dart:8:8 • unused_import
-warning • Unused import: '../../mocks/mock_services.mocks.dart' • test/core/services/supabase_service_test.dart:4:8 • unused_import
-warning • The value of the local variable 'mocks' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:9:31 • unused_local_variable
-warning • The value of the local variable 'samplePhoto' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:12:11 • unused_local_variable
-  error • Undefined name 'notifier' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:26:7 • undefined_identifier
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:11:8 • unused_import
+   info • Missing type annotation • test/features/auth/presentation/providers/auth_provider_test.dart:14:3 • strict_top_level_inference
+   info • The function 'provideDummy' should have a return type but doesn't • test/features/auth/presentation/providers/auth_provider_test.dart:14:3 • always_declare_return_types
+   info • The type parameter name 'String' matches a visible type name • test/features/auth/presentation/providers/auth_provider_test.dart:14:16 • avoid_types_as_parameter_names
+  error • Expected an identifier • test/features/auth/presentation/providers/auth_provider_test.dart:14:24 • missing_identifier
+  error • A function body must be provided • test/features/auth/presentation/providers/auth_provider_test.dart:14:27 • missing_function_body
+   info • Missing type annotation • test/features/gallery/presentation/providers/gallery_screen_provider_test.dart:13:3 • strict_top_level_inference
+   info • The function 'provideDummy' should have a return type but doesn't • test/features/gallery/presentation/providers/gallery_screen_provider_test.dart:13:3 • always_declare_return_types
+   info • The type parameter name 'String' matches a visible type name • test/features/gallery/presentation/providers/gallery_screen_provider_test.dart:13:16 • avoid_types_as_parameter_names
+  error • Expected an identifier • test/features/gallery/presentation/providers/gallery_screen_provider_test.dart:13:24 • missing_identifier
+  error • A function body must be provided • test/features/gallery/presentation/providers/gallery_screen_provider_test.dart:13:27 • missing_function_body
+   info • Missing type annotation • test/features/home/presentation/providers/home_screen_provider_test.dart:14:3 • strict_top_level_inference
+   info • The function 'provideDummy' should have a return type but doesn't • test/features/home/presentation/providers/home_screen_provider_test.dart:14:3 • always_declare_return_types
+   info • The type parameter name 'String' matches a visible type name • test/features/home/presentation/providers/home_screen_provider_test.dart:14:16 • avoid_types_as_parameter_names
+  error • Expected an identifier • test/features/home/presentation/providers/home_screen_provider_test.dart:14:24 • missing_identifier
+  error • A function body must be provided • test/features/home/presentation/providers/home_screen_provider_test.dart:14:27 • missing_function_body
+   info • Missing type annotation • test/features/profile/presentation/providers/profile_provider_test.dart:14:3 • strict_top_level_inference
+   info • The function 'provideDummy' should have a return type but doesn't • test/features/profile/presentation/providers/profile_provider_test.dart:14:3 • always_declare_return_types
+   info • The type parameter name 'String' matches a visible type name • test/features/profile/presentation/providers/profile_provider_test.dart:14:16 • avoid_types_as_parameter_names
+  error • Expected an identifier • test/features/profile/presentation/providers/profile_provider_test.dart:14:24 • missing_identifier
+  error • A function body must be provided • test/features/profile/presentation/providers/profile_provider_test.dart:14:27 • missing_function_body
+   info • Missing type annotation • test/features/registry/presentation/providers/registry_screen_provider_test.dart:14:3 • strict_top_level_inference
+   info • The function 'provideDummy' should have a return type but doesn't • test/features/registry/presentation/providers/registry_screen_provider_test.dart:14:3 • always_declare_return_types
+   info • The type parameter name 'String' matches a visible type name • test/features/registry/presentation/providers/registry_screen_provider_test.dart:14:16 • avoid_types_as_parameter_names
+  error • Expected an identifier • test/features/registry/presentation/providers/registry_screen_provider_test.dart:14:24 • missing_identifier
+  error • A function body must be provided • test/features/registry/presentation/providers/registry_screen_provider_test.dart:14:27 • missing_function_body
+warning • Unused import: 'package:nonna_app/core/models/photo.dart' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:2:8 • unused_import
+   info • Missing type annotation • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:12:3 • strict_top_level_inference
+   info • The function 'provideDummy' should have a return type but doesn't • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:12:3 • always_declare_return_types
+   info • The type parameter name 'String' matches a visible type name • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:12:16 • avoid_types_as_parameter_names
+  error • Expected an identifier • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:12:24 • missing_identifier
+  error • A function body must be provided • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:12:27 • missing_function_body
 
