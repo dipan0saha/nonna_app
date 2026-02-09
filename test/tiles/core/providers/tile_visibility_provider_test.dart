@@ -8,10 +8,6 @@ import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
-  // Provide dummy values for mockito null-safety at module level
-  provideDummy<String>('');
-  provideDummy<Map<String, dynamic>>({});
-
   group('TileVisibilityProvider Tests', () {
     late TileVisibilityNotifier notifier;
     late MockCacheService mockCacheService;

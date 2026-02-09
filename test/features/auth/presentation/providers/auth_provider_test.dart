@@ -10,9 +10,6 @@ import '../../../../helpers/fake_postgrest_builders.dart';
 import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
 
-  // Provide dummy values for mockito null-safety at module level
-  provideDummy<String>('');
-
 void main() {
   group('AuthNotifier Tests', () {
     late AuthNotifier notifier;
@@ -36,8 +33,6 @@ void main() {
     );
 
     setUp(() {
-      // Provide dummy values for mockito null-safety
-
       mockAuthService = MockFactory.createAuthService();
       mockDatabaseService = MockFactory.createDatabaseService();
       mockLocalStorage = MockFactory.createLocalStorageService();
