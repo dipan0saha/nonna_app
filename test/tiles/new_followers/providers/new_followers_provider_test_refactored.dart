@@ -37,12 +37,17 @@ void main() {
       mockCache = MockCacheService();
       mockRealtime = MockRealtimeService();
 
-      // Setup cache mock FIRST, before any other operations that might access it
+      // Setup cache mock completely before anything else
       // This prevents "Cannot call when within a stub response" errors
       when(mockCache.isInitialized).thenReturn(true);
       when(mockCache.get(any)).thenAnswer((_) async => null);
       when(mockCache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
           .thenAnswer((_) async {});
+      
+      // Setup database mock with default empty response
+      // Using thenAnswer (not thenReturn) for FakePostgrestBuilder
+      when(mockDatabase.select(any))
+          .thenAnswer((_) => FakePostgrestBuilder([]));
 
       // Setup realtime service to return empty stream by default
       when(mockRealtime.subscribe(
@@ -50,6 +55,9 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
+      
+      // Setup realtime unsubscribe to do nothing by default
+      when(mockRealtime.unsubscribe(any)).thenAnswer((_) async {});
 
       // Create provider container with mock overrides
       container = ProviderContainer(
@@ -62,7 +70,12 @@ void main() {
     });
 
     tearDown(() {
+      // Dispose container to clean up providers
       container.dispose();
+      // Reset mocks to prevent state leakage between tests
+      reset(mockDatabase);
+      reset(mockCache);
+      reset(mockRealtime);
     });
 
     group('Initial State', () {
