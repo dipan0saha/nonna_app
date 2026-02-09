@@ -79,6 +79,7 @@ import 'mock_services.mocks.dart';
   // ==========================================
   File,
 ])
+// ignore: unused_element
 void _dummyFunction() {
   // This empty function is required for the @GenerateMocks annotation
 }

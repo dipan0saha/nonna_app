@@ -9,14 +9,12 @@ import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/tiles/upcoming_events/providers/upcoming_events_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('UpcomingEventsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late UpcomingEventsNotifier notifier;
 
     // Sample event data
     final sampleEvent = Event(

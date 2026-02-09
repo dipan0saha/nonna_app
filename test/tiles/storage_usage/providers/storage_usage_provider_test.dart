@@ -6,14 +6,12 @@ import 'package:nonna_app/tiles/storage_usage/providers/storage_usage_provider.d
 
 import '../../../helpers/fake_postgrest_builders.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('StorageUsageProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late StorageUsageNotifier notifier;
 
     // Sample storage usage data
     final sampleStorageInfo = StorageUsageInfo(

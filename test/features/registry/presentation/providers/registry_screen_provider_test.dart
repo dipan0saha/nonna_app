@@ -4,9 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/models/registry_purchase.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';

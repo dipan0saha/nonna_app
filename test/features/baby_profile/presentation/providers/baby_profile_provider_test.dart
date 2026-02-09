@@ -4,9 +4,6 @@ import 'package:nonna_app/core/enums/gender.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/baby_membership.dart';
 import 'package:nonna_app/core/models/baby_profile.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/core/services/storage_service.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';

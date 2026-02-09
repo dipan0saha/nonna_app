@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/data_deletion_handler.dart';
-import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/core/services/storage_service.dart';
 
 import '../../mocks/mock_services.mocks.dart';
 import '../../helpers/mock_factory.dart';

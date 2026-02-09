@@ -3,7 +3,6 @@ import 'package:mockito/mockito.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {

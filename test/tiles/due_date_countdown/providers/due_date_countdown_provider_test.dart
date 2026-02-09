@@ -7,7 +7,6 @@ import 'package:nonna_app/tiles/due_date_countdown/providers/due_date_countdown_
 
 import '../../../helpers/fake_postgrest_builders.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
