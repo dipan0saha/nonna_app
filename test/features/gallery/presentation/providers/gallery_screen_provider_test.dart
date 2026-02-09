@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
@@ -10,9 +9,8 @@ import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/gallery_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-
-@GenerateMocks([DatabaseService, CacheService, RealtimeService])
-import 'gallery_screen_provider_test.mocks.dart';
+import '../../../../mocks/mock_services.mocks.dart';
+import '../../../../helpers/mock_factory.dart';
 
 void main() {
   group('GalleryScreenNotifier Tests', () {
@@ -37,9 +35,9 @@ void main() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
 
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-      mockRealtimeService = MockRealtimeService();
+      mockDatabaseService = MockFactory.createDatabaseService();
+      mockCacheService = MockFactory.createCacheService();
+      mockRealtimeService = MockFactory.createRealtimeService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
 

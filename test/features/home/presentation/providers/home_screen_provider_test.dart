@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
@@ -10,9 +9,8 @@ import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-
-@GenerateMocks([DatabaseService, CacheService])
-import 'home_screen_provider_test.mocks.dart';
+import '../../../../mocks/mock_services.mocks.dart';
+import '../../../../helpers/mock_factory.dart';
 
 void main() {
   group('HomeScreenNotifier Tests', () {
@@ -36,8 +34,8 @@ void main() {
       // Provide dummy values for mockito null-safety
       provideDummy<String>('');
 
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
+      mockDatabaseService = MockFactory.createDatabaseService();
+      mockCacheService = MockFactory.createCacheService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
 

@@ -1,18 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
 import 'package:nonna_app/core/middleware/cache_manager.dart';
 import 'package:nonna_app/core/services/cache_service.dart';
 
-@GenerateMocks([CacheService])
-import 'cache_manager_test.mocks.dart';
+import '../../mocks/mock_services.mocks.dart';
+import '../../helpers/mock_factory.dart';
 
 void main() {
   late MockCacheService mockCacheService;
   late CacheManager cacheManager;
 
   setUp(() {
-    mockCacheService = MockCacheService();
+    mockCacheService = MockFactory.createCacheService();
     cacheManager = CacheManager(mockCacheService);
   });
 
