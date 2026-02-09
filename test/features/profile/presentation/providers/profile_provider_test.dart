@@ -73,7 +73,7 @@ void main() {
     group('loadProfile', () {
       test('sets loading state while loading', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleUser.toJson()]));
 
         final loadFuture = notifier.loadProfile(userId: 'user_1');
@@ -86,7 +86,7 @@ void main() {
       test('loads profile from database when cache is empty', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -106,7 +106,7 @@ void main() {
       test('loads profile from cache when available', () async {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleStats.toJson()]));
 
         await notifier.loadProfile(userId: 'user_1');
@@ -117,7 +117,7 @@ void main() {
 
       test('handles profile not found error', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         await notifier.loadProfile(userId: 'user_1');
@@ -129,7 +129,7 @@ void main() {
 
       test('handles database error gracefully', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
         await notifier.loadProfile(userId: 'user_1');
@@ -143,7 +143,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -160,7 +160,7 @@ void main() {
       test('saves fetched profile to cache', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -179,7 +179,7 @@ void main() {
       test('loads user stats after loading profile', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -221,7 +221,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -282,7 +282,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -340,7 +340,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -372,7 +372,7 @@ void main() {
     group('refresh', () {
       test('refreshes profile with force refresh', () async {
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1 || callCount == 3) {
             return FakePostgrestBuilder([sampleUser.toJson()]);

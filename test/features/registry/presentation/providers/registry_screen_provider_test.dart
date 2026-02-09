@@ -76,7 +76,7 @@ void main() {
     group('loadItems', () {
       test('sets loading state while loading', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final loadFuture = notifier.loadItems(babyProfileId: 'profile_1');
@@ -94,7 +94,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
@@ -117,7 +117,7 @@ void main() {
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
 
         expect(notifier.state.items, hasLength(1));
         expect(notifier.state.items.first.item.id, equals('item_1'));
@@ -126,7 +126,7 @@ void main() {
 
       test('handles database error gracefully', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
@@ -150,7 +150,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(
@@ -168,7 +168,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
@@ -326,7 +326,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
@@ -343,7 +343,7 @@ void main() {
       test('does not refresh when no baby profile selected', () async {
         await notifier.refresh();
 
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
       });
     });
 
@@ -355,7 +355,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
@@ -370,7 +370,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
