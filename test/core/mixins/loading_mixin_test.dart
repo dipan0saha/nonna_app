@@ -62,7 +62,7 @@ class _TestWidgetState extends State<TestWidget> with LoadingMixin {
   }
 }
 
-// Helper to wrap test widget in MaterialApp
+/// Helper to wrap test widget in MaterialApp
 Widget wrapWithMaterialApp(Widget child) {
   return MaterialApp(home: child);
 }

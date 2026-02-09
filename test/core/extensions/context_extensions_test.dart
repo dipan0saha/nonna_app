@@ -455,7 +455,7 @@ void main() {
             ),
           ),
         );
-        
+
         // Pump again to rebuild and check updated MediaQuery
         await tester.pumpAndSettle();
 
