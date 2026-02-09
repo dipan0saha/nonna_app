@@ -22,156 +22,46 @@ class MockFactory {
   // Individual Service Factory Methods
   // ==========================================
 
-  /// Create a DatabaseService mock with common default behaviors
+  /// Create a DatabaseService mock
   ///
-  /// Default behaviors:
-  /// - `select()` returns empty FakePostgrestBuilder
-  /// - Ready for custom stubbing via `when()`
-  static MockDatabaseService createDatabaseService({
-    List<Map<String, dynamic>>? defaultSelectData,
-  }) {
-    final mock = MockDatabaseService();
-
-    // Default select behavior - return empty or provided data
-    when(mock.select(any, columns: anyNamed('columns')))
-        .thenAnswer((_) => FakePostgrestBuilder(defaultSelectData ?? []));
-
-    return mock;
+  /// Returns a clean mock instance ready for custom stubbing via `when()`
+  static MockDatabaseService createDatabaseService() {
+    return MockDatabaseService();
   }
 
-  /// Create a CacheService mock with common default behaviors
+  /// Create a CacheService mock
   ///
-  /// Default behaviors:
-  /// - `isInitialized` returns true
-  /// - `get()` returns null (cache miss)
-  /// - `put()` completes successfully
-  static MockCacheService createCacheService({
-    bool isInitialized = true,
-    Map<String, dynamic>? defaultGetData,
-  }) {
-    final mock = MockCacheService();
-
-    // Default initialization state
-    when(mock.isInitialized).thenReturn(isInitialized);
-
-    // Default get behavior - cache miss
-    when(mock.get(any)).thenAnswer((_) async => defaultGetData);
-
-    // Default put behavior - success
-    when(mock.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-        .thenAnswer((_) async {});
-
-    // Default clear behavior - success
-    when(mock.clear()).thenAnswer((_) async {});
-
-    return mock;
+  /// Returns a clean mock instance ready for custom stubbing via `when()`
+  static MockCacheService createCacheService() {
+    return MockCacheService();
   }
 
-  /// Create a RealtimeService mock with common default behaviors
+  /// Create a RealtimeService mock
   ///
-  /// Default behaviors:
-  /// - `isConnected` returns true
-  /// - `subscribe()` returns empty stream
-  /// - `unsubscribe()` completes successfully
-  static MockRealtimeService createRealtimeService({
-    bool isConnected = true,
-    Stream<dynamic>? defaultStream,
-  }) {
-    final mock = MockRealtimeService();
-
-    // Default connection state
-    when(mock.isConnected).thenReturn(isConnected);
-
-    // Default subscribe behavior - empty stream
-    when(mock.subscribe(
-      table: anyNamed('table'),
-      channelName: anyNamed('channelName'),
-      filter: anyNamed('filter'),
-    )).thenReturn(defaultStream ?? Stream.empty());
-
-    // Default unsubscribe behavior - success
-    when(mock.unsubscribe(any)).thenAnswer((_) async {});
-
-    return mock;
+  /// Returns a clean mock instance ready for custom stubbing via `when()`
+  static MockRealtimeService createRealtimeService() {
+    return MockRealtimeService();
   }
 
-  /// Create a StorageService mock with common default behaviors
+  /// Create a StorageService mock
   ///
-  /// Default behaviors:
-  /// - `uploadFile()` returns test URL
-  /// - `deleteFile()` completes successfully
-  /// - `getPublicUrl()` returns test URL
-  static MockStorageService createStorageService({
-    String defaultUploadUrl = 'https://test.storage.com/test-file.jpg',
-  }) {
-    final mock = MockStorageService();
-
-    // Default upload behavior using uploadFile
-    when(mock.uploadFile(
-      filePath: anyNamed('filePath'),
-      storageKey: anyNamed('storageKey'),
-      bucket: anyNamed('bucket'),
-    )).thenAnswer((_) async => defaultUploadUrl);
-
-    // Default delete behavior - success
-    when(mock.deleteFile(any, any)).thenAnswer((_) async {});
-
-    // Default getPublicUrl behavior
-    when(mock.getPublicUrl(any, any)).thenReturn(defaultUploadUrl);
-
-    return mock;
+  /// Returns a clean mock instance ready for custom stubbing via `when()`
+  static MockStorageService createStorageService() {
+    return MockStorageService();
   }
 
-  /// Create an AuthService mock with common default behaviors
+  /// Create an AuthService mock
   ///
-  /// Default behaviors:
-  /// - `isAuthenticated` returns true
-  /// - `currentUser` returns mock user
-  /// - Auth state changes stream available
-  static MockAuthService createAuthService({
-    bool isAuthenticated = true,
-    MockUser? currentUser,
-  }) {
-    final mock = MockAuthService();
-
-    // Default authentication state
-    when(mock.isAuthenticated).thenReturn(isAuthenticated);
-
-    // Default current user
-    if (currentUser != null) {
-      when(mock.currentUser).thenReturn(currentUser);
-    }
-
-    return mock;
+  /// Returns a clean mock instance ready for custom stubbing via `when()`
+  static MockAuthService createAuthService() {
+    return MockAuthService();
   }
 
-  /// Create a LocalStorageService mock with common default behaviors
+  /// Create a LocalStorageService mock
   ///
-  /// Default behaviors:
-  /// - `isInitialized` returns true
-  /// - `getString()` returns null by default
-  /// - `setString()` completes successfully
-  static MockLocalStorageService createLocalStorageService({
-    bool isInitialized = true,
-  }) {
-    final mock = MockLocalStorageService();
-
-    // Default initialization state
-    when(mock.isInitialized).thenReturn(isInitialized);
-
-    // Default getString behavior - synchronous
-    when(mock.getString(any)).thenReturn(null);
-
-    // Default setString behavior
-    when(mock.setString(any, any)).thenAnswer((_) async {});
-
-    // Default getBool behavior - synchronous
-    when(mock.getBool(any)).thenReturn(null);
-
-    // Default setBool behavior
-    when(mock.setBool(any, any)).thenAnswer((_) async {});
-
-    return mock;
+  /// Returns a clean mock instance ready for custom stubbing via `when()`
+  static MockLocalStorageService createLocalStorageService() {
+    return MockLocalStorageService();
   }
 
   /// Create a BackupService mock with common default behaviors
@@ -225,28 +115,18 @@ class MockFactory {
     return MockRealtimeChannel();
   }
 
-  /// Create a User mock with test data
-  static MockUser createUser({
-    String id = 'test-user-id',
-    String email = 'test@example.com',
-  }) {
-    final mock = MockUser();
-    when(mock.id).thenReturn(id);
-    when(mock.email).thenReturn(email);
-    return mock;
+  /// Create a User mock
+  ///
+  /// Returns a clean mock instance ready for custom stubbing via `when()`
+  static MockUser createUser() {
+    return MockUser();
   }
 
-  /// Create a Session mock with test data
-  static MockSession createSession({
-    String accessToken = 'test-access-token',
-    MockUser? user,
-  }) {
-    final mock = MockSession();
-    when(mock.accessToken).thenReturn(accessToken);
-    if (user != null) {
-      when(mock.user).thenReturn(user);
-    }
-    return mock;
+  /// Create a Session mock
+  ///
+  /// Returns a clean mock instance ready for custom stubbing via `when()`
+  static MockSession createSession() {
+    return MockSession();
   }
 
   // ==========================================
@@ -267,17 +147,13 @@ class MockFactory {
   ///   ],
   /// );
   /// ```
-  static MockServiceContainer createServiceContainer({
-    bool cacheInitialized = true,
-    bool realtimeConnected = true,
-    bool authenticated = true,
-  }) {
+  static MockServiceContainer createServiceContainer() {
     return MockServiceContainer(
       database: createDatabaseService(),
-      cache: createCacheService(isInitialized: cacheInitialized),
-      realtime: createRealtimeService(isConnected: realtimeConnected),
+      cache: createCacheService(),
+      realtime: createRealtimeService(),
       storage: createStorageService(),
-      auth: createAuthService(isAuthenticated: authenticated),
+      auth: createAuthService(),
       localStorage: createLocalStorageService(),
       backup: createBackupService(),
       notification: createNotificationService(),
