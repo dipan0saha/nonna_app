@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 
-import '../../mocks/mock_services.mocks.dart';
-
 void main() {
   group('DatabaseService', () {
     setUp(() {});

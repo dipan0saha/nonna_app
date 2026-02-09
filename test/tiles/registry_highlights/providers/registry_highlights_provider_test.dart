@@ -8,6 +8,9 @@ import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlight
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
 
+  // Provide dummy values for mockito null-safety at module level
+  provideDummy<String>('');
+
 void main() {
   group('RegistryHighlightsProvider Tests', () {
     late ProviderContainer container;
@@ -30,7 +33,6 @@ void main() {
       mocks = MockFactory.createServiceContainer();
 
       // Setup dummy values for Mockito null-safety
-      provideDummy<String>('');
 
       container = ProviderContainer(
         overrides: [

@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/analytics_service.dart';
 
-import '../../mocks/mock_services.mocks.dart';
-
 void main() {
   group('AnalyticsService', () {
     late AnalyticsService analyticsService;
