@@ -252,6 +252,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
     Map<String, dynamic> payload,
     String babyProfileId,
   ) {
+    if (!ref.mounted) return;
     try {
       // Refresh data on any change
       fetchDeals(
