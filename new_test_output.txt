@@ -13,294 +13,54 @@ Ask the maintainers of flutter_facebook_auth to either avoid referencing a defau
 00:00 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
 Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
 
-00:01 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:01 +0: NewFollowersProvider Tests Refactored Initial State initial state has empty followers                                                                                                        00:01 +1: NewFollowersProvider Tests Refactored Initial State initial state has empty followers                                                                                                        00:01 +1: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   00:01 +1: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   
+00:01 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:02 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:03 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:04 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:05 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart                                          00:05 +0: NewFollowersProvider Tests Refactored Initial State initial state has empty followers                                                                                                        00:05 +1: NewFollowersProvider Tests Refactored Initial State initial state has empty followers                                                                                                        00:05 +1: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   00:05 +1: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   
 ❌ Failed to fetch new followers: Exception: Database connection failed
-00:01 +2: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   00:01 +2: NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching                                                                                                        00:01 +2: NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching                                                                                                        
+00:05 +2: NewFollowersProvider Tests Refactored Data Fetching fetchFollowers handles database errors                                                                                                   00:05 +2: NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching                                                                                                        00:05 +2: NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching                                                                                                        
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 0 new followers (0 active) for profile: test-baby-profile-id
-00:01 +2 -1: NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching [E]                                                                                                 
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching'
-00:01 +2 -1: NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty                                                                                   00:01 +2 -1: NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty                                                                                   
+✅ Real-time subscription cancelled
+00:05 +3: NewFollowersProvider Tests Refactored Data Fetching sets loading state while fetching                                                                                                        00:05 +3: NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty                                                                                      00:05 +3: NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty                                                                                      
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +2 -2: NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty [E]                                                                               
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty'
-00:01 +2 -2: NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache                                                                                                          00:01 +2 -2: NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache                                                                                                          
+✅ Real-time subscription cancelled
+00:05 +4: NewFollowersProvider Tests Refactored Data Fetching fetches followers from database when cache is empty                                                                                      00:05 +4: NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache                                                                                                             00:05 +4: NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache                                                                                                             
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +2 -3: NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache [E]                                                                                                      
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache'
-00:01 +2 -3: NewFollowersProvider Tests Refactored Data Fetching filters only recent followers                                                                                                         00:01 +2 -3: NewFollowersProvider Tests Refactored Data Fetching filters only recent followers                                                                                                         
+✅ Real-time subscription cancelled
+00:05 +5: NewFollowersProvider Tests Refactored Data Fetching force refresh bypasses cache                                                                                                             00:05 +5: NewFollowersProvider Tests Refactored Data Fetching filters only recent followers                                                                                                            00:05 +5: NewFollowersProvider Tests Refactored Data Fetching filters only recent followers                                                                                                            
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +2 -4: NewFollowersProvider Tests Refactored Data Fetching filters only recent followers [E]                                                                                                     
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching filters only recent followers'
-00:01 +2 -4: NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache                                                                                                      00:01 +2 -4: NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache                                                                                                      
+✅ Real-time subscription cancelled
+00:05 +6: NewFollowersProvider Tests Refactored Data Fetching filters only recent followers                                                                                                            00:05 +6: NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache                                                                                                         00:05 +6: NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache                                                                                                         
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +2 -5: NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache [E]                                                                                                  
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache'
-00:01 +2 -5: NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only                                                                                                       00:01 +2 -5: NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only                                                                                                       
+✅ Real-time subscription cancelled
+00:05 +7: NewFollowersProvider Tests Refactored Data Fetching saves fetched followers to cache                                                                                                         00:05 +7: NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only                                                                                                          00:05 +7: NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only                                                                                                          
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 30 new followers (30 active) for profile: test-baby-profile-id
-00:01 +2 -6: NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only [E]                                                                                                   
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only'
-00:01 +2 -6: NewFollowersProvider Tests Refactored Cache Behavior uses cached data when available                                                                                                      00:01 +3 -6: NewFollowersProvider Tests Refactored Cache Behavior uses cached data when available                                                                                                      00:01 +3 -6: NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh                                                                                                      00:01 +3 -6: NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh                                                                                                      
+✅ Real-time subscription cancelled
+00:05 +8: NewFollowersProvider Tests Refactored Data Fetching limits to recent followers only                                                                                                          00:05 +8: NewFollowersProvider Tests Refactored Cache Behavior uses cached data when available                                                                                                         00:05 +9: NewFollowersProvider Tests Refactored Cache Behavior uses cached data when available                                                                                                         00:05 +9: NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh                                                                                                         00:05 +9: NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh                                                                                                         
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +3 -7: NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh [E]                                                                                                  
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh'
-00:01 +3 -7: NewFollowersProvider Tests Refactored Active/Removed Followers getActiveFollowers returns only active followers                                                                           00:01 +4 -7: NewFollowersProvider Tests Refactored Active/Removed Followers getActiveFollowers returns only active followers                                                                           00:01 +4 -7: NewFollowersProvider Tests Refactored Active/Removed Followers getRemovedFollowers returns only removed followers                                                                         00:01 +5 -7: NewFollowersProvider Tests Refactored Active/Removed Followers getRemovedFollowers returns only removed followers                                                                         00:01 +5 -7: NewFollowersProvider Tests Refactored Real-time Updates handles new follower                                                                                                              00:01 +5 -7: NewFollowersProvider Tests Refactored Real-time Updates handles new follower                                                                                                              
+✅ Real-time subscription cancelled
+00:05 +10: NewFollowersProvider Tests Refactored Refresh refreshes followers with force refresh                                                                                                        00:05 +10: NewFollowersProvider Tests Refactored Active/Removed Followers getActiveFollowers returns only active followers                                                                             00:05 +11: NewFollowersProvider Tests Refactored Active/Removed Followers getActiveFollowers returns only active followers                                                                             00:05 +11: NewFollowersProvider Tests Refactored Active/Removed Followers getRemovedFollowers returns only removed followers                                                                           00:05 +12: NewFollowersProvider Tests Refactored Active/Removed Followers getRemovedFollowers returns only removed followers                                                                           00:05 +12: NewFollowersProvider Tests Refactored Real-time Updates handles new follower                                                                                                                00:05 +12: NewFollowersProvider Tests Refactored Real-time Updates handles new follower                                                                                                                
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +5 -8: NewFollowersProvider Tests Refactored Real-time Updates handles new follower [E]                                                                                                          
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Real-time Updates handles new follower'
-00:01 +5 -8: NewFollowersProvider Tests Refactored Real-time Updates handles follower removed                                                                                                          00:01 +5 -8: NewFollowersProvider Tests Refactored Real-time Updates handles follower removed                                                                                                          
+✅ Real-time subscription cancelled
+00:05 +13: NewFollowersProvider Tests Refactored Real-time Updates handles new follower                                                                                                                00:05 +13: NewFollowersProvider Tests Refactored Real-time Updates handles follower removed                                                                                                            00:05 +13: NewFollowersProvider Tests Refactored Real-time Updates handles follower removed                                                                                                            
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +5 -9: NewFollowersProvider Tests Refactored Real-time Updates handles follower removed [E]                                                                                                      
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Real-time Updates handles follower removed'
-00:01 +5 -9: NewFollowersProvider Tests Refactored Time Period Options supports 7-day period                                                                                                           00:01 +5 -9: NewFollowersProvider Tests Refactored Time Period Options supports 7-day period                                                                                                           
+✅ Real-time subscription cancelled
+00:05 +14: NewFollowersProvider Tests Refactored Real-time Updates handles follower removed                                                                                                            00:05 +14: NewFollowersProvider Tests Refactored Time Period Options supports 7-day period                                                                                                             00:05 +14: NewFollowersProvider Tests Refactored Time Period Options supports 7-day period                                                                                                             
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +5 -10: NewFollowersProvider Tests Refactored Time Period Options supports 7-day period [E]                                                                                                      
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Time Period Options supports 7-day period'
-00:01 +5 -10: NewFollowersProvider Tests Refactored Time Period Options supports 30-day period                                                                                                         00:01 +5 -10: NewFollowersProvider Tests Refactored Time Period Options supports 30-day period                                                                                                         
+✅ Real-time subscription cancelled
+00:05 +15: NewFollowersProvider Tests Refactored Time Period Options supports 7-day period                                                                                                             00:05 +15: NewFollowersProvider Tests Refactored Time Period Options supports 30-day period                                                                                                            00:05 +15: NewFollowersProvider Tests Refactored Time Period Options supports 30-day period                                                                                                            
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 1 new followers (1 active) for profile: test-baby-profile-id
-00:01 +5 -11: NewFollowersProvider Tests Refactored Time Period Options supports 30-day period [E]                                                                                                     
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Time Period Options supports 30-day period'
-00:01 +5 -11: NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first)                                                                                                     00:01 +5 -11: NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first)                                                                                                     
+✅ Real-time subscription cancelled
+00:05 +16: NewFollowersProvider Tests Refactored Time Period Options supports 30-day period                                                                                                            00:05 +16: NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first)                                                                                                        00:05 +16: NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first)                                                                                                        
 ✅ Real-time subscription setup for new followers
 ✅ Loaded 3 new followers (3 active) for profile: test-baby-profile-id
-00:01 +5 -12: NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first) [E]                                                                                                 
-  Expected: 'user_3'
-    Actual: 'user_1'
-     Which: is different.
-            Expected: user_3
-              Actual: user_1
-                           ^
-             Differ at offset 5
-  
-  package:matcher                                                                       expect
-  package:flutter_test/src/widget_tester.dart 473:18                                    expect
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 503:9  main.<fn>.<fn>.<fn>
-  
-  'package:riverpod/src/core/ref.dart': Failed assertion: line 216 pos 7: '_debugCallbackStack == 0': Cannot use Ref or modify other providers inside life-cycles/selectors.
-  dart:core                                                                             _AssertionError._throwNew
-  package:riverpod/src/core/ref.dart 216:7                                              Ref._throwIfInvalidUsage
-  package:riverpod/src/core/ref.dart 522:5                                              Ref.read
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 322:11    NewFollowersNotifier._cancelRealtimeSubscription
-  package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart 67:7      NewFollowersNotifier.build.<fn>
-  package:riverpod/src/core/provider_container.dart 661:9                               InternalProviderContainer.runGuarded
-  package:riverpod/src/core/ref.dart 703:17                                             _runCallbacks
-  package:riverpod/src/core/element.dart 1164:5                                         ProviderElement.runOnDispose
-  package:riverpod/src/core/element.dart 308:11                                         ElementWithFuture.runOnDispose
-  package:riverpod/src/core/element.dart 1198:5                                         ProviderElement.clearState
-  package:riverpod/src/core/element.dart 1229:5                                         ProviderElement.dispose
-  package:riverpod/src/core/element.dart 332:11                                         ElementWithFuture.dispose
-  package:riverpod/src/core/provider_container.dart 1136:15                             ProviderContainer._dispose
-  package:riverpod/src/core/provider_container.dart 1150:21                             ProviderContainer.dispose
-  test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart 74:17  main.<fn>.<fn>
-  
-
-To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/new_followers/providers/new_followers_provider_test_refactored.dart -p vm --plain-name 'NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first)'
-00:01 +5 -12: NewFollowersProvider Tests Refactored Error Handling error state can be set and read                                                                                                     00:01 +6 -12: NewFollowersProvider Tests Refactored Error Handling error state can be set and read                                                                                                     00:01 +6 -12: NewFollowersProvider Tests Refactored Basic Functionality provider can be read from container                                                                                            00:01 +7 -12: NewFollowersProvider Tests Refactored Basic Functionality provider can be read from container                                                                                            00:01 +7 -12: NewFollowersProvider Tests Refactored Basic Functionality provider has access to required services                                                                                       00:01 +8 -12: NewFollowersProvider Tests Refactored Basic Functionality provider has access to required services                                                                                       00:01 +8 -12: NewFollowersProvider Tests Refactored Basic Functionality fetchFollowers method exists                                                                                                   00:01 +9 -12: NewFollowersProvider Tests Refactored Basic Functionality fetchFollowers method exists                                                                                                   00:01 +9 -12: NewFollowersProvider Tests Refactored Basic Functionality refresh method exists                                                                                                          00:01 +10 -12: NewFollowersProvider Tests Refactored Basic Functionality refresh method exists                                                                                                         00:01 +10 -12: NewFollowersProvider Tests Refactored dispose container can be disposed without errors                                                                                                  00:01 +11 -12: NewFollowersProvider Tests Refactored dispose container can be disposed without errors                                                                                                  00:01 +11 -12: Some tests failed.                                                                                                                                                                      
+✅ Real-time subscription cancelled
+00:05 +17: NewFollowersProvider Tests Refactored Sorting sorts followers by date (newest first)                                                                                                        00:05 +17: NewFollowersProvider Tests Refactored Error Handling error state can be set and read                                                                                                        00:05 +18: NewFollowersProvider Tests Refactored Error Handling error state can be set and read                                                                                                        00:05 +18: NewFollowersProvider Tests Refactored Basic Functionality provider can be read from container                                                                                               00:05 +19: NewFollowersProvider Tests Refactored Basic Functionality provider can be read from container                                                                                               00:05 +19: NewFollowersProvider Tests Refactored Basic Functionality provider has access to required services                                                                                          00:05 +20: NewFollowersProvider Tests Refactored Basic Functionality provider has access to required services                                                                                          00:05 +20: NewFollowersProvider Tests Refactored Basic Functionality fetchFollowers method exists                                                                                                      00:05 +21: NewFollowersProvider Tests Refactored Basic Functionality fetchFollowers method exists                                                                                                      00:05 +21: NewFollowersProvider Tests Refactored Basic Functionality refresh method exists                                                                                                             00:05 +22: NewFollowersProvider Tests Refactored Basic Functionality refresh method exists                                                                                                             00:05 +22: NewFollowersProvider Tests Refactored dispose container can be disposed without errors                                                                                                      00:05 +23: NewFollowersProvider Tests Refactored dispose container can be disposed without errors                                                                                                      00:05 +23: All tests passed!                                                                                                                                                                           
