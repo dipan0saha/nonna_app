@@ -13,6 +13,7 @@ void main() {
   group('RecentPurchasesProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late RecentPurchasesNotifier notifier;
 
     // Sample purchase data
     final samplePurchase = RegistryPurchase(

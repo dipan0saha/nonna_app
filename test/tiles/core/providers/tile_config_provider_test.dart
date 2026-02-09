@@ -14,6 +14,7 @@ void main() {
   group('TileConfigProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late TileConfigNotifier notifier;
 
     // Sample tile config data
     final sampleTileConfig = TileConfig(

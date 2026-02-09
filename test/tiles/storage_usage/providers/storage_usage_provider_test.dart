@@ -13,6 +13,7 @@ void main() {
   group('StorageUsageProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late StorageUsageNotifier notifier;
 
     // Sample storage usage data
     final sampleStorageInfo = StorageUsageInfo(

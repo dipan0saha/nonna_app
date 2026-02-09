@@ -15,6 +15,7 @@ void main() {
   group('RegistryHighlightsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late RegistryHighlightsNotifier notifier;
 
     // Sample registry item data
     final sampleItem = RegistryItem(

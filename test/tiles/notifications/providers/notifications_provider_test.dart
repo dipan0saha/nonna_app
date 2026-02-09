@@ -14,6 +14,7 @@ void main() {
   group('NotificationsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late NotificationsNotifier notifier;
 
     // Sample notification data
     final sampleNotification = app_notification.Notification(

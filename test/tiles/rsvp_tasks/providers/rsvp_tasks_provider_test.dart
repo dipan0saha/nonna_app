@@ -15,6 +15,7 @@ void main() {
   group('RSVPTasksProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late RsvpTasksNotifier notifier;
 
     // Sample event and RSVP data
     final sampleEvent = Event(

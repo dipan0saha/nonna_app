@@ -13,6 +13,7 @@ void main() {
   group('RegistryDealsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late RegistryDealsNotifier notifier;
 
     // Sample registry deal data
     final sampleDeal = RegistryItem(

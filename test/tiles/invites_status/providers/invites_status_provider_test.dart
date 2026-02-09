@@ -15,6 +15,7 @@ void main() {
   group('InvitesStatusProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late InvitesStatusNotifier notifier;
 
     // Sample invitation data
     final sampleInvitation = Invitation(

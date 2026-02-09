@@ -13,6 +13,7 @@ void main() {
   group('RecentPhotosProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late RecentPhotosNotifier notifier;
 
     // Sample photo data
     final samplePhoto = Photo(

@@ -14,6 +14,7 @@ void main() {
   group('DueDateCountdownProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late DueDateCountdownNotifier notifier;
 
     // Sample baby profile data
     final sampleProfile = BabyProfile(
@@ -26,9 +27,6 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
-      
-      
-      
 
       container = ProviderContainer(
         overrides: [

@@ -16,6 +16,7 @@ void main() {
   group('UpcomingEventsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
+    late UpcomingEventsNotifier notifier;
 
     // Sample event data
     final sampleEvent = Event(
