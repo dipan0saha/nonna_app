@@ -440,7 +440,7 @@ void main() {
 
       testWidgets('isKeyboardVisible returns true with keyboard',
           (tester) async {
-        late bool isVisible;
+        bool? isVisible;
 
         // Set keyboard visible BEFORE widget is built
         tester.view.viewInsets = FakeViewPadding(bottom: 300);
@@ -455,6 +455,9 @@ void main() {
             ),
           ),
         );
+
+        // Pump again to rebuild and check updated MediaQuery
+        await tester.pumpAndSettle();
 
         expect(isVisible, true);
 

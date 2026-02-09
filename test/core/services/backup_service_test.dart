@@ -39,7 +39,7 @@ void main() {
       test('throws error when database fails', () async {
         final userId = 'test-user-id';
 
-        when(mockDatabaseService.select('profiles'))
+        when(mockDatabaseService.select('profiles', columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
         expect(

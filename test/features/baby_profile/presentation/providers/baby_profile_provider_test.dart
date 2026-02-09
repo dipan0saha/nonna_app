@@ -87,7 +87,7 @@ void main() {
       test('sets loading state while loading', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -111,7 +111,7 @@ void main() {
       test('loads profile from database when cache is empty', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -138,7 +138,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleProfile.toJson());
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleMembership.toJson()]);
@@ -159,7 +159,7 @@ void main() {
       test('loads profile with memberships', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -185,7 +185,7 @@ void main() {
 
       test('handles profile not found error', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         await notifier.loadProfile(
@@ -200,7 +200,7 @@ void main() {
 
       test('handles database error gracefully', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
         await notifier.loadProfile(
@@ -217,7 +217,7 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleProfile.toJson());
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -240,7 +240,7 @@ void main() {
       test('saves fetched profile to cache', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -266,7 +266,7 @@ void main() {
       test('enables edit mode when user is owner', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -300,7 +300,7 @@ void main() {
       test('disables edit mode', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -376,7 +376,7 @@ void main() {
       test('updates profile successfully when user is owner', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1 || callCount == 4) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -419,7 +419,7 @@ void main() {
       test('validates empty baby name', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -448,7 +448,7 @@ void main() {
       test('handles database error during update', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -481,7 +481,7 @@ void main() {
       test('deletes profile successfully when user is owner', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -515,7 +515,7 @@ void main() {
       test('handles database error during deletion', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -576,7 +576,7 @@ void main() {
       test('removes follower successfully when user is owner', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -616,7 +616,7 @@ void main() {
       test('handles database error during removal', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -646,7 +646,7 @@ void main() {
     group('refresh', () {
       test('refreshes profile with force refresh', () async {
         var callCount = 0;
-        when(mockDatabaseService.select(any)).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
           if (callCount == 1 || callCount == 4) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);

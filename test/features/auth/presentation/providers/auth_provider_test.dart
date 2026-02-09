@@ -73,7 +73,7 @@ void main() {
 
       test('loads user profile when current user exists', () async {
         when(mockAuthService.currentUser).thenReturn(mockUser);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Recreate notifier with user present
@@ -103,7 +103,7 @@ void main() {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
@@ -127,7 +127,7 @@ void main() {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
@@ -185,7 +185,7 @@ void main() {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
@@ -224,7 +224,7 @@ void main() {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
@@ -252,7 +252,7 @@ void main() {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
@@ -354,7 +354,7 @@ void main() {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
@@ -369,7 +369,7 @@ void main() {
 
       test('refreshSession updates session state', () async {
         when(mockAuthService.currentSession).thenReturn(mockSession);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
@@ -390,7 +390,7 @@ void main() {
 
     group('Auth State Changes', () {
       test('handles auth state changes from stream', () async {
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});

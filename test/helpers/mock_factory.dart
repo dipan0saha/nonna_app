@@ -1,4 +1,5 @@
 import 'package:mockito/mockito.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../mocks/mock_services.mocks.dart';
 import 'fake_postgrest_builders.dart';
 
@@ -113,8 +114,15 @@ class MockFactory {
   // ==========================================
 
   /// Create a SupabaseClient mock
-  static MockSupabaseClient createSupabaseClient() {
-    return MockSupabaseClient();
+  /// 
+  /// By default, this creates a client with realtime channel support enabled.
+  /// Set [withRealtimeSupport] to false if you need a basic client without stubs.
+  static MockSupabaseClient createSupabaseClient({bool withRealtimeSupport = true}) {
+    final mock = MockSupabaseClient();
+    if (withRealtimeSupport) {
+      MockHelpers.setupSupabaseRealtimeChannels(mock);
+    }
+    return mock;
   }
 
   /// Create a GoTrueClient mock
@@ -376,5 +384,45 @@ class MockHelpers {
   static void setupUnauthenticatedUser(MockAuthService mock) {
     when(mock.isAuthenticated).thenReturn(false);
     when(mock.currentUser).thenReturn(null);
+  }
+
+  // ==========================================
+  // Supabase Client Mock Helpers
+  // ==========================================
+
+  /// Configure a SupabaseClient mock to support realtime channels
+  ///
+  /// This sets up the client.channel() method to return a properly
+  /// configured MockRealtimeChannel that can be used in tests.
+  static void setupSupabaseRealtimeChannels(MockSupabaseClient mock) {
+    final mockChannel = MockFactory.createRealtimeChannel();
+    
+    // Stub the channel method to return our mock channel
+    when(mock.channel(any)).thenReturn(mockChannel);
+    when(mock.channel(any, opts: anyNamed('opts'))).thenReturn(mockChannel);
+    
+    // Stub the onPostgresChanges method to return the channel (for method chaining)
+    when(mockChannel.onPostgresChanges(
+      event: anyNamed('event'),
+      schema: anyNamed('schema'),
+      table: anyNamed('table'),
+      filter: anyNamed('filter'),
+      callback: anyNamed('callback'),
+    )).thenReturn(mockChannel);
+    
+    // Stub the subscribe method to return the channel and immediately call the callback
+    when(mockChannel.subscribe(any, any)).thenAnswer((invocation) {
+      // Get the callback from the invocation
+      final callback = invocation.positionalArguments[0];
+      if (callback != null) {
+        // Call the callback to simulate successful subscription
+        callback(RealtimeSubscribeStatus.subscribed, null);
+      }
+      return mockChannel;
+    });
+    
+    // Stub unsubscribe to return success
+    when(mockChannel.unsubscribe(any))
+        .thenAnswer((_) async => 'ok');
   }
 }

@@ -253,6 +253,7 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
     Map<String, dynamic> payload,
     String babyProfileId,
   ) {
+    if (!ref.mounted) return;
     try {
       final eventType = payload['eventType'] as String?;
       final newData = payload['new'] as Map<String, dynamic>?;

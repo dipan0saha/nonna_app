@@ -336,6 +336,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
     String userId,
     String babyProfileId,
   ) {
+    if (!ref.mounted) return;
     try {
       // Refresh data on any change
       fetchRSVPTasks(

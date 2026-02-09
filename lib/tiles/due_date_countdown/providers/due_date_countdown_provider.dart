@@ -319,6 +319,7 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
     Map<String, dynamic> payload,
     List<String> babyProfileIds,
   ) {
+    if (!ref.mounted) return;
     try {
       // Refresh data on any change to baby profile
       fetchCountdowns(

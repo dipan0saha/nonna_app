@@ -73,7 +73,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final future = notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -104,7 +104,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -129,7 +129,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any)).thenReturn(
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenReturn(
             FakePostgrestBuilder(photos.map((p) => p.toJson()).toList()));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -147,7 +147,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(
@@ -160,7 +160,7 @@ void main() {
 
       test('handles errors gracefully', () async {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -179,7 +179,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -203,7 +203,7 @@ void main() {
 
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
+        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) => FakePostgrestBuilder([
           samplePhoto.copyWith(id: 'photo_2').toJson(),
         ]));
 
@@ -223,7 +223,7 @@ void main() {
 
         await notifier.loadMore();
 
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
       });
 
       test('does not load more when hasMore is false', () async {
@@ -234,13 +234,13 @@ void main() {
 
         await notifier.loadMore();
 
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
       });
 
       test('does not load more when babyProfileId is null', () async {
         await notifier.loadMore();
 
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
       });
 
       test('handles load more error', () async {
@@ -251,7 +251,7 @@ void main() {
           currentPage: 1,
         );
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Network error'));
 
         await notifier.loadMore();
@@ -266,7 +266,7 @@ void main() {
           selectedBabyProfileId: 'profile_1',
         );
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.filterByTag('milestone');
@@ -292,7 +292,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.clearFilters();
@@ -316,7 +316,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.refresh();
@@ -327,7 +327,7 @@ void main() {
       test('does not refresh when baby profile is missing', () async {
         await notifier.refresh();
 
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
       });
     });
 
@@ -344,7 +344,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -379,7 +379,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -410,7 +410,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -442,7 +442,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => {});
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.loadPhotos(babyProfileId: 'profile_1');
