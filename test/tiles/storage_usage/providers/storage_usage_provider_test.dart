@@ -27,8 +27,6 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
-      
-      
 
       container = ProviderContainer(
         overrides: [
