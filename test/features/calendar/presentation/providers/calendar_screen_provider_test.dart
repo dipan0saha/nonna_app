@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/features/calendar/presentation/providers/calendar_screen_provider.dart';
 
@@ -10,6 +12,7 @@ import '../../../../helpers/mock_factory.dart';
 void main() {
   group('CalendarScreenNotifier Tests', () {
     late CalendarScreenNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -34,7 +37,19 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = CalendarScreenNotifier();
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
+      );
+
+      notifier = container.read(calendarScreenProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {

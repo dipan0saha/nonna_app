@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/gallery_screen_provider.dart';
 
@@ -12,6 +14,7 @@ import '../../../../helpers/mock_factory.dart';
 void main() {
   group('GalleryScreenNotifier Tests', () {
     late GalleryScreenNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -35,11 +38,19 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = GalleryScreenNotifier();
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
+      );
+
+      notifier = container.read(galleryScreenProvider.notifier);
     });
 
     tearDown(() {
-      // No dispose call needed
+      container.dispose();
     });
 
     group('Initial State', () {

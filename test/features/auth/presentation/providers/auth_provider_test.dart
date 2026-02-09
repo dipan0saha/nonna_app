@@ -5,6 +5,8 @@ import 'package:mockito/mockito.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
 import '../../../../mocks/mock_services.mocks.dart';
@@ -13,6 +15,7 @@ import '../../../../helpers/mock_factory.dart';
 void main() {
   group('AuthNotifier Tests', () {
     late AuthNotifier notifier;
+    late ProviderContainer container;
     late MockAuthService mockAuthService;
     late MockDatabaseService mockDatabaseService;
     late MockLocalStorageService mockLocalStorage;
@@ -44,11 +47,20 @@ void main() {
       when(mockAuthService.currentUser).thenReturn(null);
       when(mockLocalStorage.isInitialized).thenReturn(true);
 
-      notifier = AuthNotifier();
+      container = ProviderContainer(
+        overrides: [
+          authServiceProvider.overrideWithValue(mockAuthService),
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          localStorageServiceProvider.overrideWithValue(mockLocalStorage),
+        ],
+      );
+
+      notifier = container.read(authProvider.notifier);
     });
 
     tearDown(() {
       authStateController.close();
+      container.dispose();
     });
 
     group('Initial State', () {
@@ -64,7 +76,16 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
-        notifier = AuthNotifier();
+        // Recreate notifier with user present
+        container.dispose();
+        container = ProviderContainer(
+          overrides: [
+            authServiceProvider.overrideWithValue(mockAuthService),
+            databaseServiceProvider.overrideWithValue(mockDatabaseService),
+            localStorageServiceProvider.overrideWithValue(mockLocalStorage),
+          ],
+        );
+        notifier = container.read(authProvider.notifier);
 
         await Future.delayed(const Duration(milliseconds: 100));
 
