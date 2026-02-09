@@ -1,26 +1,19 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/enums/notification_type.dart';
 import 'package:nonna_app/core/models/notification.dart' as app_notification;
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/tiles/notifications/providers/notifications_provider.dart';
 import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-
-@GenerateMocks([DatabaseService, CacheService, RealtimeService])
-import 'notifications_provider_test.mocks.dart';
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('NotificationsProvider Tests', () {
     late ProviderContainer container;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
+    late MockServiceContainer mocks;
 
     // Sample notification data
     final sampleNotification = app_notification.Notification(
@@ -33,19 +26,14 @@ void main() {
     );
 
     setUp(() {
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-      mockRealtimeService = MockRealtimeService();
-
-      // Setup mock cache service
-      when(mockCacheService.isInitialized).thenReturn(true);
+      mocks = MockFactory.createServiceContainer();
 
       // Create a ProviderContainer with overrides
       container = ProviderContainer(
         overrides: [
-          databaseServiceProvider.overrideWithValue(mockDatabaseService),
-          cacheServiceProvider.overrideWithValue(mockCacheService),
-          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+          databaseServiceProvider.overrideWithValue(mocks.database),
+          cacheServiceProvider.overrideWithValue(mocks.cache),
+          realtimeServiceProvider.overrideWithValue(mocks.realtime),
         ],
       );
     });
@@ -70,8 +58,8 @@ void main() {
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mock to delay response
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
@@ -87,13 +75,13 @@ void main() {
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mocks
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
         await notifier.fetchNotifications(userId: 'user_1');
@@ -111,13 +99,13 @@ void main() {
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup cache to return data
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleNotification.toJson()]);
 
         await notifier.fetchNotifications(userId: 'user_1');
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mocks.database.select(any));
 
         // Verify state updated from cache
         final state = container.read(notificationsProvider);
@@ -129,8 +117,8 @@ void main() {
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mock to throw error
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
 
         await notifier.fetchNotifications(userId: 'user_1');
@@ -146,14 +134,14 @@ void main() {
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mocks
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleNotification.toJson()]);
-        when(mockRealtimeService.subscribe(
+        when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
         await notifier.fetchNotifications(
@@ -162,7 +150,7 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mocks.database.select(any)).called(1);
       });
 
       test('calculates unread count correctly', () async {
@@ -173,13 +161,13 @@ void main() {
         final notif3 =
             sampleNotification.copyWith(id: 'notif_3', readAt: DateTime.now());
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
+        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           notif1.toJson(),
           notif2.toJson(),
           notif3.toJson(),
@@ -197,18 +185,18 @@ void main() {
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
         await notifier.fetchNotifications(userId: 'user_1');
 
         // Setup update mock
-        when(mockDatabaseService.update(any, any))
+        when(mocks.database.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAsRead(
@@ -217,7 +205,7 @@ void main() {
         );
 
         // Verify database update
-        verify(mockDatabaseService.update(any, any)).called(1);
+        verify(mocks.database.update(any, any)).called(1);
 
         // Verify state updated
         final state = container.read(notificationsProvider);
@@ -231,17 +219,17 @@ void main() {
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
         await notifier.fetchNotifications(userId: 'user_1');
 
-        when(mockDatabaseService.update(any, any))
+        when(mocks.database.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAsRead(
@@ -250,7 +238,7 @@ void main() {
         );
 
         // Verify cache was updated
-        verify(mockCacheService.put(any, any,
+        verify(mocks.cache.put(any, any,
                 ttlMinutes: anyNamed('ttlMinutes')))
             .called(greaterThanOrEqualTo(1));
       });
@@ -263,25 +251,25 @@ void main() {
         final notif1 = sampleNotification.copyWith(id: 'notif_1', readAt: null);
         final notif2 = sampleNotification.copyWith(id: 'notif_2', readAt: null);
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([
+        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           notif1.toJson(),
           notif2.toJson(),
         ]));
         await notifier.fetchNotifications(userId: 'user_1');
 
-        when(mockDatabaseService.update(any, any))
+        when(mocks.database.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
 
         await notifier.markAllAsRead(userId: 'user_1');
 
         // Verify database update
-        verify(mockDatabaseService.update(any, any)).called(1);
+        verify(mocks.database.update(any, any)).called(1);
 
         // Verify all notifications are read
         final state = container.read(notificationsProvider);
@@ -296,20 +284,20 @@ void main() {
       test('refreshes notifications with force refresh', () async {
         final notifier = container.read(notificationsProvider.notifier);
 
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleNotification.toJson()]);
-        when(mockRealtimeService.subscribe(
+        when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
         await notifier.refresh(userId: 'user_1');
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mocks.database.select(any)).called(1);
       });
     });
 
@@ -318,13 +306,13 @@ void main() {
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mockDatabaseService.select(any))
+        when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
         await notifier.fetchNotifications(userId: 'user_1');
@@ -345,7 +333,7 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
-        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         // Disposing the container will trigger the notifier's dispose
         // Don't need to manually call dispose anymore

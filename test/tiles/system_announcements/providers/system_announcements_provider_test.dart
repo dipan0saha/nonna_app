@@ -1,24 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/system_announcement.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/tiles/system_announcements/providers/system_announcements_provider.dart';
 
-@GenerateMocks([DatabaseService, CacheService, RealtimeService])
-import 'system_announcements_provider_test.mocks.dart';
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('SystemAnnouncementsProvider Tests', () {
     late ProviderContainer container;
     late SystemAnnouncementsNotifier notifier;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
+    late MockServiceContainer mocks;
 
     // Sample announcement data
     final sampleAnnouncement = SystemAnnouncement(
@@ -30,18 +24,13 @@ void main() {
     );
 
     setUp(() {
-      mockDatabaseService = MockDatabaseService();
-      mockCacheService = MockCacheService();
-      mockRealtimeService = MockRealtimeService();
-
-      // Setup mock cache service
-      when(mockCacheService.isInitialized).thenReturn(true);
+      mocks = MockFactory.createServiceContainer();
 
       container = ProviderContainer(
         overrides: [
-          databaseServiceProvider.overrideWithValue(mockDatabaseService),
-          cacheServiceProvider.overrideWithValue(mockCacheService),
-          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+          databaseServiceProvider.overrideWithValue(mocks.database),
+          cacheServiceProvider.overrideWithValue(mocks.cache),
+          realtimeServiceProvider.overrideWithValue(mocks.realtime),
         ],
       );
 
@@ -63,7 +52,7 @@ void main() {
     group('loadAnnouncements', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
-        when(mockCacheService.get(any)).thenAnswer((_) async {
+        when(mocks.cache.get(any)).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
           return null;
         });
@@ -79,7 +68,7 @@ void main() {
 
       test('loads announcements when cache is empty', () async {
         // Setup mocks
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
 
         await notifier.loadAnnouncements(userId: 'test_user');
 
@@ -91,7 +80,7 @@ void main() {
 
       test('loads announcements from cache when available', () async {
         // Setup cache to return data
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
 
         await notifier.loadAnnouncements(userId: 'test_user');
@@ -103,7 +92,7 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
-        when(mockCacheService.get(any)).thenThrow(Exception('Cache error'));
+        when(mocks.cache.get(any)).thenThrow(Exception('Cache error'));
 
         await notifier.loadAnnouncements(userId: 'test_user');
 
@@ -129,7 +118,7 @@ void main() {
           expiresAt: DateTime.now().subtract(const Duration(days: 1)),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async =>
+        when(mocks.cache.get(any)).thenAnswer((_) async =>
             [activeAnnouncement.toJson(), expiredAnnouncement.toJson()]);
 
         await notifier.loadAnnouncements(userId: 'test_user');
@@ -162,7 +151,7 @@ void main() {
           createdAt: DateTime.now(),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => [
+        when(mocks.cache.get(any)).thenAnswer((_) async => [
               lowPriority.toJson(),
               highPriority.toJson(),
               mediumPriority.toJson(),
@@ -180,23 +169,23 @@ void main() {
       });
 
       test('saves announcements to cache', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any))
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
 
         await notifier.loadAnnouncements(userId: 'test_user');
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any)).called(greaterThanOrEqualTo(1));
+        verify(mocks.cache.put(any, any)).called(greaterThanOrEqualTo(1));
       });
     });
 
     group('dismissAnnouncement', () {
       test('dismisses announcement locally', () async {
         // Setup initial state with announcements
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
-        when(mockCacheService.put(any, any))
+        when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
         await notifier.loadAnnouncements(userId: 'test_user');
 
@@ -215,9 +204,9 @@ void main() {
 
       test('saves dismissed state to cache', () async {
         // Setup initial state
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
-        when(mockCacheService.put(any, any))
+        when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
         await notifier.loadAnnouncements(userId: 'test_user');
 
@@ -227,7 +216,7 @@ void main() {
         );
 
         // Verify cache was updated
-        verify(mockCacheService.put(any, any)).called(greaterThanOrEqualTo(1));
+        verify(mocks.cache.put(any, any)).called(greaterThanOrEqualTo(1));
       });
     });
 
@@ -248,9 +237,9 @@ void main() {
           createdAt: DateTime.now(),
         );
 
-        when(mockCacheService.get(any)).thenAnswer(
+        when(mocks.cache.get(any)).thenAnswer(
             (_) async => [announcement1.toJson(), announcement2.toJson()]);
-        when(mockCacheService.put(any, any))
+        when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
         await notifier.loadAnnouncements(userId: 'test_user');
 
@@ -285,7 +274,7 @@ void main() {
           createdAt: DateTime.now(),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async =>
+        when(mocks.cache.get(any)).thenAnswer((_) async =>
             [criticalAnnouncement.toJson(), highAnnouncement.toJson()]);
         await notifier.loadAnnouncements(userId: 'test_user');
 
@@ -299,9 +288,9 @@ void main() {
 
     group('clearDismissals', () {
       test('clears all dismissals for a user', () async {
-        when(mockCacheService.get(any))
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
-        when(mockCacheService.put(any, any))
+        when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
         await notifier.loadAnnouncements(userId: 'test_user');
 
@@ -343,7 +332,7 @@ void main() {
           createdAt: DateTime.now(),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => [
+        when(mocks.cache.get(any)).thenAnswer((_) async => [
               criticalAnnouncement.toJson(),
               highAnnouncement.toJson(),
               mediumAnnouncement.toJson(),

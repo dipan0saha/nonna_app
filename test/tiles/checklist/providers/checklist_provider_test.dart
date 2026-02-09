@@ -1,11 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/tiles/checklist/providers/checklist_provider.dart';
 
-@GenerateMocks([CacheService])
-import 'checklist_provider_test.mocks.dart';
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('ChecklistProvider Tests', () {
@@ -13,10 +11,7 @@ void main() {
     late MockCacheService mockCacheService;
 
     setUp(() {
-      mockCacheService = MockCacheService();
-
-      // Setup mock cache service
-      when(mockCacheService.isInitialized).thenReturn(true);
+      mockCacheService = MockFactory.createCacheService();
 
       notifier = ChecklistNotifier();
     });

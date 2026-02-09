@@ -1,14 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/local_storage_service.dart';
 import 'package:nonna_app/tiles/core/providers/tile_visibility_provider.dart';
 
-@GenerateMocks([CacheService, LocalStorageService])
-import 'tile_visibility_provider_test.mocks.dart';
+import '../../../mocks/mock_services.mocks.dart';
+import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('TileVisibilityProvider Tests', () {
@@ -22,11 +19,9 @@ void main() {
       provideDummy<String>('');
       provideDummy<Map<String, dynamic>>({});
 
-      mockCacheService = MockCacheService();
-      mockLocalStorageService = MockLocalStorageService();
+      mockCacheService = MockFactory.createCacheService();
+      mockLocalStorageService = MockFactory.createLocalStorageService();
 
-      // Setup mock local storage
-      when(mockLocalStorageService.isInitialized).thenReturn(true);
       // Create provider container with overrides
       container = ProviderContainer(
         overrides: [

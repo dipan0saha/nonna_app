@@ -1,17 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/services/cache_service.dart';
+import 'package:nonna_app/core/services/database_service.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
-import '../../../helpers/mock_factory.dart';
+@GenerateMocks([DatabaseService, CacheService])
+import 'engagement_recap_provider_test.mocks.dart';
 
 void main() {
   group('EngagementRecapProvider Tests', () {
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
 
     setUp(() {
-      mocks = MockFactory.createServiceContainer();
+      mockDatabaseService = MockDatabaseService();
+      mockCacheService = MockCacheService();
+
+      // Setup mock cache service
+      when(mockCacheService.isInitialized).thenReturn(true);
     });
 
     group('Initial State', () {
@@ -25,10 +33,10 @@ void main() {
       test('fetches engagement metrics from database when cache is empty',
           () async {
         // Setup mocks
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
         // Mock photo queries
-        when(mocks.database.select(any)).thenAnswer((invocation) {
+        when(mockDatabaseService.select(any)).thenAnswer((invocation) {
           final table = invocation.positionalArguments[0] as String;
           if (table.contains('photos')) {
             return FakePostgrestBuilder([
@@ -66,15 +74,15 @@ void main() {
           'totalEngagement': 6,
           'calculatedAt': DateTime.now().toIso8601String(),
         };
-        when(mocks.cache.get(any)).thenAnswer((_) async => cachedData);
+        when(mockCacheService.get(any)).thenAnswer((_) async => cachedData);
 
         // Test would require provider container to verify behavior
       });
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
         // Test would require provider container to verify behavior
@@ -89,8 +97,8 @@ void main() {
           'totalEngagement': 2,
           'calculatedAt': DateTime.now().toIso8601String(),
         };
-        when(mocks.cache.get(any)).thenAnswer((_) async => cachedData);
-        when(mocks.database.select(any))
+        when(mockCacheService.get(any)).thenAnswer((_) async => cachedData);
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Test would require provider container to verify behavior
