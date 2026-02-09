@@ -5,6 +5,8 @@ import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/baby_membership.dart';
 import 'package:nonna_app/core/models/baby_profile.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
 import '../../../../mocks/mock_services.mocks.dart';
@@ -13,6 +15,7 @@ import '../../../../helpers/mock_factory.dart';
 void main() {
   group('BabyProfileProvider Tests', () {
     late BabyProfileNotifier notifier;
+    late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockStorageService mockStorageService;
@@ -51,7 +54,19 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
 
-      notifier = BabyProfileNotifier();
+      container = ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          storageServiceProvider.overrideWithValue(mockStorageService),
+        ],
+      );
+
+      notifier = container.read(babyProfileProvider.notifier);
+    });
+
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
