@@ -59,10 +59,10 @@ class MockFactory {
 
     // Default put behavior - success
     when(mock.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-        .thenAnswer((_) async => null);
+        .thenAnswer((_) async {});
 
     // Default clear behavior - success
-    when(mock.clear()).thenAnswer((_) async => null);
+    when(mock.clear()).thenAnswer((_) async {});
 
     return mock;
   }
@@ -90,7 +90,7 @@ class MockFactory {
     )).thenReturn(defaultStream ?? Stream.empty());
 
     // Default unsubscribe behavior - success
-    when(mock.unsubscribe(any)).thenAnswer((_) async => null);
+    when(mock.unsubscribe(any)).thenAnswer((_) async {});
 
     return mock;
   }
@@ -114,7 +114,7 @@ class MockFactory {
     )).thenAnswer((_) async => defaultUploadUrl);
 
     // Default delete behavior - success
-    when(mock.deleteFile(any, any)).thenAnswer((_) async => null);
+    when(mock.deleteFile(any, any)).thenAnswer((_) async {});
 
     // Default getPublicUrl behavior
     when(mock.getPublicUrl(any, any)).thenReturn(defaultUploadUrl);
@@ -163,13 +163,13 @@ class MockFactory {
     when(mock.getString(any)).thenReturn(null);
 
     // Default setString behavior
-    when(mock.setString(any, any)).thenAnswer((_) async => null);
+    when(mock.setString(any, any)).thenAnswer((_) async {});
 
     // Default getBool behavior - synchronous
     when(mock.getBool(any)).thenReturn(null);
 
     // Default setBool behavior
-    when(mock.setBool(any, any)).thenAnswer((_) async => null);
+    when(mock.setBool(any, any)).thenAnswer((_) async {});
 
     return mock;
   }

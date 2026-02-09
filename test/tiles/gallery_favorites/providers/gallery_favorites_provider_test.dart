@@ -1,14 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/tiles/gallery_favorites/providers/gallery_favorites_provider.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('GalleryFavoritesProvider Tests', () {
-    late GalleryFavoritesNotifier notifier;
     late MockServiceContainer mocks;
 
     // Sample favorite photo data

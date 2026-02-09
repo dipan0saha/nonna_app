@@ -6,14 +6,12 @@ import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/recent_photos/providers/recent_photos_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('RecentPhotosProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late RecentPhotosNotifier notifier;
 
     // Sample photo data
     final samplePhoto = Photo(

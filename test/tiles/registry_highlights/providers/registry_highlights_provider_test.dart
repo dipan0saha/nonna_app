@@ -6,14 +6,12 @@ import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('RegistryHighlightsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late RegistryHighlightsNotifier notifier;
 
     // Sample registry item data
     final sampleItem = RegistryItem(

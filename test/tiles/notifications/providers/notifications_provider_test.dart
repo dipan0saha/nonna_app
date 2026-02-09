@@ -7,14 +7,12 @@ import 'package:nonna_app/tiles/notifications/providers/notifications_provider.d
 import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('NotificationsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late NotificationsNotifier notifier;
 
     // Sample notification data
     final sampleNotification = app_notification.Notification(

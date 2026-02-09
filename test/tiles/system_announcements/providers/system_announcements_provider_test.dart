@@ -5,7 +5,6 @@ import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/system_announcement.dart';
 import 'package:nonna_app/tiles/system_announcements/providers/system_announcements_provider.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {

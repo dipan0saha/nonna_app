@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/models/photo.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
-import 'package:nonna_app/core/services/database_service.dart';
-import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/gallery_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';

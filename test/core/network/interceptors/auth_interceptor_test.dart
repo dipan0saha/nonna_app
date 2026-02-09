@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/network/interceptors/auth_interceptor.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';

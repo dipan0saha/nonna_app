@@ -7,14 +7,12 @@ import 'package:nonna_app/core/models/tile_config.dart';
 import 'package:nonna_app/tiles/core/providers/tile_config_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('TileConfigProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late TileConfigNotifier notifier;
 
     // Sample tile config data
     final sampleTileConfig = TileConfig(

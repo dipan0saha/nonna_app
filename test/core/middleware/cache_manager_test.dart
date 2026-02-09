@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/middleware/cache_manager.dart';
-import 'package:nonna_app/core/services/cache_service.dart';
 
 import '../../mocks/mock_services.mocks.dart';
 import '../../helpers/mock_factory.dart';

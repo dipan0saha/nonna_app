@@ -8,14 +8,12 @@ import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('InvitesStatusProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late InvitesStatusNotifier notifier;
 
     // Sample invitation data
     final sampleInvitation = Invitation(

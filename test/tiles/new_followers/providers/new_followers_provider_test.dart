@@ -7,7 +7,6 @@ import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {

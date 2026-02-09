@@ -6,14 +6,12 @@ import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/recent_purchases/providers/recent_purchases_provider.dart';
 import '../../../helpers/fake_postgrest_builders.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('RecentPurchasesProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late RecentPurchasesNotifier notifier;
 
     // Sample purchase data
     final samplePurchase = RegistryPurchase(

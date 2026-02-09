@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/services/analytics_service.dart';
 
 import '../../mocks/mock_services.mocks.dart';
-import '../../helpers/mock_factory.dart';
 
 void main() {
   group('AnalyticsService', () {
