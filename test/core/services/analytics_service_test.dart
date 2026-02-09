@@ -1,20 +1,25 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/analytics_service.dart';
+
+import '../../mocks/supabase_mocks.mocks.dart';
 
 void main() {
   group('AnalyticsService', () {
     late AnalyticsService analyticsService;
+    late MockFirebaseAnalytics mockAnalytics;
 
     setUp(() {
-      // Initialize service
-      analyticsService = AnalyticsService.instance;
+      // Initialize mock analytics
+      mockAnalytics = MockFirebaseAnalytics();
+      
+      // Initialize service with mock
+      analyticsService = AnalyticsService(mockAnalytics);
     });
 
-    test('singleton instance is always the same', () {
-      final instance1 = AnalyticsService.instance;
-      final instance2 = AnalyticsService.instance;
-
-      expect(instance1, same(instance2));
+    test('can be created with mock Firebase Analytics', () {
+      expect(analyticsService, isNotNull);
     });
 
     group('User Tracking', () {
