@@ -104,6 +104,7 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedCountdowns = await _loadFromCache(babyProfileIds);
+        if (!ref.mounted) return;
         if (cachedCountdowns != null && cachedCountdowns.isNotEmpty) {
           state = state.copyWith(
             countdowns: cachedCountdowns,
@@ -115,9 +116,11 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
 
       // Fetch from database
       final countdowns = await _fetchFromDatabase(babyProfileIds);
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileIds, countdowns);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         countdowns: countdowns,
@@ -131,6 +134,7 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
         '✅ Loaded ${countdowns.length} due date countdowns',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch due date countdowns: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

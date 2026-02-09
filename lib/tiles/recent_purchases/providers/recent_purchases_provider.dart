@@ -85,6 +85,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedPurchases = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedPurchases != null && cachedPurchases.isNotEmpty) {
           final unthankedCount = 0;
           state = state.copyWith(
@@ -98,10 +99,12 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
       // Fetch from database
       final purchases = await _fetchFromDatabase(babyProfileId);
+      if (!ref.mounted) return;
       final unthankedCount = 0; // Removed thank you tracking from this version
 
       // Save to cache
       await _saveToCache(babyProfileId, purchases);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         purchases: purchases,
@@ -116,6 +119,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
         '✅ Loaded ${purchases.length} recent purchases for profile: $babyProfileId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch recent purchases: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(

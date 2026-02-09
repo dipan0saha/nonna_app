@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/services/analytics_service.dart';
 import 'package:nonna_app/core/services/auth_service.dart';
@@ -11,7 +10,6 @@ import 'package:nonna_app/core/services/notification_service.dart';
 import 'package:nonna_app/core/services/observability_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../helpers/mock_factory.dart';
 import '../../mocks/mock_services.mocks.dart';
