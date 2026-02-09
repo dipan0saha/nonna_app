@@ -57,6 +57,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
   static const String _cacheKeyPrefix = 'notifications';
   static const int _maxNotifications = 50;
 
+  late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _subscriptionId;
 
   @override
@@ -274,7 +275,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
       _cancelRealtimeSubscription();
 
       final channelName = 'notifications-channel-$userId';
-      final stream = ref.read(realtimeServiceProvider).subscribe(
+      final stream = _realtimeService.subscribe(
         table: SupabaseTables.notifications,
         channelName: channelName,
         filter: {
@@ -334,7 +335,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

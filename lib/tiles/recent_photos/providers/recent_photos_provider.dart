@@ -62,6 +62,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
   static const String _cacheKeyPrefix = 'recent_photos';
   static const int _pageSize = 30;
 
+  late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _subscriptionId;
 
   @override
@@ -243,7 +244,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
       _cancelRealtimeSubscription();
 
       final channelName = 'photos-channel-$babyProfileId';
-      final stream = ref.read(realtimeServiceProvider).subscribe(
+      final stream = _realtimeService.subscribe(
         table: SupabaseTables.photos,
         channelName: channelName,
         filter: {
@@ -303,7 +304,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

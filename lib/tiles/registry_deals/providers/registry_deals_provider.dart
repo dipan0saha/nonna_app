@@ -62,6 +62,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
   static const int _maxDeals = 15;
   static const int _minPriority = 3; // Show items with priority >= 3
 
+  late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _subscriptionId;
 
   // ==========================================
@@ -221,7 +222,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
       _cancelRealtimeSubscription();
 
       final channelName = 'registry-items-channel-$babyProfileId';
-      final stream = ref.read(realtimeServiceProvider).subscribe(
+      final stream = _realtimeService.subscribe(
         table: SupabaseTables.registryItems,
         channelName: channelName,
         filter: {
@@ -263,7 +264,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

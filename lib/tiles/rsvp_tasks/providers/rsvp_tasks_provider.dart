@@ -78,6 +78,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
   // Configuration
   static const String _cacheKeyPrefix = 'rsvp_tasks';
 
+  late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _eventsSubscriptionId;
   String? _rsvpsSubscriptionId;
 
@@ -286,7 +287,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
 
       // Subscribe to events
       final eventsChannelName = 'events-channel-$babyProfileId';
-      final eventsStream = ref.read(realtimeServiceProvider).subscribe(
+      final eventsStream = _realtimeService.subscribe(
         table: SupabaseTables.events,
         channelName: eventsChannelName,
         filter: {
@@ -303,7 +304,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
 
       // Subscribe to RSVPs
       final rsvpsChannelName = 'event-rsvps-channel-$userId';
-      final rsvpsStream = ref.read(realtimeServiceProvider).subscribe(
+      final rsvpsStream = _realtimeService.subscribe(
         table: 'event_rsvps',
         channelName: rsvpsChannelName,
         filter: {
@@ -347,11 +348,11 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
   /// Cancel real-time subscriptions
   void _cancelRealtimeSubscriptions() {
     if (_eventsSubscriptionId != null) {
-      ref.read(realtimeServiceProvider).unsubscribe(_eventsSubscriptionId!);
+      _realtimeService.unsubscribe(_eventsSubscriptionId!);
       _eventsSubscriptionId = null;
     }
     if (_rsvpsSubscriptionId != null) {
-      ref.read(realtimeServiceProvider).unsubscribe(_rsvpsSubscriptionId!);
+      _realtimeService.unsubscribe(_rsvpsSubscriptionId!);
       _rsvpsSubscriptionId = null;
     }
     debugPrint('✅ Real-time subscriptions cancelled');
