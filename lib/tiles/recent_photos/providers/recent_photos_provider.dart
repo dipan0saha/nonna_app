@@ -91,6 +91,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedPhotos = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedPhotos != null && cachedPhotos.isNotEmpty) {
           state = state.copyWith(
             photos: cachedPhotos,
@@ -107,9 +108,11 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
         limit: _pageSize,
         offset: 0,
       );
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, photos);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         photos: photos,
@@ -120,11 +123,13 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
 
       // Setup real-time subscription
       await _setupRealtimeSubscription(babyProfileId);
+      if (!ref.mounted) return;
 
       debugPrint(
         '✅ Loaded ${photos.length} recent photos for profile: $babyProfileId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch recent photos: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -147,6 +152,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
         limit: _pageSize,
         offset: offset,
       );
+      if (!ref.mounted) return;
 
       final updatedPhotos = [...state.photos, ...newPhotos];
 
@@ -159,6 +165,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
 
       // Update cache
       await _saveToCache(babyProfileId, updatedPhotos);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Loaded ${newPhotos.length} more photos');
     } catch (e) {

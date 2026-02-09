@@ -93,9 +93,11 @@ class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
 
       // Load announcements (in real app, would fetch from server)
       final announcements = await _loadAnnouncementsFromCache();
+      if (!ref.mounted) return;
 
       // Load dismissed IDs for this user
       final dismissedIds = await _loadDismissedIds(userId);
+      if (!ref.mounted) return;
 
       // Filter out expired announcements
       final activeAnnouncements = announcements
@@ -113,6 +115,7 @@ class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
         '✅ Loaded ${activeAnnouncements.length} system announcements for user: $userId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load system announcements: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -146,6 +149,7 @@ class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
 
       // Save dismissed IDs
       await _saveDismissedIds(userId, updatedDismissedIds);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Dismissed announcement: $announcementId');
     } catch (e) {
@@ -173,6 +177,7 @@ class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
     try {
       state = state.copyWith(dismissedIds: {});
       await _saveDismissedIds(userId, {});
+      if (!ref.mounted) return;
       debugPrint('✅ Cleared all dismissals for user: $userId');
     } catch (e) {
       debugPrint('❌ Failed to clear dismissals: $e');

@@ -92,6 +92,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedEvents = await _loadFromCache(babyProfileId);
+        if (!ref.mounted) return;
         if (cachedEvents != null && cachedEvents.isNotEmpty) {
           state = state.copyWith(
             events: cachedEvents,
@@ -108,9 +109,11 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
         limit: _pageSize,
         offset: 0,
       );
+      if (!ref.mounted) return;
 
       // Save to cache
       await _saveToCache(babyProfileId, events);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         events: events,
@@ -121,11 +124,13 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
 
       // Setup real-time subscription
       await _setupRealtimeSubscription(babyProfileId);
+      if (!ref.mounted) return;
 
       debugPrint(
         '✅ Loaded ${events.length} upcoming events for profile: $babyProfileId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch upcoming events: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -148,6 +153,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
         limit: _pageSize,
         offset: offset,
       );
+      if (!ref.mounted) return;
 
       final updatedEvents = [...state.events, ...newEvents];
 
@@ -160,6 +166,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
 
       // Update cache
       await _saveToCache(babyProfileId, updatedEvents);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Loaded ${newEvents.length} more events');
     } catch (e) {

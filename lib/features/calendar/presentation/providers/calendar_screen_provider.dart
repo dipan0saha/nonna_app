@@ -138,6 +138,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
 
       // Try to load from cache first
       final cachedEvents = await _loadFromCache(babyProfileId);
+      if (!ref.mounted) return;
       if (cachedEvents != null && cachedEvents.isNotEmpty) {
         final eventsByDate = _groupEventsByDate(cachedEvents);
         state = state.copyWith(
@@ -152,12 +153,15 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
 
       // Fetch from database
       await _fetchAndUpdateEvents(babyProfileId, start, end);
+      if (!ref.mounted) return;
 
       // Setup real-time subscription
       await _setupRealtimeSubscription(babyProfileId);
+      if (!ref.mounted) return;
 
       debugPrint('✅ Loaded ${state.events.length} events for calendar');
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to load calendar events: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -192,6 +196,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
 
     // Save to cache
     await _saveToCache(babyProfileId, events);
+    if (!ref.mounted) return;
 
     state = state.copyWith(
       events: events,

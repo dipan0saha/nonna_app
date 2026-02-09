@@ -102,6 +102,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
       // Try to load from cache first
       if (!forceRefresh) {
         final cachedEvents = await _loadFromCache(userId, babyProfileId);
+        if (!ref.mounted) return;
         if (cachedEvents != null && cachedEvents.isNotEmpty) {
           final pendingCount =
               cachedEvents.where((e) => e.needsResponse).length;
@@ -116,10 +117,12 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
 
       // Fetch from database
       final events = await _fetchFromDatabase(userId, babyProfileId);
+      if (!ref.mounted) return;
       final pendingCount = events.where((e) => e.needsResponse).length;
 
       // Save to cache
       await _saveToCache(userId, babyProfileId, events);
+      if (!ref.mounted) return;
 
       state = state.copyWith(
         events: events,
@@ -129,11 +132,13 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
 
       // Setup real-time subscriptions
       await _setupRealtimeSubscriptions(userId, babyProfileId);
+      if (!ref.mounted) return;
 
       debugPrint(
         '✅ Loaded ${events.length} RSVP tasks ($pendingCount pending) for user: $userId',
       );
     } catch (e) {
+      if (!ref.mounted) return;
       final errorMessage = 'Failed to fetch RSVP tasks: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
