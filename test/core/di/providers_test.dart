@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/services/analytics_service.dart';
 import 'package:nonna_app/core/services/auth_service.dart';
@@ -10,13 +11,56 @@ import 'package:nonna_app/core/services/notification_service.dart';
 import 'package:nonna_app/core/services/observability_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../helpers/mock_factory.dart';
+import '../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('Core Providers Tests', () {
     late ProviderContainer container;
+    late MockSupabaseClient mockSupabaseClient;
+    late MockAuthService mockAuthService;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockLocalStorageService mockLocalStorageService;
+    late MockStorageService mockStorageService;
+    late MockRealtimeService mockRealtimeService;
+    late MockNotificationService mockNotificationService;
+    late MockAnalyticsService mockAnalyticsService;
+    late MockObservabilityService mockObservabilityService;
 
     setUp(() {
-      container = ProviderContainer();
+      // Create mocks
+      mockSupabaseClient = MockFactory.createSupabaseClient();
+      mockAuthService = MockFactory.createAuthService();
+      mockDatabaseService = MockFactory.createDatabaseService();
+      mockCacheService = MockFactory.createCacheService();
+      mockLocalStorageService = MockFactory.createLocalStorageService();
+      mockStorageService = MockFactory.createStorageService();
+      mockRealtimeService = MockFactory.createRealtimeService();
+      mockNotificationService = MockFactory.createNotificationService();
+      mockAnalyticsService = MockFactory.createAnalyticsService();
+      mockObservabilityService = MockObservabilityService();
+
+      // Create container with overrides to use mocks
+      container = ProviderContainer(
+        overrides: [
+          supabaseClientProvider.overrideWithValue(mockSupabaseClient),
+          authServiceProvider.overrideWithValue(mockAuthService),
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          localStorageServiceProvider
+              .overrideWithValue(mockLocalStorageService),
+          storageServiceProvider.overrideWithValue(mockStorageService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+          notificationServiceProvider
+              .overrideWithValue(mockNotificationService),
+          analyticsServiceProvider.overrideWithValue(mockAnalyticsService),
+          observabilityServiceProvider
+              .overrideWithValue(mockObservabilityService),
+        ],
+      );
     });
 
     tearDown(() {
@@ -27,48 +71,57 @@ void main() {
       test('supabaseClientProvider provides SupabaseClient instance', () {
         final client = container.read(supabaseClientProvider);
         expect(client, isNotNull);
+        expect(client, equals(mockSupabaseClient));
       });
 
       test('authServiceProvider provides AuthService instance', () {
         final service = container.read(authServiceProvider);
         expect(service, isA<AuthService>());
+        expect(service, equals(mockAuthService));
       });
 
       test('databaseServiceProvider provides DatabaseService instance', () {
         final service = container.read(databaseServiceProvider);
         expect(service, isA<DatabaseService>());
+        expect(service, equals(mockDatabaseService));
       });
 
       test('cacheServiceProvider provides CacheService instance', () {
         final service = container.read(cacheServiceProvider);
         expect(service, isA<CacheService>());
+        expect(service, equals(mockCacheService));
       });
 
       test('localStorageServiceProvider provides LocalStorageService instance',
           () {
         final service = container.read(localStorageServiceProvider);
         expect(service, isA<LocalStorageService>());
+        expect(service, equals(mockLocalStorageService));
       });
 
       test('storageServiceProvider provides StorageService instance', () {
         final service = container.read(storageServiceProvider);
         expect(service, isA<StorageService>());
+        expect(service, equals(mockStorageService));
       });
 
       test('realtimeServiceProvider provides RealtimeService instance', () {
         final service = container.read(realtimeServiceProvider);
         expect(service, isA<RealtimeService>());
+        expect(service, equals(mockRealtimeService));
       });
 
       test('notificationServiceProvider provides NotificationService instance',
           () {
         final service = container.read(notificationServiceProvider);
         expect(service, isA<NotificationService>());
+        expect(service, equals(mockNotificationService));
       });
 
       test('analyticsServiceProvider provides AnalyticsService instance', () {
         final service = container.read(analyticsServiceProvider);
         expect(service, isA<AnalyticsService>());
+        expect(service, equals(mockAnalyticsService));
       });
 
       test(
@@ -76,6 +129,7 @@ void main() {
           () {
         final service = container.read(observabilityServiceProvider);
         expect(service, isA<ObservabilityService>());
+        expect(service, equals(mockObservabilityService));
       });
     });
 

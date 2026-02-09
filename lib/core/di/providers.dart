@@ -38,7 +38,13 @@ import '../services/storage_service.dart';
 ///
 /// This is the foundation for all Supabase operations.
 /// Auto-dispose is disabled as this should live for the app lifetime.
+/// Throws StateError if Supabase is not initialized.
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+  if (!SupabaseClientManager.isInitialized) {
+    throw StateError(
+      'Supabase not initialized. Call SupabaseClientManager.initialize() first.',
+    );
+  }
   return SupabaseClientManager.instance;
 });
 
