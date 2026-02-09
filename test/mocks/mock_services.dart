@@ -12,6 +12,7 @@ import 'package:nonna_app/core/services/cache_service.dart';
 import 'package:nonna_app/core/services/database_service.dart';
 import 'package:nonna_app/core/services/local_storage_service.dart';
 import 'package:nonna_app/core/services/notification_service.dart';
+import 'package:nonna_app/core/services/observability_service.dart';
 import 'package:nonna_app/core/services/realtime_service.dart';
 import 'package:nonna_app/core/services/storage_service.dart';
 import 'package:nonna_app/core/services/supabase_service.dart';
@@ -73,6 +74,7 @@ import 'mock_services.mocks.dart';
   // ==========================================
   BackupService,
   NotificationService,
+  ObservabilityService,
 
   // ==========================================
   // System Components (for file operations)

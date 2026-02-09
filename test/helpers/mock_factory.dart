@@ -32,8 +32,12 @@ class MockFactory {
   /// Create a CacheService mock
   ///
   /// Returns a clean mock instance ready for custom stubbing via `when()`
+  /// with isInitialized defaulting to true
   static MockCacheService createCacheService() {
-    return MockCacheService();
+    final mock = MockCacheService();
+    // Default stub for isInitialized
+    when(mock.isInitialized).thenReturn(true);
+    return mock;
   }
 
   /// Create a RealtimeService mock
@@ -60,8 +64,12 @@ class MockFactory {
   /// Create a LocalStorageService mock
   ///
   /// Returns a clean mock instance ready for custom stubbing via `when()`
+  /// with isInitialized defaulting to true
   static MockLocalStorageService createLocalStorageService() {
-    return MockLocalStorageService();
+    final mock = MockLocalStorageService();
+    // Default stub for isInitialized
+    when(mock.isInitialized).thenReturn(true);
+    return mock;
   }
 
   /// Create a BackupService mock with common default behaviors
@@ -87,6 +95,15 @@ class MockFactory {
 
     // Add default behaviors as needed based on actual AnalyticsService methods
     // Note: logEvent is not exposed directly; use specific methods like logSignUp, logLogin, etc.
+
+    return mock;
+  }
+
+  /// Create an ObservabilityService mock with common default behaviors
+  static MockObservabilityService createObservabilityService() {
+    final mock = MockObservabilityService();
+
+    // Add default behaviors as needed based on actual ObservabilityService methods
 
     return mock;
   }
@@ -158,6 +175,7 @@ class MockFactory {
       backup: createBackupService(),
       notification: createNotificationService(),
       analytics: createAnalyticsService(),
+      observability: createObservabilityService(),
     );
   }
 }
@@ -175,6 +193,7 @@ class MockServiceContainer {
   final MockBackupService backup;
   final MockNotificationService notification;
   final MockAnalyticsService analytics;
+  final MockObservabilityService observability;
 
   MockServiceContainer({
     required this.database,
@@ -186,6 +205,7 @@ class MockServiceContainer {
     required this.backup,
     required this.notification,
     required this.analytics,
+    required this.observability,
   });
 }
 

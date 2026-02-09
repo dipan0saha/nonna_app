@@ -119,11 +119,16 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
       if (onError != null) {
         onError(e);
       } else {
-        // Show default error message
+        // Show default error message - check if Scaffold is available
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('An error occurred: ${e.toString()}')),
-          );
+          try {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('An error occurred: ${e.toString()}')),
+            );
+          } catch (_) {
+            // Scaffold not available, ignore the error display
+            debugPrint('Error occurred but no Scaffold available: $e');
+          }
         }
       }
       return null;

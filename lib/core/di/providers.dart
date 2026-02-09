@@ -38,7 +38,13 @@ import '../services/storage_service.dart';
 ///
 /// This is the foundation for all Supabase operations.
 /// Auto-dispose is disabled as this should live for the app lifetime.
+/// Throws StateError if Supabase is not initialized.
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+  if (!SupabaseClientManager.isInitialized) {
+    throw StateError(
+      'Supabase not initialized. Call SupabaseClientManager.initialize() first.',
+    );
+  }
   return SupabaseClientManager.instance;
 });
 
@@ -47,7 +53,8 @@ final supabaseClientProvider = Provider<SupabaseClient>((ref) {
 /// Handles user authentication, OAuth flows, and session management.
 /// Singleton pattern - one instance for the entire app.
 final authServiceProvider = Provider<AuthService>((ref) {
-  return AuthService();
+  final client = ref.watch(supabaseClientProvider);
+  return AuthService(client);
 });
 
 // ==========================================
@@ -58,7 +65,8 @@ final authServiceProvider = Provider<AuthService>((ref) {
 ///
 /// Handles all database queries, transactions, and RLS validation.
 final databaseServiceProvider = Provider<DatabaseService>((ref) {
-  return DatabaseService();
+  final client = ref.watch(supabaseClientProvider);
+  return DatabaseService(client);
 });
 
 /// Provides the cache service
@@ -81,7 +89,8 @@ final localStorageServiceProvider = Provider<LocalStorageService>((ref) {
 ///
 /// Manages file uploads, downloads, and Supabase storage operations.
 final storageServiceProvider = Provider<StorageService>((ref) {
-  return StorageService();
+  final client = ref.watch(supabaseClientProvider);
+  return StorageService(client);
 });
 
 // ==========================================
@@ -92,7 +101,8 @@ final storageServiceProvider = Provider<StorageService>((ref) {
 ///
 /// Handles Supabase realtime subscriptions and updates.
 final realtimeServiceProvider = Provider<RealtimeService>((ref) {
-  return RealtimeService();
+  final client = ref.watch(supabaseClientProvider);
+  return RealtimeService(client);
 });
 
 /// Provides the notification service

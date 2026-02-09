@@ -13,7 +13,8 @@ class AuthService {
   final SupabaseClient _supabase;
 
   AuthService([SupabaseClient? client])
-      : _supabase = client ?? Supabase.instance.client;
+      : _supabase = client ?? 
+          (Supabase.instance.client);
 
   // Google Sign-In configuration
   final GoogleSignIn _googleSignIn = GoogleSignIn(
