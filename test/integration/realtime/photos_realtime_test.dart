@@ -101,7 +101,10 @@ void main() {
           channelName: 'duplicate-channel',
         );
 
-        // Streams from broadcast StreamController are not identical, but should share the same underlying channel
+        // Broadcast streams from the same StreamController are not identical objects,
+        // but they share the same underlying channel and receive the same events.
+        // This test verifies that duplicate channel names reuse the same channel
+        // (indicated by activeChannelsCount = 1) rather than creating multiple channels.
         expect(stream1, isNotNull);
         expect(stream2, isNotNull);
         expect(realtimeService.activeChannelsCount, 1);
