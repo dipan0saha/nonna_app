@@ -156,7 +156,6 @@ void main() {
     group('Performance', () {
       test('should handle event subscriptions with low latency', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
