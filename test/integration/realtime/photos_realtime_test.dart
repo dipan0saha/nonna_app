@@ -152,6 +152,7 @@ void main() {
 
       test('should listen for UPDATE events', () async {
         addTearDown(() async {
+          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -166,6 +167,7 @@ void main() {
 
       test('should listen for DELETE events', () async {
         addTearDown(() async {
+          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -180,6 +182,7 @@ void main() {
 
       test('should listen for ALL events by default', () async {
         addTearDown(() async {
+          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
