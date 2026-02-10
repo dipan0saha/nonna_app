@@ -461,7 +461,7 @@ void main() {
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog(message: 'Please wait...');
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('Please wait...'), findsOneWidget);
@@ -475,12 +475,12 @@ void main() {
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog(message: 'Loading...');
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
       expect(find.byType(AlertDialog), findsOneWidget);
 
       state.hideLoadingDialog();
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
       expect(find.byType(AlertDialog), findsNothing);
     });
@@ -492,13 +492,13 @@ void main() {
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog();
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
       expect(find.byType(AlertDialog), findsOneWidget);
 
       // Try to dismiss by tapping outside
       await tester.tapAt(Offset.zero);
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
       // Dialog should still be visible
       expect(find.byType(AlertDialog), findsOneWidget);
@@ -543,6 +543,7 @@ void main() {
 
       // Dispose the widget
       await tester.pumpWidget(const SizedBox());
+      await tester.pump();
 
       // Should not throw
       expect(() => state.dispose(), returnsNormally);
