@@ -41,6 +41,10 @@ void main() {
 
     group('loadChecklist', () {
       test('sets loading state while loading', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
@@ -57,6 +61,10 @@ void main() {
       });
 
       test('loads default checklist when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
@@ -71,6 +79,10 @@ void main() {
       });
 
       test('loads checklist from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final cachedItems = [
           {
             'id': 'setup_profile',
@@ -99,6 +111,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mock to throw error
         when(mockCacheService.get(any)).thenThrow(Exception('Cache error'));
 
@@ -110,6 +126,10 @@ void main() {
       });
 
       test('calculates progress percentage correctly', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final cachedItems = List.generate(
           6,
           (i) => {
@@ -132,6 +152,10 @@ void main() {
 
     group('toggleItem', () {
       test('toggles item from incomplete to complete', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         await notifier.loadChecklist(babyProfileId: 'profile_1');
@@ -156,6 +180,10 @@ void main() {
       });
 
       test('toggles item from complete to incomplete', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state with completed item
         final cachedItems = [
           {
@@ -188,6 +216,10 @@ void main() {
       });
 
       test('updates cache after toggling', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         await notifier.loadChecklist(babyProfileId: 'profile_1');
 
@@ -203,6 +235,10 @@ void main() {
       });
 
       test('updates progress percentage after toggle', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         await notifier.loadChecklist(babyProfileId: 'profile_1');
 
@@ -220,6 +256,10 @@ void main() {
 
     group('resetChecklist', () {
       test('resets checklist to default state', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state with completed items
         final cachedItems = [
           {
@@ -247,6 +287,10 @@ void main() {
       });
 
       test('saves reset state to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         await notifier.loadChecklist(babyProfileId: 'profile_1');
 
@@ -259,6 +303,10 @@ void main() {
 
     group('getIncompleteItems', () {
       test('returns only incomplete items', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final cachedItems = [
           {
             'id': 'item_1',
@@ -297,6 +345,10 @@ void main() {
 
     group('getCompletedItems', () {
       test('returns only completed items', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final cachedItems = [
           {
             'id': 'item_1',
@@ -335,6 +387,10 @@ void main() {
 
     group('Default Checklist Items', () {
       test('has expected default items', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
         await notifier.loadChecklist(babyProfileId: 'profile_1');
@@ -352,6 +408,10 @@ void main() {
       });
 
       test('default items are in correct order', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
         await notifier.loadChecklist(babyProfileId: 'profile_1');

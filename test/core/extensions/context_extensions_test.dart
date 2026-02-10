@@ -602,7 +602,7 @@ void main() {
         );
 
         await tester.tap(find.text('Show'));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(find.text('Test message'), findsOneWidget);
       });
@@ -624,7 +624,7 @@ void main() {
         );
 
         await tester.tap(find.text('Show Error'));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(find.text('Error message'), findsOneWidget);
       });
@@ -647,7 +647,7 @@ void main() {
         );
 
         await tester.tap(find.text('Show Success'));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(find.text('Success message'), findsOneWidget);
       });
@@ -681,7 +681,7 @@ void main() {
         expect(focusNode.hasFocus, true);
 
         await tester.tap(find.text('Unfocus'));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(focusNode.hasFocus, false);
 
@@ -712,7 +712,7 @@ void main() {
         expect(focusNode.hasFocus, false);
 
         await tester.tap(find.text('Focus'));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(focusNode.hasFocus, true);
 

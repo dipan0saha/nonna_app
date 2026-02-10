@@ -72,6 +72,10 @@ void main() {
 
     group('loadProfile', () {
       test('sets loading state while loading', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleUser.toJson()]));
@@ -84,6 +88,10 @@ void main() {
       });
 
       test('loads profile from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -104,6 +112,10 @@ void main() {
       });
 
       test('loads profile from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
@@ -116,6 +128,10 @@ void main() {
       });
 
       test('handles profile not found error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -128,6 +144,10 @@ void main() {
       });
 
       test('handles database error gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
@@ -140,6 +160,10 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
         var callCount = 0;
@@ -158,6 +182,10 @@ void main() {
       });
 
       test('saves fetched profile to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -177,6 +205,10 @@ void main() {
       });
 
       test('loads user stats after loading profile', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -218,6 +250,10 @@ void main() {
 
     group('updateProfile', () {
       test('updates profile successfully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
         var callCount = 0;
@@ -243,6 +279,10 @@ void main() {
       });
 
       test('validates empty display name', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         await notifier.updateProfile(
           userId: 'user_1',
           displayName: '   ',
@@ -254,6 +294,10 @@ void main() {
       });
 
       test('validates display name length', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         await notifier.updateProfile(
           userId: 'user_1',
           displayName: 'a' * 101,
@@ -265,6 +309,10 @@ void main() {
       });
 
       test('handles database error during update', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
@@ -279,6 +327,10 @@ void main() {
       });
 
       test('updates profile with avatar URL', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
         var callCount = 0;
@@ -304,6 +356,10 @@ void main() {
 
     group('uploadAvatar', () {
       test('uploads avatar successfully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockStorageService.uploadFile(
           filePath: 'test_file_path',
           storageKey: 'test_storage_key',
@@ -320,6 +376,10 @@ void main() {
       });
 
       test('handles upload error gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockStorageService.uploadFile(
           filePath: 'test_file_path',
           storageKey: 'test_storage_key',
@@ -337,6 +397,10 @@ void main() {
 
     group('toggleBiometric', () {
       test('enables biometric successfully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockDatabaseService.update(any, any))
             .thenReturn(FakePostgrestUpdateBuilder());
         var callCount = 0;
@@ -359,6 +423,10 @@ void main() {
       });
 
       test('handles toggle biometric error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
@@ -371,6 +439,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes profile with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;

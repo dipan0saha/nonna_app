@@ -303,7 +303,7 @@ void main() {
         state = tester.state(find.byType(TestWidget));
 
         await state.withLoadingAndError(() => state.failingOperation());
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(find.byType(SnackBar), findsOneWidget);
         expect(find.textContaining('An error occurred'), findsOneWidget);

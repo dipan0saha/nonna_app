@@ -72,6 +72,10 @@ void main() {
 
     group('loadEvents', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -88,6 +92,10 @@ void main() {
       });
 
       test('loads events from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => [
               sampleEvent.toJson(),
             ]);
@@ -109,6 +117,10 @@ void main() {
       });
 
       test('fetches events from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -129,6 +141,10 @@ void main() {
       });
 
       test('groups events by date', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final event2 = sampleEvent.copyWith(
           id: 'event_2',
           startsAt: DateTime(2024, 6, 16, 10, 0),
@@ -153,6 +169,10 @@ void main() {
       });
 
       test('uses custom date range when provided', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -177,6 +197,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
@@ -189,6 +213,10 @@ void main() {
       });
 
       test('sets up real-time subscription', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -220,6 +248,10 @@ void main() {
       });
 
       test('eventsForSelectedDate returns correct events', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -240,6 +272,10 @@ void main() {
       });
 
       test('datesWithEvents returns all dates with events', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final event2 = sampleEvent.copyWith(
           id: 'event_2',
           startsAt: DateTime(2024, 6, 16, 10, 0),
@@ -316,6 +352,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes events', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
         );
@@ -337,6 +377,10 @@ void main() {
       });
 
       test('does not refresh when baby profile is missing', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         await notifier.refresh();
 
         verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
@@ -345,6 +389,10 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -380,6 +428,10 @@ void main() {
       });
 
       test('handles UPDATE event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -418,6 +470,10 @@ void main() {
       });
 
       test('handles DELETE event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -449,6 +505,10 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});

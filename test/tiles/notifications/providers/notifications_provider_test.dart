@@ -54,6 +54,10 @@ void main() {
 
     group('fetchNotifications', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mock to delay response
@@ -71,6 +75,10 @@ void main() {
       });
 
       test('fetches notifications from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mocks
@@ -95,6 +103,10 @@ void main() {
       });
 
       test('loads notifications from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup cache to return data
@@ -113,6 +125,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mock to throw error
@@ -130,6 +146,10 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mocks
@@ -153,6 +173,10 @@ void main() {
       });
 
       test('calculates unread count correctly', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         final notif1 = sampleNotification.copyWith(id: 'notif_1', readAt: null);
@@ -181,6 +205,10 @@ void main() {
 
     group('markAsRead', () {
       test('marks notification as read', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
@@ -215,6 +243,10 @@ void main() {
       });
 
       test('updates cache after marking as read', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
@@ -245,6 +277,10 @@ void main() {
 
     group('markAllAsRead', () {
       test('marks all notifications as read', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         final notif1 = sampleNotification.copyWith(id: 'notif_1', readAt: null);
@@ -281,6 +317,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes notifications with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         when(mocks.cache.get(any))
@@ -302,6 +342,10 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT notification', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
