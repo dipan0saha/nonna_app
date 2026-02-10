@@ -31,7 +31,6 @@ void main() {
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to event_rsvps table', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -46,7 +45,6 @@ void main() {
 
       test('should filter RSVPs by event_id', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -68,7 +66,6 @@ void main() {
     group('RSVP Operations', () {
       test('should receive new RSVP INSERT events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -83,7 +80,6 @@ void main() {
 
       test('should receive RSVP UPDATE events (status changes)', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -98,7 +94,6 @@ void main() {
 
       test('should receive RSVP DELETE events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -115,7 +110,6 @@ void main() {
     group('Attendance Count Updates', () {
       test('should track RSVP count changes in real-time', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 

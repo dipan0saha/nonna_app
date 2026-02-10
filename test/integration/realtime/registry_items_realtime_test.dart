@@ -31,7 +31,6 @@ void main() {
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to registry_items table', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -46,7 +45,6 @@ void main() {
 
       test('should filter registry items by baby_profile_id', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -68,7 +66,6 @@ void main() {
     group('Registry Item Operations', () {
       test('should receive new registry item INSERT events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -83,7 +80,6 @@ void main() {
 
       test('should receive registry item UPDATE events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -98,7 +94,6 @@ void main() {
 
       test('should receive registry item DELETE events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -115,7 +110,6 @@ void main() {
     group('Purchase Status Updates', () {
       test('should track purchase status changes in real-time', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -129,7 +123,6 @@ void main() {
 
       test('should handle concurrent purchase updates', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 

@@ -31,7 +31,6 @@ void main() {
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to events table', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -48,7 +47,6 @@ void main() {
 
       test('should filter events by baby_profile_id', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -69,7 +67,6 @@ void main() {
 
       test('should handle multiple baby profile event streams', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -94,7 +91,6 @@ void main() {
     group('Event CRUD Operations', () {
       test('should receive event INSERT notifications', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -109,7 +105,6 @@ void main() {
 
       test('should receive event UPDATE notifications', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -124,7 +119,6 @@ void main() {
 
       test('should receive event DELETE notifications', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -141,7 +135,6 @@ void main() {
     group('Calendar Synchronization', () {
       test('should sync event changes across multiple subscribers', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -163,7 +156,6 @@ void main() {
     group('Performance', () {
       test('should handle event subscriptions with low latency', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 

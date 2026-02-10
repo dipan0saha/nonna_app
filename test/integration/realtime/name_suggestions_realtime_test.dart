@@ -31,7 +31,6 @@ void main() {
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to name_suggestions table', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -46,7 +45,6 @@ void main() {
 
       test('should filter name suggestions by baby_profile_id', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -68,7 +66,6 @@ void main() {
     group('Name Suggestion Operations', () {
       test('should receive new name suggestion INSERT events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -84,7 +81,6 @@ void main() {
       test('should receive name suggestion UPDATE events (like count)',
           () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -99,7 +95,6 @@ void main() {
 
       test('should receive name suggestion DELETE events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -116,7 +111,6 @@ void main() {
     group('Like Count Real-time Updates', () {
       test('should track like count changes in real-time', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -130,7 +124,6 @@ void main() {
 
       test('should handle rapid like/unlike operations', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -146,7 +139,6 @@ void main() {
     group('Performance', () {
       test('should deliver suggestion updates with low latency', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 

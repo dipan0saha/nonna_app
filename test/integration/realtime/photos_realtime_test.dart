@@ -31,7 +31,6 @@ void main() {
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to photos table', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -48,7 +47,6 @@ void main() {
 
       test('should filter photos by baby_profile_id', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -69,7 +67,6 @@ void main() {
 
       test('should handle multiple simultaneous subscriptions', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -91,7 +88,6 @@ void main() {
       test('should return existing stream for duplicate channel names',
           () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -111,7 +107,6 @@ void main() {
 
       test('should unsubscribe from channel', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -157,7 +152,6 @@ void main() {
 
       test('should listen for UPDATE events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -172,7 +166,6 @@ void main() {
 
       test('should listen for DELETE events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -187,7 +180,6 @@ void main() {
 
       test('should listen for ALL events by default', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -234,7 +226,6 @@ void main() {
     group('Reconnection Scenarios', () {
       test('should maintain subscription after reconnection', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -254,7 +245,6 @@ void main() {
     group('Performance Benchmarks', () {
       test('subscription should complete within acceptable latency', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -275,7 +265,6 @@ void main() {
       test('should handle multiple concurrent subscriptions efficiently',
           () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -305,7 +294,6 @@ void main() {
       test('should not leak memory after multiple subscribe/unsubscribe cycles',
           () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -325,7 +313,6 @@ void main() {
 
       test('should clean up all resources on dispose', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
