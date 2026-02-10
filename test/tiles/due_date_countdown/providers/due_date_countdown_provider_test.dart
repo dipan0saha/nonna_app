@@ -36,10 +36,10 @@ void main() {
       );
 
       notifier = container.read(dueDateCountdownProvider.notifier);
-    });
-
-    tearDown(() {
-      container.dispose();
+      
+      addTearDown(() {
+        container.dispose();
+      });
     });
 
     group('Initial State', () {

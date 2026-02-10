@@ -7,7 +7,6 @@ import '../../helpers/mock_factory.dart';
 
 void main() {
   group('BackupService', () {
-    late BackupService backupService;
     late MockDatabaseService mockDatabaseService;
     late MockSupabaseClient mockSupabaseClient;
     late MockGoTrueClient mockAuth;
@@ -23,9 +22,8 @@ void main() {
       when(mockAuth.currentUser).thenReturn(mockUser);
       when(mockUser.email).thenReturn('test@example.com');
 
-      backupService = BackupService(
-        databaseService: mockDatabaseService,
-      );
+      // BackupService instantiation removed as all tests are skipped
+      // and the variable was unused
     });
 
     group('exportUserData', () {
