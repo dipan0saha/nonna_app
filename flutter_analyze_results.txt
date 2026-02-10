@@ -1,2 +1,5 @@
-Analyzing nonna_app...
-No issues found! (ran in 2.2s)
+Analyzing nonna_app...                                          
+
+warning • Dead code • test/integration/realtime/events_realtime_test.dart:159:29 • dead_code
+warning • Dead code • test/integration/realtime/name_suggestions_realtime_test.dart:142:29 • dead_code
+
