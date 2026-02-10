@@ -1,5 +1,4 @@
 Analyzing nonna_app...                                          
 
-warning • Dead code • test/integration/realtime/events_realtime_test.dart:159:29 • dead_code
-warning • Dead code • test/integration/realtime/name_suggestions_realtime_test.dart:142:29 • dead_code
+warning • The value of the local variable 'backupService' isn't used • test/core/services/backup_service_test.dart:10:24 • unused_local_variable
 
