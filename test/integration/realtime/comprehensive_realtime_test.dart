@@ -27,6 +27,10 @@ void main() {
     group('Multi-Table Subscriptions', () {
       test('should handle subscriptions to 15+ tables simultaneously',
           () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final tables = [
           'photos',
           'events',
@@ -61,6 +65,10 @@ void main() {
 
       test('should maintain stable connections for all subscriptions',
           () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final tables = ['photos', 'events', 'notifications', 'registry_items'];
 
         for (var table in tables) {
@@ -79,6 +87,10 @@ void main() {
 
     group('Performance Benchmarks', () {
       test('should handle high subscription load efficiently', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stopwatch = Stopwatch()..start();
 
         // Create 20 subscriptions
@@ -97,6 +109,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('latency should be under 2 seconds for critical tables', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final criticalTables = [
           'notifications',
           'photos',
@@ -123,6 +139,10 @@ void main() {
 
     group('Reconnection Scenarios', () {
       test('should maintain subscriptions after service restart', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         // Create subscriptions
         realtimeService.subscribe(
           table: 'photos',
@@ -142,6 +162,10 @@ void main() {
 
     group('Error Handling', () {
       test('should handle invalid table names gracefully', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         expect(
           () => realtimeService.subscribe(
             table: 'non_existent_table',
@@ -152,6 +176,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should handle empty filter values', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         expect(
           () => realtimeService.subscribe(
             table: 'photos',
@@ -166,6 +194,10 @@ void main() {
     group('Memory Leak Detection', () {
       test('should not leak memory with repeated subscribe/unsubscribe',
           () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         // Perform 20 subscribe/unsubscribe cycles
         for (var i = 0; i < 20; i++) {
           realtimeService.subscribe(
@@ -180,6 +212,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should cleanup all resources on disposal', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         // Create many subscriptions
         for (var i = 0; i < 15; i++) {
           realtimeService.subscribe(
@@ -199,6 +235,10 @@ void main() {
 
     group('Throughput Testing', () {
       test('should handle batched updates efficiently', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'throughput-test',

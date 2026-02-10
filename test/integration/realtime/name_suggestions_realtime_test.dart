@@ -30,6 +30,11 @@ void main() {
 
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to name_suggestions table', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'name_suggestions',
           channelName: 'test-name-suggestions-channel',
@@ -40,6 +45,11 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should filter name suggestions by baby_profile_id', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         const testBabyProfileId = 'test-baby-123';
 
         final stream = realtimeService.subscribe(
@@ -57,6 +67,11 @@ void main() {
 
     group('Name Suggestion Operations', () {
       test('should receive new name suggestion INSERT events', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'name_suggestions',
           channelName: 'insert-suggestion-test',
@@ -68,6 +83,11 @@ void main() {
 
       test('should receive name suggestion UPDATE events (like count)',
           () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'name_suggestions',
           channelName: 'update-suggestion-test',
@@ -78,6 +98,11 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive name suggestion DELETE events', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'name_suggestions',
           channelName: 'delete-suggestion-test',
@@ -90,6 +115,11 @@ void main() {
 
     group('Like Count Real-time Updates', () {
       test('should track like count changes in real-time', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'name_suggestions',
           channelName: 'like-count-test',
@@ -99,6 +129,11 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should handle rapid like/unlike operations', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'name_suggestions',
           channelName: 'rapid-likes-test',
@@ -110,6 +145,11 @@ void main() {
 
     group('Performance', () {
       test('should deliver suggestion updates with low latency', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final stopwatch = Stopwatch()..start();
 
         final stream = realtimeService.subscribe(
