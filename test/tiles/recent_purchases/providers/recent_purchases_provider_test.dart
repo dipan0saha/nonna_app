@@ -48,12 +48,7 @@ void main() {
     });
 
     group('fetchPurchases', () {
-      test('sets loading state while fetching', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mock to delay response
+      test('sets loading state while fetching', () async {        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
         when(mocks.database.select(any))
@@ -66,12 +61,7 @@ void main() {
         expect(state.isLoading, isFalse);
       });
 
-      test('fetches purchases from database when cache is empty', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mocks
+      test('fetches purchases from database when cache is empty', () async {        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -91,12 +81,7 @@ void main() {
         expect(state.error, isNull);
       });
 
-      test('loads purchases from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup cache to return data
+      test('loads purchases from cache when available', () async {        // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
 
@@ -111,12 +96,7 @@ void main() {
         expect(state.purchases.first.id, equals('purchase_1'));
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mock to throw error
+      test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
@@ -130,12 +110,7 @@ void main() {
         expect(state.purchases, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mocks
+      test('force refresh bypasses cache', () async {        // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
         when(mocks.realtime.subscribe(
@@ -158,12 +133,7 @@ void main() {
         verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
       });
 
-      test('saves fetched purchases to cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('saves fetched purchases to cache', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -181,12 +151,7 @@ void main() {
             .called(1);
       });
 
-      test('limits to recent purchases only', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Create 25 purchases
+      test('limits to recent purchases only', () async {        // Create 25 purchases
         final purchases = List.generate(
           25,
           (i) => samplePurchase.copyWith(
@@ -214,12 +179,7 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes purchases with force refresh', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mocks.cache.get(any))
+      test('refreshes purchases with force refresh', () async {        when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -239,12 +199,7 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles INSERT purchase', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup initial state
+      test('handles INSERT purchase', () async {        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -264,12 +219,7 @@ void main() {
         expect(initialCount, greaterThanOrEqualTo(0));
       });
 
-      test('handles UPDATE purchase', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup initial state
+      test('handles UPDATE purchase', () async {        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -298,12 +248,7 @@ void main() {
     });
 
     group('Sorting', () {
-      test('sorts purchases by date (newest first)', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final purchase1 = samplePurchase.copyWith(
+      test('sorts purchases by date (newest first)', () async {        final purchase1 = samplePurchase.copyWith(
           id: 'purchase_1',
           createdAt: DateTime.now().subtract(const Duration(days: 2)),
         );

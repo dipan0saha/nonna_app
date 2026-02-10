@@ -49,11 +49,7 @@ void main() {
     });
 
     group('fetchUsage', () {
-      test('sets loading state while fetching', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mock to delay response
+      test('sets loading state while fetching', () async {        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -68,11 +64,7 @@ void main() {
         await fetchFuture;
       });
 
-      test('calculates storage usage from database', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mocks
+      test('calculates storage usage from database', () async {        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000}, // 1 MB
@@ -91,11 +83,7 @@ void main() {
         expect(state.info!.photoCount, equals(3));
       });
 
-      test('loads storage info from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup cache to return data
+      test('loads storage info from cache when available', () async {        // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => sampleStorageInfo.toJson());
 
@@ -111,11 +99,7 @@ void main() {
         expect(state.info!.totalBytes, equals(10737418240));
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mock to throw error
+      test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
@@ -130,11 +114,7 @@ void main() {
         expect(state.info, isNull);
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mocks
+      test('force refresh bypasses cache', () async {        // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => sampleStorageInfo.toJson());
         when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
@@ -151,11 +131,7 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('saves calculated storage to cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('saves calculated storage to cache', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
         ]));
@@ -169,11 +145,7 @@ void main() {
             .called(1);
       });
 
-      test('calculates usage percentage correctly', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('calculates usage percentage correctly', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 5368709120}, // 5 GB out of 10 GB
         ]));
@@ -188,11 +160,7 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes storage usage with force refresh', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any))
+      test('refreshes storage usage with force refresh', () async {        when(mocks.cache.get(any))
             .thenAnswer((_) async => sampleStorageInfo.toJson());
         when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
@@ -248,11 +216,7 @@ void main() {
     });
 
     group('Storage Limits', () {
-      test('handles near-full storage', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final nearFullInfo = StorageUsageInfo(
+      test('handles near-full storage', () async {        final nearFullInfo = StorageUsageInfo(
           totalBytes: 10737418240, // 10 GB
           usedBytes: 10200547328, // 9.5 GB
           availableBytes: 536870912, // 0.5 GB
@@ -271,11 +235,7 @@ void main() {
         expect(state.info!.usagePercentage, greaterThan(90.0));
       });
 
-      test('handles full storage', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final fullInfo = StorageUsageInfo(
+      test('handles full storage', () async {        final fullInfo = StorageUsageInfo(
           totalBytes: 10737418240, // 10 GB
           usedBytes: 10737418240, // 10 GB
           availableBytes: 0,
@@ -297,11 +257,7 @@ void main() {
     });
 
     group('Photo Count', () {
-      test('counts photos correctly', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('counts photos correctly', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
           {'file_size': 2048000},
@@ -317,11 +273,7 @@ void main() {
         expect(state.info!.photoCount, equals(5));
       });
 
-      test('handles zero photos', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('handles zero photos', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -335,11 +287,7 @@ void main() {
     });
 
     group('Role-based Access', () {
-      test('owner can fetch storage usage', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('owner can fetch storage usage', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           {'file_size': 1024000},
         ]));

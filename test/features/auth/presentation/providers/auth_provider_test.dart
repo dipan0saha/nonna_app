@@ -71,12 +71,7 @@ void main() {
         expect(notifier.state.errorMessage, isNull);
       });
 
-      test('loads user profile when current user exists', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.currentUser).thenReturn(mockUser);
+      test('loads user profile when current user exists', () async {        when(mockAuthService.currentUser).thenReturn(mockUser);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -98,12 +93,7 @@ void main() {
     });
 
     group('signInWithEmail', () {
-      test('sets loading state while signing in', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithEmail(
+      test('sets loading state while signing in', () async {        when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
         )).thenAnswer((_) async {
@@ -127,12 +117,7 @@ void main() {
         await future;
       });
 
-      test('successfully signs in with email and password', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithEmail(
+      test('successfully signs in with email and password', () async {        when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
         )).thenAnswer((_) async {
@@ -154,12 +139,7 @@ void main() {
         expect(notifier.state.errorMessage, isNull);
       });
 
-      test('handles sign in error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithEmail(
+      test('handles sign in error', () async {        when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
         )).thenThrow(Exception('Invalid credentials'));
@@ -173,12 +153,7 @@ void main() {
         expect(notifier.state.errorMessage, contains('Invalid credentials'));
       });
 
-      test('handles null user response', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithEmail(
+      test('handles null user response', () async {        when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
         )).thenAnswer((_) async {
@@ -196,12 +171,7 @@ void main() {
     });
 
     group('signUpWithEmail', () {
-      test('successfully signs up with email', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signUpWithEmail(
+      test('successfully signs up with email', () async {        when(mockAuthService.signUpWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
           displayName: anyNamed('displayName'),
@@ -224,12 +194,7 @@ void main() {
         expect(notifier.state.user?.id, equals('user_1'));
       });
 
-      test('handles sign up error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signUpWithEmail(
+      test('handles sign up error', () async {        when(mockAuthService.signUpWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
           displayName: anyNamed('displayName'),
@@ -247,12 +212,7 @@ void main() {
     });
 
     group('signInWithGoogle', () {
-      test('successfully signs in with Google', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithGoogle()).thenAnswer((_) async {
+      test('successfully signs in with Google', () async {        when(mockAuthService.signInWithGoogle()).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
@@ -267,12 +227,7 @@ void main() {
         expect(notifier.state.user?.id, equals('user_1'));
       });
 
-      test('handles Google sign in error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithGoogle())
+      test('handles Google sign in error', () async {        when(mockAuthService.signInWithGoogle())
             .thenThrow(Exception('Google auth failed'));
 
         await notifier.signInWithGoogle();
@@ -283,12 +238,7 @@ void main() {
     });
 
     group('signInWithFacebook', () {
-      test('successfully signs in with Facebook', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithFacebook()).thenAnswer((_) async {
+      test('successfully signs in with Facebook', () async {        when(mockAuthService.signInWithFacebook()).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
 
@@ -303,12 +253,7 @@ void main() {
         expect(notifier.state.user?.id, equals('user_1'));
       });
 
-      test('handles Facebook sign in error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithFacebook())
+      test('handles Facebook sign in error', () async {        when(mockAuthService.signInWithFacebook())
             .thenThrow(Exception('Facebook auth failed'));
 
         await notifier.signInWithFacebook();
@@ -319,12 +264,7 @@ void main() {
     });
 
     group('signOut', () {
-      test('successfully signs out', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signOut()).thenAnswer((_) async => {});
+      test('successfully signs out', () async {        when(mockAuthService.signOut()).thenAnswer((_) async => {});
         when(mockLocalStorage.remove(any)).thenAnswer((_) async => {});
 
         await notifier.signOut();
@@ -336,12 +276,7 @@ void main() {
         verify(mockLocalStorage.remove(any)).called(1);
       });
 
-      test('handles sign out error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signOut()).thenThrow(Exception('Sign out failed'));
+      test('handles sign out error', () async {        when(mockAuthService.signOut()).thenThrow(Exception('Sign out failed'));
 
         await notifier.signOut();
 
@@ -351,24 +286,14 @@ void main() {
     });
 
     group('resetPassword', () {
-      test('successfully sends password reset email', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.resetPassword(any)).thenAnswer((_) async => {});
+      test('successfully sends password reset email', () async {        when(mockAuthService.resetPassword(any)).thenAnswer((_) async => {});
 
         await notifier.resetPassword('test@example.com');
 
         verify(mockAuthService.resetPassword('test@example.com')).called(1);
       });
 
-      test('handles password reset error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.resetPassword(any))
+      test('handles password reset error', () async {        when(mockAuthService.resetPassword(any))
             .thenThrow(Exception('Email not found'));
 
         expect(
@@ -379,22 +304,12 @@ void main() {
     });
 
     group('Biometric Authentication', () {
-      test('isBiometricAvailable returns true when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Note: local_auth is difficult to mock, so we just verify the method exists
+      test('isBiometricAvailable returns true when available', () async {        // Note: local_auth is difficult to mock, so we just verify the method exists
         final result = await notifier.isBiometricAvailable();
         expect(result, isA<bool>());
       });
 
-      test('isBiometricEnabled checks local storage', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockLocalStorage.get('biometric_enabled'))
+      test('isBiometricEnabled checks local storage', () async {        when(mockLocalStorage.get('biometric_enabled'))
             .thenAnswer((_) => 'true');
 
         final result = await notifier.isBiometricEnabled();
@@ -403,12 +318,7 @@ void main() {
         verify(mockLocalStorage.get('biometric_enabled')).called(1);
       });
 
-      test('disableBiometric removes from local storage', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockLocalStorage.remove('biometric_enabled'))
+      test('disableBiometric removes from local storage', () async {        when(mockLocalStorage.remove('biometric_enabled'))
             .thenAnswer((_) async => {});
 
         await notifier.disableBiometric();
@@ -418,12 +328,7 @@ void main() {
     });
 
     group('Session Management', () {
-      test('persists session to local storage on successful auth', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.signInWithEmail(
+      test('persists session to local storage on successful auth', () async {        when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
         )).thenAnswer((_) async {
@@ -443,12 +348,7 @@ void main() {
         verify(mockLocalStorage.put('any_key', 'any_value')).called(1);
       });
 
-      test('refreshSession updates session state', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.currentSession).thenReturn(mockSession);
+      test('refreshSession updates session state', () async {        when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
@@ -459,12 +359,7 @@ void main() {
         verify(mockAuthService.currentSession).called(greaterThanOrEqualTo(1));
       });
 
-      test('handles session refresh error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockAuthService.currentSession).thenReturn(null);
+      test('handles session refresh error', () async {        when(mockAuthService.currentSession).thenReturn(null);
 
         await notifier.refreshSession();
 
@@ -473,12 +368,7 @@ void main() {
     });
 
     group('Auth State Changes', () {
-      test('handles auth state changes from stream', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+      test('handles auth state changes from stream', () async {        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
             .thenAnswer((_) async => {});
@@ -495,12 +385,7 @@ void main() {
         expect(notifier.state.status, equals(AuthStatus.authenticated));
       });
 
-      test('handles sign out from auth state stream', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        authStateController.add(
+      test('handles sign out from auth state stream', () async {        authStateController.add(
           supabase.AuthState(
             supabase.AuthChangeEvent.signedOut,
             null,

@@ -209,11 +209,7 @@ void main() {
     });
 
     group('Retry', () {
-      test('retries operation successfully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        var callCount = 0;
+      test('retries operation successfully', () async {        var callCount = 0;
         errorHandler.handleError(
           error: Exception('Test'),
           key: 'test',
@@ -228,11 +224,7 @@ void main() {
         expect(callCount, equals(1));
       });
 
-      test('does not retry non-retryable error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        errorHandler.handleError(
+      test('does not retry non-retryable error', () async {        errorHandler.handleError(
           error: Exception('Test'),
           key: 'test',
           retryable: false,
@@ -242,11 +234,7 @@ void main() {
         await errorHandler.retry('test');
       });
 
-      test('does not retry when no callback provided', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        errorHandler.handleError(
+      test('does not retry when no callback provided', () async {        errorHandler.handleError(
           error: Exception('Test'),
           key: 'test',
         );
@@ -255,11 +243,7 @@ void main() {
         await errorHandler.retry('test');
       });
 
-      test('increments retry attempts', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        var shouldFail = true;
+      test('increments retry attempts', () async {        var shouldFail = true;
         errorHandler.handleError(
           error: Exception('Test'),
           key: 'test',
@@ -280,11 +264,7 @@ void main() {
         expect(errorInfo?.retryAttempts, greaterThan(0));
       });
 
-      test('stops retrying after max attempts', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        var retryCount = 0;
+      test('stops retrying after max attempts', () async {        var retryCount = 0;
         errorHandler.handleError(
           error: Exception('Test'),
           key: 'test',
@@ -308,11 +288,7 @@ void main() {
     });
 
     group('Execute With Error Handling', () {
-      test('executes operation successfully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final result = await errorHandler.executeWithErrorHandling(
+      test('executes operation successfully', () async {        final result = await errorHandler.executeWithErrorHandling(
           operation: () async => 'success',
           key: 'test',
         );
@@ -321,11 +297,7 @@ void main() {
         expect(errorHandler.hasError('test'), isFalse);
       });
 
-      test('handles operation error', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final result = await errorHandler.executeWithErrorHandling(
+      test('handles operation error', () async {        final result = await errorHandler.executeWithErrorHandling(
           operation: () async => throw Exception('Test error'),
           key: 'test',
           userMessage: 'Operation failed',
@@ -337,11 +309,7 @@ void main() {
             errorHandler.getErrorMessage('test'), equals('Operation failed'));
       });
 
-      test('clears existing error before executing', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Add initial error
+      test('clears existing error before executing', () async {        // Add initial error
         errorHandler.handleError(error: Exception('Old'), key: 'test');
 
         // Execute successfully

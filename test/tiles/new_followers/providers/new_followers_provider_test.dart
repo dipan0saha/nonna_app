@@ -51,12 +51,7 @@ void main() {
     });
 
     group('fetchFollowers', () {
-      test('sets loading state while fetching', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mock to delay response
+      test('sets loading state while fetching', () async {        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -72,12 +67,7 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches followers from database when cache is empty', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mocks
+      test('fetches followers from database when cache is empty', () async {        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -99,12 +89,7 @@ void main() {
         expect(container.read(newFollowersProvider).error, isNull);
       });
 
-      test('loads followers from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup cache to return data
+      test('loads followers from cache when available', () async {        // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
 
@@ -121,12 +106,7 @@ void main() {
             equals('user_1'));
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mock to throw error
+      test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
@@ -142,12 +122,7 @@ void main() {
         expect(container.read(newFollowersProvider).followers, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mocks
+      test('force refresh bypasses cache', () async {        // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
         when(mocks.realtime.subscribe(
@@ -167,12 +142,7 @@ void main() {
         verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
       });
 
-      test('filters only recent followers', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final recentFollower = sampleFollower.copyWith(
+      test('filters only recent followers', () async {        final recentFollower = sampleFollower.copyWith(
           userId: 'user_1',
           createdAt: DateTime.now().subtract(const Duration(days: 3)),
         );
@@ -196,12 +166,7 @@ void main() {
             equals('user_1'));
       });
 
-      test('saves fetched followers to cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('saves fetched followers to cache', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -220,12 +185,7 @@ void main() {
             .called(1);
       });
 
-      test('limits to recent followers only', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Create 30 followers
+      test('limits to recent followers only', () async {        // Create 30 followers
         final followers = List.generate(
           30,
           (i) => sampleFollower.copyWith(
@@ -255,12 +215,7 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes followers with force refresh', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mocks.cache.get(any))
+      test('refreshes followers with force refresh', () async {        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -280,12 +235,7 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles new follower', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup initial state
+      test('handles new follower', () async {        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -307,12 +257,7 @@ void main() {
         expect(initialCount, equals(1));
       });
 
-      test('handles follower removed', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup initial state
+      test('handles follower removed', () async {        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -334,12 +279,7 @@ void main() {
     });
 
     group('Time Period Options', () {
-      test('supports 7-day period', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('supports 7-day period', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -355,12 +295,7 @@ void main() {
         expect(container.read(newFollowersProvider).followers, isNotEmpty);
       });
 
-      test('supports 30-day period', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('supports 30-day period', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -378,12 +313,7 @@ void main() {
     });
 
     group('Sorting', () {
-      test('sorts followers by date (newest first)', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final follower1 = sampleFollower.copyWith(
+      test('sorts followers by date (newest first)', () async {        final follower1 = sampleFollower.copyWith(
           userId: 'user_1',
           createdAt: DateTime.now().subtract(const Duration(days: 3)),
         );
