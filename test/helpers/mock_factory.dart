@@ -466,9 +466,10 @@ class MockHelpers {
     });
     
     // Stub the removeChannel method to return success
-    // Note: This removes the channel from tracking by identity.
-    // The channel name mapping will naturally be updated on next channel() call
-    // due to putIfAbsent only creating new channels when the name doesn't exist.
+    // This removes the channel from tracking by identity reference.
+    // When the same channel name is requested again via channel(),
+    // putIfAbsent will check if the key exists. Since we removed the entry,
+    // a new channel will be created for that name.
     when(mock.removeChannel(any)).thenAnswer((invocation) async {
       final channel = invocation.positionalArguments[0];
       channels.removeWhere((_, value) => identical(value, channel));
