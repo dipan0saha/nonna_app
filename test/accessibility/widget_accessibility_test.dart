@@ -189,6 +189,7 @@ void main() {
         );
 
         await tester.tap(find.text('Retry'));
+        await tester.pumpAndSettle();
         expect(retryTapped, isTrue);
       });
     });
@@ -212,6 +213,7 @@ void main() {
           ),
         );
 
+        await tester.pumpAndSettle();
         expect(find.text('Scale test'), findsOneWidget);
       });
 
@@ -236,6 +238,7 @@ void main() {
           ),
         );
 
+        await tester.pumpAndSettle();
         // No overflow should occur
         expect(tester.takeException(), isNull);
       });
@@ -257,6 +260,7 @@ void main() {
           ),
         );
 
+        await tester.pumpAndSettle();
         expect(find.text('First'), findsOneWidget);
         expect(find.text('Second'), findsOneWidget);
         expect(find.text('Third'), findsOneWidget);
@@ -279,6 +283,7 @@ void main() {
           ),
         );
 
+        await tester.pumpAndSettle();
         expect(find.text('High contrast test'), findsOneWidget);
       });
     });
@@ -302,7 +307,7 @@ void main() {
         );
 
         focusNode.requestFocus();
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(focusNode.hasFocus, isTrue);
       });
@@ -324,6 +329,7 @@ void main() {
           ),
         );
 
+        await tester.pumpAndSettle();
         final semantics = tester.getSemantics(find.text('Submit'));
         expect(semantics.label, 'Submit form');
       });
@@ -340,6 +346,7 @@ void main() {
           ),
         );
 
+        await tester.pumpAndSettle();
         final semantics = tester.getSemantics(find.byType(Icon));
         expect(semantics.label, 'Profile picture of John');
       });
@@ -358,6 +365,7 @@ void main() {
           ),
         );
 
+        await tester.pumpAndSettle();
         final size = tester.getSize(find.byType(IconButton));
         expect(size.width, greaterThanOrEqualTo(44.0));
         expect(size.height, greaterThanOrEqualTo(44.0));
@@ -379,6 +387,7 @@ void main() {
           ),
         );
 
+        await tester.pumpAndSettle();
         expect(find.text('Animation test'), findsOneWidget);
       });
     });

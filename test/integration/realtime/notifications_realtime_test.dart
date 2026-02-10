@@ -29,6 +29,10 @@ void main() {
 
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to notifications table', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'notifications',
           channelName: 'test-notifications-channel',
@@ -41,6 +45,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should filter notifications by recipient_user_id', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         const testUserId = 'test-user-123';
 
         final stream = realtimeService.subscribe(
@@ -57,6 +65,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should filter notifications by baby_profile_id', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         const testBabyProfileId = 'test-baby-123';
 
         final stream = realtimeService.subscribe(
@@ -74,6 +86,10 @@ void main() {
 
       test('should handle multiple user-specific notification streams',
           () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream1 = realtimeService.subscribe(
           table: 'notifications',
           channelName: 'notifications-user-1',
@@ -100,6 +116,10 @@ void main() {
 
     group('Event Handling', () {
       test('should receive new notification INSERT events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'notifications',
           channelName: 'insert-notification-test',
@@ -110,6 +130,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive notification UPDATE events (read status)', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'notifications',
           channelName: 'update-notification-test',
@@ -120,6 +144,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive notification DELETE events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'notifications',
           channelName: 'delete-notification-test',
@@ -132,6 +160,10 @@ void main() {
 
     group('Performance Requirements', () {
       test('should deliver notifications with <2 second latency', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stopwatch = Stopwatch()..start();
 
         final stream = realtimeService.subscribe(
@@ -146,6 +178,11 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should handle high-frequency notification delivery', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final receivedEvents = <dynamic>[];
 
         final stream = realtimeService.subscribe(
@@ -163,6 +200,10 @@ void main() {
 
     group('Unread Count Scenarios', () {
       test('should track unread notification updates in real-time', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'notifications',
           channelName: 'unread-count-test',
@@ -174,6 +215,10 @@ void main() {
 
     group('Cleanup', () {
       test('should properly cleanup notification subscriptions', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         realtimeService.subscribe(
           table: 'notifications',
           channelName: 'cleanup-test',

@@ -67,6 +67,10 @@ void main() {
 
     group('loadPhotos', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -83,6 +87,10 @@ void main() {
       });
 
       test('loads photos from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => [
               samplePhoto.toJson(),
             ]);
@@ -96,6 +104,10 @@ void main() {
       });
 
       test('fetches photos from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -116,6 +128,10 @@ void main() {
       });
 
       test('sets hasMore based on page size', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final photos = List.generate(
           30,
           (i) => samplePhoto.copyWith(id: 'photo_$i'),
@@ -138,6 +154,10 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
@@ -159,6 +179,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
@@ -171,6 +195,10 @@ void main() {
       });
 
       test('sets up real-time subscription', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -194,6 +222,10 @@ void main() {
 
     group('loadMore', () {
       test('loads more photos for pagination', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         notifier.state = notifier.state.copyWith(
           photos: [samplePhoto],
           selectedBabyProfileId: 'profile_1',
@@ -215,6 +247,10 @@ void main() {
       });
 
       test('does not load more when already loading', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         notifier.state = notifier.state.copyWith(
           isLoadingMore: true,
           selectedBabyProfileId: 'profile_1',
@@ -227,6 +263,10 @@ void main() {
       });
 
       test('does not load more when hasMore is false', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         notifier.state = notifier.state.copyWith(
           hasMore: false,
           selectedBabyProfileId: 'profile_1',
@@ -238,12 +278,20 @@ void main() {
       });
 
       test('does not load more when babyProfileId is null', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         await notifier.loadMore();
 
         verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
       });
 
       test('handles load more error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         notifier.state = notifier.state.copyWith(
           photos: [samplePhoto],
           selectedBabyProfileId: 'profile_1',
@@ -262,6 +310,10 @@ void main() {
 
     group('Filtering', () {
       test('filterByTag loads filtered photos', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
         );
@@ -278,6 +330,10 @@ void main() {
       });
 
       test('clearFilters resets filter and reloads', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
           currentFilter: GalleryFilter.byTag,
@@ -304,6 +360,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes photos with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
         );
@@ -325,6 +385,10 @@ void main() {
       });
 
       test('does not refresh when baby profile is missing', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         await notifier.refresh();
 
         verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
@@ -333,6 +397,10 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -368,6 +436,10 @@ void main() {
       });
 
       test('handles UPDATE event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -399,6 +471,10 @@ void main() {
       });
 
       test('handles DELETE event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -433,6 +509,10 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});

@@ -23,6 +23,9 @@ void main() {
     group('fetchEngagement', () {
       test('fetches engagement metrics from database when cache is empty',
           () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
 
@@ -57,6 +60,9 @@ void main() {
       });
 
       test('loads metrics from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup cache to return data
         final cachedData = {
           'photoSquishes': 2,
@@ -71,6 +77,9 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -80,6 +89,9 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mocks
         final cachedData = {
           'photoSquishes': 1,

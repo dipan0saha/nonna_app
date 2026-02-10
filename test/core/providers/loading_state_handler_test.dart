@@ -70,6 +70,9 @@ void main() {
       });
 
       test('sets timeout when provided', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         loadingHandler.startLoading(
           'test_operation',
           timeout: const Duration(milliseconds: 100),
@@ -98,6 +101,9 @@ void main() {
       });
 
       test('cancels timeout timer', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         loadingHandler.startLoading(
           'test_operation',
           timeout: const Duration(milliseconds: 200),
@@ -130,6 +136,9 @@ void main() {
       });
 
       test('cancels all timeout timers', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         loadingHandler.startLoading(
           'operation1',
           timeout: const Duration(milliseconds: 200),
@@ -267,6 +276,9 @@ void main() {
 
     group('Execute With Loading', () {
       test('executes operation with loading state', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         var executed = false;
 
         final result = await loadingHandler.executeWithLoading(
@@ -283,6 +295,9 @@ void main() {
       });
 
       test('shows loading during operation', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         var wasLoading = false;
 
         await loadingHandler.executeWithLoading(
@@ -297,6 +312,9 @@ void main() {
       });
 
       test('stops loading after operation completes', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         await loadingHandler.executeWithLoading(
           operation: () async => 'done',
           key: 'test',
@@ -306,6 +324,9 @@ void main() {
       });
 
       test('stops loading even if operation throws', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         try {
           await loadingHandler.executeWithLoading(
             operation: () async => throw Exception('Test error'),
@@ -319,6 +340,9 @@ void main() {
       });
 
       test('respects timeout', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         await loadingHandler.executeWithLoading(
           operation: () async {
             await Future.delayed(const Duration(milliseconds: 200));
@@ -336,6 +360,9 @@ void main() {
 
     group('Execute With Progress', () {
       test('executes operation with progress updates', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final progressValues = <double>[];
 
         await loadingHandler.executeWithProgress(
@@ -360,6 +387,9 @@ void main() {
 
     group('Execute Multiple', () {
       test('executes multiple operations concurrently', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final results = await loadingHandler.executeMultiple(
           operations: {
             'op1': () async => 'result1',
@@ -379,6 +409,9 @@ void main() {
       });
 
       test('handles errors in individual operations', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final results = await loadingHandler.executeMultiple(
           operations: {
             'op1': () async => 'success',
@@ -435,6 +468,9 @@ void main() {
 
     group('LoadingOperation', () {
       test('elapsed returns duration since start', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         loadingHandler.startLoading('test');
 
         await Future.delayed(const Duration(milliseconds: 50));
@@ -474,6 +510,9 @@ void main() {
 
     group('Dispose', () {
       test('handles disposal gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         loadingHandler.startLoading(
           'test',
           timeout: const Duration(milliseconds: 200),
@@ -507,6 +546,9 @@ void main() {
       });
 
       test('handles zero timeout', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         loadingHandler.startLoading(
           'test',
           timeout: Duration.zero,

@@ -59,6 +59,10 @@ void main() {
 
     group('fetchEvents', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -79,6 +83,10 @@ void main() {
       });
 
       test('fetches events from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -106,6 +114,10 @@ void main() {
       });
 
       test('loads events from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
@@ -127,6 +139,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -147,6 +163,10 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
@@ -171,6 +191,10 @@ void main() {
       });
 
       test('saves fetched events to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -196,6 +220,10 @@ void main() {
 
     group('loadMore', () {
       test('loads more events for pagination', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state with events
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -227,6 +255,10 @@ void main() {
       });
 
       test('does not load more when already loading', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -254,6 +286,10 @@ void main() {
       });
 
       test('does not load more when hasMore is false', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state with hasMore = false
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -284,6 +320,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes events with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
         when(mocks.realtime.subscribe(
@@ -308,6 +348,10 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -340,6 +384,10 @@ void main() {
       });
 
       test('handles UPDATE event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -370,6 +418,10 @@ void main() {
       });
 
       test('handles DELETE event', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -401,6 +453,10 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         // Disposing the container will trigger the onDispose callback

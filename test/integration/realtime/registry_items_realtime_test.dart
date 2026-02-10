@@ -30,6 +30,10 @@ void main() {
 
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to registry_items table', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'registry_items',
           channelName: 'test-registry-items-channel',
@@ -40,6 +44,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should filter registry items by baby_profile_id', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         const testBabyProfileId = 'test-baby-123';
 
         final stream = realtimeService.subscribe(
@@ -57,6 +65,10 @@ void main() {
 
     group('Registry Item Operations', () {
       test('should receive new registry item INSERT events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'registry_items',
           channelName: 'insert-item-test',
@@ -67,6 +79,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive registry item UPDATE events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'registry_items',
           channelName: 'update-item-test',
@@ -77,6 +93,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive registry item DELETE events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'registry_items',
           channelName: 'delete-item-test',
@@ -89,6 +109,10 @@ void main() {
 
     group('Purchase Status Updates', () {
       test('should track purchase status changes in real-time', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'registry_items',
           channelName: 'purchase-status-test',
@@ -98,6 +122,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should handle concurrent purchase updates', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'registry_items',
           channelName: 'concurrent-purchases-test',

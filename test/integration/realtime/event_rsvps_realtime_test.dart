@@ -30,6 +30,10 @@ void main() {
 
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to event_rsvps table', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'event_rsvps',
           channelName: 'test-event-rsvps-channel',
@@ -40,6 +44,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should filter RSVPs by event_id', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         const testEventId = 'test-event-123';
 
         final stream = realtimeService.subscribe(
@@ -57,6 +65,10 @@ void main() {
 
     group('RSVP Operations', () {
       test('should receive new RSVP INSERT events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'event_rsvps',
           channelName: 'insert-rsvp-test',
@@ -67,6 +79,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive RSVP UPDATE events (status changes)', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'event_rsvps',
           channelName: 'update-rsvp-test',
@@ -77,6 +93,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive RSVP DELETE events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'event_rsvps',
           channelName: 'delete-rsvp-test',
@@ -89,6 +109,10 @@ void main() {
 
     group('Attendance Count Updates', () {
       test('should track RSVP count changes in real-time', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'event_rsvps',
           channelName: 'rsvp-count-test',

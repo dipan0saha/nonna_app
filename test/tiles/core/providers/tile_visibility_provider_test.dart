@@ -45,6 +45,9 @@ void main() {
 
     group('loadPreferences', () {
       test('loads visibility preferences from storage', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final Map<String, dynamic> testVisibilityMap = {
           'tile_1': true,
           'tile_2': false
@@ -60,6 +63,9 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
                 .getObject('tile_visibility_preferences'))
             .thenThrow(Exception('Storage error'));
@@ -71,6 +77,9 @@ void main() {
       });
 
       test('loads user-specific preferences when userId provided', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
                 .getObject('tile_visibility_preferences_user_123'))
             .thenReturn(() => <String, dynamic>{'tile_1': true});
@@ -89,6 +98,9 @@ void main() {
       });
 
       test('returns correct visibility state for tiles in map', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
                 .getObject('tile_visibility_preferences'))
             .thenReturn(
@@ -104,6 +116,9 @@ void main() {
 
     group('setTileVisibility', () {
       test('updates tile visibility in state', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('tile_visibility_preferences', {'tile_1': false}));
 
@@ -116,6 +131,9 @@ void main() {
       });
 
       test('persists visibility to storage', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('tile_visibility_preferences', {'tile_1': false}));
 
@@ -129,6 +147,9 @@ void main() {
       });
 
       test('handles user-specific preferences', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService.setObject(
             'tile_visibility_preferences_user_123', {'tile_1': false}));
 
@@ -147,6 +168,9 @@ void main() {
 
     group('Convenience Methods', () {
       test('hideTile sets visibility to false', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('tile_visibility_preferences', {'tile_1': false}));
 
@@ -156,6 +180,9 @@ void main() {
       });
 
       test('showTile sets visibility to true', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('tile_visibility_preferences', {'tile_1': true}));
 
@@ -169,6 +196,9 @@ void main() {
       });
 
       test('toggleTileVisibility flips current state', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('tile_visibility_preferences', {'tile_1': false}));
 
@@ -187,6 +217,9 @@ void main() {
 
     group('resetPreferences', () {
       test('clears visibility map', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup initial state
         when(() => mockLocalStorageService
             .setObject('tile_visibility_preferences', {'tile_1': false}));
@@ -215,6 +248,9 @@ void main() {
       });
 
       test('setFeatureFlag updates state', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('feature_flags', {'new_feature': true}));
 
@@ -227,6 +263,9 @@ void main() {
       });
 
       test('setFeatureFlag persists to storage', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('feature_flags', {'new_feature': true}));
 
@@ -240,6 +279,9 @@ void main() {
       });
 
       test('loadRemoteFeatureFlags loads from storage', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final Map<String, dynamic> testFlags = {
           'feature_1': true,
           'feature_2': false
@@ -256,6 +298,9 @@ void main() {
 
     group('shouldRenderTile', () {
       test('returns false when tile is not visible', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('tile_visibility_preferences', {'tile_1': false}));
 
@@ -268,6 +313,9 @@ void main() {
       });
 
       test('returns false when required feature is disabled', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('feature_flags', {'premium': false}));
 
@@ -287,6 +335,9 @@ void main() {
       });
 
       test('returns true when tile visible and feature enabled', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('feature_flags', {'premium': true}));
 
@@ -304,6 +355,9 @@ void main() {
 
     group('getVisibleTiles', () {
       test('returns list of visible tile IDs', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService
             .setObject('tile_visibility_preferences', {'tile_2': false}));
 
@@ -322,6 +376,9 @@ void main() {
 
     group('getHiddenTiles', () {
       test('returns list of hidden tile IDs', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(() => mockLocalStorageService.setObject(
             'tile_visibility_preferences',
             {'tile_1': true, 'tile_2': false, 'tile_3': false}));

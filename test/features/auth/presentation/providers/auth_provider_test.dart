@@ -72,6 +72,10 @@ void main() {
       });
 
       test('loads user profile when current user exists', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.currentUser).thenReturn(mockUser);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -95,6 +99,10 @@ void main() {
 
     group('signInWithEmail', () {
       test('sets loading state while signing in', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -120,6 +128,10 @@ void main() {
       });
 
       test('successfully signs in with email and password', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -143,6 +155,10 @@ void main() {
       });
 
       test('handles sign in error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -158,6 +174,10 @@ void main() {
       });
 
       test('handles null user response', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -177,6 +197,10 @@ void main() {
 
     group('signUpWithEmail', () {
       test('successfully signs up with email', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signUpWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -201,6 +225,10 @@ void main() {
       });
 
       test('handles sign up error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signUpWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -220,6 +248,10 @@ void main() {
 
     group('signInWithGoogle', () {
       test('successfully signs in with Google', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithGoogle()).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
@@ -236,6 +268,10 @@ void main() {
       });
 
       test('handles Google sign in error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithGoogle())
             .thenThrow(Exception('Google auth failed'));
 
@@ -248,6 +284,10 @@ void main() {
 
     group('signInWithFacebook', () {
       test('successfully signs in with Facebook', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithFacebook()).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
@@ -264,6 +304,10 @@ void main() {
       });
 
       test('handles Facebook sign in error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithFacebook())
             .thenThrow(Exception('Facebook auth failed'));
 
@@ -276,6 +320,10 @@ void main() {
 
     group('signOut', () {
       test('successfully signs out', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signOut()).thenAnswer((_) async => {});
         when(mockLocalStorage.remove(any)).thenAnswer((_) async => {});
 
@@ -289,6 +337,10 @@ void main() {
       });
 
       test('handles sign out error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signOut()).thenThrow(Exception('Sign out failed'));
 
         await notifier.signOut();
@@ -300,6 +352,10 @@ void main() {
 
     group('resetPassword', () {
       test('successfully sends password reset email', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.resetPassword(any)).thenAnswer((_) async => {});
 
         await notifier.resetPassword('test@example.com');
@@ -308,6 +364,10 @@ void main() {
       });
 
       test('handles password reset error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.resetPassword(any))
             .thenThrow(Exception('Email not found'));
 
@@ -320,12 +380,20 @@ void main() {
 
     group('Biometric Authentication', () {
       test('isBiometricAvailable returns true when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Note: local_auth is difficult to mock, so we just verify the method exists
         final result = await notifier.isBiometricAvailable();
         expect(result, isA<bool>());
       });
 
       test('isBiometricEnabled checks local storage', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockLocalStorage.get('biometric_enabled'))
             .thenAnswer((_) => 'true');
 
@@ -336,6 +404,10 @@ void main() {
       });
 
       test('disableBiometric removes from local storage', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockLocalStorage.remove('biometric_enabled'))
             .thenAnswer((_) async => {});
 
@@ -347,6 +419,10 @@ void main() {
 
     group('Session Management', () {
       test('persists session to local storage on successful auth', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -368,6 +444,10 @@ void main() {
       });
 
       test('refreshSession updates session state', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -380,6 +460,10 @@ void main() {
       });
 
       test('handles session refresh error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockAuthService.currentSession).thenReturn(null);
 
         await notifier.refreshSession();
@@ -390,6 +474,10 @@ void main() {
 
     group('Auth State Changes', () {
       test('handles auth state changes from stream', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockLocalStorage.put('any_key', 'any_value'))
@@ -408,6 +496,10 @@ void main() {
       });
 
       test('handles sign out from auth state stream', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         authStateController.add(
           supabase.AuthState(
             supabase.AuthChangeEvent.signedOut,

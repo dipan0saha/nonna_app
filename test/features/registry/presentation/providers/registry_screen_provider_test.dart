@@ -75,6 +75,10 @@ void main() {
 
     group('loadItems', () {
       test('sets loading state while loading', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -88,6 +92,10 @@ void main() {
       });
 
       test('loads items from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -106,6 +114,10 @@ void main() {
       });
 
       test('loads items from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -125,6 +137,10 @@ void main() {
       });
 
       test('handles database error gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
@@ -137,6 +153,10 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -162,6 +182,10 @@ void main() {
       });
 
       test('saves fetched items to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -179,6 +203,10 @@ void main() {
       });
 
       test('loads items with purchase status', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -214,6 +242,10 @@ void main() {
       });
 
       test('filters high priority items', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final lowPriorityItem = sampleItem.copyWith(id: 'item_2', priority: 2);
         final cachedData = [
           {
@@ -238,6 +270,10 @@ void main() {
       });
 
       test('filters purchased items', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -268,6 +304,10 @@ void main() {
       });
 
       test('sorts items by priority high to low', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final lowPriorityItem =
             sampleItem.copyWith(id: 'item_2', priority: 2, name: 'Diapers');
         final cachedData = [
@@ -293,6 +333,10 @@ void main() {
       });
 
       test('sorts items by name ascending', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final itemB = sampleItem.copyWith(id: 'item_2', name: 'Bottles');
         final itemA = sampleItem.copyWith(id: 'item_3', name: 'Crib');
         final cachedData = [
@@ -320,6 +364,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes items with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -341,6 +389,10 @@ void main() {
       });
 
       test('does not refresh when no baby profile selected', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         await notifier.refresh();
 
         verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
@@ -349,6 +401,10 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles items update by refreshing', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -364,6 +420,10 @@ void main() {
       });
 
       test('handles purchases update by refreshing', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),

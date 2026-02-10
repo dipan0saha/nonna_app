@@ -52,6 +52,10 @@ void main() {
 
     group('fetchCountdowns', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -69,6 +73,10 @@ void main() {
       });
 
       test('fetches profiles from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -89,6 +97,10 @@ void main() {
       });
 
       test('handles empty profile list', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         await notifier.fetchCountdowns(babyProfileIds: []);
 
         expect(notifier.state.countdowns, isEmpty);
@@ -96,6 +108,10 @@ void main() {
       });
 
       test('loads countdowns from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup cache to return data
         final cachedData = {
           'profile': sampleProfile.toJson(),
@@ -116,6 +132,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -130,6 +150,10 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mocks
         final cachedData = {
           'profile': sampleProfile.toJson(),
@@ -156,6 +180,10 @@ void main() {
       });
 
       test('calculates days until due date correctly', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final futureProfile = sampleProfile.copyWith(
           expectedBirthDate: DateTime.now().add(const Duration(days: 45)),
         );
@@ -177,6 +205,10 @@ void main() {
       });
 
       test('handles past due date correctly', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final pastProfile = sampleProfile.copyWith(
           expectedBirthDate: DateTime.now().subtract(const Duration(days: 10)),
         );
@@ -196,6 +228,10 @@ void main() {
       });
 
       test('handles multiple babies', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final profile2 =
             sampleProfile.copyWith(id: 'profile_2', name: 'Baby Jack');
 
@@ -220,6 +256,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes countdowns with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final cachedData = {
           'profile': sampleProfile.toJson(),
           'daysUntilDueDate': 30,
@@ -244,6 +284,10 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles UPDATE to due date', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -292,6 +336,10 @@ void main() {
 
     group('Countdown Formatting', () {
       test('formats countdown as days', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),

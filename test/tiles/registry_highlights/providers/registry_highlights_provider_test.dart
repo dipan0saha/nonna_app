@@ -55,6 +55,9 @@ void main() {
 
     group('fetchHighlights', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -72,6 +75,9 @@ void main() {
       });
 
       test('fetches items from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -89,6 +95,9 @@ void main() {
       });
 
       test('loads items from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup cache to return data
         final cachedData = {
           'item': sampleItem.toJson(),
@@ -110,6 +119,9 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -126,6 +138,9 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mocks
         final cachedData = {
           'item': sampleItem.toJson(),
@@ -147,6 +162,9 @@ void main() {
       });
 
       test('saves fetched items to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
@@ -161,6 +179,9 @@ void main() {
       });
 
       test('sorts items by priority (highest first)', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final item1 = sampleItem.copyWith(id: 'item_1', priority: 3);
         final item2 = sampleItem.copyWith(id: 'item_2', priority: 5);
         final item3 = sampleItem.copyWith(id: 'item_3', priority: 1);
@@ -185,6 +206,9 @@ void main() {
 
     group('refresh', () {
       test('refreshes items with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final cachedData = {
           'item': sampleItem.toJson(),
           'isPurchased': false,
@@ -204,6 +228,9 @@ void main() {
 
     group('Purchase Status', () {
       test('tracks purchase status correctly', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
@@ -217,6 +244,9 @@ void main() {
       });
 
       test('filters unpurchased items only', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
@@ -234,6 +264,9 @@ void main() {
 
     group('Limit Items', () {
       test('limits to top 10 items', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Create 15 items
         final items = List.generate(
           15,

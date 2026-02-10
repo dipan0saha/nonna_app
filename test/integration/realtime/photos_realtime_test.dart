@@ -30,6 +30,10 @@ void main() {
 
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to photos table', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'test-photos-channel',
@@ -42,6 +46,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should filter photos by baby_profile_id', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         const testBabyProfileId = 'test-baby-123';
 
         final stream = realtimeService.subscribe(
@@ -58,6 +66,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should handle multiple simultaneous subscriptions', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream1 = realtimeService.subscribe(
           table: 'photos',
           channelName: 'photos-channel-1',
@@ -75,6 +87,10 @@ void main() {
 
       test('should return existing stream for duplicate channel names',
           () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream1 = realtimeService.subscribe(
           table: 'photos',
           channelName: 'duplicate-channel',
@@ -90,6 +106,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should unsubscribe from channel', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         realtimeService.subscribe(
           table: 'photos',
           channelName: 'unsubscribe-test',
@@ -106,6 +126,11 @@ void main() {
 
     group('Event Handling', () {
       test('should listen for INSERT events', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final completer = Completer<dynamic>();
 
         final stream = realtimeService.subscribe(
@@ -126,6 +151,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should listen for UPDATE events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'update-test',
@@ -136,6 +165,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should listen for DELETE events', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'delete-test',
@@ -146,6 +179,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should listen for ALL events by default', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'all-events-test',
@@ -157,6 +194,11 @@ void main() {
 
     group('Batched Updates', () {
       test('should handle rapid successive updates', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final receivedEvents = <dynamic>[];
         final completer = Completer<void>();
 
@@ -183,6 +225,10 @@ void main() {
 
     group('Reconnection Scenarios', () {
       test('should maintain subscription after reconnection', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'photos',
           channelName: 'reconnect-test',
@@ -198,6 +244,10 @@ void main() {
 
     group('Performance Benchmarks', () {
       test('subscription should complete within acceptable latency', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stopwatch = Stopwatch()..start();
 
         final stream = realtimeService.subscribe(
@@ -214,6 +264,10 @@ void main() {
 
       test('should handle multiple concurrent subscriptions efficiently',
           () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stopwatch = Stopwatch()..start();
 
         // Create 10 concurrent subscriptions
@@ -239,6 +293,10 @@ void main() {
     group('Memory Management', () {
       test('should not leak memory after multiple subscribe/unsubscribe cycles',
           () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         // Subscribe and unsubscribe multiple times
         for (int i = 0; i < 5; i++) {
           realtimeService.subscribe(
@@ -254,6 +312,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should clean up all resources on dispose', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         // Create multiple subscriptions
         for (int i = 0; i < 3; i++) {
           realtimeService.subscribe(

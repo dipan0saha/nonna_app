@@ -53,6 +53,9 @@ void main() {
 
     group('fetchConfigs', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -73,6 +76,9 @@ void main() {
       });
 
       test('fetches configs from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
@@ -95,6 +101,9 @@ void main() {
       });
 
       test('loads configs from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
@@ -115,6 +124,9 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -134,6 +146,9 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
@@ -156,6 +171,9 @@ void main() {
 
     group('getConfigsForScreen', () {
       test('filters configs by screen ID', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final config1 = sampleTileConfig;
         final config2 = sampleTileConfig.copyWith(
           id: 'tile_2',
@@ -185,6 +203,9 @@ void main() {
       });
 
       test('sorts configs by display order', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final config1 = sampleTileConfig.copyWith(displayOrder: 3);
         final config2 = sampleTileConfig.copyWith(
           id: 'tile_2',
@@ -216,6 +237,9 @@ void main() {
 
     group('getVisibleConfigs', () {
       test('filters by screen, role, and visibility', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final visibleConfig = sampleTileConfig.copyWith(isVisible: true);
         final hiddenConfig = sampleTileConfig.copyWith(
           id: 'tile_2',
@@ -253,6 +277,9 @@ void main() {
 
     group('updateVisibility', () {
       test('updates visibility in database and state', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
@@ -285,6 +312,9 @@ void main() {
 
     group('Cache Management', () {
       test('saves fetched configs to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});

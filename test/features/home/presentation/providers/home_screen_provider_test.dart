@@ -61,6 +61,10 @@ void main() {
 
     group('loadTiles', () {
       test('loads tiles from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
@@ -88,6 +92,10 @@ void main() {
       });
 
       test('loads tiles from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
 
@@ -106,6 +114,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
         when(mockDatabaseService.select('test_table'))
@@ -126,6 +138,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes tiles with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
@@ -154,6 +170,10 @@ void main() {
       });
 
       test('does not refresh when baby profile is missing', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(homeScreenProvider.notifier);
         await notifier.refresh();
 
@@ -164,6 +184,10 @@ void main() {
 
     group('switchBabyProfile', () {
       test('loads tiles for new baby profile', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
@@ -189,6 +213,10 @@ void main() {
 
     group('toggleRole', () {
       test('toggles user role', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
@@ -216,6 +244,10 @@ void main() {
       });
 
       test('does not toggle when baby profile is missing', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final notifier = container.read(homeScreenProvider.notifier);
         await notifier.toggleRole(UserRole.follower);
 
@@ -225,6 +257,10 @@ void main() {
 
     group('retry', () {
       test('retries loading tiles after error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get<List<Map<String, dynamic>>>('test_key'))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(

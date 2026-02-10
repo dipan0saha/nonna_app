@@ -30,6 +30,10 @@ void main() {
 
     group('Subscription Lifecycle', () {
       test('should successfully subscribe to events table', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'events',
           channelName: 'test-events-channel',
@@ -42,6 +46,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should filter events by baby_profile_id', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         const testBabyProfileId = 'test-baby-123';
 
         final stream = realtimeService.subscribe(
@@ -58,6 +66,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should handle multiple baby profile event streams', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream1 = realtimeService.subscribe(
           table: 'events',
           channelName: 'events-baby-1',
@@ -78,6 +90,10 @@ void main() {
 
     group('Event CRUD Operations', () {
       test('should receive event INSERT notifications', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'events',
           channelName: 'insert-event-test',
@@ -88,6 +104,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive event UPDATE notifications', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'events',
           channelName: 'update-event-test',
@@ -98,6 +118,10 @@ void main() {
       }, timeout: Timeout(testTimeout));
 
       test('should receive event DELETE notifications', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream = realtimeService.subscribe(
           table: 'events',
           channelName: 'delete-event-test',
@@ -110,6 +134,10 @@ void main() {
 
     group('Calendar Synchronization', () {
       test('should sync event changes across multiple subscribers', () async {
+        addTearDown(() async {
+          await realtimeService.dispose();
+        });
+
         final stream1 = realtimeService.subscribe(
           table: 'events',
           channelName: 'sync-test-1',
@@ -127,6 +155,11 @@ void main() {
 
     group('Performance', () {
       test('should handle event subscriptions with low latency', () async {
+        addTearDown(() async {
+          await subscription?.cancel();
+          await realtimeService.dispose();
+        });
+
         final stopwatch = Stopwatch()..start();
 
         final stream = realtimeService.subscribe(

@@ -50,6 +50,10 @@ void main() {
 
     group('loadAnnouncements', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
@@ -66,6 +70,10 @@ void main() {
       });
 
       test('loads announcements when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
 
@@ -78,6 +86,10 @@ void main() {
       });
 
       test('loads announcements from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
@@ -90,6 +102,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenThrow(Exception('Cache error'));
 
@@ -101,6 +117,10 @@ void main() {
       });
 
       test('filters expired announcements', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final activeAnnouncement = SystemAnnouncement(
           id: 'ann_1',
           title: 'Active',
@@ -128,6 +148,10 @@ void main() {
       });
 
       test('sorts announcements by priority', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final highPriority = SystemAnnouncement(
           id: 'ann_1',
           title: 'High',
@@ -168,6 +192,10 @@ void main() {
       });
 
       test('saves announcements to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
@@ -181,6 +209,10 @@ void main() {
 
     group('dismissAnnouncement', () {
       test('dismisses announcement locally', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state with announcements
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
@@ -202,6 +234,10 @@ void main() {
       });
 
       test('saves dismissed state to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         // Setup initial state
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
@@ -221,6 +257,10 @@ void main() {
 
     group('getActiveAnnouncements', () {
       test('returns only non-dismissed, non-expired announcements', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final announcement1 = SystemAnnouncement(
           id: 'ann_1',
           title: 'Active 1',
@@ -258,6 +298,10 @@ void main() {
 
     group('getCriticalAnnouncements', () {
       test('returns only critical priority announcements', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final criticalAnnouncement = SystemAnnouncement(
           id: 'ann_1',
           title: 'Critical',
@@ -287,6 +331,10 @@ void main() {
 
     group('clearDismissals', () {
       test('clears all dismissals for a user', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
         when(mocks.cache.put(any, any))
@@ -309,6 +357,10 @@ void main() {
 
     group('Announcement Priority', () {
       test('supports different announcement priorities', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final criticalAnnouncement = SystemAnnouncement(
           id: 'ann_1',
           title: 'Critical',
