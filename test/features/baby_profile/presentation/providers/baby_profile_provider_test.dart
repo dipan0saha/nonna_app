@@ -85,6 +85,10 @@ void main() {
 
     group('loadProfile', () {
       test('sets loading state while loading', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -109,6 +113,10 @@ void main() {
       });
 
       test('loads profile from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -135,6 +143,10 @@ void main() {
       });
 
       test('loads profile from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleProfile.toJson());
         var callCount = 0;
@@ -157,6 +169,10 @@ void main() {
       });
 
       test('loads profile with memberships', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -184,6 +200,10 @@ void main() {
       });
 
       test('handles profile not found error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -199,6 +219,10 @@ void main() {
       });
 
       test('handles database error gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
@@ -214,6 +238,10 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleProfile.toJson());
         var callCount = 0;
@@ -238,6 +266,10 @@ void main() {
       });
 
       test('saves fetched profile to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -264,6 +296,10 @@ void main() {
 
     group('enterEditMode', () {
       test('enables edit mode when user is owner', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -298,6 +334,10 @@ void main() {
 
     group('cancelEdit', () {
       test('disables edit mode', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -327,6 +367,10 @@ void main() {
 
     group('createProfile', () {
       test('creates baby profile successfully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockDatabaseService.insert(any, any))
             .thenAnswer((_) async => [sampleProfile.toJson()]);
 
@@ -345,6 +389,10 @@ void main() {
       });
 
       test('validates empty baby name', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final result = await notifier.createProfile(
           name: '   ',
           userId: 'user_1',
@@ -357,6 +405,10 @@ void main() {
       });
 
       test('handles database error during creation', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockDatabaseService.insert(any, any))
             .thenThrow(Exception('Creation failed'));
 
@@ -374,6 +426,10 @@ void main() {
 
     group('updateProfile', () {
       test('updates profile successfully when user is owner', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -407,6 +463,10 @@ void main() {
       });
 
       test('does not update when user is not owner', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         await notifier.updateProfile(
           babyProfileId: 'baby_1',
           name: 'Baby Jane Smith',
@@ -417,6 +477,10 @@ void main() {
       });
 
       test('validates empty baby name', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -446,6 +510,10 @@ void main() {
       });
 
       test('handles database error during update', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -479,6 +547,10 @@ void main() {
 
     group('deleteProfile', () {
       test('deletes profile successfully when user is owner', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -506,6 +578,10 @@ void main() {
       });
 
       test('does not delete when user is not owner', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final result = await notifier.deleteProfile(babyProfileId: 'baby_1');
 
         expect(result, isFalse);
@@ -513,6 +589,10 @@ void main() {
       });
 
       test('handles database error during deletion', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -541,6 +621,10 @@ void main() {
 
     group('uploadProfilePhoto', () {
       test('uploads profile photo successfully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockStorageService.uploadFile(
           filePath: 'filePath',
           storageKey: 'storageKey',
@@ -557,6 +641,10 @@ void main() {
       });
 
       test('handles upload error gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockStorageService.uploadFile(
           filePath: 'filePath',
           storageKey: 'storageKey',
@@ -574,6 +662,10 @@ void main() {
 
     group('removeFollower', () {
       test('removes follower successfully when user is owner', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -604,6 +696,10 @@ void main() {
       });
 
       test('does not remove follower when user is not owner', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         final result = await notifier.removeFollower(
           babyProfileId: 'baby_1',
           membershipId: 'membership_1',
@@ -614,6 +710,10 @@ void main() {
       });
 
       test('handles database error during removal', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
@@ -645,6 +745,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes profile with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
+        
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
