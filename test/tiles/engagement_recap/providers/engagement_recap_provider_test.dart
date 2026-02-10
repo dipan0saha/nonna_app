@@ -22,11 +22,7 @@ void main() {
 
     group('fetchEngagement', () {
       test('fetches engagement metrics from database when cache is empty',
-          () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mocks
+          () async {        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
 
         // Mock photo queries
@@ -59,11 +55,7 @@ void main() {
         // Test would require provider container to verify behavior
       });
 
-      test('loads metrics from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup cache to return data
+      test('loads metrics from cache when available', () async {        // Setup cache to return data
         final cachedData = {
           'photoSquishes': 2,
           'photoComments': 3,
@@ -76,11 +68,7 @@ void main() {
         // Test would require provider container to verify behavior
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mock to throw error
+      test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
@@ -88,11 +76,7 @@ void main() {
         // Test would require provider container to verify behavior
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mocks
+      test('force refresh bypasses cache', () async {        // Setup mocks
         final cachedData = {
           'photoSquishes': 1,
           'photoComments': 1,

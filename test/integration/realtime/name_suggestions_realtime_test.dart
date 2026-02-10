@@ -139,7 +139,6 @@ void main() {
     group('Performance', () {
       test('should deliver suggestion updates with low latency', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 

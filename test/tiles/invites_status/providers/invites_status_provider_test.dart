@@ -60,11 +60,7 @@ void main() {
     });
 
     group('fetchInvitations', () {
-      test('sets loading state while fetching', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('sets loading state while fetching', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -81,11 +77,7 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches invitations from database when cache is empty', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('fetches invitations from database when cache is empty', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -109,11 +101,7 @@ void main() {
         expect(state.pendingCount, equals(1));
       });
 
-      test('loads invitations from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('loads invitations from cache when available', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup cache to return data
         when(mocks.cache.get(any))
@@ -131,11 +119,7 @@ void main() {
         expect(state.invitations.first.id, equals('invite_1'));
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('handles errors gracefully', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -152,11 +136,7 @@ void main() {
         expect(state.invitations, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('force refresh bypasses cache', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mocks
         when(mocks.cache.get(any))
@@ -178,11 +158,7 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('calculates pending count correctly', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('calculates pending count correctly', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         final invite1 = sampleInvitation.copyWith(
             id: 'invite_1', status: InvitationStatus.pending);
@@ -210,11 +186,7 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes invitations with force refresh', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('refreshes invitations with force refresh', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
@@ -234,11 +206,7 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles INSERT invitation', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('handles INSERT invitation', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -268,11 +236,7 @@ void main() {
             equals(initialCount + 1));
       });
 
-      test('handles UPDATE invitation status', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('handles UPDATE invitation status', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -316,11 +280,7 @@ void main() {
     });
 
     group('Role-based Access', () {
-      test('owner can fetch invitations', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final notifier = container.read(invitesStatusProvider.notifier);
+      test('owner can fetch invitations', () async {        final notifier = container.read(invitesStatusProvider.notifier);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(

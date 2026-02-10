@@ -52,11 +52,7 @@ void main() {
     });
 
     group('fetchConfigs', () {
-      test('sets loading state while fetching', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mock to delay response
+      test('sets loading state while fetching', () async {        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -75,11 +71,7 @@ void main() {
         expect(state.isLoading, isFalse);
       });
 
-      test('fetches configs from database when cache is empty', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mocks
+      test('fetches configs from database when cache is empty', () async {        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -100,11 +92,7 @@ void main() {
         expect(state.error, isNull);
       });
 
-      test('loads configs from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup cache to return data
+      test('loads configs from cache when available', () async {        // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
 
@@ -123,11 +111,7 @@ void main() {
         expect(state.configs.first.id, equals('tile_1'));
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mock to throw error
+      test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
@@ -145,11 +129,7 @@ void main() {
         expect(state.configs, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mocks
+      test('force refresh bypasses cache', () async {        // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
         when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
@@ -170,11 +150,7 @@ void main() {
     });
 
     group('getConfigsForScreen', () {
-      test('filters configs by screen ID', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final config1 = sampleTileConfig;
+      test('filters configs by screen ID', () async {        final config1 = sampleTileConfig;
         final config2 = sampleTileConfig.copyWith(
           id: 'tile_2',
           screenId: 'calendar',
@@ -202,11 +178,7 @@ void main() {
         expect(calendarConfigs.first.screenId, equals('calendar'));
       });
 
-      test('sorts configs by display order', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final config1 = sampleTileConfig.copyWith(displayOrder: 3);
+      test('sorts configs by display order', () async {        final config1 = sampleTileConfig.copyWith(displayOrder: 3);
         final config2 = sampleTileConfig.copyWith(
           id: 'tile_2',
           displayOrder: 1,
@@ -236,11 +208,7 @@ void main() {
     });
 
     group('getVisibleConfigs', () {
-      test('filters by screen, role, and visibility', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final visibleConfig = sampleTileConfig.copyWith(isVisible: true);
+      test('filters by screen, role, and visibility', () async {        final visibleConfig = sampleTileConfig.copyWith(isVisible: true);
         final hiddenConfig = sampleTileConfig.copyWith(
           id: 'tile_2',
           isVisible: false,
@@ -276,11 +244,7 @@ void main() {
     });
 
     group('updateVisibility', () {
-      test('updates visibility in database and state', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup initial state
+      test('updates visibility in database and state', () async {        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
@@ -311,11 +275,7 @@ void main() {
     });
 
     group('Cache Management', () {
-      test('saves fetched configs to cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('saves fetched configs to cache', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mocks.database.select(any))

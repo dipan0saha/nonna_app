@@ -53,12 +53,7 @@ void main() {
     });
 
     group('fetchNotifications', () {
-      test('sets loading state while fetching', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('sets loading state while fetching', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -74,12 +69,7 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches notifications from database when cache is empty', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('fetches notifications from database when cache is empty', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -102,12 +92,7 @@ void main() {
         expect(state.unreadCount, equals(1));
       });
 
-      test('loads notifications from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('loads notifications from cache when available', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         // Setup cache to return data
         when(mocks.cache.get(any))
@@ -124,12 +109,7 @@ void main() {
         expect(state.notifications.first.id, equals('notif_1'));
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('handles errors gracefully', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -145,12 +125,7 @@ void main() {
         expect(state.notifications, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('force refresh bypasses cache', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         // Setup mocks
         when(mocks.cache.get(any))
@@ -172,12 +147,7 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('calculates unread count correctly', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('calculates unread count correctly', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         final notif1 = sampleNotification.copyWith(id: 'notif_1', readAt: null);
         final notif2 = sampleNotification.copyWith(id: 'notif_2', readAt: null);
@@ -204,12 +174,7 @@ void main() {
     });
 
     group('markAsRead', () {
-      test('marks notification as read', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('marks notification as read', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -242,12 +207,7 @@ void main() {
         expect(state.unreadCount, equals(0));
       });
 
-      test('updates cache after marking as read', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('updates cache after marking as read', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -276,12 +236,7 @@ void main() {
     });
 
     group('markAllAsRead', () {
-      test('marks all notifications as read', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('marks all notifications as read', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         final notif1 = sampleNotification.copyWith(id: 'notif_1', readAt: null);
         final notif2 = sampleNotification.copyWith(id: 'notif_2', readAt: null);
@@ -316,12 +271,7 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes notifications with force refresh', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('refreshes notifications with force refresh', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleNotification.toJson()]);
@@ -341,12 +291,7 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles INSERT notification', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final notifier = container.read(notificationsProvider.notifier);
+      test('handles INSERT notification', () async {        final notifier = container.read(notificationsProvider.notifier);
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);

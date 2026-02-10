@@ -65,11 +65,7 @@ void main() {
     });
 
     group('fetchRSVPTasks', () {
-      test('sets loading state while fetching', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mock to delay response
+      test('sets loading state while fetching', () async {        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
         when(mocks.database.select(any))
@@ -85,11 +81,7 @@ void main() {
         expect(state.isLoading, isFalse);
       });
 
-      test('fetches events from database when cache is empty', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mocks
+      test('fetches events from database when cache is empty', () async {        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -112,11 +104,7 @@ void main() {
         expect(state.error, isNull);
       });
 
-      test('loads events from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup cache to return data
+      test('loads events from cache when available', () async {        // Setup cache to return data
         final cachedData = {
           'event': sampleEvent.toJson(),
           'rsvp': null,
@@ -138,11 +126,7 @@ void main() {
         expect(state.events.first.event.id, equals('event_1'));
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mock to throw error
+      test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
@@ -159,11 +143,7 @@ void main() {
         expect(state.events, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup mocks
+      test('force refresh bypasses cache', () async {        // Setup mocks
         final cachedData = {
           'event': sampleEvent.toJson(),
           'rsvp': null,
@@ -191,11 +171,7 @@ void main() {
         verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
       });
 
-      test('calculates pending count correctly', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('calculates pending count correctly', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -216,11 +192,7 @@ void main() {
     });
 
     group('submitRSVP', () {
-      test('submits RSVP and updates state', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup initial state
+      test('submits RSVP and updates state', () async {        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -248,11 +220,7 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes RSVP tasks with force refresh', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        final cachedData = {
+      test('refreshes RSVP tasks with force refresh', () async {        final cachedData = {
           'event': sampleEvent.toJson(),
           'rsvp': null,
           'needsResponse': true,
@@ -279,11 +247,7 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles new event requiring RSVP', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        // Setup initial state
+      test('handles new event requiring RSVP', () async {        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -315,11 +279,7 @@ void main() {
     });
 
     group('RSVP Status Filtering', () {
-      test('filters events needing response', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('filters events needing response', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),

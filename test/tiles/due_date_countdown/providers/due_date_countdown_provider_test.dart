@@ -51,12 +51,7 @@ void main() {
     });
 
     group('fetchCountdowns', () {
-      test('sets loading state while fetching', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mock to delay response
+      test('sets loading state while fetching', () async {        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -72,12 +67,7 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches profiles from database when cache is empty', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mocks
+      test('fetches profiles from database when cache is empty', () async {        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -96,23 +86,13 @@ void main() {
         expect(notifier.state.error, isNull);
       });
 
-      test('handles empty profile list', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        await notifier.fetchCountdowns(babyProfileIds: []);
+      test('handles empty profile list', () async {        await notifier.fetchCountdowns(babyProfileIds: []);
 
         expect(notifier.state.countdowns, isEmpty);
         expect(notifier.state.isLoading, isFalse);
       });
 
-      test('loads countdowns from cache when available', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup cache to return data
+      test('loads countdowns from cache when available', () async {        // Setup cache to return data
         final cachedData = {
           'profile': sampleProfile.toJson(),
           'daysUntilDueDate': 30,
@@ -131,12 +111,7 @@ void main() {
         expect(notifier.state.countdowns.first.profile.id, equals('profile_1'));
       });
 
-      test('handles errors gracefully', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mock to throw error
+      test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenThrow(Exception('Database error'));
@@ -149,12 +124,7 @@ void main() {
         expect(notifier.state.countdowns, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup mocks
+      test('force refresh bypasses cache', () async {        // Setup mocks
         final cachedData = {
           'profile': sampleProfile.toJson(),
           'daysUntilDueDate': 30,
@@ -179,12 +149,7 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('calculates days until due date correctly', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final futureProfile = sampleProfile.copyWith(
+      test('calculates days until due date correctly', () async {        final futureProfile = sampleProfile.copyWith(
           expectedBirthDate: DateTime.now().add(const Duration(days: 45)),
         );
 
@@ -204,12 +169,7 @@ void main() {
         expect(notifier.state.countdowns.first.isPastDue, isFalse);
       });
 
-      test('handles past due date correctly', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final pastProfile = sampleProfile.copyWith(
+      test('handles past due date correctly', () async {        final pastProfile = sampleProfile.copyWith(
           expectedBirthDate: DateTime.now().subtract(const Duration(days: 10)),
         );
 
@@ -227,12 +187,7 @@ void main() {
         expect(notifier.state.countdowns.first.isPastDue, isTrue);
       });
 
-      test('handles multiple babies', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final profile2 =
+      test('handles multiple babies', () async {        final profile2 =
             sampleProfile.copyWith(id: 'profile_2', name: 'Baby Jack');
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -255,12 +210,7 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes countdowns with force refresh', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        final cachedData = {
+      test('refreshes countdowns with force refresh', () async {        final cachedData = {
           'profile': sampleProfile.toJson(),
           'daysUntilDueDate': 30,
           'isPastDue': false,
@@ -283,12 +233,7 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles UPDATE to due date', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        // Setup initial state
+      test('handles UPDATE to due date', () async {        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -335,12 +280,7 @@ void main() {
     });
 
     group('Countdown Formatting', () {
-      test('formats countdown as days', () async {
-        addTearDown(() async {
-          await Future.delayed(Duration.zero);
-        });
-        
-        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('formats countdown as days', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),

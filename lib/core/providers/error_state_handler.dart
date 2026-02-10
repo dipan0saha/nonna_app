@@ -214,13 +214,22 @@ class ErrorStateHandler extends Notifier<ErrorState> {
     } catch (e, stackTrace) {
       debugPrint('❌ Retry failed for $key: $e');
 
-      // Handle retry failure
+      // Handle retry failure - preserve retry attempts
       handleError(
         error: e,
         key: key,
         stackTrace: stackTrace,
         onRetry: errorInfo.onRetry,
       );
+      
+      // Restore the retry attempt count that was incremented earlier
+      // (handleError creates a new error entry with retryAttempts=0)
+      final errors = Map<String, ErrorInfo>.from(state.errors);
+      final newError = errors[key];
+      if (newError != null) {
+        errors[key] = newError.copyWith(retryAttempts: attempt);
+        state = state.copyWith(errors: errors);
+      }
     }
   }
 
