@@ -204,6 +204,9 @@ class ErrorStateHandler extends Notifier<ErrorState> {
     await Future.delayed(delay);
 
     try {
+      // Save current attempt count before clearing
+      final currentAttempts = attempt;
+      
       // Clear error before retry
       clearError(key);
 
@@ -214,13 +217,21 @@ class ErrorStateHandler extends Notifier<ErrorState> {
     } catch (e, stackTrace) {
       debugPrint('❌ Retry failed for $key: $e');
 
-      // Handle retry failure
+      // Handle retry failure - preserve retry attempts
       handleError(
         error: e,
         key: key,
         stackTrace: stackTrace,
         onRetry: errorInfo.onRetry,
       );
+      
+      // Restore retry attempts that were incremented earlier
+      final errors = Map<String, ErrorInfo>.from(state.errors);
+      final newError = errors[key];
+      if (newError != null) {
+        errors[key] = newError.copyWith(retryAttempts: attempt);
+        state = state.copyWith(errors: errors);
+      }
     }
   }
 

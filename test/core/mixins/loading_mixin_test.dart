@@ -297,9 +297,7 @@ void main() {
       await tester.runAsync(() async {
         late _TestWidgetState state;
 
-        await tester.pumpWidget(ScaffoldMessenger(
-          child: const TestWidget(),
-        ));
+        await tester.pumpWidget(wrapWithMaterialApp(const TestWidget()));
         state = tester.state(find.byType(TestWidget));
 
         await state.withLoadingAndError(() => state.failingOperation());

@@ -461,7 +461,7 @@ void main() {
 
         expect(isVisible, true);
 
-        addTearDown(tester.view.reset);
+        tester.view.reset();
       });
     });
 
