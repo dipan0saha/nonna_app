@@ -117,7 +117,6 @@ void main() {
     group('Event Handling', () {
       test('should receive new notification INSERT events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -132,7 +131,6 @@ void main() {
 
       test('should receive notification UPDATE events (read status)', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -147,7 +145,6 @@ void main() {
 
       test('should receive notification DELETE events', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -164,7 +161,6 @@ void main() {
     group('Performance Requirements', () {
       test('should deliver notifications with <2 second latency', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -205,7 +201,6 @@ void main() {
     group('Unread Count Scenarios', () {
       test('should track unread notification updates in real-time', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 

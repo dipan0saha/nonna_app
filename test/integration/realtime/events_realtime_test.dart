@@ -91,7 +91,6 @@ void main() {
     group('Event CRUD Operations', () {
       test('should receive event INSERT notifications', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -106,7 +105,6 @@ void main() {
 
       test('should receive event UPDATE notifications', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 
@@ -121,7 +119,6 @@ void main() {
 
       test('should receive event DELETE notifications', () async {
         addTearDown(() async {
-          await subscription?.cancel();
           await realtimeService.dispose();
         });
 

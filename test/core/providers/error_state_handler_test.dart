@@ -210,6 +210,9 @@ void main() {
 
     group('Retry', () {
       test('retries operation successfully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         var callCount = 0;
         errorHandler.handleError(
           error: Exception('Test'),
@@ -226,6 +229,9 @@ void main() {
       });
 
       test('does not retry non-retryable error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         errorHandler.handleError(
           error: Exception('Test'),
           key: 'test',
@@ -237,6 +243,9 @@ void main() {
       });
 
       test('does not retry when no callback provided', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         errorHandler.handleError(
           error: Exception('Test'),
           key: 'test',
@@ -247,6 +256,9 @@ void main() {
       });
 
       test('increments retry attempts', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         var shouldFail = true;
         errorHandler.handleError(
           error: Exception('Test'),
@@ -269,6 +281,9 @@ void main() {
       });
 
       test('stops retrying after max attempts', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         var retryCount = 0;
         errorHandler.handleError(
           error: Exception('Test'),
@@ -294,6 +309,9 @@ void main() {
 
     group('Execute With Error Handling', () {
       test('executes operation successfully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final result = await errorHandler.executeWithErrorHandling(
           operation: () async => 'success',
           key: 'test',
@@ -304,6 +322,9 @@ void main() {
       });
 
       test('handles operation error', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final result = await errorHandler.executeWithErrorHandling(
           operation: () async => throw Exception('Test error'),
           key: 'test',
@@ -317,6 +338,9 @@ void main() {
       });
 
       test('clears existing error before executing', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Add initial error
         errorHandler.handleError(error: Exception('Old'), key: 'test');
 

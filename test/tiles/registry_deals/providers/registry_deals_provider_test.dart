@@ -51,6 +51,9 @@ void main() {
 
     group('fetchDeals', () {
       test('sets loading state while fetching', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
@@ -65,6 +68,9 @@ void main() {
       });
 
       test('fetches deals from database when cache is empty', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -81,6 +87,9 @@ void main() {
       });
 
       test('loads deals from cache when available', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
@@ -97,6 +106,9 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
@@ -112,6 +124,9 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
@@ -131,6 +146,9 @@ void main() {
       });
 
       test('saves fetched deals to cache', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
@@ -145,6 +163,9 @@ void main() {
       });
 
       test('filters items with high priority', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final deal1 = sampleDeal.copyWith(id: 'item_1', priority: 5);
         final deal2 = sampleDeal.copyWith(id: 'item_2', priority: 2);
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
@@ -164,6 +185,9 @@ void main() {
       });
 
       test('sorts deals by priority (highest first)', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final deal1 = sampleDeal.copyWith(id: 'item_1', priority: 3);
         final deal2 = sampleDeal.copyWith(id: 'item_2', priority: 5);
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
@@ -185,6 +209,9 @@ void main() {
 
     group('refresh', () {
       test('refreshes deals with force refresh', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
         when(mocks.database.select(any))
@@ -201,6 +228,9 @@ void main() {
 
     group('Priority Calculation', () {
       test('identifies high priority items', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final highPriorityDeal = sampleDeal.copyWith(
           priority: 5,
         );
@@ -218,6 +248,9 @@ void main() {
       });
 
       test('checks priority levels correctly', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         final mediumPriorityDeal = sampleDeal.copyWith(
           priority: 3,
         );
@@ -237,6 +270,9 @@ void main() {
 
     group('Limit Deals', () {
       test('limits to top deals', () async {
+        addTearDown(() async {
+          await Future.delayed(Duration.zero);
+        });
         // Create 20 deals
         final deals = List.generate(
           20,
