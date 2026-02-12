@@ -34,10 +34,10 @@ void main() {
       );
 
       notifier = container.read(systemAnnouncementsProvider.notifier);
-    });
-
-    tearDown(() {
-      container.dispose();
+      
+      addTearDown(() {
+        container.dispose();
+      });
     });
 
     group('Initial State', () {

@@ -23,10 +23,10 @@ void main() {
       );
 
       notifier = container.read(checklistProvider.notifier);
-    });
-
-    tearDown(() {
-      container.dispose();
+      
+      addTearDown(() {
+        container.dispose();
+      });
     });
 
     group('Initial State', () {

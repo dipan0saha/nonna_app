@@ -38,8 +38,6 @@ class FakePostgrestBuilder
   final List<Map<String, dynamic>> _data;
   final Exception? _error;
   final Duration? _delay;
-  bool _isMaybeSingle = false;
-  bool _isSingle = false;
 
   FakePostgrestBuilder(this._data, {Exception? error, Duration? delay})
       : _error = error,
@@ -189,14 +187,12 @@ class FakePostgrestBuilder
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>> single() {
-    _isSingle = true;
-    return this as PostgrestTransformBuilder<Map<String, dynamic>>;
+    return FakeSinglePostgrestBuilder(_data, _error, _delay);
   }
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>?> maybeSingle() {
-    _isMaybeSingle = true;
-    return this as PostgrestTransformBuilder<Map<String, dynamic>?>;
+    return FakeMaybeSinglePostgrestBuilder(_data, _error, _delay);
   }
 
   @override
@@ -227,12 +223,10 @@ class FakePostgrestBuilder
   Future<U> then<U>(
       FutureOr<U> Function(List<Map<String, dynamic>> value) onValue,
       {Function? onError}) async {
-    // Handle delay if specified
     if (_delay != null) {
       await Future.delayed(_delay);
     }
 
-    // Handle error if specified
     if (_error != null) {
       if (onError != null) {
         return onError(_error, StackTrace.current);
@@ -240,20 +234,6 @@ class FakePostgrestBuilder
       throw _error;
     }
 
-    // Note: This is a simplified implementation for testing.
-    // In real usage, single() and maybeSingle() change the generic type,
-    // but for our mock purposes, we cast appropriately.
-    if (_isMaybeSingle) {
-      // Return null if empty, otherwise return the data
-      final List<Map<String, dynamic>> result = _data.isEmpty ? [] : _data;
-      return onValue(result);
-    } else if (_isSingle) {
-      // Return the first item
-      if (_data.isEmpty) {
-        throw Exception('No data found for single()');
-      }
-      return onValue(_data);
-    }
     return onValue(_data);
   }
 }
@@ -395,11 +375,11 @@ class FakePostgrestUpdateBuilder
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>> single() =>
-      this as PostgrestTransformBuilder<Map<String, dynamic>>;
+      FakeSinglePostgrestBuilder(_data != null ? [_data!] : [], null, null);
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>?> maybeSingle() =>
-      this as PostgrestTransformBuilder<Map<String, dynamic>?>;
+      FakeMaybeSinglePostgrestBuilder(_data != null ? [_data!] : [], null, null);
 
   @override
   PostgrestTransformBuilder<String> csv() =>
@@ -568,11 +548,11 @@ class FakePostgrestDeleteBuilder
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>> single() =>
-      this as PostgrestTransformBuilder<Map<String, dynamic>>;
+      FakeSinglePostgrestBuilder([], null, null);
 
   @override
   PostgrestTransformBuilder<Map<String, dynamic>?> maybeSingle() =>
-      this as PostgrestTransformBuilder<Map<String, dynamic>?>;
+      FakeMaybeSinglePostgrestBuilder([], null, null);
 
   @override
   PostgrestTransformBuilder<String> csv() =>
@@ -618,5 +598,66 @@ class FakePostgrestInsertBuilder {
       FutureOr<R> Function(List<Map<String, dynamic>> value) onValue,
       {Function? onError}) async {
     return _data;
+  }
+}
+
+/// Fake single result builder that properly implements PostgrestTransformBuilder<Map<String, dynamic>>
+class FakeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, dynamic>> {
+  final List<Map<String, dynamic>> _data;
+  final Exception? _error;
+  final Duration? _delay;
+
+  FakeSinglePostgrestBuilder(this._data, this._error, this._delay)
+      : super(_createBaseBuilder());
+
+  @override
+  Future<U> then<U>(
+      FutureOr<U> Function(Map<String, dynamic> value) onValue,
+      {Function? onError}) async {
+    if (_delay != null) {
+      await Future.delayed(_delay);
+    }
+
+    if (_error != null) {
+      if (onError != null) {
+        return onError(_error, StackTrace.current);
+      }
+      throw _error;
+    }
+
+    if (_data.isEmpty) {
+      throw Exception('No data found for single()');
+    }
+
+    return onValue(_data.first);
+  }
+}
+
+/// Fake maybe single result builder that properly implements PostgrestTransformBuilder<Map<String, dynamic>?>
+class FakeMaybeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, dynamic>?> {
+  final List<Map<String, dynamic>> _data;
+  final Exception? _error;
+  final Duration? _delay;
+
+  FakeMaybeSinglePostgrestBuilder(this._data, this._error, this._delay)
+      : super(_createBaseBuilder());
+
+  @override
+  Future<U> then<U>(
+      FutureOr<U> Function(Map<String, dynamic>? value) onValue,
+      {Function? onError}) async {
+    if (_delay != null) {
+      await Future.delayed(_delay);
+    }
+
+    if (_error != null) {
+      if (onError != null) {
+        return onError(_error, StackTrace.current);
+      }
+      throw _error;
+    }
+
+    final result = _data.isEmpty ? null : _data.first;
+    return onValue(result);
   }
 }
