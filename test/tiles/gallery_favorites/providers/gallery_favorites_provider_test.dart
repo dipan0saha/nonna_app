@@ -1,10 +1,31 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
+import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('GalleryFavoritesProvider Tests', () {
+    late MockServiceContainer mocks;
+
     setUp(() {
-      // Setup will be needed when tests are implemented
+      mocks = MockFactory.createServiceContainer();
+      when(mocks.cache.isInitialized).thenReturn(true);
+      when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes'))).thenAnswer((_) async {});
+      when(mocks.database.select(any)).thenAnswer((_) => throw UnimplementedError());
+      when(mocks.realtime.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.empty());
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
     });
+
+    tearDown() {
+      reset(mocks.database);
+      reset(mocks.cache);
+      reset(mocks.realtime);
+    }
 
     group('Initial State', () {
       test('initial state has empty favorites', () {

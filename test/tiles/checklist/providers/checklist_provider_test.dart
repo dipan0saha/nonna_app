@@ -15,6 +15,8 @@ void main() {
     setUp(() {
       mockCacheService = MockFactory.createCacheService();
       when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      when(mockCacheService.put(any, any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
@@ -25,6 +27,7 @@ void main() {
 
     tearDown(() {
       container.dispose();
+      reset(mockCacheService);
     });
 
     group('Initial State', () {
