@@ -189,7 +189,7 @@ void main() {
 
         // Setup update mock
         when(mocks.database.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
 
         await notifier.markAsRead(
           notificationId: 'notif_1',
@@ -221,7 +221,7 @@ void main() {
         await notifier.fetchNotifications(userId: 'user_1');
 
         when(mocks.database.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
 
         await notifier.markAsRead(
           notificationId: 'notif_1',
@@ -254,7 +254,7 @@ void main() {
         await notifier.fetchNotifications(userId: 'user_1');
 
         when(mocks.database.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
 
         await notifier.markAllAsRead(userId: 'user_1');
 

@@ -73,7 +73,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -129,7 +129,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -152,7 +152,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([recentFollower.toJson()]));
 
@@ -171,7 +171,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -199,7 +199,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any)).thenReturn(
           FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
         );
@@ -221,7 +221,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -241,7 +241,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -263,7 +263,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -284,7 +284,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -300,7 +300,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -331,7 +331,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenReturn(Stream.empty());
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
           follower1.toJson(),
           follower2.toJson(),

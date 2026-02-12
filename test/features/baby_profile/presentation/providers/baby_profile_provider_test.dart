@@ -373,7 +373,7 @@ void main() {
           }
         });
         when(mockDatabaseService.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
 
         await notifier.loadProfile(
           babyProfileId: 'baby_1',
@@ -474,7 +474,7 @@ void main() {
           }
         });
         when(mockDatabaseService.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
 
         await notifier.loadProfile(
           babyProfileId: 'baby_1',
@@ -564,7 +564,7 @@ void main() {
           }
         });
         when(mockDatabaseService.delete(any))
-            .thenReturn(FakePostgrestDeleteBuilder());
+            .thenAnswer((_) => FakePostgrestDeleteBuilder());
 
         await notifier.loadProfile(
           babyProfileId: 'baby_1',

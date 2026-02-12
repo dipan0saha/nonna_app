@@ -300,7 +300,7 @@ class MockHelpers {
       table: table,
       channelName: anyNamed('channelName'),
       filter: anyNamed('filter'),
-    )).thenReturn(dataStream);
+    )).thenAnswer((_) => dataStream);
   }
 
   /// Configure a realtime mock with a single emission
@@ -313,7 +313,7 @@ class MockHelpers {
       table: table,
       channelName: anyNamed('channelName'),
       filter: anyNamed('filter'),
-    )).thenReturn(Stream.value(data));
+    )).thenAnswer((_) => Stream.value(data));
   }
 
   /// Configure a realtime mock that emits multiple values
@@ -326,7 +326,7 @@ class MockHelpers {
       table: table,
       channelName: anyNamed('channelName'),
       filter: anyNamed('filter'),
-    )).thenReturn(Stream.fromIterable(dataList));
+    )).thenAnswer((_) => Stream.fromIterable(dataList));
   }
 
   // ==========================================
