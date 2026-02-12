@@ -11,16 +11,16 @@ PostgrestBuilder<List<Map<String, dynamic>>, List<Map<String, dynamic>>,
 }
 
 /// Helper method to create a single result base PostgrestBuilder for testing purposes
-PostgrestBuilder<Map<String, dynamic>, Map<String, dynamic>, Map<String, dynamic>>
-    _createSingleBaseBuilder() {
+PostgrestBuilder<Map<String, dynamic>, Map<String, dynamic>,
+    Map<String, dynamic>> _createSingleBaseBuilder() {
   final client = SupabaseClient('http://localhost', 'fake-key');
   // Call select() and single() to get the proper type
   return client.from('fake_table').select().single();
 }
 
 /// Helper method to create a maybe single result base PostgrestBuilder for testing purposes
-PostgrestBuilder<Map<String, dynamic>?, Map<String, dynamic>?, Map<String, dynamic>?>
-    _createMaybeSingleBaseBuilder() {
+PostgrestBuilder<Map<String, dynamic>?, Map<String, dynamic>?,
+    Map<String, dynamic>?> _createMaybeSingleBaseBuilder() {
   final client = SupabaseClient('http://localhost', 'fake-key');
   // Call select() and maybeSingle() to get the proper type
   return client.from('fake_table').select().maybeSingle();
@@ -618,7 +618,8 @@ class FakePostgrestInsertBuilder {
 }
 
 /// Fake single result builder that properly implements PostgrestTransformBuilder with `Map<String, dynamic>`
-class FakeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, dynamic>> {
+class FakeSinglePostgrestBuilder
+    extends PostgrestTransformBuilder<Map<String, dynamic>> {
   final List<Map<String, dynamic>> _data;
   final Exception? _error;
   final Duration? _delay;
@@ -627,8 +628,7 @@ class FakeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, d
       : super(_createSingleBaseBuilder());
 
   @override
-  Future<U> then<U>(
-      FutureOr<U> Function(Map<String, dynamic> value) onValue,
+  Future<U> then<U>(FutureOr<U> Function(Map<String, dynamic> value) onValue,
       {Function? onError}) async {
     if (_delay != null) {
       await Future.delayed(_delay);
@@ -650,7 +650,8 @@ class FakeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, d
 }
 
 /// Fake maybe single result builder that properly implements PostgrestTransformBuilder with `Map<String, dynamic>?`
-class FakeMaybeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, dynamic>?> {
+class FakeMaybeSinglePostgrestBuilder
+    extends PostgrestTransformBuilder<Map<String, dynamic>?> {
   final List<Map<String, dynamic>> _data;
   final Exception? _error;
   final Duration? _delay;
@@ -659,8 +660,7 @@ class FakeMaybeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<Stri
       : super(_createMaybeSingleBaseBuilder());
 
   @override
-  Future<U> then<U>(
-      FutureOr<U> Function(Map<String, dynamic>? value) onValue,
+  Future<U> then<U>(FutureOr<U> Function(Map<String, dynamic>? value) onValue,
       {Function? onError}) async {
     if (_delay != null) {
       await Future.delayed(_delay);

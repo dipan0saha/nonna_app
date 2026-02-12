@@ -43,7 +43,7 @@ void main() {
       when(mockCache.get(any)).thenAnswer((_) async => null);
       when(mockCache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
           .thenAnswer((_) async {});
-      
+
       // Setup database mock with default empty response
       // Using thenAnswer (not thenReturn) for FakePostgrestBuilder
       when(mockDatabase.select(any))
@@ -55,7 +55,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
-      
+
       // Setup realtime unsubscribe to do nothing by default
       when(mockRealtime.unsubscribe(any)).thenAnswer((_) async {});
 
@@ -110,7 +110,8 @@ void main() {
 
       test('sets loading state while fetching', () async {
         // Setup mock for database (cache already configured in setUp)
-        when(mockDatabase.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabase.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
         final fetchFuture = container
@@ -237,7 +238,8 @@ void main() {
 
         // Setup database response (cache and realtime already configured in setUp)
         when(mockDatabase.select(any)).thenAnswer(
-          (_) => FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
+          (_) =>
+              FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
         );
 
         await container.read(newFollowersProvider.notifier).fetchFollowers(

@@ -1,0 +1,200 @@
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/baby_profile/presentation/providers/baby_profile_provider_test.dart -p vm --plain-name 'BabyProfileProvider Tests uploadProfilePhoto uploads profile photo successfully'
+00:24 +2280 ~6 -6: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart: HomeScreenNotifier Tests loadTiles loads tiles from cache when available [E]
+  Bad state: Cannot call `when` within a stub response
+--
+✅ Profile photo uploaded: https://example.com/test-photo.jpg
+00:24 +2280 ~6 -8: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart: HomeScreenNotifier Tests loadTiles handles errors gracefully [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/baby_profile/presentation/providers/baby_profile_provider_test.dart -p vm --plain-name 'BabyProfileProvider Tests uploadProfilePhoto handles upload error gracefully'
+00:24 +2280 ~6 -9: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart: HomeScreenNotifier Tests refresh refreshes tiles with force refresh [E]
+  Bad state: Cannot call `when` within a stub response
+--
+✅ Loaded baby profile: baby_1
+00:24 +2280 ~6 -10: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart: HomeScreenNotifier Tests refresh does not refresh when baby profile is missing [E]
+  Bad state: Cannot call `when` within a stub response
+--
+✅ Follower removed
+00:24 +2281 ~6 -11: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/integration/realtime/comprehensive_realtime_test.dart: ... maintain stable connections for all subscriptions     00:24 +2281 ~6 -11: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart: HomeScreenNotifier Tests switchBabyProfile loads tiles for new baby profile [E]
+  Bad state: Cannot call `when` within a stub response
+--
+⚠️  Only owners can remove followers
+00:24 +2282 ~6 -11: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/integration/realtime/comprehensive_realtime_test.dart: ... maintain stable connections for all subscriptions     00:24 +2282 ~6 -12: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart: HomeScreenNotifier Tests toggleRole toggles user role [E]
+  Bad state: Cannot call `when` within a stub response
+--
+❌ Failed to remove follower: Exception: Delete failed
+00:24 +2283 ~6 -13: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/integration/realtime/comprehensive_realtime_test.dart: ... maintain stable connections for all subscriptions     00:24 +2283 ~6 -13: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart: HomeScreenNotifier Tests toggleRole does not toggle when baby profile is missing [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart -p vm --plain-name 'HomeScreenNotifier Tests toggleRole does not toggle when baby profile is missing'
+00:24 +2283 ~6 -14: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/home/presentation/providers/home_screen_provider_test.dart: HomeScreenNotifier Tests retry retries loading tiles after error [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests loadEvents groups events by date'
+00:24 +2305 ~6 -19: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests loadEvents uses custom date range when provided [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests loadEvents uses custom date range when provided'
+00:24 +2305 ~6 -20: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests loadEvents handles errors gracefully [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests loadEvents handles errors gracefully'
+00:24 +2305 ~6 -21: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests loadEvents sets up real-time subscription [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests loadEvents sets up real-time subscription'
+00:24 +2305 ~6 -22: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Date Selection selectDate updates selected date [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Date Selection selectDate updates selected date'
+00:24 +2305 ~6 -23: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Date Selection eventsForSelectedDate returns correct events [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Date Selection eventsForSelectedDate returns correct events'
+00:24 +2305 ~6 -24: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Date Selection datesWithEvents returns all dates with events [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Date Selection datesWithEvents returns all dates with events'
+00:24 +2305 ~6 -25: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Month Navigation nextMonth navigates to next month [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Month Navigation nextMonth navigates to next month'
+00:24 +2305 ~6 -26: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Month Navigation previousMonth navigates to previous month [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Month Navigation previousMonth navigates to previous month'
+00:24 +2305 ~6 -27: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Month Navigation goToMonth navigates to specific month [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Month Navigation goToMonth navigates to specific month'
+00:24 +2305 ~6 -28: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Month Navigation nextMonth handles year transition [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Month Navigation nextMonth handles year transition'
+00:24 +2305 ~6 -29: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Month Navigation previousMonth handles year transition [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Month Navigation previousMonth handles year transition'
+00:24 +2305 ~6 -30: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests refresh refreshes events [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests refresh refreshes events'
+00:24 +2305 ~6 -31: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests refresh does not refresh when baby profile is missing [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests refresh does not refresh when baby profile is missing'
+00:24 +2305 ~6 -32: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Real-time Updates handles INSERT event [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Real-time Updates handles INSERT event'
+00:24 +2305 ~6 -33: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Real-time Updates handles UPDATE event [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Real-time Updates handles UPDATE event'
+00:24 +2305 ~6 -34: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests Real-time Updates handles DELETE event [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart -p vm --plain-name 'CalendarScreenNotifier Tests Real-time Updates handles DELETE event'
+00:24 +2305 ~6 -35: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/calendar/presentation/providers/calendar_screen_provider_test.dart: CalendarScreenNotifier Tests dispose cancels real-time subscription on dispose [E]
+  Bad state: Cannot call `when` within a stub response
+--
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+00:25 +2333 ~6 -38: ... GalleryScreenNotifier Tests loadPhotos force refresh bypasses cache                                                                                                            00:25 +2333 ~6 -40: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests loadPhotos force refresh bypasses cache [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests loadPhotos force refresh bypasses cache'
+00:25 +2333 ~6 -41: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests loadPhotos handles errors gracefully [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests loadPhotos handles errors gracefully'
+00:25 +2333 ~6 -42: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests loadPhotos sets up real-time subscription [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests loadPhotos sets up real-time subscription'
+00:25 +2333 ~6 -43: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests loadMore loads more photos for pagination [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests loadMore loads more photos for pagination'
+00:25 +2333 ~6 -44: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests loadMore does not load more when already loading [E]
+  Bad state: Cannot call `when` within a stub response
+--
+
+00:25 +2334 ~6 -45: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/profile/presentation/providers/profile_provider_test.dart: ... State initial state has no profile       00:25 +2334 ~6 -45: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/profile/presentation/providers/profile_provider_test.dart: ... sets loading state while loading         00:25 +2334 ~6 -45: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests loadMore does not load more when hasMore is false [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests loadMore does not load more when hasMore is false'
+00:25 +2334 ~6 -46: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests loadMore does not load more when babyProfileId is null [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests loadMore does not load more when babyProfileId is null'
+00:25 +2334 ~6 -47: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests loadMore handles load more error [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests loadMore handles load more error'
+00:25 +2334 ~6 -48: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/auth/presentation/providers/auth_provider_test.dart: AuthNotifier Tests Biometric Authentication isBiometricEnabled checks local storage [E]
+  MissingStubError: 'getBool'
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/auth/presentation/providers/auth_provider_test.dart -p vm --plain-name 'AuthNotifier Tests Biometric Authentication isBiometricEnabled checks local storage'
+00:25 +2334 ~6 -48: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests Filtering filterByTag loads filtered photos [E]
+  Bad state: Cannot call `when` within a stub response
+--
+✅ Biometric authentication disabled
+00:25 +2335 ~6 -49: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/profile/presentation/providers/profile_provider_test.dart: ... sets loading state while loading         00:25 +2335 ~6 -49: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests Filtering clearFilters resets filter and reloads [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests Filtering clearFilters resets filter and reloads'
+00:25 +2335 ~6 -51: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests refresh refreshes photos with force refresh [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/auth/presentation/providers/auth_provider_test.dart -p vm --plain-name 'AuthNotifier Tests Session Management persists session to local storage on successful auth'
+00:25 +2335 ~6 -52: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests refresh does not refresh when baby profile is missing [E]
+  Bad state: Cannot call `when` within a stub response
+--
+✅ Session refreshed
+00:25 +2337 ~6 -53: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/profile/presentation/providers/profile_provider_test.dart: ... sets loading state while loading         00:25 +2337 ~6 -53: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests Real-time Updates handles INSERT event [E]
+  Bad state: Cannot call `when` within a stub response
+--
+✅ Loaded profile for user: user_1
+00:25 +2337 ~6 -54: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests Real-time Updates handles UPDATE event [E]
+  Bad state: Cannot call `when` within a stub response
+--
+✅ User profile loaded: user_1
+00:25 +2338 ~6 -55: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests Real-time Updates handles DELETE event [E]
+  Bad state: Cannot call `when` within a stub response
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart -p vm --plain-name 'GalleryScreenNotifier Tests Real-time Updates handles DELETE event'
+00:25 +2338 ~6 -56: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/gallery/presentation/providers/gallery_screen_provider_test.dart: GalleryScreenNotifier Tests dispose cancels real-time subscription on dispose [E]
+  Bad state: Cannot call `when` within a stub response
+--
+00:25 +2346 ~6 -56: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/auth/presentation/providers/auth_provider_test.dart: ... Changes handles sign out from auth state stream00:25 +2346 ~6 -56: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/features/registry/presentation/providers/registry_screen_provider_test.dart: RegistryScreenProvider Tests loadItems sets loading state while loading
+✅ Real-time subscriptions cancelled
+⚠️  Failed to setup real-time subscriptions: MissingStubError: 'subscribe'
+--
+
+00:26 +2370 ~6 -66: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/registry_deals/providers/registry_deals_provider_test.dart: RegistryDealsProvider Tests fetchDeals sets loading state while fetching
+❌ Failed to fetch registry deals: MissingStubError: 'isInitialized'
+--
+Add a stub for this method using Mockito's 'when' API, or generate the MockCacheService mock with the @GenerateNiceMocks annotation (see https://pub.dev/documentation/mockito/latest/annotations/MockSpec-class.html).
+00:26 +2371 ~6 -66: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/recent_purchases/providers/recent_purchases_provider_test.dart: ... State initial state has empty purchases00:26 +2371 ~6 -66: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/registry_deals/providers/registry_deals_provider_test.dart: RegistryDealsProvider Tests fetchDeals fetches deals from database when cache is empty
+❌ Failed to fetch registry deals: MissingStubError: 'isInitialized'
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/registry_deals/providers/registry_deals_provider_test.dart -p vm --plain-name 'RegistryDealsProvider Tests fetchDeals fetches deals from database when cache is empty'
+00:26 +2372 ~6 -67: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/registry_deals/providers/registry_deals_provider_test.dart: RegistryDealsProvider Tests fetchDeals loads deals from cache when available
+❌ Failed to fetch registry deals: MissingStubError: 'isInitialized'
+--
+Add a stub for this method using Mockito's 'when' API, or generate the MockCacheService mock with the @GenerateNiceMocks annotation (see https://pub.dev/documentation/mockito/latest/annotations/MockSpec-class.html).
+00:26 +2372 ~6 -68: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/recent_purchases/providers/recent_purchases_provider_test.dart: RecentPurchasesProvider Tests fetchPurchases sets loading state while fetching
+❌ Failed to fetch recent purchases: MissingStubError: 'isInitialized'
+--
+To run this test again: /Users/dipansaha/Neo_Workspace/Softwares/development/flutter/bin/cache/dart-sdk/bin/dart test /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/registry_deals/providers/registry_deals_provider_test.dart -p vm --plain-name 'RegistryDealsProvider Tests fetchDeals loads deals from cache when available'
+00:26 +2373 ~6 -68: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/recent_purchases/providers/recent_purchases_provider_test.dart: RecentPurchasesProvider Tests fetchPurchases fetches purchases from database when cache is empty
+❌ Failed to fetch recent purchases: MissingStubError: 'isInitialized'
+--
+isInitialized
+00:26 +2373 ~6 -68: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/registry_deals/providers/registry_deals_provider_test.dart: RegistryDealsProvider Tests fetchDeals handles errors gracefully
+❌ Failed to fetch registry deals: MissingStubError: 'isInitialized'
+--
+00:26 +2373 ~6 -70: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/tiles/registry_deals/providers/registry_deals_provider_test.dart: RegistryDealsProvider Tests fetchDeals handles errors gracefully [E]
+  Expected: contains 'Database error'
+    Actual: 'Failed to fetch registry deals: MissingStubError: \'isInitialized\'\n'
+--

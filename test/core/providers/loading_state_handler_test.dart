@@ -69,7 +69,8 @@ void main() {
         expect(loadingHandler.isLoading('operation3'), isTrue);
       });
 
-      test('sets timeout when provided', () async {        loadingHandler.startLoading(
+      test('sets timeout when provided', () async {
+        loadingHandler.startLoading(
           'test_operation',
           timeout: const Duration(milliseconds: 100),
         );
@@ -96,7 +97,8 @@ void main() {
         loadingHandler.stopLoading('non_existent');
       });
 
-      test('cancels timeout timer', () async {        loadingHandler.startLoading(
+      test('cancels timeout timer', () async {
+        loadingHandler.startLoading(
           'test_operation',
           timeout: const Duration(milliseconds: 200),
         );
@@ -127,7 +129,8 @@ void main() {
         expect(loadingHandler.state.operationCount, equals(0));
       });
 
-      test('cancels all timeout timers', () async {        loadingHandler.startLoading(
+      test('cancels all timeout timers', () async {
+        loadingHandler.startLoading(
           'operation1',
           timeout: const Duration(milliseconds: 200),
         );
@@ -263,7 +266,8 @@ void main() {
     });
 
     group('Execute With Loading', () {
-      test('executes operation with loading state', () async {        var executed = false;
+      test('executes operation with loading state', () async {
+        var executed = false;
 
         final result = await loadingHandler.executeWithLoading(
           operation: () async {
@@ -278,7 +282,8 @@ void main() {
         expect(loadingHandler.isLoading('test'), isFalse);
       });
 
-      test('shows loading during operation', () async {        var wasLoading = false;
+      test('shows loading during operation', () async {
+        var wasLoading = false;
 
         await loadingHandler.executeWithLoading(
           operation: () async {
@@ -291,7 +296,8 @@ void main() {
         expect(wasLoading, isTrue);
       });
 
-      test('stops loading after operation completes', () async {        await loadingHandler.executeWithLoading(
+      test('stops loading after operation completes', () async {
+        await loadingHandler.executeWithLoading(
           operation: () async => 'done',
           key: 'test',
         );
@@ -299,7 +305,8 @@ void main() {
         expect(loadingHandler.isLoading('test'), isFalse);
       });
 
-      test('stops loading even if operation throws', () async {        try {
+      test('stops loading even if operation throws', () async {
+        try {
           await loadingHandler.executeWithLoading(
             operation: () async => throw Exception('Test error'),
             key: 'test',
@@ -311,7 +318,8 @@ void main() {
         expect(loadingHandler.isLoading('test'), isFalse);
       });
 
-      test('respects timeout', () async {        await loadingHandler.executeWithLoading(
+      test('respects timeout', () async {
+        await loadingHandler.executeWithLoading(
           operation: () async {
             await Future.delayed(const Duration(milliseconds: 200));
             return 'done';
@@ -327,7 +335,8 @@ void main() {
     });
 
     group('Execute With Progress', () {
-      test('executes operation with progress updates', () async {        final progressValues = <double>[];
+      test('executes operation with progress updates', () async {
+        final progressValues = <double>[];
 
         await loadingHandler.executeWithProgress(
           operation: (onProgress) async {
@@ -350,7 +359,8 @@ void main() {
     });
 
     group('Execute Multiple', () {
-      test('executes multiple operations concurrently', () async {        final results = await loadingHandler.executeMultiple(
+      test('executes multiple operations concurrently', () async {
+        final results = await loadingHandler.executeMultiple(
           operations: {
             'op1': () async => 'result1',
             'op2': () async => 'result2',
@@ -368,7 +378,8 @@ void main() {
         expect(loadingHandler.isLoading('op3'), isFalse);
       });
 
-      test('handles errors in individual operations', () async {        final results = await loadingHandler.executeMultiple(
+      test('handles errors in individual operations', () async {
+        final results = await loadingHandler.executeMultiple(
           operations: {
             'op1': () async => 'success',
             'op2': () async => throw Exception('Error'),
@@ -423,7 +434,8 @@ void main() {
     });
 
     group('LoadingOperation', () {
-      test('elapsed returns duration since start', () async {        loadingHandler.startLoading('test');
+      test('elapsed returns duration since start', () async {
+        loadingHandler.startLoading('test');
 
         await Future.delayed(const Duration(milliseconds: 50));
 
@@ -461,7 +473,8 @@ void main() {
     });
 
     group('Dispose', () {
-      test('handles disposal gracefully', () async {        loadingHandler.startLoading(
+      test('handles disposal gracefully', () async {
+        loadingHandler.startLoading(
           'test',
           timeout: const Duration(milliseconds: 200),
         );
@@ -493,7 +506,8 @@ void main() {
         loadingHandler.stopLoading('test');
       });
 
-      test('handles zero timeout', () async {        loadingHandler.startLoading(
+      test('handles zero timeout', () async {
+        loadingHandler.startLoading(
           'test',
           timeout: Duration.zero,
         );

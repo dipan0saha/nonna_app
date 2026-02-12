@@ -71,13 +71,14 @@ void main() {
     });
 
     group('loadEvents', () {
-      test('sets loading state while fetching', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('sets loading state while fetching', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final future = notifier.loadEvents(babyProfileId: 'profile_1');
@@ -86,11 +87,12 @@ void main() {
         await future;
       });
 
-      test('loads events from cache when available', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => [
+      test('loads events from cache when available', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => [
               sampleEvent.toJson(),
             ]);
         // Stub database and realtime in case they're called despite cache hit
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -106,7 +108,8 @@ void main() {
         expect(notifier.state.selectedBabyProfileId, equals('profile_1'));
       });
 
-      test('fetches events from database when cache is empty', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('fetches events from database when cache is empty', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
@@ -114,7 +117,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -125,7 +128,8 @@ void main() {
         verify(mockCacheService.put(any, any, ttlMinutes: 30)).called(1);
       });
 
-      test('groups events by date', () async {        final event2 = sampleEvent.copyWith(
+      test('groups events by date', () async {
+        final event2 = sampleEvent.copyWith(
           id: 'event_2',
           startsAt: DateTime(2024, 6, 16, 10, 0),
         );
@@ -138,7 +142,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenReturn(
+        when(mockDatabaseService.select(any)).thenReturn(
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -148,7 +152,8 @@ void main() {
         expect(notifier.state.eventsByDate['2024-06-16'], hasLength(1));
       });
 
-      test('uses custom date range when provided', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('uses custom date range when provided', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
@@ -156,7 +161,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final startDate = DateTime(2024, 5, 1);
@@ -171,8 +176,9 @@ void main() {
         expect(notifier.state.events, hasLength(1));
       });
 
-      test('handles errors gracefully', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+      test('handles errors gracefully', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -182,7 +188,8 @@ void main() {
         expect(notifier.state.events, isEmpty);
       });
 
-      test('sets up real-time subscription', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('sets up real-time subscription', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
@@ -190,7 +197,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -212,7 +219,8 @@ void main() {
         expect(notifier.state.selectedDate, equals(newDate));
       });
 
-      test('eventsForSelectedDate returns correct events', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('eventsForSelectedDate returns correct events', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
@@ -220,7 +228,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -231,7 +239,8 @@ void main() {
             notifier.state.eventsForSelectedDate.first.id, equals('event_1'));
       });
 
-      test('datesWithEvents returns all dates with events', () async {        final event2 = sampleEvent.copyWith(
+      test('datesWithEvents returns all dates with events', () async {
+        final event2 = sampleEvent.copyWith(
           id: 'event_2',
           startsAt: DateTime(2024, 6, 16, 10, 0),
         );
@@ -244,7 +253,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenReturn(
+        when(mockDatabaseService.select(any)).thenReturn(
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -306,7 +315,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes events', () async {        notifier.state = notifier.state.copyWith(
+      test('refreshes events', () async {
+        notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
         );
 
@@ -318,7 +328,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.refresh();
@@ -326,14 +336,16 @@ void main() {
         expect(notifier.state.events, hasLength(1));
       });
 
-      test('does not refresh when baby profile is missing', () async {        await notifier.refresh();
+      test('does not refresh when baby profile is missing', () async {
+        await notifier.refresh();
 
-        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
+        verifyNever(mockDatabaseService.select(any));
       });
     });
 
     group('Real-time Updates', () {
-      test('handles INSERT event', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles INSERT event', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
@@ -356,7 +368,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController);
 
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -367,7 +379,8 @@ void main() {
         expect(notifier.state.events.length, equals(2));
       });
 
-      test('handles UPDATE event', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles UPDATE event', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
@@ -393,7 +406,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController);
 
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -404,7 +417,8 @@ void main() {
         expect(notifier.state.events.first.title, equals('Updated Event'));
       });
 
-      test('handles DELETE event', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles DELETE event', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
 
@@ -419,7 +433,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController);
 
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -434,7 +448,8 @@ void main() {
     });
 
     group('dispose', () {
-      test('cancels real-time subscription on dispose', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('cancels real-time subscription on dispose', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
@@ -443,7 +458,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');

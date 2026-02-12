@@ -49,7 +49,8 @@ extension DateTimeExtensions on DateTime {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1)).startOfDay;
     final weekEnd = weekStart.add(const Duration(days: 7));
-    return (isAfter(weekStart) || isAtSameMomentAs(weekStart)) && isBefore(weekEnd);
+    return (isAfter(weekStart) || isAtSameMomentAs(weekStart)) &&
+        isBefore(weekEnd);
   }
 
   /// Check if this date is in the current month

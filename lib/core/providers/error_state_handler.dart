@@ -221,7 +221,7 @@ class ErrorStateHandler extends Notifier<ErrorState> {
         stackTrace: stackTrace,
         onRetry: errorInfo.onRetry,
       );
-      
+
       // Restore the retry attempt count that was incremented earlier
       // (handleError creates a new error entry with retryAttempts=0)
       final errors = Map<String, ErrorInfo>.from(state.errors);

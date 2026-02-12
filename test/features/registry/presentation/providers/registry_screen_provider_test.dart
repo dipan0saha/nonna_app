@@ -74,7 +74,8 @@ void main() {
     });
 
     group('loadItems', () {
-      test('sets loading state while loading', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('sets loading state while loading', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -86,7 +87,8 @@ void main() {
         await loadFuture;
       });
 
-      test('loads items from database when cache is empty', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('loads items from database when cache is empty', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -103,7 +105,8 @@ void main() {
         expect(notifier.state.error, isNull);
       });
 
-      test('loads items from cache when available', () async {        final cachedData = [
+      test('loads items from cache when available', () async {
+        final cachedData = [
           {
             'item': sampleItem.toJson(),
             'isPurchased': false,
@@ -114,14 +117,16 @@ void main() {
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
-        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
+        verifyNever(
+            mockDatabaseService.select(any, columns: anyNamed('columns')));
 
         expect(notifier.state.items, hasLength(1));
         expect(notifier.state.items.first.item.id, equals('item_1'));
         expect(notifier.state.items.first.isPurchased, isFalse);
       });
 
-      test('handles database error gracefully', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles database error gracefully', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
@@ -132,7 +137,8 @@ void main() {
         expect(notifier.state.items, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {        final cachedData = [
+      test('force refresh bypasses cache', () async {
+        final cachedData = [
           {
             'item': sampleItem.toJson(),
             'isPurchased': false,
@@ -156,7 +162,8 @@ void main() {
         verify(mockDatabaseService.select(any)).called(greaterThan(0));
       });
 
-      test('saves fetched items to cache', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('saves fetched items to cache', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -172,7 +179,8 @@ void main() {
             .called(1);
       });
 
-      test('loads items with purchase status', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('loads items with purchase status', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -206,7 +214,8 @@ void main() {
             notifier.state.currentFilter, equals(RegistryFilter.highPriority));
       });
 
-      test('filters high priority items', () async {        final lowPriorityItem = sampleItem.copyWith(id: 'item_2', priority: 2);
+      test('filters high priority items', () async {
+        final lowPriorityItem = sampleItem.copyWith(id: 'item_2', priority: 2);
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -229,7 +238,8 @@ void main() {
             greaterThanOrEqualTo(4));
       });
 
-      test('filters purchased items', () async {        final cachedData = [
+      test('filters purchased items', () async {
+        final cachedData = [
           {
             'item': sampleItem.toJson(),
             'isPurchased': true,
@@ -258,7 +268,8 @@ void main() {
         expect(notifier.state.currentSort, equals(RegistrySort.nameAsc));
       });
 
-      test('sorts items by priority high to low', () async {        final lowPriorityItem =
+      test('sorts items by priority high to low', () async {
+        final lowPriorityItem =
             sampleItem.copyWith(id: 'item_2', priority: 2, name: 'Diapers');
         final cachedData = [
           {
@@ -282,7 +293,8 @@ void main() {
             sorted.first.item.priority, greaterThan(sorted.last.item.priority));
       });
 
-      test('sorts items by name ascending', () async {        final itemB = sampleItem.copyWith(id: 'item_2', name: 'Bottles');
+      test('sorts items by name ascending', () async {
+        final itemB = sampleItem.copyWith(id: 'item_2', name: 'Bottles');
         final itemA = sampleItem.copyWith(id: 'item_3', name: 'Crib');
         final cachedData = [
           {
@@ -308,7 +320,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes items with force refresh', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('refreshes items with force refresh', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -328,14 +341,17 @@ void main() {
             greaterThan(initialLoadCount));
       });
 
-      test('does not refresh when no baby profile selected', () async {        await notifier.refresh();
+      test('does not refresh when no baby profile selected', () async {
+        await notifier.refresh();
 
-        verifyNever(mockDatabaseService.select(any, columns: anyNamed('columns')));
+        verifyNever(
+            mockDatabaseService.select(any, columns: anyNamed('columns')));
       });
     });
 
     group('Real-time Updates', () {
-      test('handles items update by refreshing', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles items update by refreshing', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -349,7 +365,8 @@ void main() {
         expect(notifier.state.items, hasLength(1));
       });
 
-      test('handles purchases update by refreshing', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles purchases update by refreshing', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),

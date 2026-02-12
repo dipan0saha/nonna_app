@@ -227,9 +227,9 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
       final channelName = 'registry-purchases-channel-$babyProfileId';
       final stream = _realtimeService.subscribe(
-            table: SupabaseTables.registryPurchases,
-            channelName: channelName,
-          );
+        table: SupabaseTables.registryPurchases,
+        channelName: channelName,
+      );
 
       _subscriptionId = channelName;
 

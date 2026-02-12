@@ -11,7 +11,7 @@ void main() {
     setUp(() {
       // Initialize mock analytics
       mockAnalytics = MockFirebaseAnalytics();
-      
+
       // Initialize service with mock
       analyticsService = AnalyticsService(mockAnalytics);
     });

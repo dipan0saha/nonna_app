@@ -28,6 +28,8 @@ void main() {
     setUp(() {
       mocks = MockFactory.createServiceContainer();
 
+      when(mocks.cache.isInitialized).thenReturn(true);
+
       container = ProviderContainer(
         overrides: [
           databaseServiceProvider.overrideWithValue(mocks.database),
@@ -50,7 +52,8 @@ void main() {
     });
 
     group('fetchDeals', () {
-      test('sets loading state while fetching', () async {        // Setup mock to delay response
+      test('sets loading state while fetching', () async {
+        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
         when(mocks.database.select(any))
@@ -63,7 +66,8 @@ void main() {
         expect(state.isLoading, isFalse);
       });
 
-      test('fetches deals from database when cache is empty', () async {        // Setup mocks
+      test('fetches deals from database when cache is empty', () async {
+        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
@@ -78,7 +82,8 @@ void main() {
         expect(state.error, isNull);
       });
 
-      test('loads deals from cache when available', () async {        // Setup cache to return data
+      test('loads deals from cache when available', () async {
+        // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
 
@@ -93,10 +98,10 @@ void main() {
         expect(state.deals.first.id, equals('item_1'));
       });
 
-      test('handles errors gracefully', () async {        // Setup mock to throw error
+      test('handles errors gracefully', () async {
+        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -107,7 +112,8 @@ void main() {
         expect(state.deals, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {        // Setup mocks
+      test('force refresh bypasses cache', () async {
+        // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
         when(mocks.database.select(any))
@@ -125,7 +131,8 @@ void main() {
         verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
       });
 
-      test('saves fetched deals to cache', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('saves fetched deals to cache', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
@@ -133,21 +140,22 @@ void main() {
         await notifier.fetchDeals(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mocks.cache.put(any, any,
-                ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
-      test('filters items with high priority', () async {        final deal1 = sampleDeal.copyWith(id: 'item_1', priority: 5);
+      test('filters items with high priority', () async {
+        final deal1 = sampleDeal.copyWith(id: 'item_1', priority: 5);
         final deal2 = sampleDeal.copyWith(id: 'item_2', priority: 2);
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
-          deal1.toJson(),
-          deal2.toJson(),
-          deal3.toJson(),
-        ]));
+        when(mocks.database.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  deal1.toJson(),
+                  deal2.toJson(),
+                  deal3.toJson(),
+                ]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -156,16 +164,18 @@ void main() {
         expect(state.deals.length, greaterThanOrEqualTo(0));
       });
 
-      test('sorts deals by priority (highest first)', () async {        final deal1 = sampleDeal.copyWith(id: 'item_1', priority: 3);
+      test('sorts deals by priority (highest first)', () async {
+        final deal1 = sampleDeal.copyWith(id: 'item_1', priority: 3);
         final deal2 = sampleDeal.copyWith(id: 'item_2', priority: 5);
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
-          deal1.toJson(),
-          deal2.toJson(),
-          deal3.toJson(),
-        ]));
+        when(mocks.database.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  deal1.toJson(),
+                  deal2.toJson(),
+                  deal3.toJson(),
+                ]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -176,7 +186,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes deals with force refresh', () async {        when(mocks.cache.get(any))
+      test('refreshes deals with force refresh', () async {
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
@@ -191,13 +202,14 @@ void main() {
     });
 
     group('Priority Calculation', () {
-      test('identifies high priority items', () async {        final highPriorityDeal = sampleDeal.copyWith(
+      test('identifies high priority items', () async {
+        final highPriorityDeal = sampleDeal.copyWith(
           priority: 5,
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([highPriorityDeal.toJson()]));
+        when(mocks.database.select(any)).thenAnswer(
+            (_) => FakePostgrestBuilder([highPriorityDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -207,13 +219,14 @@ void main() {
         expect(deal.priority, equals(5));
       });
 
-      test('checks priority levels correctly', () async {        final mediumPriorityDeal = sampleDeal.copyWith(
+      test('checks priority levels correctly', () async {
+        final mediumPriorityDeal = sampleDeal.copyWith(
           priority: 3,
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
+        when(mocks.database.select(any)).thenAnswer(
+            (_) => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -225,7 +238,8 @@ void main() {
     });
 
     group('Limit Deals', () {
-      test('limits to top deals', () async {        // Create 20 deals
+      test('limits to top deals', () async {
+        // Create 20 deals
         final deals = List.generate(
           20,
           (i) => sampleDeal.copyWith(

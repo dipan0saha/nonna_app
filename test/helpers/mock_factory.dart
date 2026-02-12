@@ -110,7 +110,8 @@ class MockFactory {
   ///
   /// By default, this creates a client with realtime channel support enabled.
   /// Set [withRealtimeSupport] to false if you need a basic client without stubs.
-  static MockSupabaseClient createSupabaseClient({bool withRealtimeSupport = true}) {
+  static MockSupabaseClient createSupabaseClient(
+      {bool withRealtimeSupport = true}) {
     final mock = MockSupabaseClient();
     if (withRealtimeSupport) {
       MockHelpers.setupSupabaseRealtimeChannels(mock);
@@ -244,8 +245,7 @@ class MockHelpers {
     String table,
     Map<String, dynamic> returnData,
   ) {
-    when(mock.insert(table, any))
-        .thenAnswer((_) async => [returnData]);
+    when(mock.insert(table, any)).thenAnswer((_) async => [returnData]);
   }
 
   /// Configure a database mock for successful update
@@ -416,8 +416,7 @@ class MockHelpers {
       });
 
       // Stub unsubscribe to return success
-      when(mockChannel.unsubscribe(any))
-          .thenAnswer((_) async => 'ok');
+      when(mockChannel.unsubscribe(any)).thenAnswer((_) async => 'ok');
 
       return mockChannel;
     }

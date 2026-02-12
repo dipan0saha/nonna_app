@@ -128,7 +128,8 @@ class TestDataFactory {
     return Event(
       id: id ?? 'test-event-${now.millisecondsSinceEpoch}',
       babyProfileId: babyProfileId ?? 'test-baby-${now.millisecondsSinceEpoch}',
-      createdByUserId: createdByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
+      createdByUserId:
+          createdByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
       title: title ?? 'Test Event',
       startsAt: startsAt ?? now.add(const Duration(days: 30)),
       endsAt: endsAt,
@@ -163,8 +164,10 @@ class TestDataFactory {
     return Photo(
       id: id ?? 'test-photo-${now.millisecondsSinceEpoch}',
       babyProfileId: babyProfileId ?? 'test-baby-${now.millisecondsSinceEpoch}',
-      uploadedByUserId: uploadedByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
-      storagePath: storagePath ?? 'baby_test/photo_${now.millisecondsSinceEpoch}.jpg',
+      uploadedByUserId:
+          uploadedByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
+      storagePath:
+          storagePath ?? 'baby_test/photo_${now.millisecondsSinceEpoch}.jpg',
       thumbnailPath: thumbnailPath,
       caption: caption,
       tags: tags ?? const [],
@@ -195,7 +198,8 @@ class TestDataFactory {
     return RegistryItem(
       id: id ?? 'test-item-${now.millisecondsSinceEpoch}',
       babyProfileId: babyProfileId ?? 'test-baby-${now.millisecondsSinceEpoch}',
-      createdByUserId: createdByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
+      createdByUserId:
+          createdByUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
       name: name ?? 'Test Registry Item',
       description: description ?? 'This is a test registry item',
       linkUrl: linkUrl ?? 'https://example.com/product',
@@ -225,7 +229,8 @@ class TestDataFactory {
     final now = DateTime.now();
     return Notification(
       id: id ?? 'test-notif-${now.millisecondsSinceEpoch}',
-      recipientUserId: recipientUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
+      recipientUserId:
+          recipientUserId ?? 'test-user-${now.millisecondsSinceEpoch}',
       babyProfileId: babyProfileId,
       type: type ?? NotificationType.system,
       title: title ?? 'Test Notification',
@@ -304,7 +309,8 @@ class TestDataFactory {
   }
 
   /// Create multiple notifications at once
-  static List<Notification> createNotifications(int count, {String? recipientUserId}) {
+  static List<Notification> createNotifications(int count,
+      {String? recipientUserId}) {
     return List.generate(
       count,
       (index) => createNotification(
