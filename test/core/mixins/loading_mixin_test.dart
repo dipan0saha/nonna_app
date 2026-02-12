@@ -461,7 +461,8 @@ void main() {
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog(message: 'Please wait...');
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('Please wait...'), findsOneWidget);
@@ -475,12 +476,14 @@ void main() {
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog(message: 'Loading...');
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(AlertDialog), findsOneWidget);
 
       state.hideLoadingDialog();
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(AlertDialog), findsNothing);
     });
@@ -492,13 +495,15 @@ void main() {
       state = tester.state(find.byType(TestWidget));
 
       state.showLoadingDialog();
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(AlertDialog), findsOneWidget);
 
       // Try to dismiss by tapping outside
       await tester.tapAt(Offset.zero);
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Dialog should still be visible
       expect(find.byType(AlertDialog), findsOneWidget);

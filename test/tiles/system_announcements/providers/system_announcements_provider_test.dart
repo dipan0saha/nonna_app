@@ -10,7 +10,6 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('SystemAnnouncementsProvider Tests', () {
     late ProviderContainer container;
-    late SystemAnnouncementsNotifier notifier;
     late MockServiceContainer mocks;
 
     // Sample announcement data
@@ -32,19 +31,17 @@ void main() {
           realtimeServiceProvider.overrideWithValue(mocks.realtime),
         ],
       );
+    });
 
-      notifier = container.read(systemAnnouncementsProvider.notifier);
-      
-      addTearDown(() {
-        container.dispose();
-      });
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
       test('initial state has empty announcements', () {
-        expect(notifier.state.announcements, isEmpty);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements, isEmpty);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.isLoading, isFalse);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.error, isNull);
       });
     });
 
@@ -56,10 +53,10 @@ void main() {
         });
 
         // Start fetching
-        final fetchFuture = notifier.loadAnnouncements(userId: 'test_user');
+        final fetchFuture = container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Verify loading state
-        expect(notifier.state.isLoading, isTrue);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.isLoading, isTrue);
 
         await fetchFuture;
       });
@@ -67,33 +64,33 @@ void main() {
       test('loads announcements when cache is empty', () async {        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
 
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Verify state updated with mock announcements
-        expect(notifier.state.announcements, isNotEmpty);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements, isNotEmpty);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.isLoading, isFalse);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.error, isNull);
       });
 
       test('loads announcements from cache when available', () async {        // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
 
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Verify state updated from cache
-        expect(notifier.state.announcements, hasLength(1));
-        expect(notifier.state.announcements.first.id, equals('announcement_1'));
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements, hasLength(1));
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements.first.id, equals('announcement_1'));
       });
 
       test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mocks.cache.get(any)).thenThrow(Exception('Cache error'));
 
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Verify error state - should fall back to mock announcements
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.announcements, isNotEmpty);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.isLoading, isFalse);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements, isNotEmpty);
       });
 
       test('filters expired announcements', () async {        final activeAnnouncement = SystemAnnouncement(
@@ -115,11 +112,11 @@ void main() {
         when(mocks.cache.get(any)).thenAnswer((_) async =>
             [activeAnnouncement.toJson(), expiredAnnouncement.toJson()]);
 
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Should only have non-expired announcements
-        expect(notifier.state.announcements, hasLength(1));
-        expect(notifier.state.announcements.first.id, equals('ann_1'));
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements, hasLength(1));
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements.first.id, equals('ann_1'));
       });
 
       test('sorts announcements by priority', () async {        final highPriority = SystemAnnouncement(
@@ -150,14 +147,14 @@ void main() {
               mediumPriority.toJson(),
             ]);
 
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Should be sorted by priority (high first)
-        expect(notifier.state.announcements[0].priority,
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements[0].priority,
             equals(AnnouncementPriority.high));
-        expect(notifier.state.announcements[1].priority,
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements[1].priority,
             equals(AnnouncementPriority.medium));
-        expect(notifier.state.announcements[2].priority,
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements[2].priority,
             equals(AnnouncementPriority.low));
       });
 
@@ -165,7 +162,7 @@ void main() {
         when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
 
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Verify cache put was called
         verify(mocks.cache.put(any, any)).called(greaterThanOrEqualTo(1));
@@ -178,19 +175,19 @@ void main() {
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
         when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
-        final initialCount = notifier.getActiveAnnouncements().length;
+        final initialCount = container.read(systemAnnouncementsProvider.notifier).getActiveAnnouncements().length;
 
-        await notifier.dismissAnnouncement(
+        await container.read(systemAnnouncementsProvider.notifier).dismissAnnouncement(
           announcementId: 'announcement_1',
           userId: 'test_user',
         );
 
         // Verify announcement was dismissed
-        expect(notifier.state.dismissedIds, contains('announcement_1'));
+        expect(container.read(systemAnnouncementsProvider.notifier).state.dismissedIds, contains('announcement_1'));
         expect(
-            notifier.getActiveAnnouncements().length, equals(initialCount - 1));
+            container.read(systemAnnouncementsProvider.notifier).getActiveAnnouncements().length, equals(initialCount - 1));
       });
 
       test('saves dismissed state to cache', () async {        // Setup initial state
@@ -198,9 +195,9 @@ void main() {
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
         when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
-        await notifier.dismissAnnouncement(
+        await container.read(systemAnnouncementsProvider.notifier).dismissAnnouncement(
           announcementId: 'announcement_1',
           userId: 'test_user',
         );
@@ -230,15 +227,15 @@ void main() {
             (_) async => [announcement1.toJson(), announcement2.toJson()]);
         when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Dismiss one announcement
-        await notifier.dismissAnnouncement(
+        await container.read(systemAnnouncementsProvider.notifier).dismissAnnouncement(
           announcementId: 'ann_1',
           userId: 'test_user',
         );
 
-        final activeAnnouncements = notifier.getActiveAnnouncements();
+        final activeAnnouncements = container.read(systemAnnouncementsProvider.notifier).getActiveAnnouncements();
 
         // Should only return non-dismissed announcements
         expect(activeAnnouncements, hasLength(1));
@@ -264,9 +261,9 @@ void main() {
 
         when(mocks.cache.get(any)).thenAnswer((_) async =>
             [criticalAnnouncement.toJson(), highAnnouncement.toJson()]);
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
-        final criticalAnnouncements = notifier.getCriticalAnnouncements();
+        final criticalAnnouncements = container.read(systemAnnouncementsProvider.notifier).getCriticalAnnouncements();
 
         expect(criticalAnnouncements, hasLength(1));
         expect(criticalAnnouncements.first.priority,
@@ -279,19 +276,19 @@ void main() {
             .thenAnswer((_) async => [sampleAnnouncement.toJson()]);
         when(mocks.cache.put(any, any))
             .thenAnswer((_) async => Future.value());
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
         // Dismiss an announcement
-        await notifier.dismissAnnouncement(
+        await container.read(systemAnnouncementsProvider.notifier).dismissAnnouncement(
           announcementId: 'announcement_1',
           userId: 'test_user',
         );
-        expect(notifier.state.dismissedIds, isNotEmpty);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.dismissedIds, isNotEmpty);
 
         // Clear dismissals
-        await notifier.clearDismissals(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).clearDismissals(userId: 'test_user');
 
-        expect(notifier.state.dismissedIds, isEmpty);
+        expect(container.read(systemAnnouncementsProvider.notifier).state.dismissedIds, isEmpty);
       });
     });
 
@@ -324,16 +321,16 @@ void main() {
               mediumAnnouncement.toJson(),
             ]);
 
-        await notifier.loadAnnouncements(userId: 'test_user');
+        await container.read(systemAnnouncementsProvider.notifier).loadAnnouncements(userId: 'test_user');
 
-        expect(notifier.state.announcements, hasLength(3));
+        expect(container.read(systemAnnouncementsProvider.notifier).state.announcements, hasLength(3));
         expect(
-          notifier.state.announcements
+          container.read(systemAnnouncementsProvider.notifier).state.announcements
               .any((a) => a.priority == AnnouncementPriority.critical),
           isTrue,
         );
         expect(
-          notifier.state.announcements
+          container.read(systemAnnouncementsProvider.notifier).state.announcements
               .any((a) => a.priority == AnnouncementPriority.high),
           isTrue,
         );

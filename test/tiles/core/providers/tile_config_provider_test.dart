@@ -257,7 +257,7 @@ void main() {
 
         // Setup update mock
         when(mocks.database.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
 
         await notifier.updateVisibility(
           configId: 'tile_1',

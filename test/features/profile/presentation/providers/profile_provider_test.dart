@@ -210,7 +210,7 @@ void main() {
 
     group('updateProfile', () {
       test('updates profile successfully', () async {        when(mockDatabaseService.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
@@ -267,7 +267,7 @@ void main() {
       });
 
       test('updates profile with avatar URL', () async {        when(mockDatabaseService.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
@@ -322,7 +322,7 @@ void main() {
 
     group('toggleBiometric', () {
       test('enables biometric successfully', () async {        when(mockDatabaseService.update(any, any))
-            .thenReturn(FakePostgrestUpdateBuilder());
+            .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
           callCount++;
