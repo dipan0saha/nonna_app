@@ -1,5 +1,4 @@
 Analyzing nonna_app...                                          
 
-   info • Angle brackets will be interpreted as HTML • test/helpers/fake_postgrest_builders.dart:620:91 • unintended_html_in_doc_comment
-   info • Angle brackets will be interpreted as HTML • test/helpers/fake_postgrest_builders.dart:652:97 • unintended_html_in_doc_comment
+   info • The local variable '_createConfiguredChannel' starts with an underscore • test/helpers/mock_factory.dart:394:25 • no_leading_underscores_for_local_identifiers
 
