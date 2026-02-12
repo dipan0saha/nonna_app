@@ -75,7 +75,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -149,7 +149,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -173,7 +173,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([futureProfile.toJson()]));
 
@@ -196,7 +196,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([pastProfile.toJson()]));
 
@@ -216,7 +216,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   sampleProfile.toJson(),
@@ -246,7 +246,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -266,7 +266,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -323,7 +323,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 

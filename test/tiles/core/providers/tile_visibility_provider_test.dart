@@ -4,8 +4,8 @@ import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/core/providers/tile_visibility_provider.dart';
 
-import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
+import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('TileVisibilityProvider Tests', () {
@@ -17,6 +17,8 @@ void main() {
     setUp(() {
       mockCacheService = MockFactory.createCacheService();
       mockLocalStorageService = MockFactory.createLocalStorageService();
+
+      when(mockCacheService.isInitialized).thenReturn(true);
 
       // Create provider container with overrides
       container = ProviderContainer(

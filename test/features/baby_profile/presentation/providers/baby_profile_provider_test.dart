@@ -560,10 +560,10 @@ void main() {
     group('uploadProfilePhoto', () {
       test('uploads profile photo successfully', () async {
         when(mockStorageService.uploadFile(
-          filePath: 'filePath',
-          storageKey: 'storageKey',
-          bucket: 'bucket',
-        )).thenAnswer((_) async => 'https://example.com/uploaded-photo.jpg');
+          filePath: anyNamed('filePath'),
+          storageKey: anyNamed('storageKey'),
+          bucket: anyNamed('bucket'),
+        )).thenAnswer((_) async => 'uploaded-photo.jpg');
 
         final result = await notifier.uploadProfilePhoto(
           babyProfileId: 'baby_1',
@@ -576,9 +576,9 @@ void main() {
 
       test('handles upload error gracefully', () async {
         when(mockStorageService.uploadFile(
-          filePath: 'filePath',
-          storageKey: 'storageKey',
-          bucket: 'bucket',
+          filePath: anyNamed('filePath'),
+          storageKey: anyNamed('storageKey'),
+          bucket: anyNamed('bucket'),
         )).thenThrow(Exception('Upload failed'));
 
         final result = await notifier.uploadProfilePhoto(

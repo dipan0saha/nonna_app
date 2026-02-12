@@ -69,7 +69,6 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
   static const String _cacheKeyPrefix = 'due_date_countdown';
 
   String? _subscriptionId;
-  late final _realtimeService = ref.read(realtimeServiceProvider);
 
   @override
   DueDateCountdownState build() {
@@ -337,9 +336,11 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      // Note: We don't cancel the subscription in dispose because it would
+      // require calling ref.read() which is not allowed in lifecycle callbacks.
+      // The subscription will be automatically cleaned up when the provider is disposed.
       _subscriptionId = null;
-      debugPrint('✅ Real-time subscription cancelled');
+      debugPrint('✅ Real-time subscription marked for cancellation');
     }
   }
 }

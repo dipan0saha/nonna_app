@@ -119,6 +119,11 @@ class FakePostgrestBuilder
       this;
 
   @override
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> inFilter(
+          String column, List<dynamic> values) =>
+      this;
+
+  @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> contains(
           String column, dynamic value) =>
       this;
@@ -307,6 +312,11 @@ class FakePostgrestUpdateBuilder
       this;
 
   @override
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> inFilter(
+          String column, List<dynamic> values) =>
+      this;
+
+  @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> contains(
           String column, dynamic value) =>
       this;
@@ -477,6 +487,11 @@ class FakePostgrestDeleteBuilder
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> isFilter(
           String column, dynamic value) =>
+      this;
+
+  @override
+  PostgrestFilterBuilder<List<Map<String, dynamic>>> inFilter(
+          String column, List<dynamic> values) =>
       this;
 
   @override
