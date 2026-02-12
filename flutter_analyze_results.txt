@@ -1,11 +1,5 @@
 Analyzing nonna_app...                                          
 
-warning • Unused import: 'package:nonna_app/core/services/backup_service.dart' • test/core/services/backup_service_test.dart:3:8 • unused_import
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/core/services/backup_service_test.dart:10:30 • unused_local_variable
-warning • The '!' will have no effect because the receiver can't be null • test/helpers/fake_postgrest_builders.dart:378:56 • unnecessary_non_null_assertion
-warning • The '!' will have no effect because the receiver can't be null • test/helpers/fake_postgrest_builders.dart:382:61 • unnecessary_non_null_assertion
-   info • Angle brackets will be interpreted as HTML • test/helpers/fake_postgrest_builders.dart:604:82 • unintended_html_in_doc_comment
-  error • The argument type 'PostgrestBuilder<List<Map<String, dynamic>>, List<Map<String, dynamic>>, List<Map<String, dynamic>>>' can't be assigned to the parameter type 'PostgrestBuilder<Map<String, dynamic>, Map<String, dynamic>, Map<String, dynamic>>'.  • test/helpers/fake_postgrest_builders.dart:611:15 • argument_type_not_assignable
-   info • Angle brackets will be interpreted as HTML • test/helpers/fake_postgrest_builders.dart:636:88 • unintended_html_in_doc_comment
-  error • The argument type 'PostgrestBuilder<List<Map<String, dynamic>>, List<Map<String, dynamic>>, List<Map<String, dynamic>>>' can't be assigned to the parameter type 'PostgrestBuilder<Map<String, dynamic>?, Map<String, dynamic>?, Map<String, dynamic>?>'.  • test/helpers/fake_postgrest_builders.dart:643:15 • argument_type_not_assignable
+   info • Angle brackets will be interpreted as HTML • test/helpers/fake_postgrest_builders.dart:620:91 • unintended_html_in_doc_comment
+   info • Angle brackets will be interpreted as HTML • test/helpers/fake_postgrest_builders.dart:652:97 • unintended_html_in_doc_comment
 
