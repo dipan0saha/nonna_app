@@ -617,7 +617,7 @@ class FakePostgrestInsertBuilder {
   }
 }
 
-/// Fake single result builder that properly implements PostgrestTransformBuilder with Map<String, dynamic>
+/// Fake single result builder that properly implements PostgrestTransformBuilder with `Map<String, dynamic>`
 class FakeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, dynamic>> {
   final List<Map<String, dynamic>> _data;
   final Exception? _error;
@@ -649,7 +649,7 @@ class FakeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, d
   }
 }
 
-/// Fake maybe single result builder that properly implements PostgrestTransformBuilder with Map<String, dynamic>?
+/// Fake maybe single result builder that properly implements PostgrestTransformBuilder with `Map<String, dynamic>?`
 class FakeMaybeSinglePostgrestBuilder extends PostgrestTransformBuilder<Map<String, dynamic>?> {
   final List<Map<String, dynamic>> _data;
   final Exception? _error;
