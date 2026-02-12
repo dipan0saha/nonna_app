@@ -33,12 +33,8 @@ class MockFactory {
   /// Create a CacheService mock
   ///
   /// Returns a clean mock instance ready for custom stubbing via `when()`
-  /// with isInitialized defaulting to true
   static MockCacheService createCacheService() {
-    final mock = MockCacheService();
-    // Default stub for isInitialized
-    when(mock.isInitialized).thenReturn(true);
-    return mock;
+    return MockCacheService();
   }
 
   /// Create a RealtimeService mock
@@ -65,12 +61,8 @@ class MockFactory {
   /// Create a LocalStorageService mock
   ///
   /// Returns a clean mock instance ready for custom stubbing via `when()`
-  /// with isInitialized defaulting to true
   static MockLocalStorageService createLocalStorageService() {
-    final mock = MockLocalStorageService();
-    // Default stub for isInitialized
-    when(mock.isInitialized).thenReturn(true);
-    return mock;
+    return MockLocalStorageService();
   }
 
   /// Create a BackupService mock with common default behaviors
