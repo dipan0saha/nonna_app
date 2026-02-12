@@ -57,6 +57,7 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
   static const String _cacheKeyPrefix = 'invites_status';
 
   String? _subscriptionId;
+  late final _realtimeService = ref.read(realtimeServiceProvider);
 
   @override
   InvitesStatusState build() {
@@ -309,8 +310,7 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      final realtimeService = ref.read(realtimeServiceProvider);
-      realtimeService.unsubscribe(_subscriptionId!);
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

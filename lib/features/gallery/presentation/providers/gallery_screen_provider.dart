@@ -84,6 +84,7 @@ class GalleryScreenState {
 /// Gallery Screen Provider Notifier
 class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
   String? _subscriptionId;
+  late final _realtimeService = ref.read(realtimeServiceProvider);
 
   @override
   GalleryScreenState build() {
@@ -416,7 +417,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      ref.read(realtimeServiceProvider).unsubscribe(_subscriptionId!);
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

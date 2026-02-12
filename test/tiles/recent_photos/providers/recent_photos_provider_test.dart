@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/di/providers.dart';
+import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/tiles/recent_photos/providers/recent_photos_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
@@ -27,6 +27,7 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
+      when(mocks.cache.isInitialized).thenReturn(true);
 
       container = ProviderContainer(
         overrides: [
@@ -54,7 +55,8 @@ void main() {
     });
 
     group('fetchPhotos', () {
-      test('sets loading state while fetching', () async {        // Setup mock to delay response
+      test('sets loading state while fetching', () async {
+        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -69,7 +71,8 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches photos from database when cache is empty', () async {        // Setup mocks
+      test('fetches photos from database when cache is empty', () async {
+        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -91,7 +94,8 @@ void main() {
         expect(state.currentPage, equals(1));
       });
 
-      test('loads photos from cache when available', () async {        // Setup cache to return data
+      test('loads photos from cache when available', () async {
+        // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
 
@@ -107,10 +111,10 @@ void main() {
         expect(state.photos.first.id, equals('photo_1'));
       });
 
-      test('handles errors gracefully', () async {        // Setup mock to throw error
+      test('handles errors gracefully', () async {
+        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -122,7 +126,8 @@ void main() {
         expect(state.photos, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {        // Setup mocks
+      test('force refresh bypasses cache', () async {
+        // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
         when(mocks.realtime.subscribe(
@@ -143,7 +148,8 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('saves fetched photos to cache', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('saves fetched photos to cache', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -156,14 +162,14 @@ void main() {
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mocks.cache.put(any, any,
-                ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
     });
 
     group('loadMore', () {
-      test('loads more photos for infinite scroll', () async {        // Setup initial state with photos
+      test('loads more photos for infinite scroll', () async {
+        // Setup initial state with photos
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -188,7 +194,8 @@ void main() {
         expect(state.currentPage, equals(2));
       });
 
-      test('does not load more when already loading', () async {        // Setup initial state
+      test('does not load more when already loading', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -217,7 +224,8 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('does not load more when hasMore is false', () async {        // Setup initial state with hasMore = false
+      test('does not load more when hasMore is false', () async {
+        // Setup initial state with hasMore = false
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -239,7 +247,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes photos with force refresh', () async {        when(mocks.cache.get(any))
+      test('refreshes photos with force refresh', () async {
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -258,7 +267,8 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles INSERT photo', () async {        // Setup initial state
+      test('handles INSERT photo', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -283,7 +293,8 @@ void main() {
         expect(initialCount, equals(1));
       });
 
-      test('handles UPDATE photo', () async {        // Setup initial state
+      test('handles UPDATE photo', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -301,7 +312,8 @@ void main() {
         expect(state.photos.first.caption, equals('Cute baby photo'));
       });
 
-      test('handles DELETE photo', () async {        // Setup initial state
+      test('handles DELETE photo', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),

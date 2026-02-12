@@ -1,16 +1,16 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/gender.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/baby_membership.dart';
 import 'package:nonna_app/core/models/baby_profile.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
+import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('BabyProfileProvider Tests', () {
@@ -53,6 +53,11 @@ void main() {
       mockStorageService = MockFactory.createStorageService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockStorageService.uploadFile(
+        filePath: anyNamed('filePath'),
+        storageKey: anyNamed('storageKey'),
+        bucket: anyNamed('bucket'),
+      )).thenAnswer((_) async => 'https://example.com/test-photo.jpg');
 
       container = ProviderContainer(
         overrides: [
@@ -84,9 +89,11 @@ void main() {
     });
 
     group('loadProfile', () {
-      test('sets loading state while loading', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('sets loading state while loading', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -107,9 +114,11 @@ void main() {
         await loadFuture;
       });
 
-      test('loads profile from database when cache is empty', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('loads profile from database when cache is empty', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -132,10 +141,12 @@ void main() {
         expect(notifier.state.isOwner, isTrue);
       });
 
-      test('loads profile from cache when available', () async {        when(mockCacheService.get(any))
+      test('loads profile from cache when available', () async {
+        when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleProfile.toJson());
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleMembership.toJson()]);
@@ -153,9 +164,11 @@ void main() {
         expect(notifier.state.profile!.id, equals('baby_1'));
       });
 
-      test('loads profile with memberships', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('loads profile with memberships', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -179,7 +192,8 @@ void main() {
         expect(notifier.state.followers, hasLength(1));
       });
 
-      test('handles profile not found error', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles profile not found error', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -193,7 +207,8 @@ void main() {
         expect(notifier.state.profile, isNull);
       });
 
-      test('handles database error gracefully', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles database error gracefully', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
@@ -207,10 +222,12 @@ void main() {
         expect(notifier.state.profile, isNull);
       });
 
-      test('force refresh bypasses cache', () async {        when(mockCacheService.get(any))
+      test('force refresh bypasses cache', () async {
+        when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleProfile.toJson());
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -230,9 +247,11 @@ void main() {
         verify(mockDatabaseService.select(any)).called(greaterThan(0));
       });
 
-      test('saves fetched profile to cache', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('saves fetched profile to cache', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -255,9 +274,11 @@ void main() {
     });
 
     group('enterEditMode', () {
-      test('enables edit mode when user is owner', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('enables edit mode when user is owner', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -288,9 +309,11 @@ void main() {
     });
 
     group('cancelEdit', () {
-      test('disables edit mode', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('disables edit mode', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -316,7 +339,8 @@ void main() {
     });
 
     group('createProfile', () {
-      test('creates baby profile successfully', () async {        when(mockDatabaseService.insert(any, any))
+      test('creates baby profile successfully', () async {
+        when(mockDatabaseService.insert(any, any))
             .thenAnswer((_) async => [sampleProfile.toJson()]);
 
         final result = await notifier.createProfile(
@@ -333,7 +357,8 @@ void main() {
         expect(notifier.state.isOwner, isTrue);
       });
 
-      test('validates empty baby name', () async {        final result = await notifier.createProfile(
+      test('validates empty baby name', () async {
+        final result = await notifier.createProfile(
           name: '   ',
           userId: 'user_1',
         );
@@ -344,7 +369,8 @@ void main() {
         expect(notifier.state.saveSuccess, isFalse);
       });
 
-      test('handles database error during creation', () async {        when(mockDatabaseService.insert(any, any))
+      test('handles database error during creation', () async {
+        when(mockDatabaseService.insert(any, any))
             .thenThrow(Exception('Creation failed'));
 
         final result = await notifier.createProfile(
@@ -360,9 +386,11 @@ void main() {
     });
 
     group('updateProfile', () {
-      test('updates profile successfully when user is owner', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('updates profile successfully when user is owner', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1 || callCount == 4) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -392,7 +420,8 @@ void main() {
         expect(notifier.state.saveError, isNull);
       });
 
-      test('does not update when user is not owner', () async {        await notifier.updateProfile(
+      test('does not update when user is not owner', () async {
+        await notifier.updateProfile(
           babyProfileId: 'baby_1',
           name: 'Baby Jane Smith',
         );
@@ -401,9 +430,11 @@ void main() {
         verifyNever(mockDatabaseService.update(any, any));
       });
 
-      test('validates empty baby name', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('validates empty baby name', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -429,9 +460,11 @@ void main() {
         expect(notifier.state.saveSuccess, isFalse);
       });
 
-      test('handles database error during update', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles database error during update', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -461,9 +494,11 @@ void main() {
     });
 
     group('deleteProfile', () {
-      test('deletes profile successfully when user is owner', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('deletes profile successfully when user is owner', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -487,15 +522,18 @@ void main() {
         verify(mockDatabaseService.update(any, any)).called(1);
       });
 
-      test('does not delete when user is not owner', () async {        final result = await notifier.deleteProfile(babyProfileId: 'baby_1');
+      test('does not delete when user is not owner', () async {
+        final result = await notifier.deleteProfile(babyProfileId: 'baby_1');
 
         expect(result, isFalse);
         verifyNever(mockDatabaseService.update(any, any));
       });
 
-      test('handles database error during deletion', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles database error during deletion', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -520,7 +558,8 @@ void main() {
     });
 
     group('uploadProfilePhoto', () {
-      test('uploads profile photo successfully', () async {        when(mockStorageService.uploadFile(
+      test('uploads profile photo successfully', () async {
+        when(mockStorageService.uploadFile(
           filePath: 'filePath',
           storageKey: 'storageKey',
           bucket: 'bucket',
@@ -535,7 +574,8 @@ void main() {
         expect(result, contains('uploaded-photo.jpg'));
       });
 
-      test('handles upload error gracefully', () async {        when(mockStorageService.uploadFile(
+      test('handles upload error gracefully', () async {
+        when(mockStorageService.uploadFile(
           filePath: 'filePath',
           storageKey: 'storageKey',
           bucket: 'bucket',
@@ -551,9 +591,11 @@ void main() {
     });
 
     group('removeFollower', () {
-      test('removes follower successfully when user is owner', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('removes follower successfully when user is owner', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -580,7 +622,8 @@ void main() {
         verify(mockDatabaseService.delete(any)).called(1);
       });
 
-      test('does not remove follower when user is not owner', () async {        final result = await notifier.removeFollower(
+      test('does not remove follower when user is not owner', () async {
+        final result = await notifier.removeFollower(
           babyProfileId: 'baby_1',
           membershipId: 'membership_1',
         );
@@ -589,9 +632,11 @@ void main() {
         verifyNever(mockDatabaseService.delete(any));
       });
 
-      test('handles database error during removal', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles database error during removal', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);
@@ -619,8 +664,10 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes profile with force refresh', () async {        var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+      test('refreshes profile with force refresh', () async {
+        var callCount = 0;
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1 || callCount == 4) {
             return FakePostgrestBuilder([sampleProfile.toJson()]);

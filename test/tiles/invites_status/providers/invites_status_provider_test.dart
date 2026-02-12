@@ -1,13 +1,12 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/invitation_status.dart';
 import 'package:nonna_app/core/models/invitation.dart';
 import 'package:nonna_app/tiles/invites_status/providers/invites_status_provider.dart';
-import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-
 import '../../../helpers/mock_factory.dart';
 
 void main() {
@@ -30,9 +29,7 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
-      
-      
-      
+      when(mocks.cache.isInitialized).thenReturn(true);
 
       // Create a ProviderContainer with overrides
       container = ProviderContainer(
@@ -60,7 +57,8 @@ void main() {
     });
 
     group('fetchInvitations', () {
-      test('sets loading state while fetching', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('sets loading state while fetching', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -77,7 +75,8 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches invitations from database when cache is empty', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('fetches invitations from database when cache is empty', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -86,8 +85,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mocks.database.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
+        when(mocks.database.select(any)).thenAnswer(
+            (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
@@ -101,7 +100,8 @@ void main() {
         expect(state.pendingCount, equals(1));
       });
 
-      test('loads invitations from cache when available', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('loads invitations from cache when available', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup cache to return data
         when(mocks.cache.get(any))
@@ -119,12 +119,12 @@ void main() {
         expect(state.invitations.first.id, equals('invite_1'));
       });
 
-      test('handles errors gracefully', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('handles errors gracefully', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
@@ -136,7 +136,8 @@ void main() {
         expect(state.invitations, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('force refresh bypasses cache', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mocks
         when(mocks.cache.get(any))
@@ -146,8 +147,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mocks.database.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
+        when(mocks.database.select(any)).thenAnswer(
+            (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(
           babyProfileId: 'profile_1',
@@ -158,7 +159,8 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('calculates pending count correctly', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('calculates pending count correctly', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         final invite1 = sampleInvitation.copyWith(
             id: 'invite_1', status: InvitationStatus.pending);
@@ -173,11 +175,12 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
-          invite1.toJson(),
-          invite2.toJson(),
-          invite3.toJson(),
-        ]));
+        when(mocks.database.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  invite1.toJson(),
+                  invite2.toJson(),
+                  invite3.toJson(),
+                ]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
@@ -186,7 +189,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes invitations with force refresh', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('refreshes invitations with force refresh', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
@@ -195,8 +199,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mocks.database.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
+        when(mocks.database.select(any)).thenAnswer(
+            (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.refresh(babyProfileId: 'profile_1');
 
@@ -206,7 +210,8 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles INSERT invitation', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('handles INSERT invitation', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -215,8 +220,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mocks.database.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
+        when(mocks.database.select(any)).thenAnswer(
+            (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
@@ -236,7 +241,8 @@ void main() {
             equals(initialCount + 1));
       });
 
-      test('handles UPDATE invitation status', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('handles UPDATE invitation status', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -245,8 +251,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mocks.database.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
+        when(mocks.database.select(any)).thenAnswer(
+            (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
@@ -280,7 +286,8 @@ void main() {
     });
 
     group('Role-based Access', () {
-      test('owner can fetch invitations', () async {        final notifier = container.read(invitesStatusProvider.notifier);
+      test('owner can fetch invitations', () async {
+        final notifier = container.read(invitesStatusProvider.notifier);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
@@ -288,8 +295,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mocks.database.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
+        when(mocks.database.select(any)).thenAnswer(
+            (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 

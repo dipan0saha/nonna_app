@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/di/providers.dart';
+import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
@@ -28,6 +28,7 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
+      when(mocks.cache.isInitialized).thenReturn(true);
 
       // Setup dummy values for Mockito null-safety
 
@@ -54,7 +55,8 @@ void main() {
     });
 
     group('fetchHighlights', () {
-      test('sets loading state while fetching', () async {        // Setup mock to delay response
+      test('sets loading state while fetching', () async {
+        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -70,7 +72,8 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches items from database when cache is empty', () async {        // Setup mocks
+      test('fetches items from database when cache is empty', () async {
+        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
@@ -86,7 +89,8 @@ void main() {
         expect(state.error, isNull);
       });
 
-      test('loads items from cache when available', () async {        // Setup cache to return data
+      test('loads items from cache when available', () async {
+        // Setup cache to return data
         final cachedData = {
           'item': sampleItem.toJson(),
           'isPurchased': false,
@@ -106,10 +110,10 @@ void main() {
         expect(state.items.first.item.id, equals('item_1'));
       });
 
-      test('handles errors gracefully', () async {        // Setup mock to throw error
+      test('handles errors gracefully', () async {
+        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
@@ -121,7 +125,8 @@ void main() {
         expect(state.items, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {        // Setup mocks
+      test('force refresh bypasses cache', () async {
+        // Setup mocks
         final cachedData = {
           'item': sampleItem.toJson(),
           'isPurchased': false,
@@ -141,7 +146,8 @@ void main() {
         verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
       });
 
-      test('saves fetched items to cache', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('saves fetched items to cache', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
@@ -149,21 +155,22 @@ void main() {
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify cache put was called
-        verify(mocks.cache.put(any, any,
-                ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
 
-      test('sorts items by priority (highest first)', () async {        final item1 = sampleItem.copyWith(id: 'item_1', priority: 3);
+      test('sorts items by priority (highest first)', () async {
+        final item1 = sampleItem.copyWith(id: 'item_1', priority: 3);
         final item2 = sampleItem.copyWith(id: 'item_2', priority: 5);
         final item3 = sampleItem.copyWith(id: 'item_3', priority: 1);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
-          item1.toJson(),
-          item2.toJson(),
-          item3.toJson(),
-        ]));
+        when(mocks.database.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  item1.toJson(),
+                  item2.toJson(),
+                  item3.toJson(),
+                ]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
@@ -177,7 +184,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes items with force refresh', () async {        final cachedData = {
+      test('refreshes items with force refresh', () async {
+        final cachedData = {
           'item': sampleItem.toJson(),
           'isPurchased': false,
           'purchases': [],
@@ -195,7 +203,8 @@ void main() {
     });
 
     group('Purchase Status', () {
-      test('tracks purchase status correctly', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('tracks purchase status correctly', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
@@ -207,7 +216,8 @@ void main() {
         expect(state.items.first.isPurchased, isFalse);
       });
 
-      test('filters unpurchased items only', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('filters unpurchased items only', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
@@ -223,7 +233,8 @@ void main() {
     });
 
     group('Limit Items', () {
-      test('limits to top 10 items', () async {        // Create 15 items
+      test('limits to top 10 items', () async {
+        // Create 15 items
         final items = List.generate(
           15,
           (i) => sampleItem.copyWith(id: 'item_$i', priority: i),

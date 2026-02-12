@@ -1,4 +1,2 @@
 Analyzing nonna_app...                                          
-
-   info • The local variable '_createConfiguredChannel' starts with an underscore • test/helpers/mock_factory.dart:394:25 • no_leading_underscores_for_local_identifiers
-
+No issues found! (ran in 2.0s)

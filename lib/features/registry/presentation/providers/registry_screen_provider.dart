@@ -145,6 +145,7 @@ class RegistryScreenState {
 class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
   String? _itemsSubscriptionId;
   String? _purchasesSubscriptionId;
+  late final _realtimeService = ref.read(realtimeServiceProvider);
 
   @override
   RegistryScreenState build() {
@@ -416,13 +417,12 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
   /// Cancel real-time subscriptions
   void _cancelRealtimeSubscriptions() {
-    final realtimeService = ref.read(realtimeServiceProvider);
     if (_itemsSubscriptionId != null) {
-      realtimeService.unsubscribe(_itemsSubscriptionId!);
+      _realtimeService.unsubscribe(_itemsSubscriptionId!);
       _itemsSubscriptionId = null;
     }
     if (_purchasesSubscriptionId != null) {
-      realtimeService.unsubscribe(_purchasesSubscriptionId!);
+      _realtimeService.unsubscribe(_purchasesSubscriptionId!);
       _purchasesSubscriptionId = null;
     }
     debugPrint('✅ Real-time subscriptions cancelled');

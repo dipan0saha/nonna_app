@@ -6,7 +6,6 @@ import 'package:nonna_app/core/models/baby_profile.dart';
 import 'package:nonna_app/tiles/due_date_countdown/providers/due_date_countdown_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-
 import '../../../helpers/mock_factory.dart';
 
 void main() {
@@ -25,6 +24,7 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
+      when(mocks.cache.isInitialized).thenReturn(true);
 
       container = ProviderContainer(
         overrides: [
@@ -49,7 +49,8 @@ void main() {
     });
 
     group('fetchCountdowns', () {
-      test('sets loading state while fetching', () async {        // Setup mock to delay response
+      test('sets loading state while fetching', () async {
+        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -67,7 +68,8 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches profiles from database when cache is empty', () async {        // Setup mocks
+      test('fetches profiles from database when cache is empty', () async {
+        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -97,7 +99,8 @@ void main() {
         expect(state.isLoading, isFalse);
       });
 
-      test('loads countdowns from cache when available', () async {        // Setup cache to return data
+      test('loads countdowns from cache when available', () async {
+        // Setup cache to return data
         final cachedData = {
           'profile': sampleProfile.toJson(),
           'daysUntilDueDate': 30,
@@ -118,10 +121,10 @@ void main() {
         expect(state.countdowns.first.profile.id, equals('profile_1'));
       });
 
-      test('handles errors gracefully', () async {        // Setup mock to throw error
+      test('handles errors gracefully', () async {
+        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(dueDateCountdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
@@ -133,7 +136,8 @@ void main() {
         expect(state.countdowns, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {        // Setup mocks
+      test('force refresh bypasses cache', () async {
+        // Setup mocks
         final cachedData = {
           'profile': sampleProfile.toJson(),
           'daysUntilDueDate': 30,
@@ -159,7 +163,8 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('calculates days until due date correctly', () async {        final futureProfile = sampleProfile.copyWith(
+      test('calculates days until due date correctly', () async {
+        final futureProfile = sampleProfile.copyWith(
           expectedBirthDate: DateTime.now().add(const Duration(days: 45)),
         );
 
@@ -176,12 +181,13 @@ void main() {
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
         final state = container.read(dueDateCountdownProvider);
-        expect(state.countdowns.first.daysUntilDueDate,
-            greaterThanOrEqualTo(44));
+        expect(
+            state.countdowns.first.daysUntilDueDate, greaterThanOrEqualTo(44));
         expect(state.countdowns.first.isPastDue, isFalse);
       });
 
-      test('handles past due date correctly', () async {        final pastProfile = sampleProfile.copyWith(
+      test('handles past due date correctly', () async {
+        final pastProfile = sampleProfile.copyWith(
           expectedBirthDate: DateTime.now().subtract(const Duration(days: 10)),
         );
 
@@ -201,7 +207,8 @@ void main() {
         expect(state.countdowns.first.isPastDue, isTrue);
       });
 
-      test('handles multiple babies', () async {        final profile2 =
+      test('handles multiple babies', () async {
+        final profile2 =
             sampleProfile.copyWith(id: 'profile_2', name: 'Baby Jack');
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
@@ -210,10 +217,11 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
-        when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([
-          sampleProfile.toJson(),
-          profile2.toJson(),
-        ]));
+        when(mocks.database.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  sampleProfile.toJson(),
+                  profile2.toJson(),
+                ]));
 
         final notifier = container.read(dueDateCountdownProvider.notifier);
         await notifier.fetchCountdowns(
@@ -226,7 +234,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes countdowns with force refresh', () async {        final cachedData = {
+      test('refreshes countdowns with force refresh', () async {
+        final cachedData = {
           'profile': sampleProfile.toJson(),
           'daysUntilDueDate': 30,
           'isPastDue': false,
@@ -250,7 +259,8 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles UPDATE to due date', () async {        // Setup initial state
+      test('handles UPDATE to due date', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -263,7 +273,11 @@ void main() {
         final notifier = container.read(dueDateCountdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
-        final initialDays = container.read(dueDateCountdownProvider).countdowns.first.daysUntilDueDate;
+        final initialDays = container
+            .read(dueDateCountdownProvider)
+            .countdowns
+            .first
+            .daysUntilDueDate;
 
         // Simulate real-time UPDATE
         final updatedProfile = sampleProfile.copyWith(
@@ -282,7 +296,12 @@ void main() {
           ],
         );
 
-        expect(container.read(dueDateCountdownProvider).countdowns.first.daysUntilDueDate,
+        expect(
+            container
+                .read(dueDateCountdownProvider)
+                .countdowns
+                .first
+                .daysUntilDueDate,
             greaterThan(initialDays));
       });
     });
@@ -298,7 +317,8 @@ void main() {
     });
 
     group('Countdown Formatting', () {
-      test('formats countdown as days', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('formats countdown as days', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),

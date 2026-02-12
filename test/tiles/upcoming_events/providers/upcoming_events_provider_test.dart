@@ -32,6 +32,7 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
+      when(mocks.cache.isInitialized).thenReturn(true);
 
       container = ProviderContainer(
         overrides: [
@@ -58,7 +59,8 @@ void main() {
     });
 
     group('fetchEvents', () {
-      test('sets loading state while fetching', () async {        // Setup mock to delay response
+      test('sets loading state while fetching', () async {
+        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -77,7 +79,8 @@ void main() {
         await fetchFuture;
       });
 
-      test('fetches events from database when cache is empty', () async {        // Setup mocks
+      test('fetches events from database when cache is empty', () async {
+        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -103,7 +106,8 @@ void main() {
         expect(state.currentPage, equals(1));
       });
 
-      test('loads events from cache when available', () async {        // Setup cache to return data
+      test('loads events from cache when available', () async {
+        // Setup cache to return data
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
 
@@ -123,10 +127,10 @@ void main() {
         expect(state.events.first.id, equals('event_1'));
       });
 
-      test('handles errors gracefully', () async {        // Setup mock to throw error
+      test('handles errors gracefully', () async {
+        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(upcomingEventsProvider.notifier);
 
@@ -142,7 +146,8 @@ void main() {
         expect(state.events, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {        // Setup mocks
+      test('force refresh bypasses cache', () async {
+        // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
         when(mocks.realtime.subscribe(
@@ -165,7 +170,8 @@ void main() {
         verify(mocks.database.select(any)).called(1);
       });
 
-      test('saves fetched events to cache', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('saves fetched events to cache', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -182,14 +188,14 @@ void main() {
         );
 
         // Verify cache put was called
-        verify(mocks.cache.put(any, any,
-                ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
       });
     });
 
     group('loadMore', () {
-      test('loads more events for pagination', () async {        // Setup initial state with events
+      test('loads more events for pagination', () async {
+        // Setup initial state with events
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -219,7 +225,8 @@ void main() {
         expect(state.currentPage, equals(2));
       });
 
-      test('does not load more when already loading', () async {        // Setup initial state
+      test('does not load more when already loading', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -245,7 +252,8 @@ void main() {
         verify(mocks.database.select(any)).called(1); // Only initial fetch
       });
 
-      test('does not load more when hasMore is false', () async {        // Setup initial state with hasMore = false
+      test('does not load more when hasMore is false', () async {
+        // Setup initial state with hasMore = false
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -274,7 +282,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes events with force refresh', () async {        when(mocks.cache.get(any))
+      test('refreshes events with force refresh', () async {
+        when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -297,7 +306,8 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles INSERT event', () async {        // Setup initial state
+      test('handles INSERT event', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -328,7 +338,8 @@ void main() {
             equals(initialCount + 1));
       });
 
-      test('handles UPDATE event', () async {        // Setup initial state
+      test('handles UPDATE event', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -357,7 +368,8 @@ void main() {
             equals('Updated Event'));
       });
 
-      test('handles DELETE event', () async {        // Setup initial state
+      test('handles DELETE event', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -387,7 +399,8 @@ void main() {
     });
 
     group('dispose', () {
-      test('cancels real-time subscription on dispose', () async {        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
+      test('cancels real-time subscription on dispose', () async {
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         // Disposing the container will trigger the onDispose callback
         container.dispose();

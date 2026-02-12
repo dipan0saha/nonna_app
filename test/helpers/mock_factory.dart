@@ -1,5 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../mocks/mock_services.mocks.dart';
 import 'fake_postgrest_builders.dart';
 
@@ -106,7 +107,7 @@ class MockFactory {
   // ==========================================
 
   /// Create a SupabaseClient mock
-  /// 
+  ///
   /// By default, this creates a client with realtime channel support enabled.
   /// Set [withRealtimeSupport] to false if you need a basic client without stubs.
   static MockSupabaseClient createSupabaseClient({bool withRealtimeSupport = true}) {
@@ -389,11 +390,11 @@ class MockHelpers {
   static void setupSupabaseRealtimeChannels(MockSupabaseClient mock) {
     // Create a map to track channels by name
     final channels = <String, MockRealtimeChannel>{};
-    
+
     // Helper function to create and configure a mock channel
-    MockRealtimeChannel _createConfiguredChannel() {
+    MockRealtimeChannel createConfiguredChannel() {
       final mockChannel = MockFactory.createRealtimeChannel();
-      
+
       // Stub the onPostgresChanges method to return the channel (for method chaining)
       when(mockChannel.onPostgresChanges(
         event: anyNamed('event'),
@@ -402,7 +403,7 @@ class MockHelpers {
         filter: anyNamed('filter'),
         callback: anyNamed('callback'),
       )).thenReturn(mockChannel);
-      
+
       // Stub the subscribe method to return the channel and immediately call the callback
       when(mockChannel.subscribe(any, any)).thenAnswer((subscribeInvocation) {
         // Get the callback from the invocation
@@ -413,25 +414,25 @@ class MockHelpers {
         }
         return mockChannel;
       });
-      
+
       // Stub unsubscribe to return success
       when(mockChannel.unsubscribe(any))
           .thenAnswer((_) async => 'ok');
-      
+
       return mockChannel;
     }
-    
+
     // Stub the channel method to return a unique mock channel per channel name
     when(mock.channel(any)).thenAnswer((invocation) {
       final channelName = invocation.positionalArguments[0] as String;
-      return channels.putIfAbsent(channelName, _createConfiguredChannel);
+      return channels.putIfAbsent(channelName, createConfiguredChannel);
     });
-    
+
     when(mock.channel(any, opts: anyNamed('opts'))).thenAnswer((invocation) {
       final channelName = invocation.positionalArguments[0] as String;
-      return channels.putIfAbsent(channelName, _createConfiguredChannel);
+      return channels.putIfAbsent(channelName, createConfiguredChannel);
     });
-    
+
     // Stub the removeChannel method to return success
     // This removes the channel from tracking by identity reference.
     // When the same channel name is requested again via channel(),

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
@@ -84,7 +85,12 @@ class AuthNotifier extends Notifier<AuthState> {
     final user = authState.session?.user;
 
     if (user != null) {
-      await _loadUserProfile(user, databaseService, localStorage);
+      await _loadUserProfile(
+        user,
+        databaseService,
+        localStorage,
+        session: authState.session,
+      );
     } else {
       state = const AuthState.unauthenticated();
     }
@@ -94,8 +100,9 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> _loadUserProfile(
     supabase.User user,
     DatabaseService databaseService,
-    LocalStorageService localStorage,
-  ) async {
+    LocalStorageService localStorage, {
+    supabase.Session? session,
+  }) async {
     try {
       state = const AuthState.loading();
 
@@ -111,19 +118,27 @@ class AuthNotifier extends Notifier<AuthState> {
         userModel = app_user.User.fromJson(response);
       }
 
+      // Use provided session or fall back to currentSession
       final authService = ref.read(authServiceProvider);
-      final session = authService.currentUser != null
-          ? supabase.Supabase.instance.client.auth.currentSession
-          : null;
+      final effectiveSession = session ??
+          (authService.currentUser != null
+              ? supabase.Supabase.instance.client.auth.currentSession
+              : null);
+
+      // Handle null session gracefully
+      if (effectiveSession == null) {
+        state = const AuthState.error('No valid session available');
+        return;
+      }
 
       state = AuthState.authenticated(
         user: user,
-        session: session!,
+        session: effectiveSession,
         userModel: userModel,
       );
 
       // Persist session
-      await _persistSession(session, localStorage);
+      await _persistSession(effectiveSession, localStorage);
       if (!ref.mounted) return;
 
       debugPrint('✅ User profile loaded: ${user.id}');
@@ -157,7 +172,12 @@ class AuthNotifier extends Notifier<AuthState> {
       if (!ref.mounted) return;
 
       if (response.user != null) {
-        await _loadUserProfile(response.user!, databaseService, localStorage);
+        await _loadUserProfile(
+          response.user!,
+          databaseService,
+          localStorage,
+          session: response.session,
+        );
       } else {
         state = const AuthState.error('Sign in failed');
       }
@@ -189,7 +209,12 @@ class AuthNotifier extends Notifier<AuthState> {
       if (!ref.mounted) return;
 
       if (response.user != null) {
-        await _loadUserProfile(response.user!, databaseService, localStorage);
+        await _loadUserProfile(
+          response.user!,
+          databaseService,
+          localStorage,
+          session: response.session,
+        );
       } else {
         state = const AuthState.error('Sign up failed');
       }
@@ -213,7 +238,12 @@ class AuthNotifier extends Notifier<AuthState> {
       if (!ref.mounted) return;
 
       if (response?.user != null) {
-        await _loadUserProfile(response!.user!, databaseService, localStorage);
+        await _loadUserProfile(
+          response!.user!,
+          databaseService,
+          localStorage,
+          session: response.session,
+        );
       } else {
         state = const AuthState.error('Google sign in failed');
       }
@@ -237,7 +267,12 @@ class AuthNotifier extends Notifier<AuthState> {
       if (!ref.mounted) return;
 
       if (response?.user != null) {
-        await _loadUserProfile(response!.user!, databaseService, localStorage);
+        await _loadUserProfile(
+          response!.user!,
+          databaseService,
+          localStorage,
+          session: response.session,
+        );
       } else {
         state = const AuthState.error('Facebook sign in failed');
       }
@@ -394,7 +429,11 @@ class AuthNotifier extends Notifier<AuthState> {
       final currentSession = authService.currentSession;
       if (currentSession?.user != null) {
         await _loadUserProfile(
-            currentSession!.user, databaseService, localStorage);
+          currentSession!.user,
+          databaseService,
+          localStorage,
+          session: currentSession,
+        );
         if (!ref.mounted) return;
       }
       debugPrint('✅ Session refreshed');

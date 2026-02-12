@@ -1,14 +1,14 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/user.dart';
 import 'package:nonna_app/core/models/user_stats.dart';
 import 'package:nonna_app/features/profile/presentation/providers/profile_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
+import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('ProfileProvider Tests', () {
@@ -41,6 +41,11 @@ void main() {
       mockStorageService = MockFactory.createStorageService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockStorageService.uploadFile(
+        filePath: anyNamed('filePath'),
+        storageKey: anyNamed('storageKey'),
+        bucket: anyNamed('bucket'),
+      )).thenAnswer((_) async => 'https://example.com/test-avatar.jpg');
 
       container = ProviderContainer(
         overrides: [
@@ -71,7 +76,8 @@ void main() {
     });
 
     group('loadProfile', () {
-      test('sets loading state while loading', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('sets loading state while loading', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleUser.toJson()]));
 
@@ -82,9 +88,11 @@ void main() {
         await loadFuture;
       });
 
-      test('loads profile from database when cache is empty', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('loads profile from database when cache is empty', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -101,7 +109,8 @@ void main() {
         expect(notifier.state.error, isNull);
       });
 
-      test('loads profile from cache when available', () async {        when(mockCacheService.get(any))
+      test('loads profile from cache when available', () async {
+        when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleStats.toJson()]));
@@ -112,7 +121,8 @@ void main() {
         expect(notifier.state.profile!.userId, equals('user_1'));
       });
 
-      test('handles profile not found error', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles profile not found error', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -123,7 +133,8 @@ void main() {
         expect(notifier.state.profile, isNull);
       });
 
-      test('handles database error gracefully', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('handles database error gracefully', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
@@ -134,10 +145,12 @@ void main() {
         expect(notifier.state.profile, isNull);
       });
 
-      test('force refresh bypasses cache', () async {        when(mockCacheService.get(any))
+      test('force refresh bypasses cache', () async {
+        when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -151,9 +164,11 @@ void main() {
         verify(mockDatabaseService.select(any)).called(greaterThan(0));
       });
 
-      test('saves fetched profile to cache', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('saves fetched profile to cache', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -169,9 +184,11 @@ void main() {
             .called(1);
       });
 
-      test('loads user stats after loading profile', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      test('loads user stats after loading profile', () async {
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -209,10 +226,12 @@ void main() {
     });
 
     group('updateProfile', () {
-      test('updates profile successfully', () async {        when(mockDatabaseService.update(any, any))
+      test('updates profile successfully', () async {
+        when(mockDatabaseService.update(any, any))
             .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -233,7 +252,8 @@ void main() {
         expect(notifier.state.saveError, isNull);
       });
 
-      test('validates empty display name', () async {        await notifier.updateProfile(
+      test('validates empty display name', () async {
+        await notifier.updateProfile(
           userId: 'user_1',
           displayName: '   ',
         );
@@ -243,7 +263,8 @@ void main() {
         expect(notifier.state.saveSuccess, isFalse);
       });
 
-      test('validates display name length', () async {        await notifier.updateProfile(
+      test('validates display name length', () async {
+        await notifier.updateProfile(
           userId: 'user_1',
           displayName: 'a' * 101,
         );
@@ -253,7 +274,8 @@ void main() {
         expect(notifier.state.saveSuccess, isFalse);
       });
 
-      test('handles database error during update', () async {        when(mockDatabaseService.update(any, any))
+      test('handles database error during update', () async {
+        when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
         await notifier.updateProfile(
@@ -266,10 +288,12 @@ void main() {
         expect(notifier.state.saveSuccess, isFalse);
       });
 
-      test('updates profile with avatar URL', () async {        when(mockDatabaseService.update(any, any))
+      test('updates profile with avatar URL', () async {
+        when(mockDatabaseService.update(any, any))
             .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -290,7 +314,8 @@ void main() {
     });
 
     group('uploadAvatar', () {
-      test('uploads avatar successfully', () async {        when(mockStorageService.uploadFile(
+      test('uploads avatar successfully', () async {
+        when(mockStorageService.uploadFile(
           filePath: 'test_file_path',
           storageKey: 'test_storage_key',
           bucket: 'test_bucket',
@@ -305,7 +330,8 @@ void main() {
         expect(result, contains('uploaded-avatar.jpg'));
       });
 
-      test('handles upload error gracefully', () async {        when(mockStorageService.uploadFile(
+      test('handles upload error gracefully', () async {
+        when(mockStorageService.uploadFile(
           filePath: 'test_file_path',
           storageKey: 'test_storage_key',
           bucket: 'test_bucket',
@@ -321,10 +347,12 @@ void main() {
     });
 
     group('toggleBiometric', () {
-      test('enables biometric successfully', () async {        when(mockDatabaseService.update(any, any))
+      test('enables biometric successfully', () async {
+        when(mockDatabaseService.update(any, any))
             .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1) {
             return FakePostgrestBuilder([sampleUser.toJson()]);
@@ -342,7 +370,8 @@ void main() {
         verify(mockDatabaseService.update(any, any)).called(1);
       });
 
-      test('handles toggle biometric error', () async {        when(mockDatabaseService.update(any, any))
+      test('handles toggle biometric error', () async {
+        when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
         expect(
@@ -353,8 +382,10 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes profile with force refresh', () async {        var callCount = 0;
-        when(mockDatabaseService.select(any, columns: anyNamed('columns'))).thenAnswer((_) {
+      test('refreshes profile with force refresh', () async {
+        var callCount = 0;
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
           callCount++;
           if (callCount == 1 || callCount == 3) {
             return FakePostgrestBuilder([sampleUser.toJson()]);

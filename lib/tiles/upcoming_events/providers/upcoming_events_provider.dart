@@ -58,6 +58,9 @@ class UpcomingEventsState {
 ///
 /// Manages upcoming events with pagination, caching, and real-time updates.
 class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
+  String? _subscriptionId;
+  late final _realtimeService = ref.read(realtimeServiceProvider);
+
   @override
   UpcomingEventsState build() {
     ref.onDispose(() {
@@ -69,8 +72,6 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
   // Configuration
   static const String _cacheKeyPrefix = 'upcoming_events';
   static const int _pageSize = 20;
-
-  String? _subscriptionId;
 
   // ==========================================
   // Public Methods
@@ -322,8 +323,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      final realtimeService = ref.read(realtimeServiceProvider);
-      realtimeService.unsubscribe(_subscriptionId!);
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
-
 import '../../../helpers/mock_factory.dart';
 
 void main() {
@@ -11,6 +10,7 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
+      when(mocks.cache.isInitialized).thenReturn(true);
     });
 
     group('Initial State', () {
@@ -22,7 +22,8 @@ void main() {
 
     group('fetchEngagement', () {
       test('fetches engagement metrics from database when cache is empty',
-          () async {        // Setup mocks
+          () async {
+        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
 
         // Mock photo queries
@@ -55,7 +56,8 @@ void main() {
         // Test would require provider container to verify behavior
       });
 
-      test('loads metrics from cache when available', () async {        // Setup cache to return data
+      test('loads metrics from cache when available', () async {
+        // Setup cache to return data
         final cachedData = {
           'photoSquishes': 2,
           'photoComments': 3,
@@ -68,15 +70,16 @@ void main() {
         // Test would require provider container to verify behavior
       });
 
-      test('handles errors gracefully', () async {        // Setup mock to throw error
+      test('handles errors gracefully', () async {
+        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         // Test would require provider container to verify behavior
       });
 
-      test('force refresh bypasses cache', () async {        // Setup mocks
+      test('force refresh bypasses cache', () async {
+        // Setup mocks
         final cachedData = {
           'photoSquishes': 1,
           'photoComments': 1,

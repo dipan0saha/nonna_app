@@ -1,13 +1,13 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/rsvp_status.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/models/event_rsvp.dart';
-import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/tiles/rsvp_tasks/providers/rsvp_tasks_provider.dart';
-import '../../../helpers/fake_postgrest_builders.dart';
 
+import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
@@ -40,6 +40,7 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
+      when(mocks.cache.isInitialized).thenReturn(true);
 
       container = ProviderContainer(
         overrides: [
@@ -65,7 +66,8 @@ void main() {
     });
 
     group('fetchRSVPTasks', () {
-      test('sets loading state while fetching', () async {        // Setup mock to delay response
+      test('sets loading state while fetching', () async {
+        // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
         when(mocks.database.select(any))
@@ -81,7 +83,8 @@ void main() {
         expect(state.isLoading, isFalse);
       });
 
-      test('fetches events from database when cache is empty', () async {        // Setup mocks
+      test('fetches events from database when cache is empty', () async {
+        // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -104,7 +107,8 @@ void main() {
         expect(state.error, isNull);
       });
 
-      test('loads events from cache when available', () async {        // Setup cache to return data
+      test('loads events from cache when available', () async {
+        // Setup cache to return data
         final cachedData = {
           'event': sampleEvent.toJson(),
           'rsvp': null,
@@ -126,10 +130,10 @@ void main() {
         expect(state.events.first.event.id, equals('event_1'));
       });
 
-      test('handles errors gracefully', () async {        // Setup mock to throw error
+      test('handles errors gracefully', () async {
+        // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
-            .thenThrow(Exception('Database error'));
+        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -143,7 +147,8 @@ void main() {
         expect(state.events, isEmpty);
       });
 
-      test('force refresh bypasses cache', () async {        // Setup mocks
+      test('force refresh bypasses cache', () async {
+        // Setup mocks
         final cachedData = {
           'event': sampleEvent.toJson(),
           'rsvp': null,
@@ -171,7 +176,8 @@ void main() {
         verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
       });
 
-      test('calculates pending count correctly', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('calculates pending count correctly', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -192,7 +198,8 @@ void main() {
     });
 
     group('submitRSVP', () {
-      test('submits RSVP and updates state', () async {        // Setup initial state
+      test('submits RSVP and updates state', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -209,8 +216,7 @@ void main() {
         );
 
         // Setup insert mock
-        when(mocks.database.insert(
-                any, argThat(isA<Map<String, dynamic>>())))
+        when(mocks.database.insert(any, argThat(isA<Map<String, dynamic>>())))
             .thenAnswer((_) async => [sampleRSVP.toJson()]);
 
         // Note: submitRSVP method may not exist, skip actual test
@@ -220,7 +226,8 @@ void main() {
     });
 
     group('refresh', () {
-      test('refreshes RSVP tasks with force refresh', () async {        final cachedData = {
+      test('refreshes RSVP tasks with force refresh', () async {
+        final cachedData = {
           'event': sampleEvent.toJson(),
           'rsvp': null,
           'needsResponse': true,
@@ -247,7 +254,8 @@ void main() {
     });
 
     group('Real-time Updates', () {
-      test('handles new event requiring RSVP', () async {        // Setup initial state
+      test('handles new event requiring RSVP', () async {
+        // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
@@ -279,7 +287,8 @@ void main() {
     });
 
     group('RSVP Status Filtering', () {
-      test('filters events needing response', () async {        when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      test('filters events needing response', () async {
+        when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
