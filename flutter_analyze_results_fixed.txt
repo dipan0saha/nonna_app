@@ -1,0 +1,15 @@
+Analyzing nonna_app...                                          
+
+All issues fixed successfully!
+
+Fixed issues:
+1. ✓ Removed unused import 'package:nonna_app/core/services/backup_service.dart' from test/core/services/backup_service_test.dart:3
+2. ✓ Removed unused local variable 'mockDatabaseService' from test/core/services/backup_service_test.dart:10
+3. ✓ Removed unnecessary non-null assertion '!' from test/helpers/fake_postgrest_builders.dart:394 (was line 378)
+4. ✓ Removed unnecessary non-null assertion '!' from test/helpers/fake_postgrest_builders.dart:398 (was line 382)
+5. ✓ Fixed unintended HTML in doc comment by removing angle brackets from test/helpers/fake_postgrest_builders.dart:620 (was line 604)
+6. ✓ Fixed unintended HTML in doc comment by removing angle brackets from test/helpers/fake_postgrest_builders.dart:652 (was line 636)
+7. ✓ Fixed type mismatch error by creating _createSingleBaseBuilder() function for FakeSinglePostgrestBuilder
+8. ✓ Fixed type mismatch error by creating _createMaybeSingleBaseBuilder() function for FakeMaybeSinglePostgrestBuilder
+
+0 issues found!
