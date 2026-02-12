@@ -1,11 +1,11 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nonna_app/core/models/registry_purchase.dart';
 import 'package:nonna_app/core/di/providers.dart';
+import 'package:nonna_app/core/models/registry_purchase.dart';
 import 'package:nonna_app/tiles/recent_purchases/providers/recent_purchases_provider.dart';
-import '../../../helpers/fake_postgrest_builders.dart';
 
+import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {

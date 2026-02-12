@@ -1,13 +1,13 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/features/calendar/presentation/providers/calendar_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
+import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('CalendarScreenNotifier Tests', () {
@@ -142,7 +142,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any)).thenReturn(
+        when(mockDatabaseService.select(any)).thenAnswer((_) =>
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -253,7 +253,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any)).thenReturn(
+        when(mockDatabaseService.select(any)).thenAnswer((_) =>
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
         await notifier.loadEvents(babyProfileId: 'profile_1');

@@ -7,8 +7,8 @@ import 'package:nonna_app/core/models/tile_config.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
+import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('HomeScreenNotifier Tests', () {

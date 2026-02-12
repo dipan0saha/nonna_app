@@ -5,6 +5,7 @@ import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/models/event.dart';
+import '../../../../core/services/realtime_service.dart';
 
 /// Calendar Screen Provider for managing calendar view state
 ///
@@ -94,10 +95,12 @@ class CalendarScreenState {
 /// Calendar Screen Provider Notifier
 class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
   String? _subscriptionId;
-  late final _realtimeService = ref.read(realtimeServiceProvider);
+  late final RealtimeService _realtimeService;
 
   @override
   CalendarScreenState build() {
+    _realtimeService = ref.read(realtimeServiceProvider);
+
     ref.onDispose(() {
       _cancelRealtimeSubscription();
     });
