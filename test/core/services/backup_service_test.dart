@@ -1,19 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nonna_app/core/services/backup_service.dart';
 
 import '../../mocks/mock_services.mocks.dart';
 import '../../helpers/mock_factory.dart';
 
 void main() {
   group('BackupService', () {
-    late MockDatabaseService mockDatabaseService;
     late MockSupabaseClient mockSupabaseClient;
     late MockGoTrueClient mockAuth;
     late MockUser mockUser;
 
     setUp(() {
-      mockDatabaseService = MockDatabaseService();
       mockSupabaseClient = MockFactory.createSupabaseClient();
       mockAuth = MockFactory.createGoTrueClient();
       mockUser = MockUser();
