@@ -9,7 +9,6 @@ import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('ChecklistProvider Tests', () {
-    late ChecklistNotifier notifier;
     late ProviderContainer container;
     late MockCacheService mockCacheService;
 
@@ -21,21 +20,19 @@ void main() {
           cacheServiceProvider.overrideWithValue(mockCacheService),
         ],
       );
+    });
 
-      notifier = container.read(checklistProvider.notifier);
-      
-      addTearDown(() {
-        container.dispose();
-      });
+    tearDown(() {
+      container.dispose();
     });
 
     group('Initial State', () {
       test('initial state has empty items and zero progress', () {
-        expect(notifier.state.items, isEmpty);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
-        expect(notifier.state.completedCount, equals(0));
-        expect(notifier.state.progressPercentage, equals(0.0));
+        expect(container.read(checklistProvider.notifier).state.items, isEmpty);
+        expect(container.read(checklistProvider.notifier).state.isLoading, isFalse);
+        expect(container.read(checklistProvider.notifier).state.error, isNull);
+        expect(container.read(checklistProvider.notifier).state.completedCount, equals(0));
+        expect(container.read(checklistProvider.notifier).state.progressPercentage, equals(0.0));
       });
     });
 
@@ -47,10 +44,10 @@ void main() {
         });
 
         // Start loading
-        final loadFuture = notifier.loadChecklist(babyProfileId: 'profile_1');
+        final loadFuture = container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
         // Verify loading state
-        expect(notifier.state.isLoading, isTrue);
+        expect(container.read(checklistProvider.notifier).state.isLoading, isTrue);
 
         await loadFuture;
       });
@@ -58,14 +55,14 @@ void main() {
       test('loads default checklist when cache is empty', () async {        // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
         // Verify state updated with default items
-        expect(notifier.state.items, isNotEmpty);
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.error, isNull);
-        expect(notifier.state.completedCount, equals(0));
-        expect(notifier.state.progressPercentage, equals(0.0));
+        expect(container.read(checklistProvider.notifier).state.items, isNotEmpty);
+        expect(container.read(checklistProvider.notifier).state.isLoading, isFalse);
+        expect(container.read(checklistProvider.notifier).state.error, isNull);
+        expect(container.read(checklistProvider.notifier).state.completedCount, equals(0));
+        expect(container.read(checklistProvider.notifier).state.progressPercentage, equals(0.0));
       });
 
       test('loads checklist from cache when available', () async {        final cachedItems = [
@@ -87,22 +84,22 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
 
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
         // Verify state updated from cache
-        expect(notifier.state.items, hasLength(2));
-        expect(notifier.state.completedCount, equals(1));
-        expect(notifier.state.progressPercentage, equals(50.0));
+        expect(container.read(checklistProvider.notifier).state.items, hasLength(2));
+        expect(container.read(checklistProvider.notifier).state.completedCount, equals(1));
+        expect(container.read(checklistProvider.notifier).state.progressPercentage, equals(50.0));
       });
 
       test('handles errors gracefully', () async {        // Setup mock to throw error
         when(mockCacheService.get(any)).thenThrow(Exception('Cache error'));
 
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
         // Verify error state - should fall back to default items
-        expect(notifier.state.isLoading, isFalse);
-        expect(notifier.state.items, isNotEmpty); // Default items loaded
+        expect(container.read(checklistProvider.notifier).state.isLoading, isFalse);
+        expect(container.read(checklistProvider.notifier).state.items, isNotEmpty); // Default items loaded
       });
 
       test('calculates progress percentage correctly', () async {        final cachedItems = List.generate(
@@ -118,31 +115,31 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
 
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        expect(notifier.state.completedCount, equals(3));
-        expect(notifier.state.progressPercentage, equals(50.0));
+        expect(container.read(checklistProvider.notifier).state.completedCount, equals(3));
+        expect(container.read(checklistProvider.notifier).state.progressPercentage, equals(50.0));
       });
     });
 
     group('toggleItem', () {
       test('toggles item from incomplete to complete', () async {        // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        final initialCompletedCount = notifier.state.completedCount;
-        final itemId = notifier.state.items.first.id;
+        final initialCompletedCount = container.read(checklistProvider.notifier).state.completedCount;
+        final itemId = container.read(checklistProvider.notifier).state.items.first.id;
 
-        await notifier.toggleItem(
+        await container.read(checklistProvider.notifier).toggleItem(
           itemId: itemId,
           babyProfileId: 'profile_1',
         );
 
         // Verify state updated
         expect(
-            notifier.state.completedCount, equals(initialCompletedCount + 1));
+            container.read(checklistProvider.notifier).state.completedCount, equals(initialCompletedCount + 1));
         expect(
-          notifier.state.items
+          container.read(checklistProvider.notifier).state.items
               .firstWhere((item) => item.id == itemId)
               .isCompleted,
           isTrue,
@@ -161,19 +158,19 @@ void main() {
         ];
 
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        expect(notifier.state.completedCount, equals(1));
+        expect(container.read(checklistProvider.notifier).state.completedCount, equals(1));
 
-        await notifier.toggleItem(
+        await container.read(checklistProvider.notifier).toggleItem(
           itemId: 'setup_profile',
           babyProfileId: 'profile_1',
         );
 
         // Verify state updated
-        expect(notifier.state.completedCount, equals(0));
+        expect(container.read(checklistProvider.notifier).state.completedCount, equals(0));
         expect(
-          notifier.state.items
+          container.read(checklistProvider.notifier).state.items
               .firstWhere((item) => item.id == 'setup_profile')
               .isCompleted,
           isFalse,
@@ -181,11 +178,11 @@ void main() {
       });
 
       test('updates cache after toggling', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        final itemId = notifier.state.items.first.id;
+        final itemId = container.read(checklistProvider.notifier).state.items.first.id;
 
-        await notifier.toggleItem(
+        await container.read(checklistProvider.notifier).toggleItem(
           itemId: itemId,
           babyProfileId: 'profile_1',
         );
@@ -195,17 +192,17 @@ void main() {
       });
 
       test('updates progress percentage after toggle', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        final initialProgress = notifier.state.progressPercentage;
-        final itemId = notifier.state.items.first.id;
+        final initialProgress = container.read(checklistProvider.notifier).state.progressPercentage;
+        final itemId = container.read(checklistProvider.notifier).state.items.first.id;
 
-        await notifier.toggleItem(
+        await container.read(checklistProvider.notifier).toggleItem(
           itemId: itemId,
           babyProfileId: 'profile_1',
         );
 
-        expect(notifier.state.progressPercentage, greaterThan(initialProgress));
+        expect(container.read(checklistProvider.notifier).state.progressPercentage, greaterThan(initialProgress));
       });
     });
 
@@ -222,24 +219,24 @@ void main() {
         ];
 
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        expect(notifier.state.completedCount, greaterThan(0));
+        expect(container.read(checklistProvider.notifier).state.completedCount, greaterThan(0));
 
-        await notifier.resetChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).resetChecklist(babyProfileId: 'profile_1');
 
         // Verify state reset
-        expect(notifier.state.completedCount, equals(0));
-        expect(notifier.state.progressPercentage, equals(0.0));
-        for (final item in notifier.state.items) {
+        expect(container.read(checklistProvider.notifier).state.completedCount, equals(0));
+        expect(container.read(checklistProvider.notifier).state.progressPercentage, equals(0.0));
+        for (final item in container.read(checklistProvider.notifier).state.items) {
           expect(item.isCompleted, isFalse);
         }
       });
 
       test('saves reset state to cache', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        await notifier.resetChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).resetChecklist(babyProfileId: 'profile_1');
 
         // Verify cache was updated
         verify(mockCacheService.put(any, any)).called(greaterThanOrEqualTo(1));
@@ -272,9 +269,9 @@ void main() {
         ];
 
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        final incompleteItems = notifier.getIncompleteItems();
+        final incompleteItems = container.read(checklistProvider.notifier).getIncompleteItems();
 
         expect(incompleteItems, hasLength(2));
         for (final item in incompleteItems) {
@@ -309,9 +306,9 @@ void main() {
         ];
 
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
-        final completedItems = notifier.getCompletedItems();
+        final completedItems = container.read(checklistProvider.notifier).getCompletedItems();
 
         expect(completedItems, hasLength(2));
         for (final item in completedItems) {
@@ -323,29 +320,29 @@ void main() {
     group('Default Checklist Items', () {
       test('has expected default items', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
         // Should have standard onboarding items
-        expect(notifier.state.items.length, greaterThanOrEqualTo(5));
+        expect(container.read(checklistProvider.notifier).state.items.length, greaterThanOrEqualTo(5));
         expect(
-          notifier.state.items.any((item) => item.id == 'setup_profile'),
+          container.read(checklistProvider.notifier).state.items.any((item) => item.id == 'setup_profile'),
           isTrue,
         );
         expect(
-          notifier.state.items.any((item) => item.id == 'create_registry'),
+          container.read(checklistProvider.notifier).state.items.any((item) => item.id == 'create_registry'),
           isTrue,
         );
       });
 
       test('default items are in correct order', () async {        when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
-        await notifier.loadChecklist(babyProfileId: 'profile_1');
+        await container.read(checklistProvider.notifier).loadChecklist(babyProfileId: 'profile_1');
 
         // Verify items are sorted by order
-        for (int i = 0; i < notifier.state.items.length - 1; i++) {
+        for (int i = 0; i < container.read(checklistProvider.notifier).state.items.length - 1; i++) {
           expect(
-            notifier.state.items[i].order,
-            lessThanOrEqualTo(notifier.state.items[i + 1].order),
+            container.read(checklistProvider.notifier).state.items[i].order,
+            lessThanOrEqualTo(container.read(checklistProvider.notifier).state.items[i + 1].order),
           );
         }
       });
