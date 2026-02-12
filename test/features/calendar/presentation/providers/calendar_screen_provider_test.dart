@@ -11,7 +11,6 @@ import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('CalendarScreenNotifier Tests', () {
-    late CalendarScreenNotifier notifier;
     late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
@@ -36,6 +35,17 @@ void main() {
       mockRealtimeService = MockFactory.createRealtimeService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+          .thenAnswer((_) async {});
+      when(mockDatabaseService.select(any))
+          .thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mockRealtimeService.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.empty());
+      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
@@ -44,16 +54,18 @@ void main() {
           realtimeServiceProvider.overrideWithValue(mockRealtimeService),
         ],
       );
-
-      notifier = container.read(calendarScreenProvider.notifier);
     });
 
     tearDown(() {
       container.dispose();
+      reset(mockDatabaseService);
+      reset(mockCacheService);
+      reset(mockRealtimeService);
     });
 
     group('Initial State', () {
       test('initial state has empty events', () {
+        final notifier = container.read(calendarScreenProvider.notifier);
         expect(notifier.state.events, isEmpty);
         expect(notifier.state.isLoading, isFalse);
         expect(notifier.state.error, isNull);
@@ -63,6 +75,7 @@ void main() {
       });
 
       test('initial date is today', () {
+        final notifier = container.read(calendarScreenProvider.notifier);
         final now = DateTime.now();
         expect(notifier.state.selectedDate.year, equals(now.year));
         expect(notifier.state.selectedDate.month, equals(now.month));
@@ -72,15 +85,13 @@ void main() {
 
     group('loadEvents', () {
       test('sets loading state while fetching', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         final future = notifier.loadEvents(babyProfileId: 'profile_1');
 
         expect(notifier.state.isLoading, isTrue);
@@ -91,7 +102,6 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => [
               sampleEvent.toJson(),
             ]);
-        // Stub database and realtime in case they're called despite cache hit
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
         when(mockRealtimeService.subscribe(
@@ -100,6 +110,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         expect(notifier.state.events, hasLength(1));
@@ -109,9 +120,6 @@ void main() {
       });
 
       test('fetches events from database when cache is empty', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -120,6 +128,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         expect(notifier.state.events, hasLength(1));
@@ -134,9 +143,6 @@ void main() {
           startsAt: DateTime(2024, 6, 16, 10, 0),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -145,6 +151,7 @@ void main() {
         when(mockDatabaseService.select(any)).thenAnswer((_) =>
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         expect(notifier.state.eventsByDate.keys, hasLength(2));
@@ -153,9 +160,6 @@ void main() {
       });
 
       test('uses custom date range when provided', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -167,6 +171,7 @@ void main() {
         final startDate = DateTime(2024, 5, 1);
         final endDate = DateTime(2024, 7, 31);
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(
           babyProfileId: 'profile_1',
           startDate: startDate,
@@ -177,10 +182,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         expect(notifier.state.isLoading, isFalse);
@@ -189,9 +194,6 @@ void main() {
       });
 
       test('sets up real-time subscription', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -200,6 +202,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         verify(mockRealtimeService.subscribe(
@@ -214,15 +217,13 @@ void main() {
       test('selectDate updates selected date', () {
         final newDate = DateTime(2024, 7, 20);
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         notifier.selectDate(newDate);
 
         expect(notifier.state.selectedDate, equals(newDate));
       });
 
       test('eventsForSelectedDate returns correct events', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -231,6 +232,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
         notifier.selectDate(DateTime(2024, 6, 15));
 
@@ -245,9 +247,6 @@ void main() {
           startsAt: DateTime(2024, 6, 16, 10, 0),
         );
 
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -256,6 +255,7 @@ void main() {
         when(mockDatabaseService.select(any)).thenAnswer((_) =>
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         final datesWithEvents = notifier.state.datesWithEvents;
@@ -266,6 +266,7 @@ void main() {
     group('Month Navigation', () {
       test('nextMonth navigates to next month', () {
         final currentMonth = DateTime(2024, 6, 1);
+        final notifier = container.read(calendarScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(focusedMonth: currentMonth);
 
         notifier.nextMonth();
@@ -276,6 +277,7 @@ void main() {
 
       test('previousMonth navigates to previous month', () {
         final currentMonth = DateTime(2024, 6, 1);
+        final notifier = container.read(calendarScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(focusedMonth: currentMonth);
 
         notifier.previousMonth();
@@ -287,6 +289,7 @@ void main() {
       test('goToMonth navigates to specific month', () {
         final targetMonth = DateTime(2024, 12, 1);
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         notifier.goToMonth(targetMonth);
 
         expect(notifier.state.focusedMonth.year, equals(2024));
@@ -295,6 +298,7 @@ void main() {
 
       test('nextMonth handles year transition', () {
         final currentMonth = DateTime(2024, 12, 1);
+        final notifier = container.read(calendarScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(focusedMonth: currentMonth);
 
         notifier.nextMonth();
@@ -305,6 +309,7 @@ void main() {
 
       test('previousMonth handles year transition', () {
         final currentMonth = DateTime(2024, 1, 1);
+        final notifier = container.read(calendarScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(focusedMonth: currentMonth);
 
         notifier.previousMonth();
@@ -316,13 +321,6 @@ void main() {
 
     group('refresh', () {
       test('refreshes events', () async {
-        notifier.state = notifier.state.copyWith(
-          selectedBabyProfileId: 'profile_1',
-        );
-
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -331,12 +329,18 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
+        notifier.state = notifier.state.copyWith(
+          selectedBabyProfileId: 'profile_1',
+        );
+
         await notifier.refresh();
 
         expect(notifier.state.events, hasLength(1));
       });
 
       test('does not refresh when baby profile is missing', () async {
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.refresh();
 
         verifyNever(mockDatabaseService.select(any));
@@ -345,10 +349,6 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
-
         final streamController = Stream.value(<String, dynamic>{
           'eventType': 'INSERT',
           'new': {
@@ -371,6 +371,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         // Wait for stream to emit
@@ -380,10 +381,6 @@ void main() {
       });
 
       test('handles UPDATE event', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
-
         final streamController = Stream.value(<String, dynamic>{
           'eventType': 'UPDATE',
           'new': {
@@ -409,6 +406,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         // Wait for stream to emit
@@ -418,10 +416,6 @@ void main() {
       });
 
       test('handles DELETE event', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
-
         final streamController = Stream.value(<String, dynamic>{
           'eventType': 'DELETE',
           'old': {'id': 'event_1'},
@@ -436,6 +430,7 @@ void main() {
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         expect(notifier.state.events, hasLength(1));
@@ -449,18 +444,15 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-            .thenAnswer((_) async => {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
+        final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
         // Note: dispose is called automatically by Riverpod's ref.onDispose
