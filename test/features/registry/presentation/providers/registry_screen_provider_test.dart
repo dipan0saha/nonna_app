@@ -14,7 +14,6 @@ import '../../../../helpers/mock_factory.dart';
 
 void main() {
   group('RegistryScreenProvider Tests', () {
-    late RegistryScreenNotifier notifier;
     late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
@@ -45,7 +44,17 @@ void main() {
       mockCacheService = MockFactory.createCacheService();
       mockRealtimeService = MockFactory.createRealtimeService();
 
+      // Add ALL default mock behaviors BEFORE creating container
       when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes'))).thenAnswer((_) async {});
+      when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mockRealtimeService.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.empty());
+      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
@@ -54,16 +63,18 @@ void main() {
           realtimeServiceProvider.overrideWithValue(mockRealtimeService),
         ],
       );
-
-      notifier = container.read(registryScreenProvider.notifier);
     });
 
     tearDown(() {
       container.dispose();
+      reset(mockDatabaseService);
+      reset(mockCacheService);
+      reset(mockRealtimeService);
     });
 
     group('Initial State', () {
       test('initial state has empty items', () {
+        final notifier = container.read(registryScreenProvider.notifier);
         expect(notifier.state.items, isEmpty);
         expect(notifier.state.isLoading, isFalse);
         expect(notifier.state.error, isNull);
@@ -75,6 +86,7 @@ void main() {
 
     group('loadItems', () {
       test('sets loading state while loading', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -88,6 +100,7 @@ void main() {
       });
 
       test('loads items from database when cache is empty', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -106,6 +119,7 @@ void main() {
       });
 
       test('loads items from cache when available', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -126,6 +140,7 @@ void main() {
       });
 
       test('handles database error gracefully', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
@@ -138,6 +153,7 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -163,6 +179,7 @@ void main() {
       });
 
       test('saves fetched items to cache', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -180,6 +197,7 @@ void main() {
       });
 
       test('loads items with purchase status', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -208,6 +226,7 @@ void main() {
 
     group('applyFilter', () {
       test('changes current filter', () {
+        final notifier = container.read(registryScreenProvider.notifier);
         notifier.applyFilter(RegistryFilter.highPriority);
 
         expect(
@@ -215,6 +234,7 @@ void main() {
       });
 
       test('filters high priority items', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         final lowPriorityItem = sampleItem.copyWith(id: 'item_2', priority: 2);
         final cachedData = [
           {
@@ -239,6 +259,7 @@ void main() {
       });
 
       test('filters purchased items', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -263,12 +284,14 @@ void main() {
 
     group('applySort', () {
       test('changes current sort', () {
+        final notifier = container.read(registryScreenProvider.notifier);
         notifier.applySort(RegistrySort.nameAsc);
 
         expect(notifier.state.currentSort, equals(RegistrySort.nameAsc));
       });
 
       test('sorts items by priority high to low', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         final lowPriorityItem =
             sampleItem.copyWith(id: 'item_2', priority: 2, name: 'Diapers');
         final cachedData = [
@@ -294,6 +317,7 @@ void main() {
       });
 
       test('sorts items by name ascending', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         final itemB = sampleItem.copyWith(id: 'item_2', name: 'Bottles');
         final itemA = sampleItem.copyWith(id: 'item_3', name: 'Crib');
         final cachedData = [
@@ -321,6 +345,7 @@ void main() {
 
     group('refresh', () {
       test('refreshes items with force refresh', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -342,6 +367,7 @@ void main() {
       });
 
       test('does not refresh when no baby profile selected', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         await notifier.refresh();
 
         verifyNever(
@@ -351,6 +377,7 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles items update by refreshing', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -366,6 +393,7 @@ void main() {
       });
 
       test('handles purchases update by refreshing', () async {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -383,6 +411,7 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscriptions on dispose', () {
+        final notifier = container.read(registryScreenProvider.notifier);
         when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => {});
 
         expect(notifier.state, isNotNull);
