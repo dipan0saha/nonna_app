@@ -1,7 +1,7 @@
 # Nonna App Project Structure (Dynamic Tile-Based Architecture)
 
-**Document Version**: 2.1
-**Last Updated**: February 8, 2026
+**Document Version**: 2.2
+**Last Updated**: February 13, 2026
 **Location**: `docs/99_master_reference_docs/App_Structure_Nonna.md`
 **Status**: Living Document - Updated to reflect current implementation state
 
@@ -209,6 +209,7 @@ nonna_app/
 │   │   │   ├── storage_service.dart      # Supabase Storage for photos
 │   │   │   ├── notification_service.dart # Push notifications
 │   │   │   ├── realtime_service.dart     # Supabase realtime subscriptions
+│   │   │   ├── realtime_subscription_manager.dart # Safe lifecycle management for realtime subscriptions
 │   │   │   ├── analytics_service.dart    # Usage tracking
 │   │   │   └── observability_service.dart # Sentry/logging
 │   │   ├── middleware/           # App-level middleware

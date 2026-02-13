@@ -60,6 +60,8 @@ class UpcomingEventsState {
 class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
   String? _subscriptionId;
   late final _realtimeService = ref.read(realtimeServiceProvider);
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   UpcomingEventsState build() {
@@ -260,7 +262,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
       _cancelRealtimeSubscription();
 
       final channelName = 'events-channel-$babyProfileId';
-      final stream = ref.read(realtimeServiceProvider).subscribe(
+      final stream = _realtimeService.subscribe(
         table: SupabaseTables.events,
         channelName: channelName,
         filter: {
@@ -271,7 +273,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
 
       _subscriptionId = channelName;
 
-      stream.listen((payload) {
+      _subscriptionManager.subscribe(channelName, stream, (payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
 
@@ -323,9 +325,8 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
-      debugPrint('✅ Real-time subscription cancelled');
     }
   }
 }

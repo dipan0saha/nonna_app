@@ -69,6 +69,9 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
   static const String _cacheKeyPrefix = 'due_date_countdown';
 
   String? _subscriptionId;
+  late final _realtimeService = ref.read(realtimeServiceProvider);
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   DueDateCountdownState build() {
@@ -294,17 +297,16 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
 
       if (babyProfileIds.isEmpty) return;
 
-      final realtimeService = ref.read(realtimeServiceProvider);
       // Subscribe to any baby profile changes
       final channelName = 'baby-profiles-channel-${babyProfileIds.join("-")}';
-      final stream = realtimeService.subscribe(
+      final stream = _realtimeService.subscribe(
         table: SupabaseTables.babyProfiles,
         channelName: channelName,
       );
 
       _subscriptionId = channelName;
 
-      stream.listen((payload) {
+      _subscriptionManager.subscribe(channelName, stream, (payload) {
         _handleRealtimeUpdate(payload, babyProfileIds);
       });
 
@@ -336,11 +338,8 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      // Note: We don't cancel the subscription in dispose because it would
-      // require calling ref.read() which is not allowed in lifecycle callbacks.
-      // The subscription will be automatically cleaned up when the provider is disposed.
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
-      debugPrint('✅ Real-time subscription marked for cancellation');
     }
   }
 }

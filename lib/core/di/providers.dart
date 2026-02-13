@@ -10,6 +10,7 @@ import '../services/local_storage_service.dart';
 import '../services/notification_service.dart';
 import '../services/observability_service.dart';
 import '../services/realtime_service.dart';
+import '../services/realtime_subscription_manager.dart';
 import '../services/storage_service.dart';
 
 /// Global providers for dependency injection throughout the app
@@ -103,6 +104,15 @@ final storageServiceProvider = Provider<StorageService>((ref) {
 final realtimeServiceProvider = Provider<RealtimeService>((ref) {
   final client = ref.watch(supabaseClientProvider);
   return RealtimeService(client);
+});
+
+/// Provides the realtime subscription manager
+///
+/// Manages real-time subscriptions safely within Riverpod lifecycle callbacks.
+/// Addresses Riverpod's constraint preventing ref.read() in onDispose().
+final realtimeSubscriptionManagerProvider =
+    Provider<RealtimeSubscriptionManager>((ref) {
+  return RealtimeSubscriptionManager();
 });
 
 /// Provides the notification service

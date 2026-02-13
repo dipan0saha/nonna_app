@@ -84,6 +84,8 @@ class GalleryScreenState {
 /// Gallery Screen Provider Notifier
 class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
   String? _subscriptionId;
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   GalleryScreenState build() {
@@ -364,7 +366,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 
       _subscriptionId = channelName;
 
-      stream.listen((payload) {
+      _subscriptionManager.subscribe(channelName, stream, (payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
 
@@ -416,11 +418,8 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      // Note: We don't cancel the subscription in dispose because it would
-      // require calling ref.read() which is not allowed in lifecycle callbacks.
-      // The subscription will be automatically cleaned up when the provider is disposed.
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
-      debugPrint('✅ Real-time subscription marked for cancellation');
     }
   }
 }

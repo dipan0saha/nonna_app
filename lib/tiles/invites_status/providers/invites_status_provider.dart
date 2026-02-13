@@ -58,6 +58,8 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
 
   String? _subscriptionId;
   late final _realtimeService = ref.read(realtimeServiceProvider);
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   InvitesStatusState build() {
@@ -228,7 +230,7 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
       _cancelRealtimeSubscription();
 
       final channelName = 'invitations-channel-$babyProfileId';
-      final stream = ref.read(realtimeServiceProvider).subscribe(
+      final stream = _realtimeService.subscribe(
         table: SupabaseTables.invitations,
         channelName: channelName,
         filter: {
@@ -239,7 +241,7 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
 
       _subscriptionId = channelName;
 
-      stream.listen((payload) {
+      _subscriptionManager.subscribe(channelName, stream, (payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
 
@@ -310,9 +312,8 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
-      _realtimeService.unsubscribe(_subscriptionId!);
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
-      debugPrint('✅ Real-time subscription cancelled');
     }
   }
 }

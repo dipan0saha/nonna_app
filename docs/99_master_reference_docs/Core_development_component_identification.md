@@ -1,7 +1,8 @@
 # Core Development Component Identification (Section 3)
 
-**Document Version**: 1.0
+**Document Version**: 1.1
 **Created**: February 1, 2026
+**Last Updated**: February 7, 2026
 **Status**: Active
 **Purpose**: Comprehensive component list and architectural map for Production Readiness Checklist Section 3
 
@@ -304,10 +305,12 @@ Services handle data fetching, caching, third-party integrations, and business l
 | Component | Location | Functionality | Dependencies |
 |-----------|----------|---------------|--------------|
 | **Realtime Service** | `lib/core/services/realtime_service.dart` | Supabase realtime subscriptions; role/baby-scoped channels; connection management; reconnection logic; batched updates; <2 second latency; subscription lifecycle management | Supabase Realtime |
+| **RealtimeSubscriptionManager** | `lib/core/services/realtime_subscription_manager.dart` | Safe lifecycle management for real-time subscriptions in Riverpod providers; prevents ref.read() in onDispose() callbacks; subscription tracking and cleanup; integrates with GalleryScreenNotifier, InvitesStatusNotifier, UpcomingEventsNotifier, DueDateCountdownNotifier | Riverpod, Supabase Realtime |
 | **Notification Service** | `lib/core/services/notification_service.dart` | OneSignal integration; push notification registration; notification payload handling; deep-linking; notification preferences; local notifications; badge count management | OneSignal SDK |
 
 **Test Files**:
 - `test/core/services/realtime_service_test.dart`
+- `test/core/services/realtime_subscription_manager_test.dart`
 - `test/core/services/notification_service_test.dart`
 
 ---
