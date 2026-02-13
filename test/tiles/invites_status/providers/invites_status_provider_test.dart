@@ -75,6 +75,11 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mock to delay response
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -93,12 +98,19 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
@@ -118,6 +130,10 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup cache to return data
+        reset(mocks.cache);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
 
@@ -137,6 +153,11 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mock to throw error
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
@@ -154,6 +175,12 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
         when(mocks.realtime.subscribe(
@@ -161,6 +188,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
@@ -183,12 +211,19 @@ void main() {
         final invite3 = sampleInvitation.copyWith(
             id: 'invite_3', status: InvitationStatus.pending);
 
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   invite1.toJson(),
@@ -206,6 +241,12 @@ void main() {
       test('refreshes invitations with force refresh', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
 
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
         when(mocks.realtime.subscribe(
@@ -213,6 +254,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
@@ -228,12 +270,19 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup initial state
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
@@ -259,12 +308,19 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
 
         // Setup initial state
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 
@@ -292,6 +348,12 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
+        reset(mocks.realtime);
+        when(mocks.realtime.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         final state = container.read(invitesStatusProvider);
@@ -303,12 +365,19 @@ void main() {
       test('owner can fetch invitations', () async {
         final notifier = container.read(invitesStatusProvider.notifier);
 
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleInvitation.toJson()]));
 

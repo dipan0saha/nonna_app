@@ -67,6 +67,11 @@ void main() {
     group('fetchCountdowns', () {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -86,12 +91,19 @@ void main() {
 
       test('fetches profiles from database when cache is empty', () async {
         // Setup mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -123,6 +135,10 @@ void main() {
           'isPastDue': false,
           'formattedCountdown': '30 days',
         };
+        reset(mocks.cache);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
 
         final notifier = container.read(dueDateCountdownProvider.notifier);
@@ -139,6 +155,11 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
@@ -160,12 +181,19 @@ void main() {
           'isPastDue': false,
           'formattedCountdown': '30 days',
         };
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -184,12 +212,19 @@ void main() {
           expectedBirthDate: DateTime.now().add(const Duration(days: 45)),
         );
 
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([futureProfile.toJson()]));
 
@@ -207,12 +242,19 @@ void main() {
           expectedBirthDate: DateTime.now().subtract(const Duration(days: 10)),
         );
 
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([pastProfile.toJson()]));
 
@@ -227,12 +269,19 @@ void main() {
         final profile2 =
             sampleProfile.copyWith(id: 'profile_2', name: 'Baby Jack');
 
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   sampleProfile.toJson(),
@@ -257,12 +306,19 @@ void main() {
           'isPastDue': false,
           'formattedCountdown': '30 days',
         };
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -277,12 +333,19 @@ void main() {
     group('Real-time Updates', () {
       test('handles UPDATE to due date', () async {
         // Setup initial state
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -324,6 +387,12 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
+        reset(mocks.realtime);
+        when(mocks.realtime.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => {});
 
         // Notifier handles cleanup automatically, no manual dispose needed
@@ -334,12 +403,19 @@ void main() {
 
     group('Countdown Formatting', () {
       test('formats countdown as days', () async {
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 

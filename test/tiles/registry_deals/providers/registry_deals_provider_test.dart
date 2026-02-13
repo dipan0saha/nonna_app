@@ -61,9 +61,13 @@ void main() {
 
     group('fetchDeals', () {
       test('sets loading state while fetching', () async {
-        // Setup mock to delay response
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        // Using thenReturn for FakePostgrestBuilder which implements then() for async
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -75,8 +79,13 @@ void main() {
       });
 
       test('fetches deals from database when cache is empty', () async {
-        // Setup mocks
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
@@ -91,9 +100,16 @@ void main() {
       });
 
       test('loads deals from cache when available', () async {
-        // Setup cache to return data
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        when(mocks.database.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -107,8 +123,13 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
-        // Setup mock to throw error
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(registryDealsProvider.notifier);
@@ -121,9 +142,14 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
-        // Setup mocks
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
@@ -140,7 +166,13 @@ void main() {
       });
 
       test('saves fetched deals to cache', () async {
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
@@ -157,7 +189,13 @@ void main() {
         final deal2 = sampleDeal.copyWith(id: 'item_2', priority: 2);
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   deal1.toJson(),
@@ -177,7 +215,13 @@ void main() {
         final deal2 = sampleDeal.copyWith(id: 'item_2', priority: 5);
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   deal1.toJson(),
@@ -195,8 +239,14 @@ void main() {
 
     group('refresh', () {
       test('refreshes deals with force refresh', () async {
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
 
@@ -215,7 +265,13 @@ void main() {
           priority: 5,
         );
 
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([highPriorityDeal.toJson()]));
 
@@ -232,7 +288,13 @@ void main() {
           priority: 3,
         );
 
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
 
@@ -256,7 +318,13 @@ void main() {
           ),
         );
 
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any)).thenReturn(
           FakePostgrestBuilder(deals.map((d) => d.toJson()).toList()),
         );

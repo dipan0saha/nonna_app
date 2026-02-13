@@ -83,6 +83,9 @@ void main() {
 
     group('loadProfile', () {
       test('sets loading state while loading', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleUser.toJson()]));
 
@@ -95,6 +98,12 @@ void main() {
       });
 
       test('loads profile from database when cache is empty', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -116,6 +125,11 @@ void main() {
       });
 
       test('loads profile from cache when available', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
@@ -129,6 +143,9 @@ void main() {
       });
 
       test('handles profile not found error', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -141,6 +158,9 @@ void main() {
       });
 
       test('handles database error gracefully', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
@@ -153,6 +173,11 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleUser.toJson());
         var callCount = 0;
@@ -173,6 +198,12 @@ void main() {
       });
 
       test('saves fetched profile to cache', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -193,6 +224,12 @@ void main() {
       });
 
       test('loads user stats after loading profile', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -237,6 +274,9 @@ void main() {
 
     group('updateProfile', () {
       test('updates profile successfully', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.update(any, any))
             .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
@@ -287,6 +327,9 @@ void main() {
       });
 
       test('handles database error during update', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
@@ -302,6 +345,9 @@ void main() {
       });
 
       test('updates profile with avatar URL', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.update(any, any))
             .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
@@ -328,6 +374,7 @@ void main() {
 
     group('uploadAvatar', () {
       test('uploads avatar successfully', () async {
+        reset(mockStorageService);
         when(mockStorageService.uploadFile(
           filePath: anyNamed('filePath'),
           storageKey: anyNamed('storageKey'),
@@ -345,6 +392,7 @@ void main() {
       });
 
       test('handles upload error gracefully', () async {
+        reset(mockStorageService);
         when(mockStorageService.uploadFile(
           filePath: anyNamed('filePath'),
           storageKey: anyNamed('storageKey'),
@@ -363,6 +411,9 @@ void main() {
 
     group('toggleBiometric', () {
       test('enables biometric successfully', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.update(any, any))
             .thenAnswer((_) => FakePostgrestUpdateBuilder());
         var callCount = 0;
@@ -386,6 +437,9 @@ void main() {
       });
 
       test('handles toggle biometric error', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
@@ -399,6 +453,12 @@ void main() {
 
     group('refresh', () {
       test('refreshes profile with force refresh', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {

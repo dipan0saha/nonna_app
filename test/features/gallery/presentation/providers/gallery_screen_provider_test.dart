@@ -89,6 +89,8 @@ void main() {
 
     group('loadPhotos', () {
       test('sets loading state while fetching', () async {
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -100,6 +102,8 @@ void main() {
       });
 
       test('loads photos from cache when available', () async {
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => [
               samplePhoto.toJson(),
             ]);
@@ -114,6 +118,12 @@ void main() {
       });
 
       test('fetches photos from database when cache is empty', () async {
+        reset(mockDatabaseService);
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
@@ -132,6 +142,8 @@ void main() {
           (i) => samplePhoto.copyWith(id: 'photo_$i'),
         );
 
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenReturn(
                 FakePostgrestBuilder(photos.map((p) => p.toJson()).toList()));
@@ -143,8 +155,13 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
@@ -158,6 +175,8 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
@@ -170,6 +189,14 @@ void main() {
       });
 
       test('sets up real-time subscription', () async {
+        reset(mockDatabaseService);
+        reset(mockRealtimeService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockRealtimeService.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.empty());
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
@@ -186,6 +213,9 @@ void main() {
 
     group('loadMore', () {
       test('loads more photos for pagination', () async {
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        
         final notifier = container.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           photos: [samplePhoto],
@@ -242,6 +272,9 @@ void main() {
       });
 
       test('handles load more error', () async {
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        
         final notifier = container.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           photos: [samplePhoto],
@@ -261,6 +294,9 @@ void main() {
 
     group('Filtering', () {
       test('filterByTag loads filtered photos', () async {
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        
         final notifier = container.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
@@ -278,6 +314,9 @@ void main() {
       });
 
       test('clearFilters resets filter and reloads', () async {
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        
         final notifier = container.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
@@ -297,6 +336,9 @@ void main() {
 
     group('refresh', () {
       test('refreshes photos with force refresh', () async {
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        
         final notifier = container.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
@@ -321,12 +363,16 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
+        reset(mockRealtimeService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        
         final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
         final notifier = container.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -350,12 +396,16 @@ void main() {
       });
 
       test('handles UPDATE event', () async {
+        reset(mockRealtimeService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        
         final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
         final notifier = container.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
@@ -375,12 +425,16 @@ void main() {
       });
 
       test('handles DELETE event', () async {
+        reset(mockRealtimeService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        
         final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
         final notifier = container.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');

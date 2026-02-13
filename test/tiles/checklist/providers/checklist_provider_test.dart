@@ -47,6 +47,9 @@ void main() {
     group('loadChecklist', () {
       test('sets loading state while loading', () async {
         // Setup mock to delay response
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async {
           await Future.delayed(const Duration(milliseconds: 100));
           return null;
@@ -66,6 +69,9 @@ void main() {
 
       test('loads default checklist when cache is empty', () async {
         // Setup mocks
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
         await container
@@ -103,6 +109,9 @@ void main() {
           },
         ];
 
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
 
         await container
@@ -121,6 +130,9 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenThrow(Exception('Cache error'));
 
         await container
@@ -146,6 +158,9 @@ void main() {
           },
         );
 
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
 
         await container
@@ -163,6 +178,9 @@ void main() {
     group('toggleItem', () {
       test('toggles item from incomplete to complete', () async {
         // Setup initial state
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         await container
             .read(checklistProvider.notifier)
@@ -204,6 +222,9 @@ void main() {
           },
         ];
 
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
         await container
             .read(checklistProvider.notifier)
@@ -232,6 +253,9 @@ void main() {
       });
 
       test('updates cache after toggling', () async {
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         await container
             .read(checklistProvider.notifier)
@@ -250,6 +274,9 @@ void main() {
       });
 
       test('updates progress percentage after toggle', () async {
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         await container
             .read(checklistProvider.notifier)
@@ -284,6 +311,9 @@ void main() {
           },
         ];
 
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
         await container
             .read(checklistProvider.notifier)
@@ -309,6 +339,9 @@ void main() {
       });
 
       test('saves reset state to cache', () async {
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         await container
             .read(checklistProvider.notifier)
@@ -349,6 +382,9 @@ void main() {
           },
         ];
 
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
         await container
             .read(checklistProvider.notifier)
@@ -390,6 +426,9 @@ void main() {
           },
         ];
 
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedItems);
         await container
             .read(checklistProvider.notifier)
@@ -407,6 +446,9 @@ void main() {
 
     group('Default Checklist Items', () {
       test('has expected default items', () async {
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
         await container
@@ -435,6 +477,9 @@ void main() {
       });
 
       test('default items are in correct order', () async {
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any)).thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
         await container

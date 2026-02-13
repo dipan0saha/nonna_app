@@ -34,6 +34,11 @@ void main() {
       test('fetches engagement metrics from database when cache is empty',
           () async {
         // Setup mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
 
         // Mock photo queries
@@ -75,6 +80,10 @@ void main() {
           'totalEngagement': 6,
           'calculatedAt': DateTime.now().toIso8601String(),
         };
+        reset(mocks.cache);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => cachedData);
 
         // Test would require provider container to verify behavior
@@ -82,6 +91,11 @@ void main() {
 
       test('handles errors gracefully', () async {
         // Setup mock to throw error
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
@@ -97,6 +111,11 @@ void main() {
           'totalEngagement': 2,
           'calculatedAt': DateTime.now().toIso8601String(),
         };
+        reset(mocks.cache);
+        reset(mocks.database);
+        when(mocks.cache.isInitialized).thenReturn(true);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.cache.get(any)).thenAnswer((_) async => cachedData);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));

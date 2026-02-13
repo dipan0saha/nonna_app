@@ -65,11 +65,22 @@ void main() {
 
     group('fetchPurchases', () {
       test('sets loading state while fetching', () async {
-        // Setup mock to delay response
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        // Using thenReturn for FakePostgrestBuilder which implements then() for async
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mocks.realtime.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.empty());
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -79,13 +90,20 @@ void main() {
       });
 
       test('fetches purchases from database when cache is empty', () async {
-        // Setup mocks
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -100,9 +118,23 @@ void main() {
       });
 
       test('loads purchases from cache when available', () async {
-        // Setup cache to return data
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        when(mocks.database.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mocks.realtime.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.empty());
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -116,9 +148,21 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
-        // Setup mock to throw error
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.database.select(any)).thenThrow(Exception('Database error'));
+        when(mocks.realtime.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.empty());
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         final notifier = container.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -130,14 +174,21 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
-        // Setup mocks
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -154,12 +205,20 @@ void main() {
       });
 
       test('saves fetched purchases to cache', () async {
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -181,12 +240,20 @@ void main() {
           ),
         );
 
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any)).thenReturn(
           FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
         );
@@ -201,13 +268,21 @@ void main() {
 
     group('refresh', () {
       test('refreshes purchases with force refresh', () async {
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -222,13 +297,20 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT purchase', () async {
-        // Setup initial state
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -243,13 +325,20 @@ void main() {
       });
 
       test('handles UPDATE purchase', () async {
-        // Setup initial state
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -262,9 +351,14 @@ void main() {
     });
 
     group('dispose', () {
-      test('cancels real-time subscription on dispose', () {
-        // Note: Riverpod automatically handles disposal through ref.onDispose
-        // This test verifies the container can be disposed without errors
+      test('dispose', () {
+        // Reset and re-stub mocks
+        reset(mocks.realtime);
+        when(mocks.realtime.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.empty());
         when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         expect(() => container.dispose(), returnsNormally);
@@ -286,12 +380,20 @@ void main() {
           createdAt: DateTime.now(),
         );
 
+        // Reset and re-stub mocks
+        reset(mocks.cache);
+        reset(mocks.database);
+        reset(mocks.realtime);
+        when(mocks.cache.isInitialized).thenReturn(true);
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value({}));
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   purchase1.toJson(),
