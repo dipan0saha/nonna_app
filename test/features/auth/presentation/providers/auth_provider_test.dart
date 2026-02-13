@@ -84,7 +84,22 @@ void main() {
       });
 
       test('loads user profile when current user exists', () async {
+        reset(mockAuthService);
+        reset(mockDatabaseService);
+        reset(mockLocalStorage);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
         when(mockAuthService.currentUser).thenReturn(mockUser);
+        when(mockLocalStorage.isInitialized).thenReturn(true);
+        when(mockLocalStorage.getBool(any)).thenReturn(null);
+        when(mockLocalStorage.setBool(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.getString(any)).thenReturn(null);
+        when(mockLocalStorage.setString(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.remove(any)).thenAnswer((_) async {});
+        when(mockLocalStorage.get(any)).thenReturn(null);
+        when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+        when(mockLocalStorage.setObject(any, any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -107,6 +122,12 @@ void main() {
 
     group('signInWithEmail', () {
       test('sets loading state while signing in', () async {
+        reset(mockAuthService);
+        reset(mockDatabaseService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -130,6 +151,12 @@ void main() {
       });
 
       test('successfully signs in with email and password', () async {
+        reset(mockAuthService);
+        reset(mockDatabaseService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -151,6 +178,11 @@ void main() {
       });
 
       test('handles sign in error', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -166,6 +198,11 @@ void main() {
       });
 
       test('handles null user response', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -185,6 +222,12 @@ void main() {
 
     group('signUpWithEmail', () {
       test('successfully signs up with email', () async {
+        reset(mockAuthService);
+        reset(mockDatabaseService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signUpWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -207,6 +250,11 @@ void main() {
       });
 
       test('handles sign up error', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signUpWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -226,6 +274,12 @@ void main() {
 
     group('signInWithGoogle', () {
       test('successfully signs in with Google', () async {
+        reset(mockAuthService);
+        reset(mockDatabaseService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithGoogle()).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
@@ -240,6 +294,11 @@ void main() {
       });
 
       test('handles Google sign in error', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithGoogle())
             .thenThrow(Exception('Google auth failed'));
 
@@ -252,6 +311,12 @@ void main() {
 
     group('signInWithFacebook', () {
       test('successfully signs in with Facebook', () async {
+        reset(mockAuthService);
+        reset(mockDatabaseService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithFacebook()).thenAnswer((_) async {
           return supabase.AuthResponse(session: mockSession, user: mockUser);
         });
@@ -266,6 +331,11 @@ void main() {
       });
 
       test('handles Facebook sign in error', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithFacebook())
             .thenThrow(Exception('Facebook auth failed'));
 
@@ -278,6 +348,14 @@ void main() {
 
     group('signOut', () {
       test('successfully signs out', () async {
+        reset(mockAuthService);
+        reset(mockLocalStorage);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
+        when(mockLocalStorage.isInitialized).thenReturn(true);
+        when(mockLocalStorage.getBool(any)).thenReturn(null);
         when(mockAuthService.signOut()).thenAnswer((_) async => {});
         when(mockLocalStorage.remove(any)).thenAnswer((_) async => {});
 
@@ -291,6 +369,11 @@ void main() {
       });
 
       test('handles sign out error', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signOut()).thenThrow(Exception('Sign out failed'));
 
         await notifier.signOut();
@@ -302,6 +385,11 @@ void main() {
 
     group('resetPassword', () {
       test('successfully sends password reset email', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.resetPassword(any)).thenAnswer((_) async => {});
 
         await notifier.resetPassword('test@example.com');
@@ -310,6 +398,11 @@ void main() {
       });
 
       test('handles password reset error', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.resetPassword(any))
             .thenThrow(Exception('Email not found'));
 
@@ -328,6 +421,10 @@ void main() {
       });
 
       test('isBiometricEnabled checks local storage', () async {
+        reset(mockLocalStorage);
+        
+        when(mockLocalStorage.isInitialized).thenReturn(true);
+        when(mockLocalStorage.getBool(any)).thenReturn(null);
         when(mockLocalStorage.getBool('biometric_enabled')).thenReturn(true);
 
         final result = await notifier.isBiometricEnabled();
@@ -337,6 +434,10 @@ void main() {
       });
 
       test('disableBiometric removes from local storage', () async {
+        reset(mockLocalStorage);
+        
+        when(mockLocalStorage.isInitialized).thenReturn(true);
+        when(mockLocalStorage.getBool(any)).thenReturn(null);
         when(mockLocalStorage.remove('biometric_enabled'))
             .thenAnswer((_) async => {});
 
@@ -348,6 +449,12 @@ void main() {
 
     group('Session Management', () {
       test('persists session to local storage on successful auth', () async {
+        reset(mockAuthService);
+        reset(mockDatabaseService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.signInWithEmail(
           email: anyNamed('email'),
           password: anyNamed('password'),
@@ -367,6 +474,12 @@ void main() {
       });
 
       test('refreshSession updates session state', () async {
+        reset(mockAuthService);
+        reset(mockDatabaseService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -377,6 +490,11 @@ void main() {
       });
 
       test('handles session refresh error', () async {
+        reset(mockAuthService);
+        
+        when(mockAuthService.authStateChanges)
+            .thenAnswer((_) => authStateController.stream);
+        when(mockAuthService.currentUser).thenReturn(null);
         when(mockAuthService.currentSession).thenReturn(null);
 
         await notifier.refreshSession();
@@ -387,6 +505,8 @@ void main() {
 
     group('Auth State Changes', () {
       test('handles auth state changes from stream', () async {
+        reset(mockDatabaseService);
+        
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
