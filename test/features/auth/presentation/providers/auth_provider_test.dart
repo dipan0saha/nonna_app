@@ -42,10 +42,19 @@ void main() {
 
       authStateController = StreamController<supabase.AuthState>.broadcast();
 
+      // Setup ALL default mock behaviors BEFORE creating the container
       when(mockAuthService.authStateChanges)
           .thenAnswer((_) => authStateController.stream);
       when(mockAuthService.currentUser).thenReturn(null);
       when(mockLocalStorage.isInitialized).thenReturn(true);
+      when(mockLocalStorage.getBool(any)).thenReturn(null);
+      when(mockLocalStorage.setBool(any, any)).thenAnswer((_) async {});
+      when(mockLocalStorage.getString(any)).thenReturn(null);
+      when(mockLocalStorage.setString(any, any)).thenAnswer((_) async {});
+      when(mockLocalStorage.remove(any)).thenAnswer((_) async {});
+      when(mockLocalStorage.get(any)).thenReturn(null);
+      when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
+      when(mockLocalStorage.setObject(any, any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
@@ -61,6 +70,9 @@ void main() {
     tearDown(() {
       authStateController.close();
       container.dispose();
+      reset(mockAuthService);
+      reset(mockDatabaseService);
+      reset(mockLocalStorage);
     });
 
     group('Initial State', () {
@@ -105,8 +117,6 @@ void main() {
 
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        when(mockLocalStorage.put('any_key', 'any_value'))
-            .thenAnswer((_) async => {});
 
         final future = notifier.signInWithEmail(
           email: 'test@example.com',
@@ -129,8 +139,6 @@ void main() {
 
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        when(mockLocalStorage.put('any_key', 'any_value'))
-            .thenAnswer((_) async => {});
 
         await notifier.signInWithEmail(
           email: 'test@example.com',
@@ -187,8 +195,6 @@ void main() {
 
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        when(mockLocalStorage.put('any_key', 'any_value'))
-            .thenAnswer((_) async => {});
 
         await notifier.signUpWithEmail(
           email: 'test@example.com',
@@ -226,8 +232,6 @@ void main() {
 
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        when(mockLocalStorage.put('any_key', 'any_value'))
-            .thenAnswer((_) async => {});
 
         await notifier.signInWithGoogle();
 
@@ -254,8 +258,6 @@ void main() {
 
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        when(mockLocalStorage.put('any_key', 'any_value'))
-            .thenAnswer((_) async => {});
 
         await notifier.signInWithFacebook();
 
@@ -326,13 +328,13 @@ void main() {
       });
 
       test('isBiometricEnabled checks local storage', () async {
-        when(mockLocalStorage.get('biometric_enabled'))
-            .thenAnswer((_) => 'true');
+        when(mockLocalStorage.getBool('biometric_enabled'))
+            .thenReturn(true);
 
         final result = await notifier.isBiometricEnabled();
 
         expect(result, isTrue);
-        verify(mockLocalStorage.get('biometric_enabled')).called(1);
+        verify(mockLocalStorage.getBool('biometric_enabled')).called(1);
       });
 
       test('disableBiometric removes from local storage', () async {
@@ -356,23 +358,19 @@ void main() {
 
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        when(mockLocalStorage.put('any_key', 'any_value'))
-            .thenAnswer((_) async => {});
 
         await notifier.signInWithEmail(
           email: 'test@example.com',
           password: 'password123',
         );
 
-        verify(mockLocalStorage.put('any_key', 'any_value')).called(1);
+        verify(mockLocalStorage.setObject('auth_session', any)).called(1);
       });
 
       test('refreshSession updates session state', () async {
         when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        when(mockLocalStorage.put('any_key', 'any_value'))
-            .thenAnswer((_) async => {});
 
         await notifier.refreshSession();
 
@@ -392,8 +390,6 @@ void main() {
       test('handles auth state changes from stream', () async {
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        when(mockLocalStorage.put('any_key', 'any_value'))
-            .thenAnswer((_) async => {});
 
         authStateController.add(
           supabase.AuthState(

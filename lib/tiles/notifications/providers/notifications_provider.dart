@@ -305,7 +305,9 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
     if (!ref.mounted) return;
     try {
       final eventType = payload['eventType'] as String?;
-      final newData = payload['new'] as Map<String, dynamic>?;
+      final newData = payload['new'] != null
+          ? Map<String, dynamic>.from(payload['new'] as Map)
+          : null;
 
       if (eventType == 'INSERT' && newData != null) {
         final newNotification = app_notification.Notification.fromJson(newData);

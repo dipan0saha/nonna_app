@@ -12,7 +12,6 @@ import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('ProfileProvider Tests', () {
-    late ProfileNotifier notifier;
     late ProviderContainer container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
@@ -41,6 +40,9 @@ void main() {
       mockStorageService = MockFactory.createStorageService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockCacheService.get(any)).thenAnswer((_) async => null);
+      when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes'))).thenAnswer((_) async {});
+      when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
       when(mockStorageService.uploadFile(
         filePath: anyNamed('filePath'),
         storageKey: anyNamed('storageKey'),
@@ -54,16 +56,18 @@ void main() {
           storageServiceProvider.overrideWithValue(mockStorageService),
         ],
       );
-
-      notifier = container.read(profileProvider.notifier);
     });
 
     tearDown(() {
       container.dispose();
+      reset(mockDatabaseService);
+      reset(mockCacheService);
+      reset(mockStorageService);
     });
 
     group('Initial State', () {
       test('initial state has no profile', () {
+        final notifier = container.read(profileProvider.notifier);
         expect(notifier.state.profile, isNull);
         expect(notifier.state.stats, isNull);
         expect(notifier.state.isLoading, isFalse);
@@ -77,10 +81,10 @@ void main() {
 
     group('loadProfile', () {
       test('sets loading state while loading', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleUser.toJson()]));
 
+        final notifier = container.read(profileProvider.notifier);
         final loadFuture = notifier.loadProfile(userId: 'user_1');
 
         expect(notifier.state.isLoading, isTrue);
@@ -89,7 +93,6 @@ void main() {
       });
 
       test('loads profile from database when cache is empty', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -101,6 +104,7 @@ void main() {
           }
         });
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1');
 
         expect(notifier.state.profile, isNotNull);
@@ -115,6 +119,7 @@ void main() {
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleStats.toJson()]));
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1');
 
         expect(notifier.state.profile, isNotNull);
@@ -122,10 +127,10 @@ void main() {
       });
 
       test('handles profile not found error', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1');
 
         expect(notifier.state.isLoading, isFalse);
@@ -134,10 +139,10 @@ void main() {
       });
 
       test('handles database error gracefully', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1');
 
         expect(notifier.state.isLoading, isFalse);
@@ -159,13 +164,13 @@ void main() {
           }
         });
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1', forceRefresh: true);
 
         verify(mockDatabaseService.select(any)).called(greaterThan(0));
       });
 
       test('saves fetched profile to cache', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -177,6 +182,7 @@ void main() {
           }
         });
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1');
 
         verify(mockCacheService.put(any, any,
@@ -185,7 +191,6 @@ void main() {
       });
 
       test('loads user stats after loading profile', () async {
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -197,6 +202,7 @@ void main() {
           }
         });
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1');
 
         expect(notifier.state.stats, isNotNull);
@@ -206,6 +212,7 @@ void main() {
 
     group('enterEditMode', () {
       test('enables edit mode', () {
+        final notifier = container.read(profileProvider.notifier);
         notifier.enterEditMode();
 
         expect(notifier.state.isEditMode, isTrue);
@@ -216,6 +223,7 @@ void main() {
 
     group('cancelEdit', () {
       test('disables edit mode', () {
+        final notifier = container.read(profileProvider.notifier);
         notifier.enterEditMode();
         notifier.cancelEdit();
 
@@ -239,8 +247,8 @@ void main() {
             return FakePostgrestBuilder([sampleStats.toJson()]);
           }
         });
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.updateProfile(
           userId: 'user_1',
           displayName: 'Jane Smith',
@@ -253,6 +261,7 @@ void main() {
       });
 
       test('validates empty display name', () async {
+        final notifier = container.read(profileProvider.notifier);
         await notifier.updateProfile(
           userId: 'user_1',
           displayName: '   ',
@@ -264,6 +273,7 @@ void main() {
       });
 
       test('validates display name length', () async {
+        final notifier = container.read(profileProvider.notifier);
         await notifier.updateProfile(
           userId: 'user_1',
           displayName: 'a' * 101,
@@ -278,6 +288,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.updateProfile(
           userId: 'user_1',
           displayName: 'Jane Smith',
@@ -301,8 +312,8 @@ void main() {
             return FakePostgrestBuilder([sampleStats.toJson()]);
           }
         });
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.updateProfile(
           userId: 'user_1',
           displayName: 'Jane Smith',
@@ -321,6 +332,7 @@ void main() {
           bucket: 'test_bucket',
         )).thenAnswer((_) async => 'https://example.com/uploaded-avatar.jpg');
 
+        final notifier = container.read(profileProvider.notifier);
         final result = await notifier.uploadAvatar(
           userId: 'user_1',
           filePath: '/path/to/avatar.jpg',
@@ -337,6 +349,7 @@ void main() {
           bucket: 'test_bucket',
         )).thenThrow(Exception('Upload failed'));
 
+        final notifier = container.read(profileProvider.notifier);
         final result = await notifier.uploadAvatar(
           userId: 'user_1',
           filePath: '/path/to/avatar.jpg',
@@ -360,8 +373,8 @@ void main() {
             return FakePostgrestBuilder([sampleStats.toJson()]);
           }
         });
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.toggleBiometric(
           userId: 'user_1',
           enabled: true,
@@ -374,6 +387,7 @@ void main() {
         when(mockDatabaseService.update(any, any))
             .thenThrow(Exception('Update failed'));
 
+        final notifier = container.read(profileProvider.notifier);
         expect(
           () => notifier.toggleBiometric(userId: 'user_1', enabled: true),
           throwsA(isA<Exception>()),
@@ -393,8 +407,8 @@ void main() {
             return FakePostgrestBuilder([sampleStats.toJson()]);
           }
         });
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
+        final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1');
 
         final initialLoadCount =

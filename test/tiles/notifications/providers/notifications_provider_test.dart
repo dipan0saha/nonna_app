@@ -27,6 +27,16 @@ void main() {
     setUp(() {
       mocks = MockFactory.createServiceContainer();
       when(mocks.cache.isInitialized).thenReturn(true);
+      when(mocks.cache.get(any)).thenAnswer((_) async => null);
+      when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes'))).thenAnswer((_) async {});
+      when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mocks.database.update(any, any)).thenAnswer((_) => FakePostgrestUpdateBuilder());
+      when(mocks.realtime.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.empty());
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
       // Create a ProviderContainer with overrides
       container = ProviderContainer(
@@ -38,9 +48,12 @@ void main() {
       );
     });
 
-    tearDown(() {
+    tearDown() {
       container.dispose();
-    });
+      reset(mocks.database);
+      reset(mocks.cache);
+      reset(mocks.realtime);
+    }
 
     group('Initial State', () {
       test('initial state has empty notifications', () {
