@@ -97,8 +97,11 @@ void main() {
 
     group('loadProfile', () {
       test('sets loading state while loading', () async {
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+
         final notifier = container.read(babyProfileProvider.notifier);
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -123,8 +126,13 @@ void main() {
       });
 
       test('loads profile from database when cache is empty', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -151,6 +159,11 @@ void main() {
       });
 
       test('loads profile from cache when available', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         final notifier = container.read(babyProfileProvider.notifier);
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleProfile.toJson());
@@ -175,8 +188,13 @@ void main() {
       });
 
       test('loads profile with memberships', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -204,10 +222,16 @@ void main() {
       });
 
       test('handles profile not found error', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
+
+        final notifier = container.read(babyProfileProvider.notifier);
 
         await notifier.loadProfile(
           babyProfileId: 'baby_1',
@@ -220,10 +244,16 @@ void main() {
       });
 
       test('handles database error gracefully', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
+
+        final notifier = container.read(babyProfileProvider.notifier);
 
         await notifier.loadProfile(
           babyProfileId: 'baby_1',
@@ -236,9 +266,14 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => sampleProfile.toJson());
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -262,8 +297,13 @@ void main() {
       });
 
       test('saves fetched profile to cache', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -290,8 +330,13 @@ void main() {
 
     group('enterEditMode', () {
       test('enables edit mode when user is owner', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -327,8 +372,13 @@ void main() {
 
     group('cancelEdit', () {
       test('disables edit mode', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -358,9 +408,13 @@ void main() {
 
     group('createProfile', () {
       test('creates baby profile successfully', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.insert(any, any))
             .thenAnswer((_) async => [sampleProfile.toJson()]);
+
+        final notifier = container.read(babyProfileProvider.notifier);
 
         final result = await notifier.createProfile(
           name: 'Baby Jane',
@@ -390,9 +444,13 @@ void main() {
       });
 
       test('handles database error during creation', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockDatabaseService);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
         when(mockDatabaseService.insert(any, any))
             .thenThrow(Exception('Creation failed'));
+
+        final notifier = container.read(babyProfileProvider.notifier);
 
         final result = await notifier.createProfile(
           name: 'Baby Jane',
@@ -408,8 +466,13 @@ void main() {
 
     group('updateProfile', () {
       test('updates profile successfully when user is owner', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -454,8 +517,13 @@ void main() {
       });
 
       test('validates empty baby name', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -485,8 +553,13 @@ void main() {
       });
 
       test('handles database error during update', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -520,8 +593,13 @@ void main() {
 
     group('deleteProfile', () {
       test('deletes profile successfully when user is owner', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -557,8 +635,13 @@ void main() {
       });
 
       test('handles database error during deletion', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -587,12 +670,14 @@ void main() {
 
     group('uploadProfilePhoto', () {
       test('uploads profile photo successfully', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockStorageService);
         when(mockStorageService.uploadFile(
           filePath: anyNamed('filePath'),
           storageKey: anyNamed('storageKey'),
           bucket: anyNamed('bucket'),
         )).thenAnswer((_) async => 'uploaded-photo.jpg');
+
+        final notifier = container.read(babyProfileProvider.notifier);
 
         final result = await notifier.uploadProfilePhoto(
           babyProfileId: 'baby_1',
@@ -604,12 +689,14 @@ void main() {
       });
 
       test('handles upload error gracefully', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockStorageService);
         when(mockStorageService.uploadFile(
           filePath: anyNamed('filePath'),
           storageKey: anyNamed('storageKey'),
           bucket: anyNamed('bucket'),
         )).thenThrow(Exception('Upload failed'));
+
+        final notifier = container.read(babyProfileProvider.notifier);
 
         final result = await notifier.uploadProfilePhoto(
           babyProfileId: 'baby_1',
@@ -622,8 +709,13 @@ void main() {
 
     group('removeFollower', () {
       test('removes follower successfully when user is owner', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -665,8 +757,13 @@ void main() {
       });
 
       test('handles database error during removal', () async {
-        final notifier = container.read(babyProfileProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -698,6 +795,12 @@ void main() {
 
     group('refresh', () {
       test('refreshes profile with force refresh', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
         final notifier = container.read(babyProfileProvider.notifier);
         var callCount = 0;
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
@@ -714,7 +817,6 @@ void main() {
             return FakePostgrestBuilder([]);
           }
         });
-        when(mockCacheService.get(any)).thenAnswer((_) async => null);
 
         await notifier.loadProfile(
           babyProfileId: 'baby_1',

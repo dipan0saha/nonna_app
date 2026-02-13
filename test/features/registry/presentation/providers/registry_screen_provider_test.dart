@@ -88,10 +88,16 @@ void main() {
 
     group('loadItems', () {
       test('sets loading state while loading', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         final loadFuture = notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -102,15 +108,23 @@ void main() {
       });
 
       test('loads items from database when cache is empty', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -121,6 +135,8 @@ void main() {
       });
 
       test('loads items from cache when available', () async {
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         final notifier = container.read(registryScreenProvider.notifier);
         final cachedData = [
           {
@@ -130,6 +146,8 @@ void main() {
           }
         ];
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedData);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -142,10 +160,16 @@ void main() {
       });
 
       test('handles database error gracefully', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -155,7 +179,12 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -169,8 +198,11 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(
           babyProfileId: 'profile_1',
@@ -181,15 +213,23 @@ void main() {
       });
 
       test('saves fetched items to cache', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -199,13 +239,19 @@ void main() {
       });
 
       test('loads items with purchase status', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
         var callCount = 0;
         when(mockDatabaseService.select(argThat(isA<String>())))
@@ -217,6 +263,8 @@ void main() {
             return FakePostgrestBuilder([samplePurchase.toJson()]);
           }
         });
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -236,7 +284,10 @@ void main() {
       });
 
       test('filters high priority items', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         final lowPriorityItem = sampleItem.copyWith(id: 'item_2', priority: 2);
         final cachedData = [
           {
@@ -252,6 +303,8 @@ void main() {
         ];
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedData);
 
+        final notifier = container.read(registryScreenProvider.notifier);
+
         await notifier.loadItems(babyProfileId: 'profile_1');
         notifier.applyFilter(RegistryFilter.highPriority);
 
@@ -261,7 +314,10 @@ void main() {
       });
 
       test('filters purchased items', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         final cachedData = [
           {
             'item': sampleItem.toJson(),
@@ -275,6 +331,8 @@ void main() {
           }
         ];
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedData);
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(babyProfileId: 'profile_1');
         notifier.applyFilter(RegistryFilter.purchased);
@@ -293,7 +351,10 @@ void main() {
       });
 
       test('sorts items by priority high to low', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         final lowPriorityItem =
             sampleItem.copyWith(id: 'item_2', priority: 2, name: 'Diapers');
         final cachedData = [
@@ -310,6 +371,8 @@ void main() {
         ];
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedData);
 
+        final notifier = container.read(registryScreenProvider.notifier);
+
         await notifier.loadItems(babyProfileId: 'profile_1');
         notifier.applySort(RegistrySort.priorityHigh);
 
@@ -319,7 +382,10 @@ void main() {
       });
 
       test('sorts items by name ascending', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         final itemB = sampleItem.copyWith(id: 'item_2', name: 'Bottles');
         final itemA = sampleItem.copyWith(id: 'item_3', name: 'Crib');
         final cachedData = [
@@ -336,6 +402,8 @@ void main() {
         ];
         when(mockCacheService.get(any)).thenAnswer((_) async => cachedData);
 
+        final notifier = container.read(registryScreenProvider.notifier);
+
         await notifier.loadItems(babyProfileId: 'profile_1');
         notifier.applySort(RegistrySort.nameAsc);
 
@@ -347,15 +415,23 @@ void main() {
 
     group('refresh', () {
       test('refreshes items with force refresh', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -379,15 +455,23 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles items update by refreshing', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -395,15 +479,23 @@ void main() {
       });
 
       test('handles purchases update by refreshing', () async {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockCacheService);
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+
+        final notifier = container.read(registryScreenProvider.notifier);
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -413,8 +505,14 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscriptions on dispose', () {
-        final notifier = container.read(registryScreenProvider.notifier);
+        reset(mockRealtimeService);
+        when(mockRealtimeService.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.empty());
         when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => {});
+        final notifier = container.read(registryScreenProvider.notifier);
 
         expect(notifier.state, isNotNull);
       });
