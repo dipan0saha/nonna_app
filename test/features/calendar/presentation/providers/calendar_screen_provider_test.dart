@@ -85,6 +85,7 @@ void main() {
 
     group('loadEvents', () {
       test('sets loading state while fetching', () async {
+        reset(mockRealtimeService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -99,6 +100,10 @@ void main() {
       });
 
       test('loads events from cache when available', () async {
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        reset(mockRealtimeService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => [
               sampleEvent.toJson(),
             ]);
@@ -120,6 +125,13 @@ void main() {
       });
 
       test('fetches events from database when cache is empty', () async {
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -143,6 +155,8 @@ void main() {
           startsAt: DateTime(2024, 6, 16, 10, 0),
         );
 
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -160,6 +174,8 @@ void main() {
       });
 
       test('uses custom date range when provided', () async {
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -182,6 +198,7 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        reset(mockDatabaseService);
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
 
@@ -194,6 +211,8 @@ void main() {
       });
 
       test('sets up real-time subscription', () async {
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -224,6 +243,8 @@ void main() {
       });
 
       test('eventsForSelectedDate returns correct events', () async {
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -247,6 +268,8 @@ void main() {
           startsAt: DateTime(2024, 6, 16, 10, 0),
         );
 
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -321,6 +344,8 @@ void main() {
 
     group('refresh', () {
       test('refreshes events', () async {
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -362,6 +387,8 @@ void main() {
           },
         });
 
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -397,6 +424,8 @@ void main() {
           },
         });
 
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -421,6 +450,8 @@ void main() {
           'old': {'id': 'event_1'},
         });
 
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -444,6 +475,8 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () async {
+        reset(mockRealtimeService);
+        reset(mockDatabaseService);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),

@@ -68,6 +68,10 @@ void main() {
 
     group('loadTiles', () {
       test('loads tiles from database when cache is empty', () async {
+        // Reset and re-stub for this specific test
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
@@ -95,6 +99,9 @@ void main() {
       });
 
       test('loads tiles from cache when available', () async {
+        // Reset and re-stub for this specific test
+        reset(mockCacheService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => [sampleTileConfig.toJson()]);
 
@@ -113,6 +120,10 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        // Reset and re-stub for this specific test
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
@@ -133,6 +144,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes tiles with force refresh', () async {
+        // Reset and re-stub for this specific test
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
@@ -171,6 +186,10 @@ void main() {
 
     group('switchBabyProfile', () {
       test('loads tiles for new baby profile', () async {
+        // Reset and re-stub for this specific test
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
@@ -196,6 +215,10 @@ void main() {
 
     group('toggleRole', () {
       test('toggles user role', () async {
+        // Reset and re-stub for this specific test
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
@@ -232,6 +255,10 @@ void main() {
 
     group('retry', () {
       test('retries loading tiles after error', () async {
+        // Reset and re-stub for this specific test
+        reset(mockCacheService);
+        reset(mockDatabaseService);
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get<List<Map<String, dynamic>>>(any))
             .thenAnswer((_) async => null);
         when(mockCacheService.put(
