@@ -32,7 +32,14 @@ void main() {
       mockDatabaseService = MockFactory.createDatabaseService();
       mockCacheService = MockFactory.createCacheService();
 
+      // Setup default mock behaviors BEFORE creating the container
       when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockCacheService.get<List<Map<String, dynamic>>>(any))
+          .thenAnswer((_) async => null);
+      when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+          .thenAnswer((_) async {});
+      when(mockDatabaseService.select(any))
+          .thenAnswer((_) => FakePostgrestBuilder([]));
 
       container = ProviderContainer(
         overrides: [

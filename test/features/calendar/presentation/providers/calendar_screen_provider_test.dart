@@ -44,7 +44,7 @@ void main() {
         table: anyNamed('table'),
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
-      )).thenAnswer((_) => Stream.empty());
+      )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
       when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
       container = ProviderContainer(

@@ -42,7 +42,12 @@ void main() {
           .thenAnswer((_) async {});
       when(mockDatabaseService.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
-      // Note: realtimeService.subscribe mock is set up per test as needed
+      // Setup default realtime service stubs
+      when(mockRealtimeService.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.empty());
       when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
       // Create container AFTER all default mocks are setup

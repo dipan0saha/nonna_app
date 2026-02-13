@@ -31,6 +31,13 @@ void main() {
           .thenAnswer((_) async {});
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
+      // Setup default realtime service stubs
+      when(mocks.realtime.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.empty());
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
