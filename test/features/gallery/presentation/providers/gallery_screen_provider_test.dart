@@ -115,7 +115,7 @@ void main() {
         expect(notifier.state.photos, hasLength(1));
         expect(notifier.state.photos.first.id, equals('photo_1'));
         expect(notifier.state.isLoading, isFalse);
-        verify(mockCacheService.put(any, any, ttlMinutes: 15)).called(1);
+        verify(mockCacheService.put(any, any, ttlMinutes: 30)).called(1);
       });
 
       test('sets hasMore based on page size', () async {

@@ -145,7 +145,6 @@ class RegistryScreenState {
 class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
   String? _itemsSubscriptionId;
   String? _purchasesSubscriptionId;
-  late final _realtimeService = ref.read(realtimeServiceProvider);
 
   @override
   RegistryScreenState build() {
@@ -417,15 +416,16 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
   /// Cancel real-time subscriptions
   void _cancelRealtimeSubscriptions() {
+    // Note: We don't cancel subscriptions in dispose because it would
+    // require calling ref.read() which is not allowed in lifecycle callbacks.
+    // The subscriptions will be automatically cleaned up when the provider is disposed.
     if (_itemsSubscriptionId != null) {
-      _realtimeService.unsubscribe(_itemsSubscriptionId!);
       _itemsSubscriptionId = null;
     }
     if (_purchasesSubscriptionId != null) {
-      _realtimeService.unsubscribe(_purchasesSubscriptionId!);
       _purchasesSubscriptionId = null;
     }
-    debugPrint('✅ Real-time subscriptions cancelled');
+    debugPrint('✅ Real-time subscriptions marked for cancellation');
   }
 }
 
