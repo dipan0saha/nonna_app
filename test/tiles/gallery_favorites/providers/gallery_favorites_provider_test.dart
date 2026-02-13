@@ -24,11 +24,11 @@ void main() {
       when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
     });
 
-    tearDown() {
+    tearDown(() {
       reset(mocks.database);
       reset(mocks.cache);
       reset(mocks.realtime);
-    }
+    });
 
     group('Initial State', () {
       test('initial state has empty favorites', () {

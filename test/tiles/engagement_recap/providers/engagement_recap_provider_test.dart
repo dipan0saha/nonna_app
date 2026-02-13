@@ -18,10 +18,10 @@ void main() {
           .thenAnswer((_) => FakePostgrestBuilder([]));
     });
 
-    tearDown() {
+    tearDown(() {
       reset(mocks.database);
       reset(mocks.cache);
-    }
+    });
 
     group('Initial State', () {
       test('initial state has no metrics and is not loading', () {

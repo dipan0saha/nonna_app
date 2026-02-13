@@ -39,11 +39,11 @@ void main() {
       );
     });
 
-    tearDown() {
+    tearDown(() {
       container.dispose();
       reset(mocks.database);
       reset(mocks.cache);
-    }
+    });
 
     group('Initial State', () {
       test('initial state has no storage info', () {

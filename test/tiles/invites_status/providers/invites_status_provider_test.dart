@@ -52,12 +52,12 @@ void main() {
       );
     });
 
-    tearDown() {
+    tearDown(() {
       container.dispose();
       reset(mocks.database);
       reset(mocks.cache);
       reset(mocks.realtime);
-    }
+    });
 
     group('Initial State', () {
       test('initial state has empty invitations', () {

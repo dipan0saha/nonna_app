@@ -587,6 +587,7 @@ void main() {
 
     group('uploadProfilePhoto', () {
       test('uploads profile photo successfully', () async {
+        final notifier = container.read(babyProfileProvider.notifier);
         when(mockStorageService.uploadFile(
           filePath: anyNamed('filePath'),
           storageKey: anyNamed('storageKey'),
@@ -603,6 +604,7 @@ void main() {
       });
 
       test('handles upload error gracefully', () async {
+        final notifier = container.read(babyProfileProvider.notifier);
         when(mockStorageService.uploadFile(
           filePath: anyNamed('filePath'),
           storageKey: anyNamed('storageKey'),
