@@ -1,15 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/gallery_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
+import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('GalleryScreenNotifier Tests', () {

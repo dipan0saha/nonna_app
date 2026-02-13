@@ -1,19 +1,2 @@
 Analyzing nonna_app...                                          
-
-  error • Undefined name 'notifier' • test/features/baby_profile/presentation/providers/baby_profile_provider_test.dart:596:30 • undefined_identifier
-  error • Undefined name 'notifier' • test/features/baby_profile/presentation/providers/baby_profile_provider_test.dart:612:30 • undefined_identifier
-   info • The function 'tearDown' should have a return type but doesn't • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:21:5 • always_declare_return_types
-warning • The declaration 'tearDown' isn't referenced • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:21:5 • unused_element
-   info • The function 'tearDown' should have a return type but doesn't • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:27:5 • always_declare_return_types
-warning • The declaration 'tearDown' isn't referenced • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:27:5 • unused_element
-   info • The function 'tearDown' should have a return type but doesn't • test/tiles/invites_status/providers/invites_status_provider_test.dart:55:5 • always_declare_return_types
-warning • The declaration 'tearDown' isn't referenced • test/tiles/invites_status/providers/invites_status_provider_test.dart:55:5 • unused_element
-   info • The function 'tearDown' should have a return type but doesn't • test/tiles/notifications/providers/notifications_provider_test.dart:54:5 • always_declare_return_types
-warning • The declaration 'tearDown' isn't referenced • test/tiles/notifications/providers/notifications_provider_test.dart:54:5 • unused_element
-   info • The function 'tearDown' should have a return type but doesn't • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:48:5 • always_declare_return_types
-warning • The declaration 'tearDown' isn't referenced • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:48:5 • unused_element
-   info • The function 'tearDown' should have a return type but doesn't • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:66:5 • always_declare_return_types
-warning • The declaration 'tearDown' isn't referenced • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:66:5 • unused_element
-   info • The function 'tearDown' should have a return type but doesn't • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:42:5 • always_declare_return_types
-warning • The declaration 'tearDown' isn't referenced • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:42:5 • unused_element
-
+No issues found! (ran in 2.1s)
