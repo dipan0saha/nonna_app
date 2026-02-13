@@ -41,8 +41,10 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
       when(mockCacheService.get(any)).thenAnswer((_) async => null);
-      when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes'))).thenAnswer((_) async {});
-      when(mockDatabaseService.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+          .thenAnswer((_) async {});
+      when(mockDatabaseService.select(any))
+          .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mockStorageService.uploadFile(
         filePath: anyNamed('filePath'),
         storageKey: anyNamed('storageKey'),

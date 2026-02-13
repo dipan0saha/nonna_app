@@ -328,8 +328,7 @@ void main() {
       });
 
       test('isBiometricEnabled checks local storage', () async {
-        when(mockLocalStorage.getBool('biometric_enabled'))
-            .thenReturn(true);
+        when(mockLocalStorage.getBool('biometric_enabled')).thenReturn(true);
 
         final result = await notifier.isBiometricEnabled();
 

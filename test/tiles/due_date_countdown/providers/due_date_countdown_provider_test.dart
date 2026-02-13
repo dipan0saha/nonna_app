@@ -24,7 +24,7 @@ void main() {
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();
-      
+
       // Setup all default mock behaviors BEFORE creating container
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);

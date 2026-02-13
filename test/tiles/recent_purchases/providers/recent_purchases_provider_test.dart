@@ -27,8 +27,10 @@ void main() {
 
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
-      when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes'))).thenAnswer((_) async {});
-      when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+          .thenAnswer((_) async {});
+      when(mocks.database.select(any))
+          .thenAnswer((_) => FakePostgrestBuilder([]));
 
       container = ProviderContainer(
         overrides: [

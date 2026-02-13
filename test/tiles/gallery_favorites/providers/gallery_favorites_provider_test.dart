@@ -12,8 +12,10 @@ void main() {
       mocks = MockFactory.createServiceContainer();
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
-      when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes'))).thenAnswer((_) async {});
-      when(mocks.database.select(any)).thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+          .thenAnswer((_) async {});
+      when(mocks.database.select(any))
+          .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mocks.realtime.subscribe(
         table: anyNamed('table'),
         channelName: anyNamed('channelName'),
