@@ -109,8 +109,16 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        
+        // Mock registry_items query
+        when(mockDatabaseService.select(SupabaseTables.registryItems, 
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        
+        // Mock registry_purchases query  
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases,
+                columns: anyNamed('columns')))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -169,8 +177,16 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        
+        // Mock registry_items query
+        when(mockDatabaseService.select(SupabaseTables.registryItems,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        
+        // Mock registry_purchases query
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases,
+                columns: anyNamed('columns')))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         await notifier.loadItems(
           babyProfileId: 'profile_1',
@@ -188,8 +204,16 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        
+        // Mock registry_items query
+        when(mockDatabaseService.select(SupabaseTables.registryItems,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        
+        // Mock registry_purchases query
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases,
+                columns: anyNamed('columns')))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -348,24 +372,32 @@ void main() {
     group('refresh', () {
       test('refreshes items with force refresh', () async {
         final notifier = container.read(registryScreenProvider.notifier);
+        var callCount = 0;
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        
+        // Mock both queries with call counter
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+            .thenAnswer((_) {
+          callCount++;
+          if (callCount.isOdd) {
+            return FakePostgrestBuilder([sampleItem.toJson()]);
+          } else {
+            return FakePostgrestBuilder([samplePurchase.toJson()]);
+          }
+        });
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
-        final initialLoadCount =
-            verify(mockDatabaseService.select(any)).callCount;
+        final initialCallCount = callCount;
 
         await notifier.refresh();
 
-        expect(verify(mockDatabaseService.select(any)).callCount,
-            greaterThan(initialLoadCount));
+        expect(callCount, greaterThan(initialCallCount));
       });
 
       test('does not refresh when no baby profile selected', () async {
@@ -379,35 +411,45 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles items update by refreshing', () async {
+        final streamController = StreamController<Map<String, dynamic>>();
         final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => streamController.stream);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
-        expect(notifier.state.items, hasLength(1));
+        final itemsLength = notifier.state.items.length;
+
+        expect(itemsLength, equals(1));
+
+        await streamController.close();
       });
 
       test('handles purchases update by refreshing', () async {
+        final streamController = StreamController<Map<String, dynamic>>();
         final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => streamController.stream);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
-        expect(notifier.state.items, hasLength(1));
+        final itemsLength = notifier.state.items.length;
+
+        expect(itemsLength, equals(1));
+
+        await streamController.close();
       });
     });
 

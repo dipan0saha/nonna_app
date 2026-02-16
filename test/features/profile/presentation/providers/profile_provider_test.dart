@@ -413,13 +413,11 @@ void main() {
         final notifier = container.read(profileProvider.notifier);
         await notifier.loadProfile(userId: 'user_1');
 
-        final initialLoadCount =
-            verify(mockDatabaseService.select(any)).callCount;
+        final initialCallCount = callCount;
 
         await notifier.refresh('user_1');
 
-        expect(verify(mockDatabaseService.select(any)).callCount,
-            greaterThan(initialLoadCount));
+        expect(callCount, greaterThan(initialCallCount));
       });
     });
   });
