@@ -13,6 +13,7 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('RSVPTasksProvider Tests', () {
     late ProviderContainer container;
+    late MockServiceContainer mocks;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -45,7 +46,7 @@ void main() {
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async {});
+          .thenAnswer((_) async => null);
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mocks.database.insert(any, any)).thenAnswer((_) async => []);
@@ -54,7 +55,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
-      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
 
       container = ProviderContainer(
         overrides: [
@@ -297,7 +298,7 @@ void main() {
       test('cancels real-time subscriptions on dispose', () {
         // Note: Riverpod automatically handles disposal through ref.onDispose
         // This test verifies the container can be disposed without errors
-        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
 
         expect(() => container.dispose(), returnsNormally);
       });

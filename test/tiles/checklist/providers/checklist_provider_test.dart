@@ -16,7 +16,7 @@ void main() {
       mockCacheService = MockFactory.createCacheService();
       when(mockCacheService.isInitialized).thenReturn(true);
       when(mockCacheService.get(any)).thenAnswer((_) async => null);
-      when(mockCacheService.put(any, any)).thenAnswer((_) async {});
+      when(mockCacheService.put(any, any)).thenAnswer((_) async => null);
 
       container = ProviderContainer(
         overrides: [
