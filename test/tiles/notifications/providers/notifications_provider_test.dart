@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -92,11 +94,12 @@ void main() {
 
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
@@ -109,6 +112,8 @@ void main() {
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
         expect(state.unreadCount, equals(1));
+        
+        realtimeController.close();
       });
 
       test('loads notifications from cache when available', () async {
@@ -151,11 +156,12 @@ void main() {
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleNotification.toJson()]);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
@@ -166,6 +172,8 @@ void main() {
 
         // Verify database was called despite cache
         verify(mocks.database.select(any)).called(1);
+        
+        realtimeController.close();
       });
 
       test('calculates unread count correctly', () async {
@@ -177,11 +185,12 @@ void main() {
             sampleNotification.copyWith(id: 'notif_3', readAt: DateTime.now());
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   notif1.toJson(),
@@ -193,6 +202,8 @@ void main() {
 
         final state = container.read(notificationsProvider);
         expect(state.unreadCount, equals(2));
+        
+        realtimeController.close();
       });
     });
 
@@ -202,11 +213,12 @@ void main() {
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleNotification.toJson()]));
         await notifier.fetchNotifications(userId: 'user_1');
@@ -229,6 +241,8 @@ void main() {
             state.notifications.firstWhere((n) => n.id == 'notif_1');
         expect(notification.isRead, isTrue);
         expect(state.unreadCount, equals(0));
+        
+        realtimeController.close();
       });
 
       test('updates cache after marking as read', () async {
@@ -236,11 +250,12 @@ void main() {
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleNotification.toJson()]));
         await notifier.fetchNotifications(userId: 'user_1');
@@ -256,6 +271,8 @@ void main() {
         // Verify cache was updated
         verify(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(greaterThanOrEqualTo(1));
+        
+        realtimeController.close();
       });
     });
 
@@ -267,11 +284,12 @@ void main() {
         final notif2 = sampleNotification.copyWith(id: 'notif_2', readAt: null);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   notif1.toJson(),
@@ -293,6 +311,8 @@ void main() {
           expect(notification.isRead, isTrue);
         }
         expect(state.unreadCount, equals(0));
+        
+        realtimeController.close();
       });
     });
 
@@ -302,11 +322,12 @@ void main() {
 
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleNotification.toJson()]);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
@@ -314,6 +335,8 @@ void main() {
 
         // Verify database was called (bypassing cache)
         verify(mocks.database.select(any)).called(1);
+        
+        realtimeController.close();
       });
     });
 
@@ -323,11 +346,12 @@ void main() {
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
           channelName: anyNamed('channelName'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any)).thenAnswer(
             (_) => FakePostgrestBuilder([sampleNotification.toJson()]));
 
@@ -344,6 +368,8 @@ void main() {
         // In a real scenario, the realtime subscription would trigger this
 
         expect(initialCount, equals(1)); // Just verify initial state was set
+        
+        realtimeController.close();
       });
     });
 

@@ -19,6 +19,7 @@ void main() {
       mockLocalStorageService = MockFactory.createLocalStorageService();
 
       when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockLocalStorageService.isInitialized).thenReturn(true);
 
       // Create provider container with overrides
       container = ProviderContainer(

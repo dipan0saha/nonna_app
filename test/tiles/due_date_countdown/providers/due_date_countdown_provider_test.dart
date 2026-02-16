@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -87,11 +89,12 @@ void main() {
       test('fetches profiles from database when cache is empty', () async {
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -104,6 +107,8 @@ void main() {
         expect(state.countdowns.first.profile.id, equals('profile_1'));
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
+        
+        realtimeController.close();
       });
 
       test('handles empty profile list', () async {
@@ -161,11 +166,12 @@ void main() {
           'formattedCountdown': '30 days',
         };
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -180,6 +186,8 @@ void main() {
 
         // Verify database was called despite cache
         verify(mocks.database.select(any)).called(1);
+        
+        realtimeController.close();
       });
 
       test('calculates days until due date correctly', () async {
@@ -188,11 +196,12 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([futureProfile.toJson()]));
 
@@ -203,6 +212,8 @@ void main() {
         expect(
             state.countdowns.first.daysUntilDueDate, greaterThanOrEqualTo(44));
         expect(state.countdowns.first.isPastDue, isFalse);
+        
+        realtimeController.close();
       });
 
       test('handles past due date correctly', () async {
@@ -211,11 +222,12 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([pastProfile.toJson()]));
 
@@ -224,6 +236,8 @@ void main() {
 
         final state = container.read(dueDateCountdownProvider);
         expect(state.countdowns.first.isPastDue, isTrue);
+        
+        realtimeController.close();
       });
 
       test('handles multiple babies', () async {
@@ -231,11 +245,12 @@ void main() {
             sampleProfile.copyWith(id: 'profile_2', name: 'Baby Jack');
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
                   sampleProfile.toJson(),
@@ -249,6 +264,8 @@ void main() {
 
         final state = container.read(dueDateCountdownProvider);
         expect(state.countdowns, hasLength(2));
+        
+        realtimeController.close();
       });
     });
 
@@ -261,11 +278,12 @@ void main() {
           'formattedCountdown': '30 days',
         };
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -277,6 +295,8 @@ void main() {
 
         // Verify database was called (bypassing cache)
         verify(mocks.database.select(any)).called(1);
+        
+        realtimeController.close();
       });
     });
 
@@ -284,11 +304,12 @@ void main() {
       test('handles UPDATE to due date', () async {
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -325,6 +346,8 @@ void main() {
                 .first
                 .daysUntilDueDate,
             greaterThan(initialDays));
+        
+        realtimeController.close();
       });
     });
 
@@ -341,11 +364,12 @@ void main() {
     group('Countdown Formatting', () {
       test('formats countdown as days', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
@@ -354,6 +378,8 @@ void main() {
 
         final state = container.read(dueDateCountdownProvider);
         expect(state.countdowns.first.formattedCountdown, isNotEmpty);
+        
+        realtimeController.close();
       });
     });
   });

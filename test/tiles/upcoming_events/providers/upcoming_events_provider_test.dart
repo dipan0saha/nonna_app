@@ -109,11 +109,12 @@ void main() {
         container = createContainer();
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -153,6 +154,8 @@ void main() {
         // Verify state updated from cache
         expect(state.events, hasLength(1));
         expect(state.events.first.id, equals('event_1'));
+        
+        realtimeController.close();
       });
 
       test('handles errors gracefully', () async {
@@ -180,11 +183,12 @@ void main() {
         // Setup mocks
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -198,16 +202,19 @@ void main() {
 
         // Verify database was called despite cache
         verify(mockDatabaseService.select(any)).called(1);
+        
+        realtimeController.close();
       });
 
       test('saves fetched events to cache', () async {
         container = createContainer();
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -221,6 +228,8 @@ void main() {
         // Verify cache put was called
         verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
+        
+        realtimeController.close();
       });
     });
 
@@ -229,11 +238,12 @@ void main() {
         container = createContainer();
         // Setup initial state with events
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -255,17 +265,20 @@ void main() {
         // Verify state updated with new events
         expect(state.events, hasLength(2));
         expect(state.currentPage, equals(2));
+        
+        realtimeController.close();
       });
 
       test('does not load more when already loading', () async {
         container = createContainer();
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -283,17 +296,20 @@ void main() {
 
         // Verify no additional database call
         verify(mockDatabaseService.select(any)).called(1); // Only initial fetch
+        
+        realtimeController.close();
       });
 
       test('does not load more when hasMore is false', () async {
         container = createContainer();
         // Setup initial state with hasMore = false
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -312,6 +328,8 @@ void main() {
 
         // Verify only initial database call
         verify(mockDatabaseService.select(any)).called(1);
+        
+        realtimeController.close();
       });
     });
 
@@ -320,11 +338,12 @@ void main() {
         container = createContainer();
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -337,6 +356,8 @@ void main() {
 
         // Verify database was called (bypassing cache)
         verify(mockDatabaseService.select(any)).called(1);
+        
+        realtimeController.close();
       });
     });
 
@@ -345,11 +366,12 @@ void main() {
         container = createContainer();
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -372,17 +394,20 @@ void main() {
 
         expect(container!.read(upcomingEventsProvider).events.length,
             equals(initialCount + 1));
+        
+        realtimeController.close();
       });
 
       test('handles UPDATE event', () async {
         container = createContainer();
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -403,17 +428,20 @@ void main() {
 
         expect(container!.read(upcomingEventsProvider).events.first.title,
             equals('Updated Event'));
+        
+        realtimeController.close();
       });
 
       test('handles DELETE event', () async {
         container = createContainer();
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -433,6 +461,8 @@ void main() {
         );
 
         expect(container!.read(upcomingEventsProvider).events, isEmpty);
+        
+        realtimeController.close();
       });
     });
 

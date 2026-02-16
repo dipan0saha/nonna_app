@@ -174,8 +174,8 @@ void main() {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([
-                  item1.toJson(),
                   item2.toJson(),
+                  item1.toJson(),
                   item3.toJson(),
                 ]));
 
@@ -248,8 +248,8 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenReturn(
-          FakePostgrestBuilder(items.map((i) => i.toJson()).toList()),
+        when(mocks.database.select(any)).thenAnswer(
+          (_) => FakePostgrestBuilder(items.map((i) => i.toJson()).toList()),
         );
 
         final notifier = container.read(registryHighlightsProvider.notifier);

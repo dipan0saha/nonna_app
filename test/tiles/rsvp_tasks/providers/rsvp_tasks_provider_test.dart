@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -101,11 +103,12 @@ void main() {
       test('fetches events from database when cache is empty', () async {
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -120,6 +123,8 @@ void main() {
         expect(state.events.first.event.id, equals('event_1'));
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
+        
+        realtimeController.close();
       });
 
       test('loads events from cache when available', () async {
@@ -170,11 +175,12 @@ void main() {
           'needsResponse': true,
         };
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -189,15 +195,18 @@ void main() {
         // Using greaterThanOrEqualTo because the provider makes multiple queries
         // (events + rsvps) to build the full state
         verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
+        
+        realtimeController.close();
       });
 
       test('calculates pending count correctly', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -209,6 +218,8 @@ void main() {
 
         final state = container.read(rsvpTasksProvider);
         expect(state.pendingCount, greaterThanOrEqualTo(0));
+        
+        realtimeController.close();
       });
     });
 
@@ -216,11 +227,12 @@ void main() {
       test('submits RSVP and updates state', () async {
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -237,6 +249,8 @@ void main() {
         // Note: submitRSVP method may not exist, skip actual test
         final state = container.read(rsvpTasksProvider);
         expect(state.events.isNotEmpty, isTrue);
+        
+        realtimeController.close();
       });
     });
 
@@ -248,11 +262,12 @@ void main() {
           'needsResponse': true,
         };
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -265,6 +280,8 @@ void main() {
         // Verify database was called (bypassing cache)
         // Using greaterThanOrEqualTo because the provider makes multiple queries
         verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
+        
+        realtimeController.close();
       });
     });
 
@@ -272,11 +289,12 @@ void main() {
       test('handles new event requiring RSVP', () async {
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -288,6 +306,8 @@ void main() {
 
         final state = container.read(rsvpTasksProvider);
         expect(state.events.isNotEmpty, isTrue);
+        
+        realtimeController.close();
       });
     });
 
@@ -304,11 +324,12 @@ void main() {
     group('RSVP Status Filtering', () {
       test('filters events needing response', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
+        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value({}));
+        )).thenAnswer((_) => realtimeController.stream);
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
@@ -322,6 +343,8 @@ void main() {
         for (final eventWithRSVP in state.events) {
           expect(eventWithRSVP.needsResponse, isTrue);
         }
+        
+        realtimeController.close();
       });
     });
   });
