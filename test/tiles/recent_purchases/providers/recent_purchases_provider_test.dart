@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_purchase.dart';
 import 'package:nonna_app/tiles/recent_purchases/providers/recent_purchases_provider.dart';
@@ -77,8 +78,10 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        // Using thenReturn for FakePostgrestBuilder which implements then() for async
-        when(mockDatabaseService.select(any))
+        // Setup for both tables that the provider queries
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -95,7 +98,9 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -119,7 +124,8 @@ void main() {
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(SupabaseTables.registryItems));
+        verifyNever(mockDatabaseService.select(SupabaseTables.registryPurchases));
 
         final state = container!.read(recentPurchasesProvider);
         expect(state.purchases, hasLength(1));
@@ -133,7 +139,7 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
             .thenThrow(Exception('Database error'));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -153,7 +159,9 @@ void main() {
             .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -165,14 +173,16 @@ void main() {
         // Verify database was called despite cache
         // Using greaterThanOrEqualTo because the provider makes multiple queries
         // (registry items + purchases) to build the full state
-        verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(SupabaseTables.registryItems)).called(greaterThanOrEqualTo(1));
       });
 
       test('saves fetched purchases to cache', () async {
         container = createContainer();
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -199,7 +209,9 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenReturn(
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenReturn(FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases)).thenReturn(
           FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
         );
 
@@ -217,7 +229,9 @@ void main() {
 
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -225,7 +239,7 @@ void main() {
 
         // Verify database was called (bypassing cache)
         // Using greaterThanOrEqualTo because the provider makes multiple queries
-        verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(SupabaseTables.registryItems)).called(greaterThanOrEqualTo(1));
       });
     });
 
@@ -244,7 +258,9 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -272,7 +288,9 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -319,7 +337,9 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([
                   purchase1.toJson(),
                   purchase2.toJson(),

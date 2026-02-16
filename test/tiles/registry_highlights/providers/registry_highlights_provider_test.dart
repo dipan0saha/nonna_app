@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
@@ -32,7 +33,9 @@ void main() {
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
           .thenAnswer((_) async {});
-      when(mocks.database.select(any))
+      when(mocks.database.select(SupabaseTables.registryItems))
+          .thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mocks.database.select(SupabaseTables.registryPurchases))
           .thenAnswer((_) => FakePostgrestBuilder([]));
 
       // Setup dummy values for Mockito null-safety
@@ -65,7 +68,7 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
@@ -82,8 +85,10 @@ void main() {
       test('fetches items from database when cache is empty', () async {
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
@@ -109,7 +114,7 @@ void main() {
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
 
         // Verify database was not called
-        verifyNever(mocks.database.select(any));
+        verifyNever(mocks.database.select(SupabaseTables.registryItems));
 
         // Verify state updated from cache
         final state = container.read(registryHighlightsProvider);
@@ -120,7 +125,7 @@ void main() {
       test('handles errors gracefully', () async {
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
+        when(mocks.database.select(SupabaseTables.registryItems)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
@@ -140,8 +145,10 @@ void main() {
           'purchases': [],
         };
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(
@@ -150,13 +157,15 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mocks.database.select(SupabaseTables.registryItems)).called(greaterThanOrEqualTo(1));
       });
 
       test('saves fetched items to cache', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
@@ -172,12 +181,14 @@ void main() {
         final item3 = sampleItem.copyWith(id: 'item_3', priority: 1);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([
                   item2.toJson(),
                   item1.toJson(),
                   item3.toJson(),
                 ]));
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
@@ -198,21 +209,23 @@ void main() {
           'purchases': [],
         };
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
-        verify(mocks.database.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mocks.database.select(SupabaseTables.registryItems)).called(greaterThanOrEqualTo(1));
       });
     });
 
     group('Purchase Status', () {
       test('tracks purchase status correctly', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
@@ -225,7 +238,7 @@ void main() {
 
       test('filters unpurchased items only', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
@@ -248,7 +261,7 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenAnswer(
+        when(mocks.database.select(SupabaseTables.registryItems)).thenAnswer(
           (_) => FakePostgrestBuilder(items.map((i) => i.toJson()).toList()),
         );
 

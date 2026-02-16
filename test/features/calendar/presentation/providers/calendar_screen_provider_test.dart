@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/features/calendar/presentation/providers/calendar_screen_provider.dart';
@@ -40,7 +41,7 @@ void main() {
       when(mockCacheService.get(any)).thenAnswer((_) async => null);
       when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
           .thenAnswer((_) async {});
-      when(mockDatabaseService.select(any))
+      when(mockDatabaseService.select(SupabaseTables.events))
           .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mockRealtimeService.subscribe(
         table: anyNamed('table'),
@@ -104,7 +105,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => [
               sampleEvent.toJson(),
             ]);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -127,7 +128,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -150,7 +151,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any)).thenAnswer((_) =>
+        when(mockDatabaseService.select(SupabaseTables.events)).thenAnswer((_) =>
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -167,7 +168,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final startDate = DateTime(2024, 5, 1);
@@ -184,7 +185,7 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenThrow(Exception('Database error'));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -201,7 +202,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -231,7 +232,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -254,7 +255,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any)).thenAnswer((_) =>
+        when(mockDatabaseService.select(SupabaseTables.events)).thenAnswer((_) =>
             FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -328,7 +329,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -345,7 +346,7 @@ void main() {
         final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.refresh();
 
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(SupabaseTables.events));
       });
     });
 
@@ -359,7 +360,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -399,7 +400,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -442,7 +443,7 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
 
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
@@ -475,7 +476,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/baby_membership.dart';
@@ -84,7 +85,7 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
@@ -106,7 +107,7 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container!
@@ -136,7 +137,7 @@ void main() {
             .fetchFollowers(babyProfileId: 'profile_1');
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(SupabaseTables.babyMemberships));
 
         // Verify state updated from cache
         expect(container!.read(newFollowersProvider).followers, hasLength(1));
@@ -152,7 +153,7 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenThrow(Exception('Database error'));
 
         await container!
@@ -180,7 +181,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container!.read(newFollowersProvider.notifier).fetchFollowers(
@@ -189,7 +190,7 @@ void main() {
             );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(SupabaseTables.babyMemberships)).called(greaterThanOrEqualTo(1));
       });
 
       test('filters only recent followers', () async {
@@ -209,7 +210,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([recentFollower.toJson()]));
 
         await container!.read(newFollowersProvider.notifier).fetchFollowers(
@@ -234,7 +235,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container!
@@ -268,7 +269,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(any)).thenReturn(
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships)).thenReturn(
           FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
         );
 
@@ -296,7 +297,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container!.read(newFollowersProvider.notifier).refresh(
@@ -304,7 +305,7 @@ void main() {
             );
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(any)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(SupabaseTables.babyMemberships)).called(greaterThanOrEqualTo(1));
       });
     });
 
@@ -321,7 +322,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         container = createContainer();
@@ -350,7 +351,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         container = createContainer();
@@ -380,7 +381,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container!.read(newFollowersProvider.notifier).fetchFollowers(
@@ -402,7 +403,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
         await container!.read(newFollowersProvider.notifier).fetchFollowers(
@@ -439,7 +440,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([
                   follower1.toJson(),
                   follower2.toJson(),

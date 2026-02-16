@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 
+// Mock ViewPadding class for testing keyboard visibility
+class TestViewPadding extends ViewPadding {
+  TestViewPadding({
+    double left = 0,
+    double top = 0,
+    double right = 0,
+    double bottom = 0,
+  }) : super(left: left, top: top, right: right, bottom: bottom);
+}
+
 void main() {
   group('ContextExtensions', () {
     // Helper to create a widget with context
@@ -442,8 +452,11 @@ void main() {
           (tester) async {
         bool? isVisible;
 
+        // Create a mock ViewPadding with keyboard insets
+        final viewPadding = TestViewPadding(bottom: 300);
+        
         // Set keyboard visible BEFORE widget is built
-        tester.view.viewInsets = FakeViewPadding(bottom: 300);
+        tester.view.viewInsets = viewPadding;
 
         await tester.pumpWidget(
           buildTestWidget(

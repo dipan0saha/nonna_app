@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/event.dart';
@@ -59,7 +60,7 @@ void main() {
           .thenAnswer((_) async {});
 
       // Set up database mocks
-      when(mockDatabaseService.select(any))
+      when(mockDatabaseService.select(SupabaseTables.events))
           .thenAnswer((_) => FakePostgrestBuilder([]));
 
       return ProviderContainer(
@@ -88,7 +89,7 @@ void main() {
         container = createContainer();
         // Setup mock to delay response
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -115,7 +116,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -148,7 +149,7 @@ void main() {
         );
 
         // Verify database was not called
-        verifyNever(mockDatabaseService.select(any));
+        verifyNever(mockDatabaseService.select(SupabaseTables.events));
 
         final state = container!.read(upcomingEventsProvider);
         // Verify state updated from cache
@@ -160,7 +161,7 @@ void main() {
         container = createContainer();
         // Setup mock to throw error
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(any)).thenThrow(Exception('Database error'));
+        when(mockDatabaseService.select(SupabaseTables.events)).thenThrow(Exception('Database error'));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
 
@@ -187,7 +188,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -199,7 +200,7 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mockDatabaseService.select(SupabaseTables.events)).called(1);
         
         realtimeController.close();
       });
@@ -213,7 +214,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -242,7 +243,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -254,7 +255,7 @@ void main() {
 
         final event2 =
             sampleEvent.copyWith(id: 'event_2', title: 'Gender Reveal');
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([event2.toJson()]));
 
         await notifier.loadMore(babyProfileId: 'profile_1');
@@ -277,7 +278,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -293,7 +294,7 @@ void main() {
         await notifier.loadMore(babyProfileId: 'profile_1');
 
         // Verify no additional database call
-        verify(mockDatabaseService.select(any)).called(1); // Only initial fetch
+        verify(mockDatabaseService.select(SupabaseTables.events)).called(1); // Only initial fetch
         
         realtimeController.close();
       });
@@ -308,7 +309,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -325,7 +326,7 @@ void main() {
         await notifier.loadMore(babyProfileId: 'profile_1');
 
         // Verify only initial database call
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mockDatabaseService.select(SupabaseTables.events)).called(1);
         
         realtimeController.close();
       });
@@ -342,7 +343,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -353,7 +354,7 @@ void main() {
         );
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(any)).called(1);
+        verify(mockDatabaseService.select(SupabaseTables.events)).called(1);
         
         realtimeController.close();
       });
@@ -370,7 +371,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -406,7 +407,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
@@ -440,7 +441,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mockDatabaseService.select(any))
+        when(mockDatabaseService.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);

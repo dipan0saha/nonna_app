@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/tiles/recent_photos/providers/recent_photos_provider.dart';
@@ -33,7 +34,7 @@ void main() {
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
           .thenAnswer((_) async {});
-      when(mocks.database.select(any))
+      when(mocks.database.select(SupabaseTables.photos))
           .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mocks.realtime.subscribe(
         table: anyNamed('table'),
@@ -74,7 +75,7 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         // Start fetching
@@ -96,7 +97,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -122,7 +123,7 @@ void main() {
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
 
         // Verify database was not called
-        verifyNever(mocks.database.select(any));
+        verifyNever(mocks.database.select(SupabaseTables.photos));
 
         // Verify state updated from cache
         final state = container.read(recentPhotosProvider);
@@ -133,7 +134,7 @@ void main() {
       test('handles errors gracefully', () async {
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
+        when(mocks.database.select(SupabaseTables.photos)).thenThrow(Exception('Database error'));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -155,7 +156,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -165,7 +166,7 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mocks.database.select(any)).called(1);
+        verify(mocks.database.select(SupabaseTables.photos)).called(1);
         
         realtimeController.close();
       });
@@ -178,7 +179,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -202,14 +203,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
 
         final photo2 = samplePhoto.copyWith(id: 'photo_2');
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([photo2.toJson()]));
 
         await notifier.loadMore(babyProfileId: 'profile_1');
@@ -231,7 +232,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -253,7 +254,7 @@ void main() {
         await notifier.loadMore(babyProfileId: 'profile_1');
 
         // Verify database select was called for initial fetch only
-        verify(mocks.database.select(any)).called(1);
+        verify(mocks.database.select(SupabaseTables.photos)).called(1);
         
         realtimeController.close();
       });
@@ -267,7 +268,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -277,7 +278,7 @@ void main() {
 
         await notifier.loadMore(babyProfileId: 'profile_1');
 
-        verify(mocks.database.select(any)).called(1);
+        verify(mocks.database.select(SupabaseTables.photos)).called(1);
         
         realtimeController.close();
       });
@@ -293,14 +294,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
-        verify(mocks.database.select(any)).called(1);
+        verify(mocks.database.select(SupabaseTables.photos)).called(1);
         
         realtimeController.close();
       });
@@ -316,7 +317,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -345,7 +346,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
@@ -367,7 +368,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        when(mocks.database.select(SupabaseTables.photos))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container.read(recentPhotosProvider.notifier);
