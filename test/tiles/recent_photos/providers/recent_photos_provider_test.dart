@@ -7,7 +7,6 @@ import 'package:nonna_app/tiles/recent_photos/providers/recent_photos_provider.d
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
-import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('RecentPhotosProvider Tests', () {
@@ -31,7 +30,7 @@ void main() {
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mocks.realtime.subscribe(
@@ -222,6 +221,9 @@ void main() {
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
+
+        // Clear any previous interactions before testing loadMore
+        clearInteractions(mocks.database);
 
         // Set loading state by triggering a fetch that won't complete immediately
         when(mocks.cache.get(any)).thenAnswer((_) async {

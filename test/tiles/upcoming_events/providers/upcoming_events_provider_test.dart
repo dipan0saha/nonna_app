@@ -56,7 +56,7 @@ void main() {
       when(mockCacheService.isInitialized).thenReturn(true);
       when(mockCacheService.get(any)).thenAnswer((_) async => null);
       when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
 
       // Set up database mocks
       when(mockDatabaseService.select(any))

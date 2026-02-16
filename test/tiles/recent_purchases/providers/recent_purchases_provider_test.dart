@@ -29,6 +29,9 @@ void main() {
       mockDatabaseService = MockFactory.createDatabaseService();
       mockCacheService = MockFactory.createCacheService();
       mockRealtimeService = MockFactory.createRealtimeService();
+
+      // Setup default stub for cache service
+      when(mockCacheService.isInitialized).thenReturn(true);
     });
 
     ProviderContainer createContainer() {
