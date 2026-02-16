@@ -1,2 +1,23 @@
 Analyzing nonna_app...                                          
-No issues found! (ran in 2.0s)
+
+  error • The function 'StreamController' isn't defined • test/features/calendar/presentation/providers/calendar_screen_provider_test.dart:352:34 • undefined_function
+  error • The function 'StreamController' isn't defined • test/features/calendar/presentation/providers/calendar_screen_provider_test.dart:392:34 • undefined_function
+  error • The function 'StreamController' isn't defined • test/features/calendar/presentation/providers/calendar_screen_provider_test.dart:435:34 • undefined_function
+  error • Undefined name 'SupabaseTables' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:114:41 • undefined_identifier
+  error • Undefined name 'SupabaseTables' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:119:41 • undefined_identifier
+  error • Undefined name 'SupabaseTables' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:182:41 • undefined_identifier
+  error • Undefined name 'SupabaseTables' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:187:41 • undefined_identifier
+  error • Undefined name 'SupabaseTables' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:209:41 • undefined_identifier
+  error • Undefined name 'SupabaseTables' • test/features/registry/presentation/providers/registry_screen_provider_test.dart:214:41 • undefined_identifier
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:91:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:150:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:173:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:197:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:226:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:262:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:288:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:311:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:340:36 • creation_with_non_type
+  error • The name 'StreamController' isn't a class • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:362:36 • creation_with_non_type
+  error • Undefined name 'realtimeController' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:158:9 • undefined_identifier
+
