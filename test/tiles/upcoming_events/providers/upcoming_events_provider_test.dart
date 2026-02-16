@@ -154,8 +154,6 @@ void main() {
         // Verify state updated from cache
         expect(state.events, hasLength(1));
         expect(state.events.first.id, equals('event_1'));
-        
-        realtimeController.close();
       });
 
       test('handles errors gracefully', () async {

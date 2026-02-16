@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/models/registry_purchase.dart';
