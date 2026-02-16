@@ -6,7 +6,9 @@ import '../../../helpers/mock_factory.dart';
 
 void main() {
   group('GalleryFavoritesProvider Tests', () {
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockRealtimeService mockRealtimeService;
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();

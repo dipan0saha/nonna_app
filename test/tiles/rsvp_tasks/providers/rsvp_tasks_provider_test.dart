@@ -13,7 +13,9 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('RSVPTasksProvider Tests', () {
     late ProviderContainer container;
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockRealtimeService mockRealtimeService;
 
     // Sample event and RSVP data
     final sampleEvent = Event(

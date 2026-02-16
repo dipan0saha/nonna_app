@@ -11,7 +11,9 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('RegistryDealsProvider Tests', () {
     late ProviderContainer container;
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockRealtimeService mockRealtimeService;
 
     // Sample registry deal data
     final sampleDeal = RegistryItem(

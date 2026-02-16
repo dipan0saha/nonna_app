@@ -12,7 +12,9 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('NotificationsProvider Tests', () {
     late ProviderContainer container;
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockRealtimeService mockRealtimeService;
 
     // Sample notification data
     final sampleNotification = app_notification.Notification(

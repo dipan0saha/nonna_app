@@ -10,7 +10,9 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('StorageUsageProvider Tests', () {
     late ProviderContainer container;
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockRealtimeService mockRealtimeService;
 
     // Sample storage usage data
     final sampleStorageInfo = StorageUsageInfo(

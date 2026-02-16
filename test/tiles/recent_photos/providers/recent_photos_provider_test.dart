@@ -11,7 +11,9 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('RecentPhotosProvider Tests', () {
     late ProviderContainer container;
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockRealtimeService mockRealtimeService;
 
     // Sample photo data
     final samplePhoto = Photo(

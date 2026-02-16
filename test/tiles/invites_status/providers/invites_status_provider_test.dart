@@ -12,7 +12,9 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('InvitesStatusProvider Tests', () {
     late ProviderContainer container;
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockRealtimeService mockRealtimeService;
 
     // Sample invitation data
     final sampleInvitation = Invitation(

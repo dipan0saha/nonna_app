@@ -1,2 +1,654 @@
 Analyzing nonna_app...                                          
-No issues found! (ran in 2.2s)
+
+  error • Undefined class 'MockDatabaseService' • test/tiles/core/providers/tile_config_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/core/providers/tile_config_provider_test.dart:15:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/core/providers/tile_config_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/core/providers/tile_config_provider_test.dart:16:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/core/providers/tile_config_provider_test.dart:17:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/core/providers/tile_config_provider_test.dart:17:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:32:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:34:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:39:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:40:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:61:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:62:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:81:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:82:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:84:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:103:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:113:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:123:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:124:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:141:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:143:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:145:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:156:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:169:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:170:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:172:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:202:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:203:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:205:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:235:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:236:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:238:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:263:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:264:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:266:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:267:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:274:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:283:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:294:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:295:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:297:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/core/providers/tile_config_provider_test.dart:307:16 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:14:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:14:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:15:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:16:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:28:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:31:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:32:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:33:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:34:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:35:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:37:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:42:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:42:66 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:46:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:47:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:48:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:55:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:56:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:57:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:72:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:73:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:91:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:92:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:97:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:128:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:134:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:144:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:145:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:165:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:166:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:171:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:181:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:189:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:190:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:195:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:212:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:213:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:218:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:232:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:233:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:238:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:262:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:263:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:268:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:275:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:282:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:283:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:288:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:329:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:339:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:340:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:345:14 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:9:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:9:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:10:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:10:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:11:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:11:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:14:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:15:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:16:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:17:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:18:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:19:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:24:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:25:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:39:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:42:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:80:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:87:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:88:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:102:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:103:14 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:9:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:9:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:10:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:10:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:11:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:11:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:14:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:15:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:16:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:17:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:18:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:19:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:21:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:26:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:26:66 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:30:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:31:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:32:13 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/invites_status/providers/invites_status_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/invites_status/providers/invites_status_provider_test.dart:15:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/invites_status/providers/invites_status_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/invites_status/providers/invites_status_provider_test.dart:16:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/invites_status/providers/invites_status_provider_test.dart:17:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/invites_status/providers/invites_status_provider_test.dart:17:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:33:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:34:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:35:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:36:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/invites_status/providers/invites_status_provider_test.dart:37:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:38:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:40:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:45:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/invites_status/providers/invites_status_provider_test.dart:45:66 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:50:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:51:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:52:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:59:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:60:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:61:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:80:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:81:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:98:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:99:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:104:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:123:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:129:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:142:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:143:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:159:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:161:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:166:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:175:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:188:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:189:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:194:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:211:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:213:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:218:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:224:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:233:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:234:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:239:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:264:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:265:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:270:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:297:14 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/invites_status/providers/invites_status_provider_test.dart:297:68 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:308:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:309:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/invites_status/providers/invites_status_provider_test.dart:314:14 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/notifications/providers/notifications_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/notifications/providers/notifications_provider_test.dart:15:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/notifications/providers/notifications_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/notifications/providers/notifications_provider_test.dart:16:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/notifications/providers/notifications_provider_test.dart:17:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/notifications/providers/notifications_provider_test.dart:17:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:30:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:31:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:32:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:33:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/notifications/providers/notifications_provider_test.dart:34:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:35:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:37:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:39:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:44:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/notifications/providers/notifications_provider_test.dart:44:66 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:49:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:50:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:51:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:58:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:59:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:60:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:79:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:80:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:96:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:97:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:102:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:120:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:126:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:138:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:139:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:154:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:156:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:161:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:170:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:181:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:182:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:187:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:206:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:207:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:212:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:217:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:226:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:240:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:241:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:246:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:250:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:259:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:271:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:272:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:277:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:284:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:290:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:305:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:307:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:312:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:318:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:327:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:328:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:333:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/notifications/providers/notifications_provider_test.dart:354:14 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/notifications/providers/notifications_provider_test.dart:354:68 • body_might_complete_normally_nullable
+  error • Undefined class 'MockDatabaseService' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:14:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:14:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:15:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:16:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:31:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:32:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:33:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:34:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:35:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:36:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:38:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:43:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:43:66 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:47:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:48:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:49:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:56:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:57:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:58:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:76:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:77:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:92:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:93:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:98:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:115:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:122:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:132:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:133:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:147:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:149:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:154:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:164:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:168:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:169:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:174:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:181:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:189:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:190:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:195:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:202:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:215:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:216:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:221:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:228:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:240:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:245:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:246:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:251:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:261:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:267:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:269:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:274:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:281:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:288:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:289:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:294:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:314:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:315:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:320:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:333:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:334:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:339:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:354:14 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:354:68 • body_might_complete_normally_nullable
+  error • Undefined class 'MockDatabaseService' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:14:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:14:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:15:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:16:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:31:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:34:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:35:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:36:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:37:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:38:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:42:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:47:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:47:66 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:51:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:52:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:53:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:60:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:61:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:62:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:77:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:79:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:91:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:92:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:107:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:114:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:123:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:124:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:137:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:139:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:151:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:155:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:156:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:163:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:172:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:173:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:192:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:193:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:210:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:212:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:220:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:230:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:231:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:247:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:248:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:271:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:272:14 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:14:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:14:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:15:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:16:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:32:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:33:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:34:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:35:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:36:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:37:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:44:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:45:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:52:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:53:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:69:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:70:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:86:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:87:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:108:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:114:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:124:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:125:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:144:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:145:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:155:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:159:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:160:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:167:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:176:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:177:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:202:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:203:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:210:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:216:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:217:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:229:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:230:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:252:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:253:14 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:16:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:17:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:17:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:18:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:18:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:44:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:45:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:46:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:47:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:48:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:49:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:51:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:52:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:57:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:57:66 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:61:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:62:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:63:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:70:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:71:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:72:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:88:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:90:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:105:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:106:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:111:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:134:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:143:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:152:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:153:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:174:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:175:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:180:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:193:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:197:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:198:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:203:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:220:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:221:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:226:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:236:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:252:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:253:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:258:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:269:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:276:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:277:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:282:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:300:14 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:300:68 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:308:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:309:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:314:14 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:13:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:13:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:14:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:14:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:15:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:28:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:29:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:30:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:31:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:32:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:33:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:38:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:39:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:46:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:47:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:63:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:64:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:79:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:80:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:100:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:107:21 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:117:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:118:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:132:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:134:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:146:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:150:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:151:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:160:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:165:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:166:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:182:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:184:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:193:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:249:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:269:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:282:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:283:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:300:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:301:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:315:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:316:14 • undefined_identifier
+  error • Undefined class 'MockDatabaseService' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:14:10 • undefined_class
+warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:14:30 • unused_local_variable
+  error • Undefined class 'MockCacheService' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:15:10 • undefined_class
+warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:15:27 • unused_local_variable
+  error • Undefined class 'MockRealtimeService' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:16:10 • undefined_class
+warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:16:30 • unused_local_variable
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:28:7 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:29:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:30:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:31:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:32:33 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:33:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:35:12 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:40:12 • undefined_identifier
+warning • This function has a nullable return type of 'FutureOr<Object?>', but ends without returning a value • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:40:66 • body_might_complete_normally_nullable
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:44:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:45:50 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:46:53 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:53:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:54:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:55:13 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:80:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:103:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:128:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:154:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:192:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:239:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:274:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:275:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:282:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:289:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:291:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:325:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:327:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:340:16 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:361:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:363:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:403:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:421:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:423:14 • undefined_identifier
+  error • Undefined name 'mocks' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:480:14 • undefined_identifier
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:77:32 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:77:33 • undefined_function
+  error • The getter 'events' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:78:22 • undefined_getter
+  error • The getter 'isLoading' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:79:22 • undefined_getter
+  error • The getter 'error' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:80:22 • undefined_getter
+  error • The getter 'hasMore' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:81:22 • undefined_getter
+  error • The getter 'currentPage' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:82:22 • undefined_getter
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:93:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:93:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:96:38 • undefined_method
+  error • Expected to find ',' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:102:26 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:102:26 • undefined_function
+  error • Too many positional arguments: 2 expected, but 3 found • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:102:66 • extra_positional_arguments_could_be_named
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:117:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:117:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:119:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:124:32 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:124:33 • undefined_function
+  error • The getter 'events' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:126:22 • undefined_getter
+  error • The getter 'events' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:127:22 • undefined_getter
+  error • The getter 'isLoading' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:128:22 • undefined_getter
+  error • The getter 'error' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:129:22 • undefined_getter
+  error • The getter 'currentPage' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:130:22 • undefined_getter
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:137:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:137:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:139:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:147:32 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:147:33 • undefined_function
+  error • The getter 'events' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:149:22 • undefined_getter
+  error • The getter 'events' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:150:22 • undefined_getter
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:157:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:157:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:159:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:164:32 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:164:33 • undefined_function
+  error • The getter 'isLoading' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:166:22 • undefined_getter
+  error • The getter 'error' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:167:22 • undefined_getter
+  error • The getter 'events' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:168:22 • undefined_getter
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:182:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:182:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:184:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:203:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:203:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:205:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:227:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:227:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:229:24 • undefined_method
+  error • The method 'loadMore' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:239:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:241:32 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:241:33 • undefined_function
+  error • The getter 'events' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:243:22 • undefined_getter
+  error • The getter 'currentPage' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:244:22 • undefined_getter
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:257:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:257:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:259:24 • undefined_method
+  error • The setter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:265:18 • undefined_setter
+  error • The getter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:265:35 • undefined_getter
+  error • The method 'loadMore' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:267:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:283:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:283:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:285:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:290:32 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:290:33 • undefined_function
+  error • The getter 'hasMore' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:292:22 • undefined_getter
+  error • The method 'loadMore' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:294:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:312:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:312:36 • undefined_function
+  error • 1 positional argument expected by 'refresh', but 0 found • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:315:11 • not_enough_positional_arguments
+  error • The named parameter 'babyProfileId' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:315:11 • undefined_named_parameter
+  error • The named parameter 'role' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:316:11 • undefined_named_parameter
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:336:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:336:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:338:24 • undefined_method
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:344:22 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:344:23 • undefined_function
+  error • The setter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:349:18 • undefined_setter
+  error • The getter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:349:35 • undefined_getter
+  error • The getter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:350:42 • undefined_getter
+  error • Expected to find ',' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:353:26 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:353:26 • undefined_function
+  error • Too many positional arguments: 2 expected, but 3 found • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:354:13 • extra_positional_arguments_could_be_named
+  error • The operator '+' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:354:33 • undefined_operator
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:366:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:366:36 • undefined_function
+  error • The await expression can only be used in an async function • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:368:9 • await_in_wrong_context
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:368:24 • undefined_method
+  error • The setter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:375:18 • undefined_setter
+  error • The getter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:375:35 • undefined_getter
+  error • The getter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:376:28 • undefined_getter
+  error • Expected to find ',' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:381:26 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:381:26 • undefined_function
+  error • Too many positional arguments: 2 expected, but 3 found • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:382:13 • extra_positional_arguments_could_be_named
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:395:35 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:395:36 • undefined_function
+  error • The method 'fetchEvents' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:397:24 • undefined_method
+  error • Expected to find ',' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:402:26 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:402:26 • undefined_function
+  error • Too many positional arguments: 2 expected, but 3 found • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:402:63 • extra_positional_arguments_could_be_named
+  error • The setter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:405:18 • undefined_setter
+  error • The getter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:405:35 • undefined_getter
+  error • The getter 'state' isn't defined for the type 'ProviderContainer' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:407:24 • undefined_getter
+  error • Expected to find ',' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:410:26 • expected_token
+  error • The function 'read' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:410:26 • undefined_function
+  error • Too many positional arguments: 2 expected, but 3 found • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:410:63 • extra_positional_arguments_could_be_named
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:418:18 • expected_token
+  error • The function 'dispose' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:418:19 • undefined_function
+  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:428:1 • expected_token
+  error • Expected to find ')' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:429:1 • expected_token
+  error • Expected to find '}' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:429:1 • expected_token
+

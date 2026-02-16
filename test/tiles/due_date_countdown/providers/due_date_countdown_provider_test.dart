@@ -11,7 +11,9 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('DueDateCountdownProvider Tests', () {
     late ProviderContainer container;
-    late MockServiceContainer mocks;
+    late MockDatabaseService mockDatabaseService;
+    late MockCacheService mockCacheService;
+    late MockRealtimeService mockRealtimeService;
 
     // Sample baby profile data
     final sampleProfile = BabyProfile(
