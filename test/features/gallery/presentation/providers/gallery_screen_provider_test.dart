@@ -13,10 +13,31 @@ import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('GalleryScreenNotifier Tests', () {
-    late ProviderContainer container;
+    late ProviderContainer? container;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
+
+    ProviderContainer createContainer() {
+      // Reset realtime service to ensure clean state
+      reset(mockRealtimeService);
+
+      // Setup realtime stubs before creating container since provider subscribes during build
+      when(mockRealtimeService.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
+
+      return ProviderContainer(
+        overrides: [
+          databaseServiceProvider.overrideWithValue(mockDatabaseService),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+        ],
+      );
+    }
 
     final samplePhoto = Photo(
       id: 'photo_1',
@@ -42,33 +63,11 @@ void main() {
           .thenAnswer((_) async {});
       when(mockDatabaseService.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
-      // Setup default realtime service stubs
-      when(mockRealtimeService.subscribe(
-        table: anyNamed('table'),
-        channelName: anyNamed('channelName'),
-        filter: anyNamed('filter'),
-      )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
-
-      // Create container AFTER all default mocks are setup
-      container = ProviderContainer(
-        overrides: [
-          databaseServiceProvider.overrideWithValue(mockDatabaseService),
-          cacheServiceProvider.overrideWithValue(mockCacheService),
-          realtimeServiceProvider.overrideWithValue(mockRealtimeService),
-        ],
-      );
     });
 
     tearDown(() {
-      container.dispose();
-      reset(mockDatabaseService);
-      reset(mockCacheService);
-      reset(mockRealtimeService);
-    });
-
-    tearDown(() {
-      container.dispose();
+      container?.dispose();
+      container = null;
       reset(mockDatabaseService);
       reset(mockCacheService);
       reset(mockRealtimeService);
@@ -76,7 +75,16 @@ void main() {
 
     group('Initial State', () {
       test('initial state has empty photos', () {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = ProviderContainer(
+          overrides: [
+            databaseServiceProvider.overrideWithValue(mockDatabaseService),
+            cacheServiceProvider.overrideWithValue(mockCacheService),
+            realtimeServiceProvider.overrideWithValue(mockRealtimeService),
+          ],
+        );
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         expect(notifier.state.photos, isEmpty);
         expect(notifier.state.isLoading, isFalse);
         expect(notifier.state.isLoadingMore, isFalse);
@@ -89,10 +97,21 @@ void main() {
 
     group('loadPhotos', () {
       test('sets loading state while fetching', () async {
+        // Setup realtime stubs for this test
+        when(mockRealtimeService.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
+
+        // Create container after setting up mocks
+        container = createContainer();
+
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         final future = notifier.loadPhotos(babyProfileId: 'profile_1');
 
         expect(notifier.state.isLoading, isTrue);
@@ -100,11 +119,14 @@ void main() {
       });
 
       test('loads photos from cache when available', () async {
+        // Create container for this test
+        container = createContainer();
+
         when(mockCacheService.get(any)).thenAnswer((_) async => [
               samplePhoto.toJson(),
             ]);
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         expect(notifier.state.photos, hasLength(1));
@@ -114,10 +136,13 @@ void main() {
       });
 
       test('fetches photos from database when cache is empty', () async {
+        // Create container for this test
+        container = createContainer();
+
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         expect(notifier.state.photos, hasLength(1));
@@ -133,22 +158,25 @@ void main() {
         );
 
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
-            .thenReturn(
+            .thenAnswer((_) =>
                 FakePostgrestBuilder(photos.map((p) => p.toJson()).toList()));
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         expect(notifier.state.hasMore, isTrue);
       });
 
       test('force refresh bypasses cache', () async {
+        // Create container for this test
+        container = createContainer();
+
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(
           babyProfileId: 'profile_1',
           forceRefresh: true,
@@ -158,10 +186,13 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        // Create container for this test
+        container = createContainer();
+
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         expect(notifier.state.isLoading, isFalse);
@@ -170,10 +201,13 @@ void main() {
       });
 
       test('sets up real-time subscription', () async {
+        // Create container for this test
+        container = createContainer();
+
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         verify(mockRealtimeService.subscribe(
@@ -186,7 +220,10 @@ void main() {
 
     group('loadMore', () {
       test('loads more photos for pagination', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           photos: [samplePhoto],
           selectedBabyProfileId: 'profile_1',
@@ -207,7 +244,10 @@ void main() {
       });
 
       test('does not load more when already loading', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           isLoadingMore: true,
           selectedBabyProfileId: 'profile_1',
@@ -221,7 +261,10 @@ void main() {
       });
 
       test('does not load more when hasMore is false', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           hasMore: false,
           selectedBabyProfileId: 'profile_1',
@@ -234,7 +277,10 @@ void main() {
       });
 
       test('does not load more when babyProfileId is null', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadMore();
 
         verifyNever(
@@ -242,7 +288,10 @@ void main() {
       });
 
       test('handles load more error', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           photos: [samplePhoto],
           selectedBabyProfileId: 'profile_1',
@@ -261,7 +310,10 @@ void main() {
 
     group('Filtering', () {
       test('filterByTag loads filtered photos', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
         );
@@ -278,7 +330,10 @@ void main() {
       });
 
       test('clearFilters resets filter and reloads', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
           currentFilter: GalleryFilter.byTag,
@@ -297,7 +352,10 @@ void main() {
 
     group('refresh', () {
       test('refreshes photos with force refresh', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         notifier.state = notifier.state.copyWith(
           selectedBabyProfileId: 'profile_1',
         );
@@ -311,7 +369,10 @@ void main() {
       });
 
       test('does not refresh when baby profile is missing', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.refresh();
 
         verifyNever(
@@ -321,14 +382,16 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
+        // Create container for this test
         final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
+        container = createContainer();
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         final initialCount = notifier.state.photos.length;
@@ -350,14 +413,16 @@ void main() {
       });
 
       test('handles UPDATE event', () async {
+        // Create container for this test
         final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
+        container = createContainer();
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         // Simulate UPDATE
@@ -375,14 +440,16 @@ void main() {
       });
 
       test('handles DELETE event', () async {
+        // Create container for this test
         final streamController = StreamController<Map<String, dynamic>>();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
+        container = createContainer();
 
-        final notifier = container.read(galleryScreenProvider.notifier);
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         expect(notifier.state.photos, hasLength(1));
@@ -403,11 +470,14 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () async {
-        final notifier = container.read(galleryScreenProvider.notifier);
+        // Create container for this test
+        container = createContainer();
+
+        final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadPhotos(babyProfileId: 'profile_1');
 
         // Dispose the container to trigger provider disposal
-        container.dispose();
+        container!.dispose();
 
         // The subscription manager should have cancelled the subscription
         // This is verified by the debug logs showing "✅ Realtime subscription cancelled"

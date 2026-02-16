@@ -36,10 +36,19 @@ void main() {
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
 
+      // Add realtime service stubs
+      when(mocks.realtime.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
+
       container = ProviderContainer(
         overrides: [
           databaseServiceProvider.overrideWithValue(mocks.database),
           cacheServiceProvider.overrideWithValue(mocks.cache),
+          realtimeServiceProvider.overrideWithValue(mocks.realtime),
         ],
       );
     });
@@ -48,6 +57,7 @@ void main() {
       container.dispose();
       reset(mocks.database);
       reset(mocks.cache);
+      reset(mocks.realtime);
     });
 
     group('Initial State', () {

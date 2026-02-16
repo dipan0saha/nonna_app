@@ -28,6 +28,14 @@ void main() {
       mocks = MockFactory.createServiceContainer();
       when(mocks.cache.isInitialized).thenReturn(true);
 
+      // Add default realtime service stubs
+      when(mocks.realtime.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
+
       container = ProviderContainer(
         overrides: [
           databaseServiceProvider.overrideWithValue(mocks.database),
@@ -39,6 +47,7 @@ void main() {
 
     tearDown(() {
       container.dispose();
+      reset(mocks.realtime);
     });
 
     group('Initial State', () {
