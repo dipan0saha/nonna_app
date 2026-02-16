@@ -7,7 +7,6 @@ import 'package:nonna_app/tiles/due_date_countdown/providers/due_date_countdown_
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
-import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('DueDateCountdownProvider Tests', () {
@@ -30,7 +29,7 @@ void main() {
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mocks.realtime.subscribe(

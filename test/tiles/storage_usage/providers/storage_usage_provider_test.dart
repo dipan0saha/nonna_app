@@ -6,7 +6,6 @@ import 'package:nonna_app/tiles/storage_usage/providers/storage_usage_provider.d
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
-import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('StorageUsageProvider Tests', () {
@@ -28,7 +27,7 @@ void main() {
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
 

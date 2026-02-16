@@ -7,7 +7,6 @@ import 'package:nonna_app/tiles/registry_deals/providers/registry_deals_provider
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
-import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('RegistryDealsProvider Tests', () {
@@ -33,7 +32,7 @@ void main() {
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async => null);
+          .thenAnswer((_) async {});
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
 
