@@ -349,7 +349,22 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
-        final streamController = Stream.value(<String, dynamic>{
+        final streamController = StreamController<Map<String, dynamic>>();
+        
+        when(mockRealtimeService.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => streamController.stream);
+
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
+
+        final notifier = container.read(calendarScreenProvider.notifier);
+        await notifier.loadEvents(babyProfileId: 'profile_1');
+
+        // Emit the event
+        streamController.add(<String, dynamic>{
           'eventType': 'INSERT',
           'new': {
             'id': 'event_2',
@@ -362,11 +377,25 @@ void main() {
           },
         });
 
+        // Wait for stream to be processed
+        await Future.delayed(const Duration(milliseconds: 100));
+        
+        // Check state before disposing
+        final eventCount = notifier.state.events.length;
+        expect(eventCount, equals(2));
+        
+        // Clean up
+        await streamController.close();
+      });
+
+      test('handles UPDATE event', () async {
+        final streamController = StreamController<Map<String, dynamic>>();
+        
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => streamController);
+        )).thenAnswer((_) => streamController.stream);
 
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
@@ -374,14 +403,8 @@ void main() {
         final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
 
-        // Wait for stream to emit
-        await Future.delayed(const Duration(milliseconds: 100));
-
-        expect(notifier.state.events.length, equals(2));
-      });
-
-      test('handles UPDATE event', () async {
-        final streamController = Stream.value(<String, dynamic>{
+        // Emit the event
+        streamController.add(<String, dynamic>{
           'eventType': 'UPDATE',
           'new': {
             'id': 'event_1',
@@ -397,35 +420,25 @@ void main() {
           },
         });
 
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => streamController);
-
-        when(mockDatabaseService.select(any))
-            .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
-
-        final notifier = container.read(calendarScreenProvider.notifier);
-        await notifier.loadEvents(babyProfileId: 'profile_1');
-
-        // Wait for stream to emit
+        // Wait for stream to be processed
         await Future.delayed(const Duration(milliseconds: 100));
-
-        expect(notifier.state.events.first.title, equals('Updated Event'));
+        
+        // Check state before disposing
+        final eventTitle = notifier.state.events.first.title;
+        expect(eventTitle, equals('Updated Event'));
+        
+        // Clean up
+        await streamController.close();
       });
 
       test('handles DELETE event', () async {
-        final streamController = Stream.value(<String, dynamic>{
-          'eventType': 'DELETE',
-          'old': {'id': 'event_1'},
-        });
-
+        final streamController = StreamController<Map<String, dynamic>>();
+        
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => streamController);
+        )).thenAnswer((_) => streamController.stream);
 
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
@@ -435,10 +448,21 @@ void main() {
 
         expect(notifier.state.events, hasLength(1));
 
-        // Wait for stream to emit
-        await Future.delayed(const Duration(milliseconds: 100));
+        // Emit the event
+        streamController.add(<String, dynamic>{
+          'eventType': 'DELETE',
+          'old': {'id': 'event_1'},
+        });
 
-        expect(notifier.state.events, isEmpty);
+        // Wait for stream to be processed
+        await Future.delayed(const Duration(milliseconds: 100));
+        
+        // Check state before disposing
+        final events = notifier.state.events;
+        expect(events, isEmpty);
+        
+        // Clean up
+        await streamController.close();
       });
     });
 

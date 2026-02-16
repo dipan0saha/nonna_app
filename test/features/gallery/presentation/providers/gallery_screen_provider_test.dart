@@ -152,6 +152,9 @@ void main() {
       });
 
       test('sets hasMore based on page size', () async {
+        // Create container for this test
+        container = createContainer();
+        
         final photos = List.generate(
           30,
           (i) => samplePhoto.copyWith(id: 'photo_$i'),
@@ -406,10 +409,13 @@ void main() {
 
         await Future.delayed(const Duration(milliseconds: 100));
 
-        expect(notifier.state.photos.length, equals(initialCount + 1));
-        expect(notifier.state.photos.first.id, equals('photo_2'));
+        final photosLength = notifier.state.photos.length;
+        final firstPhotoId = notifier.state.photos.first.id;
 
-        streamController.close();
+        expect(photosLength, equals(initialCount + 1));
+        expect(firstPhotoId, equals('photo_2'));
+
+        await streamController.close();
       });
 
       test('handles UPDATE event', () async {
@@ -434,9 +440,11 @@ void main() {
 
         await Future.delayed(const Duration(milliseconds: 100));
 
-        expect(notifier.state.photos.first.caption, equals('Updated photo'));
+        final firstPhotoCaption = notifier.state.photos.first.caption;
 
-        streamController.close();
+        expect(firstPhotoCaption, equals('Updated photo'));
+
+        await streamController.close();
       });
 
       test('handles DELETE event', () async {
@@ -462,9 +470,11 @@ void main() {
 
         await Future.delayed(const Duration(milliseconds: 100));
 
-        expect(notifier.state.photos, isEmpty);
+        final photosAfterDelete = notifier.state.photos;
 
-        streamController.close();
+        expect(photosAfterDelete, isEmpty);
+
+        await streamController.close();
       });
     });
 
