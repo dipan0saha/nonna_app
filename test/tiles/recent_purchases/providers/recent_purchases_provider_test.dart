@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -72,6 +74,8 @@ void main() {
         container = createContainer();
 
         // Setup mock to delay response
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         // Using thenReturn for FakePostgrestBuilder which implements then() for async
         when(mockDatabaseService.select(any))
@@ -88,6 +92,8 @@ void main() {
         container = createContainer();
 
         // Setup mocks
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
@@ -124,6 +130,8 @@ void main() {
         container = createContainer();
 
         // Setup mock to throw error
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
@@ -141,6 +149,8 @@ void main() {
         container = createContainer();
 
         // Setup mocks
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
         when(mockDatabaseService.select(any))
@@ -186,6 +196,8 @@ void main() {
           ),
         );
 
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any)).thenReturn(
           FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
@@ -219,9 +231,18 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles INSERT purchase', () async {
+        final streamController = StreamController<Map<String, dynamic>>();
+        when(mockRealtimeService.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => streamController.stream);
+        
         container = createContainer();
 
         // Setup initial state
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
@@ -232,14 +253,24 @@ void main() {
         final initialCount =
             container!.read(recentPurchasesProvider).purchases.length;
 
-        // Verify real-time setup occurred
         expect(initialCount, greaterThanOrEqualTo(0));
+
+        await streamController.close();
       });
 
       test('handles UPDATE purchase', () async {
+        final streamController = StreamController<Map<String, dynamic>>();
+        when(mockRealtimeService.subscribe(
+          table: anyNamed('table'),
+          channelName: anyNamed('channelName'),
+          filter: anyNamed('filter'),
+        )).thenAnswer((_) => streamController.stream);
+        
         container = createContainer();
 
         // Setup initial state
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
@@ -248,7 +279,11 @@ void main() {
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
 
         final state = container!.read(recentPurchasesProvider);
-        expect(state.purchases.isNotEmpty, isTrue);
+        final isNotEmpty = state.purchases.isNotEmpty;
+        
+        expect(isNotEmpty, isTrue);
+
+        await streamController.close();
       });
     });
 
@@ -281,6 +316,8 @@ void main() {
           createdAt: DateTime.now(),
         );
 
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([

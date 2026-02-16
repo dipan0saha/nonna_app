@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -78,6 +80,9 @@ void main() {
         container = createContainer();
 
         // Setup mock to delay response
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -97,7 +102,10 @@ void main() {
         container = createContainer();
 
         // Setup mocks
+        when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -114,7 +122,12 @@ void main() {
       });
 
       test('loads followers from cache when available', () async {
+        container = createContainer();
+
         // Setup cache to return data
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
 
@@ -132,7 +145,12 @@ void main() {
       });
 
       test('handles errors gracefully', () async {
+        container = createContainer();
+
         // Setup mock to throw error
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(any))
             .thenThrow(Exception('Database error'));
@@ -149,7 +167,12 @@ void main() {
       });
 
       test('force refresh bypasses cache', () async {
+        container = createContainer();
+
         // Setup mocks
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
         when(mockRealtimeService.subscribe(
@@ -170,11 +193,16 @@ void main() {
       });
 
       test('filters only recent followers', () async {
+        container = createContainer();
+
         final recentFollower = sampleFollower.copyWith(
           userId: 'user_1',
           createdAt: DateTime.now().subtract(const Duration(days: 3)),
         );
 
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -195,6 +223,11 @@ void main() {
       });
 
       test('saves fetched followers to cache', () async {
+        container = createContainer();
+
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -215,6 +248,8 @@ void main() {
       });
 
       test('limits to recent followers only', () async {
+        container = createContainer();
+
         // Create 30 followers
         final followers = List.generate(
           30,
@@ -224,6 +259,9 @@ void main() {
           ),
         );
 
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -246,6 +284,11 @@ void main() {
 
     group('refresh', () {
       test('refreshes followers with force refresh', () async {
+        container = createContainer();
+
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
         when(mockRealtimeService.subscribe(
@@ -267,15 +310,21 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles new follower', () async {
+        final streamController = StreamController<Map<String, dynamic>>();
         // Setup initial state
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
+        )).thenAnswer((_) => streamController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
+
+        container = createContainer();
 
         await container!
             .read(newFollowersProvider.notifier)
@@ -284,35 +333,47 @@ void main() {
         final initialCount =
             container!.read(newFollowersProvider).followers.length;
 
-        // Note: Real-time updates are handled internally by the provider
-        // and cannot be easily tested with direct state manipulation
         expect(initialCount, equals(1));
+
+        await streamController.close();
       });
 
       test('handles follower removed', () async {
+        final streamController = StreamController<Map<String, dynamic>>();
         // Setup initial state
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
+        )).thenAnswer((_) => streamController.stream);
         when(mockDatabaseService.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
+
+        container = createContainer();
 
         await container!
             .read(newFollowersProvider.notifier)
             .fetchFollowers(babyProfileId: 'profile_1');
 
-        expect(container!.read(newFollowersProvider).followers, hasLength(1));
+        final followersLength = container!.read(newFollowersProvider).followers.length;
 
-        // Note: Real-time updates are handled internally by the provider
-        // and cannot be easily tested with direct state manipulation
+        expect(followersLength, equals(1));
+
+        await streamController.close();
       });
     });
 
     group('Time Period Options', () {
       test('supports 7-day period', () async {
+        container = createContainer();
+
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -330,6 +391,11 @@ void main() {
       });
 
       test('supports 30-day period', () async {
+        container = createContainer();
+
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
@@ -349,6 +415,8 @@ void main() {
 
     group('Sorting', () {
       test('sorts followers by date (newest first)', () async {
+        container = createContainer();
+
         final follower1 = sampleFollower.copyWith(
           userId: 'user_1',
           createdAt: DateTime.now().subtract(const Duration(days: 3)),
@@ -362,6 +430,9 @@ void main() {
           createdAt: DateTime.now().subtract(const Duration(days: 1)),
         );
 
+        when(mockCacheService.isInitialized).thenReturn(true);
+        when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+            .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
