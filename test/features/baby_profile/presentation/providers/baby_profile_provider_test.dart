@@ -721,13 +721,27 @@ void main() {
           currentUserId: 'user_1',
         );
 
-        final initialLoadCount =
-            verify(mockDatabaseService.select(any)).callCount;
+        // Clear interactions and reset the mock to allow new calls
+        clearInteractions(mockDatabaseService);
+        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .thenAnswer((_) {
+          callCount++;
+          if (callCount == 1 || callCount == 4) {
+            return FakePostgrestBuilder([sampleProfile.toJson()]);
+          } else if (callCount == 2 ||
+              callCount == 3 ||
+              callCount == 5 ||
+              callCount == 6) {
+            return FakePostgrestBuilder([sampleMembership.toJson()]);
+          } else {
+            return FakePostgrestBuilder([]);
+          }
+        });
 
         await notifier.refresh('baby_1', 'user_1');
 
-        expect(verify(mockDatabaseService.select(any)).callCount,
-            greaterThan(initialLoadCount));
+        // Verify database was called during refresh
+        verify(mockDatabaseService.select(any)).called(greaterThan(0));
       });
     });
   });

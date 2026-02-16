@@ -169,6 +169,9 @@ void main() {
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
+        // Clear interactions before the operation we're testing
+        clearInteractions(mocks.database);
+
         final notifier = container.read(dueDateCountdownProvider.notifier);
         await notifier.fetchCountdowns(
           babyProfileIds: ['profile_1'],
@@ -265,6 +268,9 @@ void main() {
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
+
+        // Clear interactions before the operation we're testing
+        clearInteractions(mocks.database);
 
         final notifier = container.read(dueDateCountdownProvider.notifier);
         await notifier.refresh(babyProfileIds: ['profile_1']);

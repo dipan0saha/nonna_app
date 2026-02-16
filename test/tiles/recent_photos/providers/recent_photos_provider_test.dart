@@ -222,6 +222,9 @@ void main() {
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
 
+        // Clear any previous interactions before testing loadMore
+        clearInteractions(mocks.database);
+
         // Set loading state by triggering a fetch that won't complete immediately
         when(mocks.cache.get(any)).thenAnswer((_) async {
           await Future.delayed(const Duration(seconds: 1));
