@@ -1,27 +1,2 @@
 Analyzing nonna_app...                                          
-
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/core/providers/tile_config_provider_test.dart:11:8 • unused_import
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:10:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:33:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:6:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:17:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:6:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:17:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/invites_status/providers/invites_status_provider_test.dart:11:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/invites_status/providers/invites_status_provider_test.dart:36:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/notifications/providers/notifications_provider_test.dart:11:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/notifications/providers/notifications_provider_test.dart:33:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:10:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:34:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:10:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:36:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:10:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:35:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:12:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:47:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:9:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:31:27 • avoid_returning_null_for_void
-warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:10:8 • unused_import
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:31:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:59:27 • avoid_returning_null_for_void
-
+No issues found! (ran in 2.0s)
