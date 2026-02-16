@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/tiles/registry_deals/providers/registry_deals_provider.dart';
@@ -73,8 +74,13 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        // Using thenReturn for FakePostgrestBuilder which implements then() for async
-        when(mocks.database.select(any))
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
@@ -87,8 +93,14 @@ void main() {
       test('fetches deals from database when cache is empty', () async {
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -119,7 +131,8 @@ void main() {
       test('handles errors gracefully', () async {
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
+        when(mocks.database.select(SupabaseTables.registryItems))
+            .thenThrow(Exception('Database error'));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -134,8 +147,14 @@ void main() {
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
-        when(mocks.database.select(any))
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(
@@ -151,8 +170,14 @@ void main() {
 
       test('saves fetched deals to cache', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -168,12 +193,18 @@ void main() {
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([
                   deal1.toJson(),
                   deal2.toJson(),
                   deal3.toJson(),
                 ]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -188,12 +219,18 @@ void main() {
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any))
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([
                   deal1.toJson(),
                   deal2.toJson(),
                   deal3.toJson(),
                 ]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -207,8 +244,14 @@ void main() {
       test('refreshes deals with force refresh', () async {
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
-        when(mocks.database.select(any))
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
@@ -226,8 +269,14 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenAnswer(
-            (_) => FakePostgrestBuilder([highPriorityDeal.toJson()]));
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([highPriorityDeal.toJson()]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
@@ -243,8 +292,14 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenAnswer(
-            (_) => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
+        
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
+        
+        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
