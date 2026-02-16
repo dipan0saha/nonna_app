@@ -8,14 +8,12 @@ import 'package:nonna_app/tiles/invites_status/providers/invites_status_provider
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
+import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('InvitesStatusProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
 
     // Sample invitation data
     final sampleInvitation = Invitation(
@@ -43,7 +41,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
-      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
       // Create a ProviderContainer with overrides
       container = ProviderContainer(
@@ -295,7 +293,7 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
-        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         final state = container.read(invitesStatusProvider);
         expect(state, isNotNull);

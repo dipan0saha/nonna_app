@@ -7,14 +7,12 @@ import 'package:nonna_app/tiles/recent_photos/providers/recent_photos_provider.d
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
+import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('RecentPhotosProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
 
     // Sample photo data
     final samplePhoto = Photo(
@@ -41,7 +39,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
-      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
@@ -352,7 +350,7 @@ void main() {
 
     group('dispose', () {
       test('provider disposes properly', () {
-        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         // Provider dispose is automatic when container is disposed
         expect(container.read(recentPhotosProvider), isNotNull);

@@ -38,7 +38,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => null);
+      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
       return ProviderContainer(
         overrides: [
@@ -255,7 +255,7 @@ void main() {
 
         // Note: Riverpod automatically handles disposal through ref.onDispose
         // This test verifies the container can be disposed without errors
-        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => null);
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
         expect(() => container!.dispose(), returnsNormally);
       });

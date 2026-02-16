@@ -8,14 +8,12 @@ import 'package:nonna_app/tiles/notifications/providers/notifications_provider.d
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
+import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('NotificationsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
 
     // Sample notification data
     final sampleNotification = app_notification.Notification(
@@ -42,7 +40,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
-      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
       // Create a ProviderContainer with overrides
       container = ProviderContainer(
@@ -352,7 +350,7 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
-        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         // Disposing the container will trigger the notifier's dispose
         // Don't need to manually call dispose anymore
