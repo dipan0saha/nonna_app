@@ -11,6 +11,7 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('DueDateCountdownProvider Tests', () {
     late ProviderContainer container;
+    late MockServiceContainer mocks;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -31,7 +32,7 @@ void main() {
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async {});
+          .thenAnswer((_) async => null);
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mocks.realtime.subscribe(
@@ -39,7 +40,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
-      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
 
       container = ProviderContainer(
         overrides: [

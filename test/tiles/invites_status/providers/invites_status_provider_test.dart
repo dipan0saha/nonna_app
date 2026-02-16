@@ -12,6 +12,7 @@ import '../../../helpers/mock_factory.dart';
 void main() {
   group('InvitesStatusProvider Tests', () {
     late ProviderContainer container;
+    late MockServiceContainer mocks;
     late MockDatabaseService mockDatabaseService;
     late MockCacheService mockCacheService;
     late MockRealtimeService mockRealtimeService;
@@ -34,7 +35,7 @@ void main() {
       when(mocks.cache.isInitialized).thenReturn(true);
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
-          .thenAnswer((_) async {});
+          .thenAnswer((_) async => null);
       when(mocks.database.select(any))
           .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mocks.realtime.subscribe(
@@ -42,7 +43,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
-      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
 
       // Create a ProviderContainer with overrides
       container = ProviderContainer(
@@ -294,7 +295,7 @@ void main() {
 
     group('dispose', () {
       test('cancels real-time subscription on dispose', () {
-        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
 
         final state = container.read(invitesStatusProvider);
         expect(state, isNotNull);
