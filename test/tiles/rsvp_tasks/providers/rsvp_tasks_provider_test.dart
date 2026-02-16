@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/rsvp_status.dart';
 import 'package:nonna_app/core/models/event.dart';
@@ -46,7 +47,9 @@ void main() {
       when(mocks.cache.get(any)).thenAnswer((_) async => null);
       when(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
           .thenAnswer((_) async {});
-      when(mocks.database.select(any))
+      when(mocks.database.select(SupabaseTables.events))
+          .thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mocks.database.select(SupabaseTables.eventRsvps))
           .thenAnswer((_) => FakePostgrestBuilder([]));
       when(mocks.database.insert(any, any)).thenAnswer((_) async => []);
       when(mocks.realtime.subscribe(
@@ -86,8 +89,13 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        // Using thenReturn for FakePostgrestBuilder which implements then() for async
-        when(mocks.database.select(any))
+        
+        // Mock events query
+        when(mocks.database.select(SupabaseTables.events))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        
+        // Mock event_rsvps query (not called if no events)
+        when(mocks.database.select(SupabaseTables.eventRsvps))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
@@ -109,8 +117,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        
+        // Mock events query
+        when(mocks.database.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
+        
+        // Mock event_rsvps query
+        when(mocks.database.select(SupabaseTables.eventRsvps))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -153,7 +167,8 @@ void main() {
       test('handles errors gracefully', () async {
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenThrow(Exception('Database error'));
+        when(mocks.database.select(SupabaseTables.events))
+            .thenThrow(Exception('Database error'));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -181,8 +196,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        
+        // Mock events query
+        when(mocks.database.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
+        
+        // Mock event_rsvps query
+        when(mocks.database.select(SupabaseTables.eventRsvps))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -207,8 +228,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        
+        // Mock events query
+        when(mocks.database.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
+        
+        // Mock event_rsvps query
+        when(mocks.database.select(SupabaseTables.eventRsvps))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -233,8 +260,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        
+        // Mock events query
+        when(mocks.database.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
+        
+        // Mock event_rsvps query
+        when(mocks.database.select(SupabaseTables.eventRsvps))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -268,8 +301,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        
+        // Mock events query
+        when(mocks.database.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
+        
+        // Mock event_rsvps query
+        when(mocks.database.select(SupabaseTables.eventRsvps))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.refresh(
@@ -295,8 +334,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        
+        // Mock events query
+        when(mocks.database.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
+        
+        // Mock event_rsvps query
+        when(mocks.database.select(SupabaseTables.eventRsvps))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
@@ -330,8 +375,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => realtimeController.stream);
-        when(mocks.database.select(any))
+        
+        // Mock events query
+        when(mocks.database.select(SupabaseTables.events))
             .thenAnswer((_) => FakePostgrestBuilder([sampleEvent.toJson()]));
+        
+        // Mock event_rsvps query
+        when(mocks.database.select(SupabaseTables.eventRsvps))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(rsvpTasksProvider.notifier);
         await notifier.fetchRSVPTasks(
