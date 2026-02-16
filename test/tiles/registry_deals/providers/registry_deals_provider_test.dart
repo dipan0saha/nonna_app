@@ -7,14 +7,12 @@ import 'package:nonna_app/tiles/registry_deals/providers/registry_deals_provider
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
+import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('RegistryDealsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
 
     // Sample registry deal data
     final sampleDeal = RegistryItem(
@@ -45,7 +43,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [

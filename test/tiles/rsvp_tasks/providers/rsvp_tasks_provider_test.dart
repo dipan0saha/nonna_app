@@ -9,14 +9,12 @@ import 'package:nonna_app/tiles/rsvp_tasks/providers/rsvp_tasks_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
+import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('RSVPTasksProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
 
     // Sample event and RSVP data
     final sampleEvent = Event(
@@ -55,7 +53,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.empty());
-      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+      when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
@@ -298,7 +296,7 @@ void main() {
       test('cancels real-time subscriptions on dispose', () {
         // Note: Riverpod automatically handles disposal through ref.onDispose
         // This test verifies the container can be disposed without errors
-        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => null);
+        when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
         expect(() => container.dispose(), returnsNormally);
       });

@@ -3,13 +3,11 @@ import 'package:mockito/mockito.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
+import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('EngagementRecapProvider Tests', () {
     late MockServiceContainer mocks;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
 
     setUp(() {
       mocks = MockFactory.createServiceContainer();

@@ -50,7 +50,7 @@ void main() {
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.value(null));
-      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => null);
+      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
       // Set up cache mocks
       when(mockCacheService.isInitialized).thenReturn(true);
@@ -439,10 +439,10 @@ void main() {
     group('dispose', () {
       test('cancels real-time subscription on dispose', () async {
         container = createContainer();
-        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async => null);
+        when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
 
         // Disposing the container will trigger the onDispose callback
-        container!dispose();
+        container!.dispose();
 
         // Give a moment for async dispose to complete
         await Future.delayed(const Duration(milliseconds: 50));

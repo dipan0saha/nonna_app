@@ -7,14 +7,12 @@ import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlight
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
+import '../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('RegistryHighlightsProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
-    late MockDatabaseService mockDatabaseService;
-    late MockCacheService mockCacheService;
-    late MockRealtimeService mockRealtimeService;
 
     // Sample registry item data
     final sampleItem = RegistryItem(
