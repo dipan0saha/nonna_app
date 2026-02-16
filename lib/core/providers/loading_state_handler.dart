@@ -305,17 +305,21 @@ class LoadingStateHandler extends Notifier<LoadingState> {
       final key = entry.key;
       final operation = entry.value;
 
-      final result = await executeWithLoading(
-        operation: operation,
-        key: key,
-        timeout: timeout,
-      );
-
-      results[key] = result;
+      try {
+        final result = await executeWithLoading(
+          operation: operation,
+          key: key,
+          timeout: timeout,
+        );
+        results[key] = result;
+      } catch (e) {
+        // Store null for failed operations
+        results[key] = null;
+      }
     }).toList();
 
-    // Wait for all to complete
-    await Future.wait(futures);
+    // Wait for all to complete (don't fail on first error)
+    await Future.wait(futures, eagerError: false);
 
     return results;
   }

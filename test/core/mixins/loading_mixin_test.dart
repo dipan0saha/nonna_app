@@ -546,12 +546,12 @@ void main() {
       state.setLoadingFor('op1', true);
       state.setLoadingFor('op2', true);
 
-      // Dispose the widget
+      // Dispose the widget - this automatically calls dispose on the state
       await tester.pumpWidget(const SizedBox());
       await tester.pump();
 
-      // Should not throw
-      expect(() => state.dispose(), returnsNormally);
+      // Widget is disposed by the framework, no need to manually call dispose
+      // The test passes if no exception was thrown during the automatic disposal
     });
   });
 }
