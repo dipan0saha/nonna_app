@@ -1,107 +1,27 @@
 Analyzing nonna_app...                                          
 
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/checklist/providers/checklist_provider_test.dart:19:59 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/core/providers/tile_config_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/core/providers/tile_config_provider_test.dart:16:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/core/providers/tile_config_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/core/providers/tile_config_provider_test.dart:17:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/core/providers/tile_config_provider_test.dart:18:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/core/providers/tile_config_provider_test.dart:18:30 • unused_local_variable
-  error • Undefined class 'MockDatabaseService' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:15:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:15:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:16:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:17:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:35:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:43:60 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:10:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:10:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:11:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:11:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:12:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:12:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:19:27 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:10:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:10:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:11:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:11:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:12:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:12:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:19:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:27:60 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/invites_status/providers/invites_status_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/invites_status/providers/invites_status_provider_test.dart:16:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/invites_status/providers/invites_status_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/invites_status/providers/invites_status_provider_test.dart:17:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/invites_status/providers/invites_status_provider_test.dart:18:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/invites_status/providers/invites_status_provider_test.dart:18:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/invites_status/providers/invites_status_provider_test.dart:38:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/invites_status/providers/invites_status_provider_test.dart:46:60 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/invites_status/providers/invites_status_provider_test.dart:298:62 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/new_followers/providers/new_followers_provider_test.dart:48:65 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/notifications/providers/notifications_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/notifications/providers/notifications_provider_test.dart:16:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/notifications/providers/notifications_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/notifications/providers/notifications_provider_test.dart:17:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/notifications/providers/notifications_provider_test.dart:18:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/notifications/providers/notifications_provider_test.dart:18:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/notifications/providers/notifications_provider_test.dart:35:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/notifications/providers/notifications_provider_test.dart:45:60 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/notifications/providers/notifications_provider_test.dart:355:62 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:15:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:15:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:16:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:17:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:36:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:44:60 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:355:62 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/recent_purchases/providers/recent_purchases_provider_test.dart:41:65 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/recent_purchases/providers/recent_purchases_provider_test.dart:258:67 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:15:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:15:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:16:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:17:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:38:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:48:60 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:15:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:15:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:16:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:17:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:37:27 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:17:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:18:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:18:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:19:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:19:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:49:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:58:60 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:301:62 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:14:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:14:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:15:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:15:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:16:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:33:27 • avoid_returning_null_for_void
-  error • Undefined class 'MockDatabaseService' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:15:10 • undefined_class
-warning • The value of the local variable 'mockDatabaseService' isn't used • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:15:30 • unused_local_variable
-  error • Undefined class 'MockCacheService' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:16:10 • undefined_class
-warning • The value of the local variable 'mockCacheService' isn't used • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:16:27 • unused_local_variable
-  error • Undefined class 'MockRealtimeService' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:17:10 • undefined_class
-warning • The value of the local variable 'mockRealtimeService' isn't used • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:17:30 • unused_local_variable
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:33:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:41:60 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:53:65 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/core/providers/tile_config_provider_test.dart:11:8 • unused_import
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:10:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/due_date_countdown/providers/due_date_countdown_provider_test.dart:33:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:6:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/engagement_recap/providers/engagement_recap_provider_test.dart:17:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:6:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/gallery_favorites/providers/gallery_favorites_provider_test.dart:17:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/invites_status/providers/invites_status_provider_test.dart:11:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/invites_status/providers/invites_status_provider_test.dart:36:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/notifications/providers/notifications_provider_test.dart:11:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/notifications/providers/notifications_provider_test.dart:33:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:10:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/recent_photos/providers/recent_photos_provider_test.dart:34:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:10:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/registry_deals/providers/registry_deals_provider_test.dart:36:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:10:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/registry_highlights/providers/registry_highlights_provider_test.dart:35:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:12:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/rsvp_tasks/providers/rsvp_tasks_provider_test.dart:47:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:9:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/storage_usage/providers/storage_usage_provider_test.dart:31:27 • avoid_returning_null_for_void
+warning • Unused import: '../../../mocks/mock_services.mocks.dart' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:10:8 • unused_import
+   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/system_announcements/providers/system_announcements_provider_test.dart:31:27 • avoid_returning_null_for_void
    info • Don't return 'null' from a function with a return type of 'void' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:59:27 • avoid_returning_null_for_void
-   info • Don't return 'null' from a function with a return type of 'void' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:442:67 • avoid_returning_null_for_void
-  error • Expected to find ';' • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:445:18 • expected_token
-  error • The function 'dispose' isn't defined • test/tiles/upcoming_events/providers/upcoming_events_provider_test.dart:445:19 • undefined_function
 
