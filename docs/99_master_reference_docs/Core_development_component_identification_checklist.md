@@ -694,10 +694,14 @@
 ## 3.6 UI Development (Screens)
 
 ### 3.6.1 Authentication Screens
-- [ ] Login Screen (`lib/features/auth/presentation/screens/login_screen.dart`)
-- [ ] Signup Screen (`lib/features/auth/presentation/screens/signup_screen.dart`)
-- [ ] Role Selection Screen (`lib/features/auth/presentation/screens/role_selection_screen.dart`)
-- [ ] Auth Form Widgets (`lib/features/auth/presentation/widgets/auth_form_widgets.dart`)
+- [x] Login Screen (`lib/features/auth/presentation/screens/login_screen.dart`) - ✨ Created Feb 2026
+  - ✅ Test file: `test/features/auth/presentation/screens/login_screen_test.dart` (10 test cases)
+- [x] Signup Screen (`lib/features/auth/presentation/screens/signup_screen.dart`) - ✨ Created Feb 2026
+  - ✅ Test file: `test/features/auth/presentation/screens/signup_screen_test.dart` (9 test cases)
+- [x] Role Selection Screen (`lib/features/auth/presentation/screens/role_selection_screen.dart`) - ✨ Created Feb 2026
+  - ✅ Test file: `test/features/auth/presentation/screens/role_selection_screen_test.dart` (9 test cases)
+- [x] Auth Form Widgets (`lib/features/auth/presentation/widgets/auth_form_widgets.dart`) - ✨ Created Feb 2026
+  - ✅ Test file: `test/features/auth/presentation/widgets/auth_form_widgets_test.dart`
 
 ### 3.6.2 Main App Screens
 - [ ] Home Screen (`lib/features/home/presentation/screens/home_screen.dart`)
