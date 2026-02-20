@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
-import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:nonna_app/features/auth/presentation/widgets/auth_form_widgets.dart';
 
 /// Login screen
@@ -42,7 +41,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _resetEmailSent = false;
 
   @override
   void dispose() {
@@ -77,7 +75,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       await ref.read(authProvider.notifier).resetPassword(email);
       if (mounted) {
-        setState(() => _resetEmailSent = true);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Password reset email sent!')),
         );

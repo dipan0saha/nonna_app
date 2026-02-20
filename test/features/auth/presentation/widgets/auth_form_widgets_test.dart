@@ -152,15 +152,21 @@ void main() {
         ),
       );
 
-      final field =
-          tester.widget<TextFormField>(find.byKey(const Key('auth_password_field')));
+      final field = tester.widget<TextField>(
+          find.descendant(
+            of: find.byKey(const Key('auth_password_field')),
+            matching: find.byType(TextField),
+          ));
       expect(field.obscureText, isTrue);
 
       await tester.tap(find.byKey(const Key('password_visibility_toggle')));
       await tester.pump();
 
-      final updatedField =
-          tester.widget<TextFormField>(find.byKey(const Key('auth_password_field')));
+      final updatedField = tester.widget<TextField>(
+          find.descendant(
+            of: find.byKey(const Key('auth_password_field')),
+            matching: find.byType(TextField),
+          ));
       expect(updatedField.obscureText, isFalse);
       controller.dispose();
     });
