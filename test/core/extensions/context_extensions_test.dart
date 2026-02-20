@@ -1,6 +1,30 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+
+// Custom ViewPadding implementation for testing
+class _TestViewPadding implements ui.ViewPadding {
+  const _TestViewPadding({
+    required this.left,
+    required this.top,
+    required this.right,
+    required this.bottom,
+  });
+
+  @override
+  final double left;
+
+  @override
+  final double top;
+
+  @override
+  final double right;
+
+  @override
+  final double bottom;
+}
 
 void main() {
   group('ContextExtensions', () {
@@ -442,8 +466,16 @@ void main() {
           (tester) async {
         bool? isVisible;
 
+        // Create a mock ViewPadding with keyboard insets
+        const viewPadding = _TestViewPadding(
+          left: 0,
+          top: 0,
+          right: 0,
+          bottom: 300,
+        );
+        
         // Set keyboard visible BEFORE widget is built
-        tester.view.viewInsets = FakeViewPadding(bottom: 300);
+        tester.view.viewInsets = viewPadding;
 
         await tester.pumpWidget(
           buildTestWidget(

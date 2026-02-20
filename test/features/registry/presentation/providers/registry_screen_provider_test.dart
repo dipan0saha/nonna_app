@@ -232,16 +232,13 @@ void main() {
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
 
-        var callCount = 0;
-        when(mockDatabaseService.select(argThat(isA<String>())))
-            .thenAnswer((_) {
-          callCount++;
-          if (callCount == 1) {
-            return FakePostgrestBuilder([sampleItem.toJson()]);
-          } else {
-            return FakePostgrestBuilder([samplePurchase.toJson()]);
-          }
-        });
+        // Mock registry_items query
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        
+        // Mock registry_purchases query
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -420,8 +417,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        
+        // Mock registry_items query
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        
+        // Mock registry_purchases query
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
@@ -441,8 +444,14 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        
+        // Mock registry_items query
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
+        
+        // Mock registry_purchases query
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 
