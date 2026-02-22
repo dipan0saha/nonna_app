@@ -5,6 +5,9 @@ import '../enums/user_role.dart';
 /// Maps to the `baby_memberships` table in Supabase.
 /// Links users to baby profiles with specific roles (owner or follower).
 class BabyMembership {
+  /// Primary key UUID from the `baby_memberships` table
+  final String? id;
+
   /// Associated baby profile ID
   final String babyProfileId;
 
@@ -25,6 +28,7 @@ class BabyMembership {
 
   /// Creates a new BabyMembership instance
   const BabyMembership({
+    this.id,
     required this.babyProfileId,
     required this.userId,
     required this.role,
@@ -36,6 +40,7 @@ class BabyMembership {
   /// Creates a BabyMembership from a JSON map
   factory BabyMembership.fromJson(Map<String, dynamic> json) {
     return BabyMembership(
+      id: json['id'] as String?,
       babyProfileId: json['baby_profile_id'] as String,
       userId: json['user_id'] as String,
       role: UserRole.fromJson(json['role'] as String),
@@ -50,6 +55,7 @@ class BabyMembership {
   /// Converts this BabyMembership to a JSON map
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       'baby_profile_id': babyProfileId,
       'user_id': userId,
       'role': role.toJson(),
@@ -77,6 +83,7 @@ class BabyMembership {
 
   /// Creates a copy of this BabyMembership with the specified fields replaced
   BabyMembership copyWith({
+    String? id,
     String? babyProfileId,
     String? userId,
     UserRole? role,
@@ -85,6 +92,7 @@ class BabyMembership {
     DateTime? removedAt,
   }) {
     return BabyMembership(
+      id: id ?? this.id,
       babyProfileId: babyProfileId ?? this.babyProfileId,
       userId: userId ?? this.userId,
       role: role ?? this.role,
@@ -99,6 +107,7 @@ class BabyMembership {
     if (identical(this, other)) return true;
 
     return other is BabyMembership &&
+        other.id == id &&
         other.babyProfileId == babyProfileId &&
         other.userId == userId &&
         other.role == role &&
@@ -109,7 +118,8 @@ class BabyMembership {
 
   @override
   int get hashCode {
-    return babyProfileId.hashCode ^
+    return id.hashCode ^
+        babyProfileId.hashCode ^
         userId.hashCode ^
         role.hashCode ^
         relationshipLabel.hashCode ^
@@ -119,6 +129,6 @@ class BabyMembership {
 
   @override
   String toString() {
-    return 'BabyMembership(babyProfileId: $babyProfileId, userId: $userId, role: $role, isActive: $isActive)';
+    return 'BabyMembership(id: $id, babyProfileId: $babyProfileId, userId: $userId, role: $role, isActive: $isActive)';
   }
 }

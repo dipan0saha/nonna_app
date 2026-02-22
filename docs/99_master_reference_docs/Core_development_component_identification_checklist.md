@@ -757,13 +757,22 @@
   - ✅ Test file: `test/features/baby_profile/presentation/screens/create_baby_profile_screen_test.dart` (7 test cases)
 - [x] Edit Baby Profile Screen (`lib/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart`) - ✨ Created Feb 22, 2026
   - ✅ Test file: `test/features/baby_profile/presentation/screens/edit_baby_profile_screen_test.dart` (7 test cases)
-- [ ] Invite Followers Screen (`lib/features/baby_profile/presentation/screens/invite_followers_screen.dart`)
-- [ ] Followers Management Screen (`lib/features/baby_profile/presentation/screens/followers_management_screen.dart`)
-- [ ] Event Creation Screen (`lib/features/calendar/presentation/screens/event_creation_screen.dart`)
-- [ ] Event Detail Screen (`lib/features/calendar/presentation/screens/event_detail_screen.dart`)
-- [ ] Registry Item Creation Screen (`lib/features/registry/presentation/screens/registry_item_creation_screen.dart`)
-- [ ] Gamification Screen (`lib/features/gamification/presentation/screens/gamification_screen.dart`)
-- [ ] Settings Screen (`lib/features/settings/presentation/screens/settings_screen.dart`)
+- [x] Invite Followers Screen (`lib/features/baby_profile/presentation/screens/invite_followers_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/baby_profile/presentation/screens/invite_followers_screen_test.dart` (8 test cases)
+- [x] Followers Management Screen (`lib/features/baby_profile/presentation/screens/followers_management_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/baby_profile/presentation/screens/followers_management_screen_test.dart` (7 test cases)
+- [x] Event Creation Screen (`lib/features/calendar/presentation/screens/event_creation_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/calendar/presentation/screens/event_creation_screen_test.dart` (7 test cases)
+- [x] Event Detail Screen (`lib/features/calendar/presentation/screens/event_detail_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/calendar/presentation/screens/event_detail_screen_test.dart` (7 test cases)
+- [x] Registry Item Creation Screen (`lib/features/registry/presentation/screens/registry_item_creation_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/registry/presentation/screens/registry_item_creation_screen_test.dart` (7 test cases)
+- [x] Gamification Screen (`lib/features/gamification/presentation/screens/gamification_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Provider: `lib/features/gamification/presentation/providers/gamification_provider.dart`
+  - ✅ Test file: `test/features/gamification/presentation/screens/gamification_screen_test.dart` (6 test cases)
+- [x] Settings Screen (`lib/features/settings/presentation/screens/settings_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Provider: `lib/features/settings/presentation/providers/settings_provider.dart`
+  - ✅ Test file: `test/features/settings/presentation/screens/settings_screen_test.dart` (8 test cases)
 
 ### 3.6.5 Navigation & Routing
 - [ ] App Router (`lib/core/navigation/app_router.dart`)
