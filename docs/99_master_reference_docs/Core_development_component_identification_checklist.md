@@ -741,14 +741,22 @@
 - [x] `test/features/registry/presentation/widgets/registry_filter_bar_test.dart` - ✨ Created Feb 22, 2026
 
 ### 3.6.3 Profile Management Screens
-- [ ] Profile Screen (`lib/features/profile/presentation/screens/profile_screen.dart`)
-- [ ] Edit Profile Screen (`lib/features/profile/presentation/screens/edit_profile_screen.dart`)
-- [ ] Profile Widgets (`lib/features/profile/presentation/widgets/profile_widgets.dart`)
+- [x] Profile Screen (`lib/features/profile/presentation/screens/profile_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/profile/presentation/screens/profile_screen_test.dart` (9 test cases)
+- [x] Edit Profile Screen (`lib/features/profile/presentation/screens/edit_profile_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/profile/presentation/screens/edit_profile_screen_test.dart` (8 test cases)
+- [x] Profile Widgets (`lib/features/profile/presentation/widgets/profile_widgets.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/profile/presentation/widgets/profile_widgets_test.dart` (7 test cases)
+- [x] Baby Profile Widgets (`lib/features/baby_profile/presentation/widgets/baby_profile_widgets.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/baby_profile/presentation/widgets/baby_profile_widgets_test.dart` (7 test cases)
 
 ### 3.6.4 Additional Feature Screens
-- [ ] Baby Profile Screen (`lib/features/baby_profile/presentation/screens/baby_profile_screen.dart`)
-- [ ] Create Baby Profile Screen (`lib/features/baby_profile/presentation/screens/create_baby_profile_screen.dart`)
-- [ ] Edit Baby Profile Screen (`lib/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart`)
+- [x] Baby Profile Screen (`lib/features/baby_profile/presentation/screens/baby_profile_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/baby_profile/presentation/screens/baby_profile_screen_test.dart` (8 test cases)
+- [x] Create Baby Profile Screen (`lib/features/baby_profile/presentation/screens/create_baby_profile_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/baby_profile/presentation/screens/create_baby_profile_screen_test.dart` (7 test cases)
+- [x] Edit Baby Profile Screen (`lib/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/baby_profile/presentation/screens/edit_baby_profile_screen_test.dart` (7 test cases)
 - [ ] Invite Followers Screen (`lib/features/baby_profile/presentation/screens/invite_followers_screen.dart`)
 - [ ] Followers Management Screen (`lib/features/baby_profile/presentation/screens/followers_management_screen.dart`)
 - [ ] Event Creation Screen (`lib/features/calendar/presentation/screens/event_creation_screen.dart`)
