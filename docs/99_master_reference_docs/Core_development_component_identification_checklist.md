@@ -1,8 +1,8 @@
 # Core Development Component Identification Checklist
 
-**Document Version**: 1.1
+**Document Version**: 1.2
 **Created**: February 1, 2026
-**Last Updated**: February 7, 2026
+**Last Updated**: February 22, 2026
 **Status**: Active
 **Purpose**: Checklist for tracking completion of Core Development components from Section 3 of Production Readiness Checklist
 
@@ -704,11 +704,16 @@
   - ✅ Test file: `test/features/auth/presentation/widgets/auth_form_widgets_test.dart`
 
 ### 3.6.2 Main App Screens
-- [ ] Home Screen (`lib/features/home/presentation/screens/home_screen.dart`)
-- [ ] Home App Bar (`lib/features/home/presentation/widgets/home_app_bar.dart`)
-- [ ] Tile List View (`lib/features/home/presentation/widgets/tile_list_view.dart`)
-- [ ] Calendar Screen (`lib/features/calendar/presentation/screens/calendar_screen.dart`)
-- [ ] Calendar Widget (`lib/features/calendar/presentation/widgets/calendar_widget.dart`)
+- [x] Home Screen (`lib/features/home/presentation/screens/home_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/home/presentation/screens/home_screen_test.dart` (8 test cases)
+- [x] Home App Bar (`lib/features/home/presentation/widgets/home_app_bar.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/home/presentation/widgets/home_app_bar_test.dart` (10 test cases)
+- [x] Tile List View (`lib/features/home/presentation/widgets/tile_list_view.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/home/presentation/widgets/tile_list_view_test.dart` (8 test cases)
+- [x] Calendar Screen (`lib/features/calendar/presentation/screens/calendar_screen.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/calendar/presentation/screens/calendar_screen_test.dart` (10 test cases)
+- [x] Calendar Widget (`lib/features/calendar/presentation/widgets/calendar_widget.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Test file: `test/features/calendar/presentation/widgets/calendar_widget_test.dart` (8 test cases)
 - [ ] Gallery Screen (`lib/features/gallery/presentation/screens/gallery_screen.dart`)
 - [ ] Photo Detail Screen (`lib/features/gallery/presentation/screens/photo_detail_screen.dart`)
 - [ ] Squish Photo Widget (`lib/features/gallery/presentation/widgets/squish_photo_widget.dart`)
@@ -717,11 +722,11 @@
 - [ ] Registry Filter Bar (`lib/features/registry/presentation/widgets/registry_filter_bar.dart`)
 
 **Test Files**:
-- [ ] `test/features/home/presentation/screens/home_screen_test.dart`
-- [ ] `test/features/home/presentation/widgets/home_app_bar_test.dart`
-- [ ] `test/features/home/presentation/widgets/tile_list_view_test.dart`
-- [ ] `test/features/calendar/presentation/screens/calendar_screen_test.dart`
-- [ ] `test/features/calendar/presentation/widgets/calendar_widget_test.dart`
+- [x] `test/features/home/presentation/screens/home_screen_test.dart` - ✨ Created Feb 22, 2026
+- [x] `test/features/home/presentation/widgets/home_app_bar_test.dart` - ✨ Created Feb 22, 2026
+- [x] `test/features/home/presentation/widgets/tile_list_view_test.dart` - ✨ Created Feb 22, 2026
+- [x] `test/features/calendar/presentation/screens/calendar_screen_test.dart` - ✨ Created Feb 22, 2026
+- [x] `test/features/calendar/presentation/widgets/calendar_widget_test.dart` - ✨ Created Feb 22, 2026
 - [ ] `test/features/gallery/presentation/screens/gallery_screen_test.dart`
 - [ ] `test/features/gallery/presentation/screens/photo_detail_screen_test.dart`
 - [ ] `test/features/gallery/presentation/widgets/squish_photo_widget_test.dart`
