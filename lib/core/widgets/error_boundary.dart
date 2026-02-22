@@ -1,11 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/services/observability_service.dart';
 
-/// A widget that catches errors thrown during the build phase of its subtree
-/// and displays a fallback UI instead of crashing the app.
+/// A widget that displays a fallback UI when [error] is set.
 ///
 /// **Functional Requirements**: Section 3.30 - Error Boundaries & Recovery
+///
+/// `ErrorBoundary` is a UI-only wrapper. It shows fallback UI when an error
+/// is explicitly surfaced to it (via [_ErrorBoundaryState.setError] from
+/// [GlobalErrorBoundary]). It does **not** override [FlutterError.onError]
+/// itself — that responsibility belongs to [GlobalErrorBoundary] to avoid
+/// multiple instances competing for the global handler.
 ///
 /// Usage:
 /// ```dart
@@ -42,29 +48,14 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
   Object? _error;
   StackTrace? _stackTrace;
 
-  FlutterExceptionHandler? _previousHandler;
-
-  @override
-  void initState() {
-    super.initState();
-    _previousHandler = FlutterError.onError;
-    FlutterError.onError = _handleFlutterError;
-  }
-
-  @override
-  void dispose() {
-    FlutterError.onError = _previousHandler;
-    super.dispose();
-  }
-
-  void _handleFlutterError(FlutterErrorDetails details) {
-    _previousHandler?.call(details);
+  /// Surface an error to this boundary so it renders the fallback UI.
+  void setError(Object error, StackTrace? stack) {
     if (mounted) {
       setState(() {
-        _error = details.exception;
-        _stackTrace = details.stack;
+        _error = error;
+        _stackTrace = stack;
       });
-      widget.onError?.call(details.exception, details.stack);
+      widget.onError?.call(error, stack);
     }
   }
 
@@ -109,16 +100,19 @@ class _DefaultErrorCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
-          Text(
-            error.toString(),
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: Colors.grey),
-            textAlign: TextAlign.center,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
+          // Only reveal technical details in debug builds to avoid
+          // leaking internal error information or PII in production.
+          if (kDebugMode)
+            Text(
+              error.toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: Colors.grey),
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: onRecover,
@@ -133,8 +127,12 @@ class _DefaultErrorCard extends StatelessWidget {
 
 /// App-level error boundary that wraps the entire widget tree.
 ///
-/// Reports caught errors to [ObservabilityService] (Sentry) and shows a
-/// full-screen recovery UI with a restart button.
+/// - Intercepts [FlutterError.onError] to catch all framework errors.
+/// - Reports caught errors to [ObservabilityService] (Sentry).
+/// - Shows a full-screen recovery UI with a restart button.
+///
+/// Only one `GlobalErrorBoundary` should exist in the widget tree to avoid
+/// multiple handlers competing for [FlutterError.onError].
 class GlobalErrorBoundary extends StatefulWidget {
   const GlobalErrorBoundary({super.key, required this.child});
 
@@ -145,20 +143,56 @@ class GlobalErrorBoundary extends StatefulWidget {
 }
 
 class _GlobalErrorBoundaryState extends State<GlobalErrorBoundary> {
+  Object? _error;
+  StackTrace? _stackTrace;
   int _resetKey = 0;
 
-  void _reset() => setState(() => _resetKey++);
+  FlutterExceptionHandler? _previousHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousHandler = FlutterError.onError;
+    FlutterError.onError = _handleFlutterError;
+  }
+
+  @override
+  void dispose() {
+    FlutterError.onError = _previousHandler;
+    super.dispose();
+  }
+
+  void _handleFlutterError(FlutterErrorDetails details) {
+    _previousHandler?.call(details);
+    ObservabilityService.captureException(
+      details.exception,
+      stackTrace: details.stack,
+    );
+    if (mounted) {
+      setState(() {
+        _error = details.exception;
+        _stackTrace = details.stack;
+      });
+    }
+  }
+
+  void _reset() {
+    setState(() {
+      _error = null;
+      _stackTrace = null;
+      _resetKey++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ErrorBoundary(
+    if (_error != null) {
+      return Scaffold(
+        body: _DefaultErrorCard(error: _error!, onRecover: _reset),
+      );
+    }
+    return KeyedSubtree(
       key: ValueKey(_resetKey),
-      onError: (error, stack) {
-        ObservabilityService.captureException(error, stackTrace: stack);
-      },
-      fallback: (error, stack) => Scaffold(
-        body: _DefaultErrorCard(error: error, onRecover: _reset),
-      ),
       child: widget.child,
     );
   }

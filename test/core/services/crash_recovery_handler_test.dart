@@ -40,5 +40,30 @@ void main() {
       CrashRecoveryHandler.clearCrashState();
       expect(CrashRecoveryHandler.hasPreviousCrash(), isFalse);
     });
+
+    test('crash flag is persisted and cleared across initialize calls',
+        () async {
+      // Start with a clean SharedPreferences instance.
+      final prefsBefore = await SharedPreferences.getInstance();
+      expect(prefsBefore.getKeys(), isEmpty);
+
+      // Simulate a crash — the flag should be persisted.
+      await CrashRecoveryHandler.handleCrash(
+        Exception('boom'),
+        StackTrace.current,
+      );
+      final prefsAfterCrash = await SharedPreferences.getInstance();
+      expect(prefsAfterCrash.getKeys(), isNotEmpty);
+
+      // Simulate a new app startup; initialize should detect the previous
+      // crash, call restoreState, and then clear the persisted flag.
+      await CrashRecoveryHandler.initialize();
+      final prefsAfterInitialize = await SharedPreferences.getInstance();
+      expect(prefsAfterInitialize.getKeys(), isEmpty);
+
+      // After initialize has handled the previous crash, there should be
+      // no pending crash reported.
+      expect(CrashRecoveryHandler.hasPreviousCrash(), isFalse);
+    });
   });
 }

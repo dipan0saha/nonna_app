@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
+import 'package:nonna_app/core/navigation/navigation_service.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:nonna_app/features/auth/presentation/screens/signup_screen.dart';
 import 'package:nonna_app/features/auth/presentation/screens/role_selection_screen.dart';
@@ -36,19 +39,37 @@ abstract class AppRoutes {
   static const profile = '/profile';
   static const profileEdit = '/profile/edit';
   static const calendar = '/calendar';
-  static const calendarEvent = '/calendar/event/:id';
+  // Note: event/photo/registry detail routes rely on state.extra (object passed
+  // during in-app navigation) and therefore do not include a path `:id` segment,
+  // as the extra payload is not available when the route is deep-linked by URL.
+  static const calendarEvent = '/calendar/event/detail';
   static const calendarEventCreate = '/calendar/event/create';
   static const gallery = '/gallery';
-  static const galleryPhoto = '/gallery/photo/:id';
+  static const galleryPhoto = '/gallery/photo/detail';
   static const gamification = '/gamification';
   static const settings = '/settings';
   static const babyProfile = '/baby-profile';
   static const babyProfileCreate = '/baby-profile/create';
   static const babyProfileEdit = '/baby-profile/:id/edit';
   static const registry = '/registry';
-  static const registryItem = '/registry/item/:id';
+  static const registryItem = '/registry/item/detail';
   static const registryItemCreate = '/registry/item/create';
 }
+
+/// ChangeNotifier used as [GoRouter.refreshListenable].
+///
+/// Call [notify] whenever auth state changes so the router re-evaluates its
+/// redirect logic (e.g., after sign-in or sign-out).
+class RouterRefreshNotifier extends ChangeNotifier {
+  /// Trigger a router refresh.
+  void notify() => notifyListeners();
+}
+
+/// Singleton notifier wired into [appRouter.refreshListenable].
+///
+/// Riverpod listeners (see [routerProvider]) call [routerRefreshNotifier.notify]
+/// when auth state changes so the router re-runs its redirect.
+final routerRefreshNotifier = RouterRefreshNotifier();
 
 /// Helper to show a simple "not found" placeholder when route data is missing.
 Widget _missingData(String label) => Scaffold(
@@ -108,7 +129,7 @@ List<RouteBase> get _routes => [
             ),
           ),
           GoRoute(
-            path: 'event/:id',
+            path: 'event/detail',
             builder: (context, state) {
               final event = state.extra as Event?;
               if (event == null) return _missingData('Event');
@@ -122,7 +143,7 @@ List<RouteBase> get _routes => [
         builder: (context, state) => const GalleryScreen(),
         routes: [
           GoRoute(
-            path: 'photo/:id',
+            path: 'photo/detail',
             builder: (context, state) {
               final photo = state.extra as Photo?;
               if (photo == null) return _missingData('Photo');
@@ -175,7 +196,7 @@ List<RouteBase> get _routes => [
             ),
           ),
           GoRoute(
-            path: 'item/:id',
+            path: 'item/detail',
             builder: (context, state) {
               final item = state.extra as RegistryItem?;
               if (item == null) return _missingData('Registry item');
@@ -188,17 +209,29 @@ List<RouteBase> get _routes => [
 
 /// Global [GoRouter] instance used by [main.dart].
 ///
-/// Auth redirect is applied via [RouteGuards.authRedirect] which reads the
-/// [isAuthenticatedProvider] from the ambient [ProviderScope].
+/// - Auth redirect is applied via [RouteGuards.authRedirect].
+/// - [NavigationService.navigatorKey] is wired in so context-free navigation
+///   helpers (goTo, pushTo, etc.) resolve correctly.
+/// - [routerRefreshNotifier] triggers redirect re-evaluation on auth changes;
+///   call [routerRefreshNotifier.notify] (e.g. from [routerProvider]) when
+///   auth state changes.
 final appRouter = GoRouter(
-  initialLocation: '/',
+  navigatorKey: NavigationService.navigatorKey,
+  initialLocation: AppRoutes.home,
+  refreshListenable: routerRefreshNotifier,
   redirect: RouteGuards.authRedirect,
   routes: _routes,
+  debugLogDiagnostics: kDebugMode,
 );
 
 /// Riverpod-aware router provider.
 ///
-/// Wraps [appRouter] for use in Riverpod-based code and tests.
-/// Auth redirect is handled dynamically by [RouteGuards.authRedirect]
-/// via [ProviderScope.containerOf], so no recreation is needed.
-final routerProvider = Provider<GoRouter>((_) => appRouter);
+/// Watches [isAuthenticatedProvider] and calls [routerRefreshNotifier.notify]
+/// when auth state changes so the router re-evaluates its redirect logic
+/// (e.g., sends a newly signed-in user to /home or a signed-out user to /login).
+final routerProvider = Provider<GoRouter>((ref) {
+  ref.listen<bool>(isAuthenticatedProvider, (_, __) {
+    routerRefreshNotifier.notify();
+  });
+  return appRouter;
+});

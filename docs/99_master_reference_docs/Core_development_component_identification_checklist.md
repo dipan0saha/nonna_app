@@ -777,12 +777,19 @@
 ### 3.6.5 Navigation & Routing
 - [x] App Router (`lib/core/router/app_router.dart`) - ✨ Created Feb 22, 2026
   - ✅ Full GoRouter with all 19 feature routes, `AppRoutes` constants, deep linking
+  - ✅ `RouterRefreshNotifier` wired as `refreshListenable` for auth state changes
+  - ✅ `NavigationService.navigatorKey` wired for context-free navigation
   - ✅ Test file: `test/core/router/app_router_test.dart`
 - [x] Route Guards (`lib/core/router/route_guards.dart`) - ✨ Created Feb 22, 2026
-  - ✅ Auth redirect, role-based guards, `redirectForLocation` helper
+  - ✅ Auth redirect (`authRedirect`, `redirectForLocation`)
+  - ✅ Path-list guard (`requiresAuth`)
+  - ✅ Role-based guard (`requiresRole`) — accepts a `ProviderListenable<UserRole?>`
   - ✅ Test file: `test/core/router/route_guards_test.dart`
 - [x] Navigation Service (`lib/core/navigation/navigation_service.dart`) - ✨ Created Feb 22, 2026
-  - ✅ `GlobalKey<NavigatorState>`, route constants, `goTo`/`pushTo`/`pop`/`canPop` wrappers
+  - ✅ `GlobalKey<NavigatorState>` wired into `appRouter`
+  - ✅ Context-free navigation: `goTo`/`pushTo`/`replaceWith`/`pop`/`canPop`
+  - ✅ Route constants deduped — callers use `AppRoutes` directly
+  - ✅ Test file: `test/core/navigation/navigation_service_test.dart`
 
 ### 3.6.6 Responsive Layouts
 - [x] Responsive Scaffold (`lib/core/widgets/responsive_scaffold.dart`) - ✨ Created Feb 22, 2026

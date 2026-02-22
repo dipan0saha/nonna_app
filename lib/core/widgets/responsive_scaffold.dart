@@ -36,7 +36,9 @@ class ResponsiveScaffold extends StatelessWidget {
 
   /// Navigation rail shown on **tablet and larger** screens.
   ///
-  /// When `null` on a tablet/desktop, no side navigation is rendered.
+  /// When `null`, the mobile scaffold layout is used for all screen sizes,
+  /// and [bottomNavigationBar] (if provided) will be shown regardless of
+  /// screen size.
   final NavigationRail? navigationRail;
 
   /// Drawer, forwarded to [Scaffold.drawer].
