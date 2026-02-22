@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
@@ -38,14 +39,10 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
     });
   }
 
-  Future<void> _removeFollower(String babyProfileId, String userId) async {
-    // The provider removes by membershipId; we pass userId as an identifier
-    // and let the provider resolve internally using a no-op here since the
-    // actual removal requires a membershipId. Kept as a thin wrapper for
-    // owner UI only.
+  Future<void> _removeFollower(String babyProfileId, String membershipId) async {
     await ref.read(babyProfileProvider.notifier).removeFollower(
           babyProfileId: babyProfileId,
-          membershipId: userId,
+          membershipId: membershipId,
         );
   }
 
@@ -131,8 +128,12 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
             ...state.followers.map(
               (m) => FollowerListItem(
                 membership: m,
-                onRemove: () =>
-                    _removeFollower(widget.babyProfileId, m.userId),
+                onRemove: () {
+                  if (m.id == null) {
+                    debugPrint('⚠️  BabyMembership.id is null for userId=${m.userId}; falling back to userId as membershipId');
+                  }
+                  _removeFollower(widget.babyProfileId, m.id ?? m.userId);
+                },
               ),
             ),
           ],

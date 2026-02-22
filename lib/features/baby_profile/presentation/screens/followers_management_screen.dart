@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
@@ -119,7 +120,12 @@ class _FollowersManagementScreenState
         return FollowerListItem(
           key: Key('follower_item_$index'),
           membership: membership,
-          onRemove: () => _removeFollower(membership.userId),
+          onRemove: () {
+            if (membership.id == null) {
+              debugPrint('⚠️  BabyMembership.id is null for userId=${membership.userId}; falling back to userId as membershipId');
+            }
+            _removeFollower(membership.id ?? membership.userId);
+          },
         );
       },
     );
