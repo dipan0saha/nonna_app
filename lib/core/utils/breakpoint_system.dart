@@ -8,13 +8,13 @@ enum Breakpoint {
   /// 600 dp – 1023 dp — standard phones and small tablets.
   sm,
 
-  /// 600 dp – 1023 dp — tablets.
+  /// 1024 dp – 1439 dp — tablets.
   md,
 
-  /// 1024 dp – 1439 dp — laptops / small desktops.
+  /// 1440 dp – 1919 dp — laptops / small desktops.
   lg,
 
-  /// ≥ 1440 dp — large desktops / TV.
+  /// ≥ 1920 dp — large desktops / TV.
   xl,
 }
 

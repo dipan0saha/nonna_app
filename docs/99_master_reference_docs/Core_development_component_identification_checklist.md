@@ -775,17 +775,31 @@
   - ✅ Test file: `test/features/settings/presentation/screens/settings_screen_test.dart` (8 test cases)
 
 ### 3.6.5 Navigation & Routing
-- [ ] App Router (`lib/core/navigation/app_router.dart`)
-- [ ] Route Guards (`lib/core/navigation/route_guards.dart`)
-- [ ] Navigation Service (`lib/core/navigation/navigation_service.dart`)
+- [x] App Router (`lib/core/router/app_router.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Full GoRouter with all 19 feature routes, `AppRoutes` constants, deep linking
+  - ✅ Test file: `test/core/router/app_router_test.dart`
+- [x] Route Guards (`lib/core/router/route_guards.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Auth redirect, role-based guards, `redirectForLocation` helper
+  - ✅ Test file: `test/core/router/route_guards_test.dart`
+- [x] Navigation Service (`lib/core/navigation/navigation_service.dart`) - ✨ Created Feb 22, 2026
+  - ✅ `GlobalKey<NavigatorState>`, route constants, `goTo`/`pushTo`/`pop`/`canPop` wrappers
 
 ### 3.6.6 Responsive Layouts
-- [ ] Responsive Scaffold (`lib/core/widgets/responsive_scaffold.dart`)
-- [ ] Breakpoint System (`lib/core/utils/breakpoint_system.dart`)
+- [x] Responsive Scaffold (`lib/core/widgets/responsive_scaffold.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Bottom nav on mobile, NavigationRail on tablet/desktop
+  - ✅ Test file: `test/core/widgets/responsive_scaffold_test.dart`
+- [x] Breakpoint System (`lib/core/utils/breakpoint_system.dart`) - ✨ Created Feb 22, 2026
+  - ✅ xs/sm/md/lg/xl breakpoints, predicates, `current()`, `value<T>()` selector
+  - ✅ Test file: `test/core/utils/breakpoint_system_test.dart`
 
 ### 3.6.7 Error Boundaries & Recovery
-- [ ] Error Boundary Widget (`lib/core/widgets/error_boundary.dart`)
-- [ ] Crash Recovery Handler (`lib/core/services/crash_recovery_handler.dart`)
+- [x] Error Boundary Widget (`lib/core/widgets/error_boundary.dart`) - ✨ Created Feb 22, 2026
+  - ✅ `ErrorBoundary` catches build errors, shows fallback + recovery button
+  - ✅ `GlobalErrorBoundary` reports to Sentry via ObservabilityService
+  - ✅ Test file: `test/core/widgets/error_boundary_test.dart`
+- [x] Crash Recovery Handler (`lib/core/services/crash_recovery_handler.dart`) - ✨ Created Feb 22, 2026
+  - ✅ SharedPreferences-backed crash detection, Sentry reporting, state restoration
+  - ✅ Test file: `test/core/services/crash_recovery_handler_test.dart`
 
 ### 3.6.8 Offline-First Implementation
 - [ ] Offline Indicator (`lib/core/widgets/offline_indicator.dart`)

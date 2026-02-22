@@ -20,9 +20,12 @@ class CrashRecoveryHandler {
 
   /// Initialises the handler.
   ///
-  /// If a previous crash is detected, calls [restoreState] automatically.
+  /// Reads persisted crash state from [SharedPreferences]. If a previous crash
+  /// is detected, [restoreState] is called automatically before clearing the
+  /// flag.
   static Future<void> initialize() async {
-    if (hasPreviousCrash()) {
+    await _loadCrashState();
+    if (_crashed) {
       await restoreState();
     }
     await _markClean();
@@ -83,7 +86,7 @@ class CrashRecoveryHandler {
   // checks without additional async calls.
   static bool _crashed = false;
 
-  static Future<void> _markClean() async {
+  static Future<void> _loadCrashState() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       _crashed = prefs.getBool(_crashKey) ?? false;
@@ -94,8 +97,22 @@ class CrashRecoveryHandler {
       debugPrint('⚠️  CrashRecoveryHandler: could not read crash state: $e');
     }
   }
+
+  static Future<void> _markClean() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_crashKey);
+      await prefs.remove(_crashMessageKey);
+    } catch (e) {
+      debugPrint('⚠️  CrashRecoveryHandler: could not clear crash state: $e');
+    }
+  }
 }
 
-/// Riverpod provider for [CrashRecoveryHandler].
-final crashRecoveryHandlerProvider =
-    Provider<CrashRecoveryHandler>((_) => CrashRecoveryHandler());
+/// Riverpod provider that exposes [CrashRecoveryHandler]'s static API
+/// as a provider token for easy dependency injection.
+///
+/// [CrashRecoveryHandler] only exposes static methods, so the provider
+/// simply returns `null` as a placeholder — callers should use the static
+/// methods directly: `CrashRecoveryHandler.handleCrash(...)`.
+final crashRecoveryHandlerProvider = Provider<void>((_) {});
