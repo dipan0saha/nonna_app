@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/models/name_suggestion.dart';
+import 'package:nonna_app/core/models/vote.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/features/gamification/presentation/providers/gamification_provider.dart';
 
@@ -103,7 +105,7 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen>
 class _NameSuggestionsTab extends StatelessWidget {
   const _NameSuggestionsTab({required this.suggestions});
 
-  final List suggestions;
+  final List<NameSuggestion> suggestions;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +123,7 @@ class _NameSuggestionsTab extends StatelessWidget {
         return ListTile(
           key: Key('name_suggestion_$index'),
           leading: const Icon(Icons.child_care),
-          title: Text(suggestions[index].suggestedName as String),
+          title: Text(suggestions[index].suggestedName),
         );
       },
     );
@@ -131,7 +133,7 @@ class _NameSuggestionsTab extends StatelessWidget {
 class _VotesTab extends StatelessWidget {
   const _VotesTab({required this.votes});
 
-  final List votes;
+  final List<Vote> votes;
 
   @override
   Widget build(BuildContext context) {
