@@ -114,15 +114,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       .selectDate(date);
                 },
                 onMonthChanged: (month) {
-                  if (month.isAfter(state.focusedMonth)) {
-                    ref
-                        .read(calendarScreenProvider.notifier)
-                        .nextMonth();
-                  } else {
-                    ref
-                        .read(calendarScreenProvider.notifier)
-                        .previousMonth();
-                  }
+                  ref
+                      .read(calendarScreenProvider.notifier)
+                      .goToMonth(month);
                 },
               ),
             ),

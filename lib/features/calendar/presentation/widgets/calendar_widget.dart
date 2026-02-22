@@ -199,9 +199,7 @@ class _DayGrid extends StatelessWidget {
         selectedDate.day,
       );
       final isToday = date == todayNorm;
-      final hasEvent = datesWithEvents.any(
-        (d) => d.year == date.year && d.month == date.month && d.day == date.day,
-      );
+      final hasEvent = datesWithEvents.contains(date);
 
       cells.add(
         _DayCell(
@@ -284,6 +282,8 @@ class _DayCell extends StatelessWidget {
             ),
             if (hasEvent)
               Container(
+                key: Key(
+                    'calendar_event_indicator_${date.toIso8601String()}'),
                 width: 5,
                 height: 5,
                 margin: const EdgeInsets.only(top: 2),

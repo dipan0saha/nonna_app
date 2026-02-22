@@ -16,6 +16,9 @@ class _FakeHomeNotifier extends HomeScreenNotifier {
 
   final HomeScreenState _initial;
 
+  /// Optional callback invoked when [toggleRole] is called.
+  ValueChanged<UserRole>? onToggleRole;
+
   @override
   HomeScreenState build() => _initial;
 
@@ -32,7 +35,9 @@ class _FakeHomeNotifier extends HomeScreenNotifier {
   Future<void> retry() async {}
 
   @override
-  Future<void> toggleRole(UserRole newRole) async {}
+  Future<void> toggleRole(UserRole newRole) async {
+    onToggleRole?.call(newRole);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -181,6 +186,34 @@ void main() {
         ),
       );
       expect(find.text('7'), findsOneWidget);
+    });
+
+    testWidgets('tapping follower role chip triggers role toggle',
+        (tester) async {
+      UserRole? toggled;
+      final notifier = _FakeHomeNotifier(
+        const HomeScreenState(selectedRole: UserRole.owner),
+      )..onToggleRole = (r) => toggled = r;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            homeScreenProvider.overrideWith(() => notifier),
+          ],
+          child: const MaterialApp(
+            home: HomeScreen(
+              babyProfileId: 'p1',
+              userRole: UserRole.owner,
+              isDualRole: true,
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Follower'));
+      await tester.pump();
+
+      expect(toggled, equals(UserRole.follower));
     });
   });
 }

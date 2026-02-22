@@ -110,5 +110,22 @@ void main() {
       expect(find.text('Su'), findsOneWidget);
       expect(find.text('Sa'), findsOneWidget);
     });
+
+    testWidgets('shows event indicator dots for dates with events',
+        (tester) async {
+      final eventDate = DateTime(2024, 6, 10);
+
+      await tester.pumpWidget(
+        _buildCalendar(
+          focusedMonth: DateTime(2024, 6),
+          selectedDate: eventDate,
+          datesWithEvents: {eventDate},
+        ),
+      );
+
+      final eventIndicatorKey = Key(
+          'calendar_event_indicator_${eventDate.toIso8601String()}');
+      expect(find.byKey(eventIndicatorKey), findsOneWidget);
+    });
   });
 }
