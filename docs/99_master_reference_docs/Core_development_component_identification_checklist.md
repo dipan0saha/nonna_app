@@ -820,8 +820,14 @@
   - ✅ Test file: `test/core/widgets/offline_indicator_test.dart`
 
 ### 3.6.9 Network Failure Handling
-- [ ] Retry Widget (`lib/core/widgets/retry_widget.dart`)
-- [ ] Network Status Monitor (`lib/core/services/network_status_monitor.dart`)
+- [x] Network Error Handler (`lib/core/services/network_error_handler.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Network error detection & categorisation (noConnection, timeout, serverError, clientError, unknown)
+  - ✅ Configurable request timeout, automatic retry with exponential back-off, user notification callbacks
+  - ✅ Test file: `test/core/services/network_error_handler_test.dart`
+- [x] Retry Dialog (`lib/core/widgets/retry_dialog.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Retry confirmation dialog, manual retry button with loading state, error message, cancel option
+  - ✅ `showRetryDialog` helper for modal usage
+  - ✅ Test file: `test/core/widgets/retry_dialog_test.dart`
 
 ### 3.6.10 Tile Widgets (15 Tiles)
 - [ ] Upcoming Events Tile (`lib/tiles/upcoming_events/widgets/upcoming_events_tile.dart`)
