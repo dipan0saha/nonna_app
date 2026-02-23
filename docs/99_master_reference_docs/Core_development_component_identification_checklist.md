@@ -830,11 +830,32 @@
   - ✅ Test file: `test/core/widgets/retry_dialog_test.dart`
 
 ### 3.6.10 Tile Widgets (15 Tiles)
-- [ ] Upcoming Events Tile (`lib/tiles/upcoming_events/widgets/upcoming_events_tile.dart`)
-- [ ] Recent Photos Tile (`lib/tiles/recent_photos/widgets/recent_photos_tile.dart`)
-- [ ] Registry Highlights Tile (`lib/tiles/registry_highlights/widgets/registry_highlights_tile.dart`)
-- [ ] Notifications Tile (`lib/tiles/notifications/widgets/notifications_tile.dart`)
-- [ ] Invites Status Tile (`lib/tiles/invites_status/widgets/invites_status_tile.dart`)
+- [x] Upcoming Events Tile (`lib/tiles/upcoming_events/widgets/upcoming_events_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Event cards with date, location, calendar icon
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Tap navigation and "View all" support
+  - ✅ Test file: `test/tiles/upcoming_events/widgets/upcoming_events_tile_test.dart`
+- [x] Recent Photos Tile (`lib/tiles/recent_photos/widgets/recent_photos_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ 2-column photo grid with shimmer loading
+  - ✅ Photo tap handler, "View all" support
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/recent_photos/widgets/recent_photos_tile_test.dart`
+- [x] Registry Highlights Tile (`lib/tiles/registry_highlights/widgets/registry_highlights_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Priority badge (color-coded Chip) and purchase status icon per item
+  - ✅ Tap navigation and "View all" support
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/registry_highlights/widgets/registry_highlights_tile_test.dart`
+- [x] Notifications Tile (`lib/tiles/notifications/widgets/notifications_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Read/unread visual differentiation with badge count
+  - ✅ Mark all read button, tap to mark notification read
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/notifications/widgets/notifications_tile_test.dart`
+- [x] Invites Status Tile (`lib/tiles/invites_status/widgets/invites_status_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Color-coded status chips per invitation
+  - ✅ Resend / Revoke buttons for pending invitations
+  - ✅ Pending count badge in header
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/invites_status/widgets/invites_status_tile_test.dart`
 - [ ] RSVP Tasks Tile (`lib/tiles/rsvp_tasks/widgets/rsvp_tasks_tile.dart`)
 - [ ] Due Date Countdown Tile (`lib/tiles/due_date_countdown/widgets/due_date_countdown_tile.dart`)
 - [ ] Recent Purchases Tile (`lib/tiles/recent_purchases/widgets/recent_purchases_tile.dart`)
