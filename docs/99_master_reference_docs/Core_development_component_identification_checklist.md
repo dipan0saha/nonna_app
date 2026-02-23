@@ -809,8 +809,15 @@
   - ✅ Test file: `test/core/services/crash_recovery_handler_test.dart`
 
 ### 3.6.8 Offline-First Implementation
-- [ ] Offline Indicator (`lib/core/widgets/offline_indicator.dart`)
-- [ ] Sync Manager (`lib/core/services/sync_manager.dart`)
+- [x] Offline Cache Manager (`lib/core/services/offline_cache_manager.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Offline data caching, sync queue management, conflict resolution, background sync, online/offline detection
+  - ✅ Test file: `test/core/services/offline_cache_manager_test.dart`
+- [x] Sync Manager (`lib/core/services/sync_manager.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Background data synchronisation, delta sync, conflict resolution, retry logic with exponential back-off, sync status stream
+  - ✅ Test file: `test/core/services/sync_manager_test.dart`
+- [x] Offline Indicator (`lib/core/widgets/offline_indicator.dart`) - ✨ Created Feb 22, 2026
+  - ✅ Offline status banner, sync status display, retry button, stream-driven `StreamOfflineIndicator` variant
+  - ✅ Test file: `test/core/widgets/offline_indicator_test.dart`
 
 ### 3.6.9 Network Failure Handling
 - [ ] Retry Widget (`lib/core/widgets/retry_widget.dart`)
