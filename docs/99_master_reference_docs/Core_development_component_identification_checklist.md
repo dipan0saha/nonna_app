@@ -856,11 +856,33 @@
   - ✅ Pending count badge in header
   - ✅ Loading shimmer, error, and empty states
   - ✅ Test file: `test/tiles/invites_status/widgets/invites_status_tile_test.dart`
-- [ ] RSVP Tasks Tile (`lib/tiles/rsvp_tasks/widgets/rsvp_tasks_tile.dart`)
-- [ ] Due Date Countdown Tile (`lib/tiles/due_date_countdown/widgets/due_date_countdown_tile.dart`)
-- [ ] Recent Purchases Tile (`lib/tiles/recent_purchases/widgets/recent_purchases_tile.dart`)
-- [ ] Registry Deals Tile (`lib/tiles/registry_deals/widgets/registry_deals_tile.dart`)
-- [ ] Engagement Recap Tile (`lib/tiles/engagement_recap/widgets/engagement_recap_tile.dart`)
+- [x] RSVP Tasks Tile (`lib/tiles/rsvp_tasks/widgets/rsvp_tasks_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Pending/responded RSVP status badge per event row
+  - ✅ Pending count badge in header
+  - ✅ Tap navigation and "View all" support
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/rsvp_tasks/widgets/rsvp_tasks_tile_test.dart`
+- [x] Due Date Countdown Tile (`lib/tiles/due_date_countdown/widgets/due_date_countdown_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Days remaining badge with color-coded urgency
+  - ✅ "Born!" badge for past-due babies
+  - ✅ Supports multiple baby profiles
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/due_date_countdown/widgets/due_date_countdown_tile_test.dart`
+- [x] Recent Purchases Tile (`lib/tiles/recent_purchases/widgets/recent_purchases_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Purchase rows with date and optional note
+  - ✅ Tap navigation and "View all" support
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/recent_purchases/widgets/recent_purchases_tile_test.dart`
+- [x] Registry Deals Tile (`lib/tiles/registry_deals/widgets/registry_deals_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Priority badge (color-coded Chip) and external link icon per item
+  - ✅ Tap navigation and "View all" support
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/registry_deals/widgets/registry_deals_tile_test.dart`
+- [x] Engagement Recap Tile (`lib/tiles/engagement_recap/widgets/engagement_recap_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Metric chips for squishes, comments, RSVPs, and total engagement
+  - ✅ Time period selector (7d / 30d / 90d)
+  - ✅ Loading shimmer, error, and empty/null-metrics states
+  - ✅ Test file: `test/tiles/engagement_recap/widgets/engagement_recap_tile_test.dart`
 - [ ] Gallery Favorites Tile (`lib/tiles/gallery_favorites/widgets/gallery_favorites_tile.dart`)
 - [ ] Checklist Tile (`lib/tiles/checklist/widgets/checklist_tile.dart`)
 - [ ] Storage Usage Tile (`lib/tiles/storage_usage/widgets/storage_usage_tile.dart`)
