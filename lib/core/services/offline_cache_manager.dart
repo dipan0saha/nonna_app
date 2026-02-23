@@ -38,6 +38,7 @@ class SyncOperation {
     required this.timestamp,
     this.data,
     this.retryCount = 0,
+    this.ttlMinutes,
   });
 
   /// Unique operation id
@@ -58,6 +59,9 @@ class SyncOperation {
   /// Number of times this operation has been retried
   final int retryCount;
 
+  /// Optional TTL (minutes) to apply when the operation is flushed to cache
+  final int? ttlMinutes;
+
   SyncOperation copyWith({int? retryCount}) {
     return SyncOperation(
       id: id,
@@ -66,6 +70,7 @@ class SyncOperation {
       timestamp: timestamp,
       data: data,
       retryCount: retryCount ?? this.retryCount,
+      ttlMinutes: ttlMinutes,
     );
   }
 
@@ -76,6 +81,7 @@ class SyncOperation {
         'timestamp': timestamp.toIso8601String(),
         if (data != null) 'data': data,
         'retryCount': retryCount,
+        if (ttlMinutes != null) 'ttlMinutes': ttlMinutes,
       };
 
   factory SyncOperation.fromJson(Map<String, dynamic> json) => SyncOperation(
@@ -86,6 +92,7 @@ class SyncOperation {
         timestamp: DateTime.parse(json['timestamp'] as String),
         data: json['data'] as Map<String, dynamic>?,
         retryCount: json['retryCount'] as int? ?? 0,
+        ttlMinutes: json['ttlMinutes'] as int?,
       );
 }
 
@@ -235,8 +242,10 @@ class OfflineCacheManager {
 
   /// Cache data with offline support.
   ///
-  /// When online the data is written directly to cache.
-  /// When offline the operation is added to the sync queue.
+  /// The data is always written to the local cache immediately so it is
+  /// readable via [getData] regardless of connectivity.  When offline, the
+  /// operation is also added to the sync queue so it can be flushed to the
+  /// server once connectivity is restored.
   ///
   /// [key] Cache key.
   /// [data] Data to cache (must be JSON-serialisable).
@@ -248,10 +257,12 @@ class OfflineCacheManager {
   }) async {
     _ensureInitialized();
 
-    if (_isOnline) {
-      await _cacheService.put(key, jsonEncode(data), ttlMinutes: ttlMinutes);
-      debugPrint('💾 Cached data for key: $key');
-    } else {
+    // Always write to local cache so the data is immediately readable.
+    await _cacheService.put(key, jsonEncode(data), ttlMinutes: ttlMinutes);
+    debugPrint('💾 Cached data locally for key: $key');
+
+    if (!_isOnline) {
+      // Also enqueue so the write is propagated to the server on reconnect.
       await _enqueueOperation(
         SyncOperation(
           id: '${key}_${DateTime.now().millisecondsSinceEpoch}',
@@ -259,6 +270,7 @@ class OfflineCacheManager {
           type: SyncOperationType.update,
           timestamp: DateTime.now(),
           data: data,
+          ttlMinutes: ttlMinutes,
         ),
       );
       debugPrint('📋 Queued offline write for key: $key');
@@ -397,7 +409,10 @@ class OfflineCacheManager {
     debugPrint(online ? '🌐 Device is online' : '📵 Device is offline');
 
     if (online && _syncQueue.isNotEmpty) {
-      processQueue();
+      // Fire-and-forget: process the queue in the background without
+      // blocking the caller.  Any failures are handled internally by
+      // processQueue() with its own retry mechanism.
+      unawaited(processQueue());
     }
   }
 
@@ -432,9 +447,33 @@ class OfflineCacheManager {
       case SyncOperationType.create:
       case SyncOperationType.update:
         if (operation.data != null) {
+          // Resolve any conflict between the queued write and data that may
+          // have been written to cache from another source while offline.
+          Map<String, dynamic> dataToWrite = operation.data!;
+          final existing = await _cacheService.get<String>(operation.key);
+          if (existing != null) {
+            try {
+              final existingData =
+                  jsonDecode(existing) as Map<String, dynamic>;
+              dataToWrite = resolveConflict(
+                localData: operation.data!,
+                remoteData: existingData,
+                localTimestamp: operation.timestamp,
+                // remoteTimestamp is not stored in the cache; when using
+                // lastWriteWins this means the local (queued) write wins
+                // when no remote timestamp is available, which is the
+                // expected offline-first behaviour.  remoteWins and
+                // localWins strategies are unaffected by the missing
+                // timestamp.
+              );
+            } catch (_) {
+              // Malformed cached data – use the queued payload.
+            }
+          }
           await _cacheService.put(
             operation.key,
-            jsonEncode(operation.data),
+            jsonEncode(dataToWrite),
+            ttlMinutes: operation.ttlMinutes,
           );
         }
       case SyncOperationType.delete:

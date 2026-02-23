@@ -86,6 +86,10 @@ class SyncManager {
   final StreamController<SyncStatus> _statusController =
       StreamController<SyncStatus>.broadcast();
 
+  /// Tracks subscriptions created by [subscribeToRealtime] so they can be
+  /// cancelled when [dispose] is called.
+  final Map<String, StreamSubscription<dynamic>> _realtimeSubscriptions = {};
+
   /// Key → async handler that accepts the `since` timestamp and returns
   /// `true` when the sync succeeded.
   final Map<String, Future<bool> Function(DateTime? since)> _syncHandlers = {};
@@ -148,6 +152,10 @@ class SyncManager {
   Future<void> dispose() async {
     _syncTimer?.cancel();
     _retryTimer?.cancel();
+    for (final sub in _realtimeSubscriptions.values) {
+      await sub.cancel();
+    }
+    _realtimeSubscriptions.clear();
     await _statusController.close();
     _isInitialized = false;
     debugPrint('✅ SyncManager disposed');
@@ -248,6 +256,11 @@ class SyncManager {
       return;
     }
 
+    // Note: delay is calculated from the current _retryCount *before*
+    // incrementing, yielding delays of 2s, 4s, 8s, ... for attempts 1, 2, 3.
+    // The count is incremented inside the timer callback when the retry
+    // actually runs.  If sync() later succeeds, _retryCount is reset to 0,
+    // so a new failure sequence starts from the base delay again.
     final delay = _baseRetryDelay * (1 << _retryCount); // 2s, 4s, 8s …
     debugPrint(
         '🔁 Scheduling retry ${_retryCount + 1}/$_maxRetries in ${delay.inSeconds}s');
@@ -281,7 +294,7 @@ class SyncManager {
     );
 
     // Trigger a sync whenever a realtime event arrives
-    stream.listen(
+    final subscription = stream.listen(
       (_) {
         if (_syncStatus != SyncStatus.syncing) {
           sync();
@@ -291,6 +304,7 @@ class SyncManager {
         debugPrint('❌ Realtime error for $channelName: $e');
       },
     );
+    _realtimeSubscriptions[channelName] = subscription;
 
     return stream;
   }

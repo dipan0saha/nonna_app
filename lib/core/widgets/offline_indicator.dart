@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 /// - Offline status banner with configurable colours
 /// - Sync status label
 /// - Retry button that invokes a callback
-/// - Connectivity detection via a [ValueNotifier] or a raw bool
+/// - Connectivity detection via a raw bool or a [Stream]-driven variant
 ///
 /// Usage:
 /// ```dart
@@ -181,27 +181,18 @@ class StreamOfflineIndicator extends StatefulWidget {
 }
 
 class _StreamOfflineIndicatorState extends State<StreamOfflineIndicator> {
-  late bool _isOnline;
-  bool _isSyncing = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _isOnline = widget.initiallyOnline;
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<bool>(
       stream: widget.connectivityStream,
-      initialData: _isOnline,
+      initialData: widget.initiallyOnline,
       builder: (context, connectivitySnapshot) {
-        _isOnline = connectivitySnapshot.data ?? _isOnline;
+        final isOnline =
+            connectivitySnapshot.data ?? widget.initiallyOnline;
 
         if (widget.syncStatusStream == null) {
           return OfflineIndicator(
-            isOffline: !_isOnline,
-            isSyncing: _isSyncing,
+            isOffline: !isOnline,
             onRetry: widget.onRetry,
             message: widget.message ?? 'No internet connection',
             syncMessage: widget.syncMessage ?? 'Syncing data…',
@@ -212,13 +203,13 @@ class _StreamOfflineIndicatorState extends State<StreamOfflineIndicator> {
 
         return StreamBuilder<bool>(
           stream: widget.syncStatusStream,
-          initialData: _isSyncing,
+          initialData: false,
           builder: (context, syncSnapshot) {
-            _isSyncing = syncSnapshot.data ?? _isSyncing;
+            final isSyncing = syncSnapshot.data ?? false;
 
             return OfflineIndicator(
-              isOffline: !_isOnline,
-              isSyncing: _isSyncing,
+              isOffline: !isOnline,
+              isSyncing: isSyncing,
               onRetry: widget.onRetry,
               message: widget.message ?? 'No internet connection',
               syncMessage: widget.syncMessage ?? 'Syncing data…',
