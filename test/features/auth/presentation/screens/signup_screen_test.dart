@@ -112,14 +112,14 @@ void main() {
       );
 
       // Fill required fields
-      await tester.enterText(
-          find.byKey(const Key('auth_name_field')), 'Alice');
+      await tester.enterText(find.byKey(const Key('auth_name_field')), 'Alice');
       await tester.enterText(
           find.byKey(const Key('auth_email_field')), 'alice@example.com');
       await tester.enterText(
           find.byKey(const Key('signup_password_field')), 'password123');
       await tester.enterText(
-          find.byKey(const Key('signup_confirm_password_field')), 'password123');
+          find.byKey(const Key('signup_confirm_password_field')),
+          'password123');
 
       await tester.tap(find.byKey(const Key('sign_up_button')));
       await tester.pump();
@@ -130,7 +130,8 @@ void main() {
       );
     });
 
-    testWidgets('shows error message when auth state has error', (tester) async {
+    testWidgets('shows error message when auth state has error',
+        (tester) async {
       await tester.pumpWidget(
         _buildSignupScreen(const AuthState.error('Email already in use')),
       );

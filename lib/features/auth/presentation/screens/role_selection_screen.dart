@@ -122,8 +122,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
               Center(
                 child: TextButton(
                   key: const Key('sign_out_button'),
-                  onPressed: () =>
-                      ref.read(authProvider.notifier).signOut(),
+                  onPressed: () => ref.read(authProvider.notifier).signOut(),
                   child: const Text('Sign out'),
                 ),
               ),

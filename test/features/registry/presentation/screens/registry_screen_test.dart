@@ -39,7 +39,8 @@ class _FakeRegistryNotifier extends RegistryScreenNotifier {
 // Helper factory for RegistryItem
 // ---------------------------------------------------------------------------
 
-RegistryItemWithStatus _makeItem(String id, String name, {bool isPurchased = false}) {
+RegistryItemWithStatus _makeItem(String id, String name,
+    {bool isPurchased = false}) {
   final now = DateTime(2024, 6, 1);
   return RegistryItemWithStatus(
     item: RegistryItem(

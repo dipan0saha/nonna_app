@@ -25,7 +25,8 @@ class SettingsScreen extends ConsumerWidget {
           SwitchListTile(
             key: const Key('notifications_toggle'),
             title: const Text('Push Notifications'),
-            subtitle: const Text('Receive notifications about events and updates'),
+            subtitle:
+                const Text('Receive notifications about events and updates'),
             value: state.notificationsEnabled,
             onChanged: (v) => notifier.toggleNotifications(enabled: v),
           ),

@@ -190,7 +190,8 @@ void main() {
             );
 
         // Verify database was called despite cache
-        verify(mockDatabaseService.select(SupabaseTables.babyMemberships)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(SupabaseTables.babyMemberships))
+            .called(greaterThanOrEqualTo(1));
       });
 
       test('filters only recent followers', () async {
@@ -269,7 +270,8 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.empty());
-        when(mockDatabaseService.select(SupabaseTables.babyMemberships)).thenReturn(
+        when(mockDatabaseService.select(SupabaseTables.babyMemberships))
+            .thenReturn(
           FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
         );
 
@@ -305,7 +307,8 @@ void main() {
             );
 
         // Verify database was called (bypassing cache)
-        verify(mockDatabaseService.select(SupabaseTables.babyMemberships)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(SupabaseTables.babyMemberships))
+            .called(greaterThanOrEqualTo(1));
       });
     });
 
@@ -360,7 +363,8 @@ void main() {
             .read(newFollowersProvider.notifier)
             .fetchFollowers(babyProfileId: 'profile_1');
 
-        final followersLength = container!.read(newFollowersProvider).followers.length;
+        final followersLength =
+            container!.read(newFollowersProvider).followers.length;
 
         expect(followersLength, equals(1));
 

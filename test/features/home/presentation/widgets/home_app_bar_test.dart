@@ -30,7 +30,8 @@ void main() {
       expect(find.byKey(const Key('home_app_bar')), findsOneWidget);
     });
 
-    testWidgets('shows default title Nonna when no profile name', (tester) async {
+    testWidgets('shows default title Nonna when no profile name',
+        (tester) async {
       await tester.pumpWidget(_buildAppBar());
       expect(find.text('Nonna'), findsOneWidget);
     });

@@ -95,9 +95,7 @@ class _CountdownRow extends StatelessWidget {
         key: Key('countdown_row_${countdown.profile.id}'),
         children: [
           Icon(
-            countdown.isPastDue
-                ? Icons.child_friendly
-                : Icons.pregnant_woman,
+            countdown.isPastDue ? Icons.child_friendly : Icons.pregnant_woman,
             color: color,
             size: 24,
           ),
@@ -135,9 +133,7 @@ class _CountdownRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSpacing.xs),
             ),
             child: Text(
-              countdown.isPastDue
-                  ? 'Born!'
-                  : '${countdown.daysUntilDueDate}d',
+              countdown.isPastDue ? 'Born!' : '${countdown.daysUntilDueDate}d',
               style: context.textTheme.labelMedium?.copyWith(
                 color: color,
                 fontWeight: FontWeight.bold,

@@ -110,7 +110,8 @@ void main() {
         container = createContainer();
         // Setup mocks
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -161,7 +162,8 @@ void main() {
         container = createContainer();
         // Setup mock to throw error
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockDatabaseService.select(SupabaseTables.events)).thenThrow(Exception('Database error'));
+        when(mockDatabaseService.select(SupabaseTables.events))
+            .thenThrow(Exception('Database error'));
 
         final notifier = container!.read(upcomingEventsProvider.notifier);
 
@@ -182,7 +184,8 @@ void main() {
         // Setup mocks
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -201,14 +204,15 @@ void main() {
 
         // Verify database was called despite cache
         verify(mockDatabaseService.select(SupabaseTables.events)).called(1);
-        
+
         realtimeController.close();
       });
 
       test('saves fetched events to cache', () async {
         container = createContainer();
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -225,9 +229,10 @@ void main() {
         );
 
         // Verify cache put was called
-        verify(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
+        verify(mockCacheService.put(any, any,
+                ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
-        
+
         realtimeController.close();
       });
     });
@@ -237,7 +242,8 @@ void main() {
         container = createContainer();
         // Setup initial state with events
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -264,7 +270,7 @@ void main() {
         // Verify state updated with new events
         expect(state.events, hasLength(2));
         expect(state.currentPage, equals(2));
-        
+
         realtimeController.close();
       });
 
@@ -272,7 +278,8 @@ void main() {
         container = createContainer();
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -294,8 +301,9 @@ void main() {
         await notifier.loadMore(babyProfileId: 'profile_1');
 
         // Verify no additional database call
-        verify(mockDatabaseService.select(SupabaseTables.events)).called(1); // Only initial fetch
-        
+        verify(mockDatabaseService.select(SupabaseTables.events))
+            .called(1); // Only initial fetch
+
         realtimeController.close();
       });
 
@@ -303,7 +311,8 @@ void main() {
         container = createContainer();
         // Setup initial state with hasMore = false
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -327,7 +336,7 @@ void main() {
 
         // Verify only initial database call
         verify(mockDatabaseService.select(SupabaseTables.events)).called(1);
-        
+
         realtimeController.close();
       });
     });
@@ -337,7 +346,8 @@ void main() {
         container = createContainer();
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleEvent.toJson()]);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -355,7 +365,7 @@ void main() {
 
         // Verify database was called (bypassing cache)
         verify(mockDatabaseService.select(SupabaseTables.events)).called(1);
-        
+
         realtimeController.close();
       });
     });
@@ -365,7 +375,8 @@ void main() {
         container = createContainer();
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -393,7 +404,7 @@ void main() {
 
         expect(container!.read(upcomingEventsProvider).events.length,
             equals(initialCount + 1));
-        
+
         realtimeController.close();
       });
 
@@ -401,7 +412,8 @@ void main() {
         container = createContainer();
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -427,7 +439,7 @@ void main() {
 
         expect(container!.read(upcomingEventsProvider).events.first.title,
             equals('Updated Event'));
-        
+
         realtimeController.close();
       });
 
@@ -435,7 +447,8 @@ void main() {
         container = createContainer();
         // Setup initial state
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -460,7 +473,7 @@ void main() {
         );
 
         expect(container!.read(upcomingEventsProvider).events, isEmpty);
-        
+
         realtimeController.close();
       });
     });

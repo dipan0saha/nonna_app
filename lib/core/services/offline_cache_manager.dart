@@ -149,11 +149,9 @@ class OfflineCacheManager {
   OfflineCacheManager({
     required CacheService cacheService,
     Future<bool> Function()? connectivityChecker,
-    this.conflictResolutionStrategy =
-        ConflictResolutionStrategy.lastWriteWins,
+    this.conflictResolutionStrategy = ConflictResolutionStrategy.lastWriteWins,
   })  : _cacheService = cacheService,
-        _connectivityChecker =
-            connectivityChecker ?? (() async => true);
+        _connectivityChecker = connectivityChecker ?? (() async => true);
 
   // ==========================================
   // Getters
@@ -340,7 +338,8 @@ class OfflineCacheManager {
         toRemove.add(operation);
       } catch (e) {
         debugPrint('❌ Failed to apply operation ${operation.id}: $e');
-        final updated = operation.copyWith(retryCount: operation.retryCount + 1);
+        final updated =
+            operation.copyWith(retryCount: operation.retryCount + 1);
         final idx = _syncQueue.indexOf(operation);
         if (idx >= 0) {
           _syncQueue[idx] = updated;
@@ -358,7 +357,8 @@ class OfflineCacheManager {
     }
 
     await _persistSyncQueue();
-    debugPrint('✅ Sync queue processed – ${toRemove.length} operations applied');
+    debugPrint(
+        '✅ Sync queue processed – ${toRemove.length} operations applied');
   }
 
   /// Clear the sync queue without processing.
@@ -437,8 +437,7 @@ class OfflineCacheManager {
   Future<void> _enqueueOperation(SyncOperation operation) async {
     _syncQueue.add(operation);
     await _persistSyncQueue();
-    debugPrint(
-        '📋 Enqueued ${operation.type.name} for key: ${operation.key} '
+    debugPrint('📋 Enqueued ${operation.type.name} for key: ${operation.key} '
         '(queue size: ${_syncQueue.length})');
   }
 
@@ -453,8 +452,7 @@ class OfflineCacheManager {
           final existing = await _cacheService.get<String>(operation.key);
           if (existing != null) {
             try {
-              final existingData =
-                  jsonDecode(existing) as Map<String, dynamic>;
+              final existingData = jsonDecode(existing) as Map<String, dynamic>;
               dataToWrite = resolveConflict(
                 localData: operation.data!,
                 remoteData: existingData,

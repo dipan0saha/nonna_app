@@ -29,8 +29,7 @@ class EditBabyProfileScreen extends ConsumerStatefulWidget {
       _EditBabyProfileScreenState();
 }
 
-class _EditBabyProfileScreenState
-    extends ConsumerState<EditBabyProfileScreen> {
+class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
   static const int _twoYearsInDays = 730;
 
   late final TextEditingController _nameController;
@@ -166,15 +165,15 @@ class _EditBabyProfileScreenState
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: const Text('Expected Birth Date'),
-                    subtitle: Text(_formatDate(_expectedBirthDate) ?? 'Not set'),
+                    subtitle:
+                        Text(_formatDate(_expectedBirthDate) ?? 'Not set'),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () => _pickDate(
                       current: _expectedBirthDate,
                       firstDate:
                           DateTime.now().subtract(const Duration(days: 365)),
                       lastDate: DateTime.now().add(const Duration(days: 365)),
-                      onPicked: (d) =>
-                          setState(() => _expectedBirthDate = d),
+                      onPicked: (d) => setState(() => _expectedBirthDate = d),
                     ),
                   ),
                   ListTile(
@@ -185,11 +184,10 @@ class _EditBabyProfileScreenState
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () => _pickDate(
                       current: _actualBirthDate,
-                      firstDate:
-                          DateTime.now().subtract(const Duration(days: _twoYearsInDays)),
+                      firstDate: DateTime.now()
+                          .subtract(const Duration(days: _twoYearsInDays)),
                       lastDate: DateTime.now(),
-                      onPicked: (d) =>
-                          setState(() => _actualBirthDate = d),
+                      onPicked: (d) => setState(() => _actualBirthDate = d),
                     ),
                   ),
                   if (state.saveError != null) ...[
@@ -207,8 +205,7 @@ class _EditBabyProfileScreenState
                         ? const SizedBox(
                             height: 20,
                             width: 20,
-                            child:
-                                CircularProgressIndicator(strokeWidth: 2),
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Text('Save'),
                   ),

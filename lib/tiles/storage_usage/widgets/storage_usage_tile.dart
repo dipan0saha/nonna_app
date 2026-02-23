@@ -136,8 +136,8 @@ class _StorageSummary extends StatelessWidget {
         LinearProgressIndicator(
           key: const Key('storage_progress_bar'),
           value: pct / 100,
-          backgroundColor:
-              AppColors.onSurfaceHint(context.colorScheme).withValues(alpha: 0.2),
+          backgroundColor: AppColors.onSurfaceHint(context.colorScheme)
+              .withValues(alpha: 0.2),
           valueColor: AlwaysStoppedAnimation<Color>(barColor),
         ),
         AppSpacing.verticalGapXS,

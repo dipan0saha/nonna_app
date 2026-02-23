@@ -16,8 +16,7 @@ void main() {
             body: const Text('Body'),
             bottomNavigationBar: BottomNavigationBar(
               items: const [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home), label: 'Home'),
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.settings), label: 'Settings'),
               ],
@@ -50,8 +49,7 @@ void main() {
             body: const Text('Body'),
             bottomNavigationBar: BottomNavigationBar(
               items: const [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home), label: 'Home'),
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.settings), label: 'Settings'),
               ],
@@ -89,7 +87,8 @@ void main() {
       expect(find.text('Hello World'), findsOneWidget);
     });
 
-    testWidgets('no navigation rail provided — falls back to bottom nav on tablet',
+    testWidgets(
+        'no navigation rail provided — falls back to bottom nav on tablet',
         (tester) async {
       tester.view.physicalSize = const Size(800, 1200);
       tester.view.devicePixelRatio = 1.0;

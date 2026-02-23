@@ -67,7 +67,8 @@ void main() {
       expect(find.text('Network error'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when notifications list is empty', (tester) async {
+    testWidgets('shows empty state when notifications list is empty',
+        (tester) async {
       await tester.pumpWidget(_buildWidget());
       expect(find.text('No notifications'), findsOneWidget);
     });
@@ -147,7 +148,8 @@ void main() {
       expect(tapped, equals(notification));
     });
 
-    testWidgets('shows view all button when onViewAll is provided', (tester) async {
+    testWidgets('shows view all button when onViewAll is provided',
+        (tester) async {
       await tester.pumpWidget(_buildWidget(onViewAll: () {}));
       expect(find.byKey(const Key('notifications_view_all')), findsOneWidget);
     });

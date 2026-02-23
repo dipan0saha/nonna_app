@@ -96,7 +96,8 @@ void main() {
 
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -115,7 +116,7 @@ void main() {
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
         expect(state.pendingCount, equals(1));
-        
+
         realtimeController.close();
       });
 
@@ -161,7 +162,8 @@ void main() {
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -177,7 +179,7 @@ void main() {
 
         // Verify database was called despite cache
         verify(mocks.database.select(any)).called(1);
-        
+
         realtimeController.close();
       });
 
@@ -192,7 +194,8 @@ void main() {
             id: 'invite_3', status: InvitationStatus.pending);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -208,7 +211,7 @@ void main() {
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
         expect(container.read(invitesStatusProvider).pendingCount, equals(2));
-        
+
         realtimeController.close();
       });
     });
@@ -219,7 +222,8 @@ void main() {
 
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleInvitation.toJson()]);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -232,7 +236,7 @@ void main() {
 
         // Verify database was called (bypassing cache)
         verify(mocks.database.select(any)).called(1);
-        
+
         realtimeController.close();
       });
     });
@@ -243,7 +247,8 @@ void main() {
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -268,7 +273,7 @@ void main() {
 
         expect(container.read(invitesStatusProvider).invitations.length,
             equals(initialCount + 1));
-        
+
         realtimeController.close();
       });
 
@@ -277,7 +282,8 @@ void main() {
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -305,7 +311,7 @@ void main() {
         expect(container.read(invitesStatusProvider).invitations.first.status,
             equals(InvitationStatus.accepted));
         expect(container.read(invitesStatusProvider).pendingCount, equals(0));
-        
+
         realtimeController.close();
       });
     });
@@ -324,7 +330,8 @@ void main() {
         final notifier = container.read(invitesStatusProvider.notifier);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -336,7 +343,7 @@ void main() {
         await notifier.fetchInvitations(babyProfileId: 'profile_1');
 
         expect(container.read(invitesStatusProvider).invitations, isNotEmpty);
-        
+
         realtimeController.close();
       });
     });

@@ -30,7 +30,8 @@ class _FakeBabyProfileNotifier extends BabyProfileNotifier {
   Future<bool> removeFollower({
     required String babyProfileId,
     required String membershipId,
-  }) async => true;
+  }) async =>
+      true;
 }
 
 // ---------------------------------------------------------------------------
@@ -63,8 +64,7 @@ BabyMembership _makeMembership({
 Widget _buildScreen(BabyProfileState state) {
   return ProviderScope(
     overrides: [
-      babyProfileProvider
-          .overrideWith(() => _FakeBabyProfileNotifier(state)),
+      babyProfileProvider.overrideWith(() => _FakeBabyProfileNotifier(state)),
     ],
     child: const MaterialApp(
       home: BabyProfileScreen(

@@ -33,9 +33,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.initState();
     _displayNameController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(profileProvider.notifier)
-          .loadProfile(userId: widget.userId);
+      ref.read(profileProvider.notifier).loadProfile(userId: widget.userId);
     });
   }
 

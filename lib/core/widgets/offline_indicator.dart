@@ -187,8 +187,7 @@ class _StreamOfflineIndicatorState extends State<StreamOfflineIndicator> {
       stream: widget.connectivityStream,
       initialData: widget.initiallyOnline,
       builder: (context, connectivitySnapshot) {
-        final isOnline =
-            connectivitySnapshot.data ?? widget.initiallyOnline;
+        final isOnline = connectivitySnapshot.data ?? widget.initiallyOnline;
 
         if (widget.syncStatusStream == null) {
           return OfflineIndicator(

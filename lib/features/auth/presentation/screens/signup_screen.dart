@@ -154,8 +154,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       labelText: 'Confirm Password',
                       hintText: 'Re-enter your password',
                       fieldKey: const Key('signup_confirm_password_field'),
-                      validator: (v) => validatePasswordConfirm(
-                          v, _passwordController.text),
+                      validator: (v) =>
+                          validatePasswordConfirm(v, _passwordController.text),
                       onSubmitted: (_) => _signUp(),
                     ),
                     const SizedBox(height: 16),
@@ -251,8 +251,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     color: AppColors.primary,
                     decoration: TextDecoration.underline,
                   ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = widget.onTermsTap,
+                  recognizer: TapGestureRecognizer()..onTap = widget.onTermsTap,
                 ),
                 const TextSpan(text: ' and '),
                 TextSpan(

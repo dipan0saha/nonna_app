@@ -92,7 +92,8 @@ void main() {
       expect(find.byKey(const Key('home_app_bar')), findsOneWidget);
     });
 
-    testWidgets('shows empty prompt when no baby profile is set', (tester) async {
+    testWidgets('shows empty prompt when no baby profile is set',
+        (tester) async {
       await tester.pumpWidget(
         _buildScreen(const HomeScreenState()),
       );
@@ -165,7 +166,8 @@ void main() {
       expect(find.text('Follower'), findsOneWidget);
     });
 
-    testWidgets('does not show role toggle for single-role user', (tester) async {
+    testWidgets('does not show role toggle for single-role user',
+        (tester) async {
       await tester.pumpWidget(
         _buildScreen(
           const HomeScreenState(),

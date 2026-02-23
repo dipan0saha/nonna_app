@@ -55,7 +55,8 @@ void main() {
       expect(find.byKey(const Key('sort_dropdown')), findsOneWidget);
     });
 
-    testWidgets('calls onSortChanged when sort option selected', (tester) async {
+    testWidgets('calls onSortChanged when sort option selected',
+        (tester) async {
       RegistrySort? selected;
       await tester.pumpWidget(
         _buildWidget(onSortChanged: (s) => selected = s),

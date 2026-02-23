@@ -116,7 +116,8 @@ void main() {
       expect(find.text('Password is required'), findsOneWidget);
     });
 
-    testWidgets('shows error message when auth state has error', (tester) async {
+    testWidgets('shows error message when auth state has error',
+        (tester) async {
       await tester.pumpWidget(
         _buildLoginScreen(const AuthState.error('Invalid credentials')),
       );

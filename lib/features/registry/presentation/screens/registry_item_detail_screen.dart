@@ -101,7 +101,8 @@ class RegistryItemDetailScreen extends StatelessWidget {
                 onTap: onLinkTap,
                 child: Text(
                   item.linkUrl!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
               ),
               AppSpacing.verticalGapM,

@@ -113,14 +113,15 @@ void main() {
     group('Server errors', () {
       test('categorises HttpException with 500 message as serverError', () {
         final handler = NetworkErrorHandler();
-        final type =
-            handler.categoriseError(const HttpException('500 Internal Server Error'));
+        final type = handler
+            .categoriseError(const HttpException('500 Internal Server Error'));
         expect(type, equals(NetworkErrorType.serverError));
       });
 
       test('categorises string with 503 as serverError', () {
         final handler = NetworkErrorHandler();
-        final type = handler.categoriseError(Exception('503 Service Unavailable'));
+        final type =
+            handler.categoriseError(Exception('503 Service Unavailable'));
         expect(type, equals(NetworkErrorType.serverError));
       });
 
@@ -273,8 +274,7 @@ void main() {
     // -----------------------------------------------------------------------
 
     group('Exponential back-off', () {
-      test('backoffDelay doubles with each attempt up to 32x cap',
-          () {
+      test('backoffDelay doubles with each attempt up to 32x cap', () {
         final handler = NetworkErrorHandler(
           initialBackoff: const Duration(milliseconds: 10),
           maxRetries: 0,

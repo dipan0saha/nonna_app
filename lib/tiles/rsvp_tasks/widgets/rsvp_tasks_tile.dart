@@ -141,12 +141,8 @@ class _RsvpTaskRow extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              item.needsResponse
-                  ? Icons.pending_actions
-                  : Icons.check_circle,
-              color: item.needsResponse
-                  ? AppColors.primary
-                  : Colors.green,
+              item.needsResponse ? Icons.pending_actions : Icons.check_circle,
+              color: item.needsResponse ? AppColors.primary : Colors.green,
               size: 20,
             ),
             AppSpacing.horizontalGapS,
@@ -164,8 +160,7 @@ class _RsvpTaskRow extends StatelessWidget {
                   Text(
                     dateStr,
                     style: context.textTheme.bodySmall?.copyWith(
-                      color:
-                          AppColors.onSurfaceSecondary(context.colorScheme),
+                      color: AppColors.onSurfaceSecondary(context.colorScheme),
                     ),
                   ),
                 ],

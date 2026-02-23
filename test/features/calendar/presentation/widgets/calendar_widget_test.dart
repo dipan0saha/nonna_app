@@ -123,8 +123,8 @@ void main() {
         ),
       );
 
-      final eventIndicatorKey = Key(
-          'calendar_event_indicator_${eventDate.toIso8601String()}');
+      final eventIndicatorKey =
+          Key('calendar_event_indicator_${eventDate.toIso8601String()}');
       expect(find.byKey(eventIndicatorKey), findsOneWidget);
     });
   });

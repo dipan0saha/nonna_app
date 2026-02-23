@@ -159,8 +159,9 @@ class _AuthPasswordFieldState extends State<AuthPasswordField> {
         prefixIcon: const Icon(Icons.lock_outlined),
         suffixIcon: IconButton(
           key: const Key('password_visibility_toggle'),
-          icon:
-              Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+          icon: Icon(_obscure
+              ? Icons.visibility_outlined
+              : Icons.visibility_off_outlined),
           onPressed: () => setState(() => _obscure = !_obscure),
           tooltip: _obscure ? 'Show password' : 'Hide password',
         ),

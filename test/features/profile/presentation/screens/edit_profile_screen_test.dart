@@ -75,7 +75,8 @@ void main() {
 
     testWidgets("shows 'Display Name' text field", (tester) async {
       await tester.pumpWidget(_buildScreen(const ProfileState()));
-      expect(find.widgetWithText(TextFormField, 'Display Name'), findsOneWidget);
+      expect(
+          find.widgetWithText(TextFormField, 'Display Name'), findsOneWidget);
     });
 
     testWidgets("shows 'Enable Biometric Login' switch", (tester) async {
@@ -94,9 +95,9 @@ void main() {
       expect(find.widgetWithText(OutlinedButton, 'Cancel'), findsOneWidget);
     });
 
-    testWidgets('Save button is disabled when isSaving is true', (tester) async {
-      await tester
-          .pumpWidget(_buildScreen(const ProfileState(isSaving: true)));
+    testWidgets('Save button is disabled when isSaving is true',
+        (tester) async {
+      await tester.pumpWidget(_buildScreen(const ProfileState(isSaving: true)));
       final button = tester.widget<ElevatedButton>(
         find.byType(ElevatedButton),
       );

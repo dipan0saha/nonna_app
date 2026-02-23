@@ -91,7 +91,8 @@ void main() {
       test('fetches photos from database when cache is empty', () async {
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -110,7 +111,7 @@ void main() {
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
         expect(state.currentPage, equals(1));
-        
+
         realtimeController.close();
       });
 
@@ -134,7 +135,8 @@ void main() {
       test('handles errors gracefully', () async {
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(SupabaseTables.photos)).thenThrow(Exception('Database error'));
+        when(mocks.database.select(SupabaseTables.photos))
+            .thenThrow(Exception('Database error'));
 
         final notifier = container.read(recentPhotosProvider.notifier);
         await notifier.fetchPhotos(babyProfileId: 'profile_1');
@@ -150,7 +152,8 @@ void main() {
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -167,13 +170,14 @@ void main() {
 
         // Verify database was called despite cache
         verify(mocks.database.select(SupabaseTables.photos)).called(1);
-        
+
         realtimeController.close();
       });
 
       test('saves fetched photos to cache', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -188,7 +192,7 @@ void main() {
         // Verify cache put was called
         verify(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(1);
-        
+
         realtimeController.close();
       });
     });
@@ -197,7 +201,8 @@ void main() {
       test('loads more photos for infinite scroll', () async {
         // Setup initial state with photos
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -219,14 +224,15 @@ void main() {
         final state = container.read(recentPhotosProvider);
         expect(state.photos, hasLength(2));
         expect(state.currentPage, equals(2));
-        
+
         realtimeController.close();
       });
 
       test('does not load more when already loading', () async {
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -255,14 +261,15 @@ void main() {
 
         // Verify database select was called for initial fetch only
         verify(mocks.database.select(SupabaseTables.photos)).called(1);
-        
+
         realtimeController.close();
       });
 
       test('does not load more when hasMore is false', () async {
         // Setup initial state with hasMore = false
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -279,7 +286,7 @@ void main() {
         await notifier.loadMore(babyProfileId: 'profile_1');
 
         verify(mocks.database.select(SupabaseTables.photos)).called(1);
-        
+
         realtimeController.close();
       });
     });
@@ -288,7 +295,8 @@ void main() {
       test('refreshes photos with force refresh', () async {
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -302,7 +310,7 @@ void main() {
 
         // Verify database was called (bypassing cache)
         verify(mocks.database.select(SupabaseTables.photos)).called(1);
-        
+
         realtimeController.close();
       });
     });
@@ -311,7 +319,8 @@ void main() {
       test('handles INSERT photo', () async {
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -333,14 +342,15 @@ void main() {
         // In real scenario, this would be handled by the real-time callback
         // For testing, we just verify the initial fetch worked
         expect(initialCount, equals(1));
-        
+
         realtimeController.close();
       });
 
       test('handles UPDATE photo', () async {
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -355,14 +365,15 @@ void main() {
         // Verify initial state
         final state = container.read(recentPhotosProvider);
         expect(state.photos.first.caption, equals('Cute baby photo'));
-        
+
         realtimeController.close();
       });
 
       test('handles DELETE photo', () async {
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -378,7 +389,7 @@ void main() {
 
         // In real scenario, DELETE event would remove the photo
         // For testing, we just verify initial fetch worked
-        
+
         realtimeController.close();
       });
     });

@@ -71,7 +71,8 @@ void main() {
       expect(find.text('Getting Started'), findsOneWidget);
     });
 
-    testWidgets('shows progress text with completed/total counts', (tester) async {
+    testWidgets('shows progress text with completed/total counts',
+        (tester) async {
       final items = [
         _makeItem(id: 'i1', isCompleted: true),
         _makeItem(id: 'i2'),

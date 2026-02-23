@@ -82,7 +82,8 @@ void main() {
     });
 
     testWidgets('shows at most 5 items', (tester) async {
-      final items = List.generate(7, (i) => _makeItem(id: 'r$i', name: 'Item $i'));
+      final items =
+          List.generate(7, (i) => _makeItem(id: 'r$i', name: 'Item $i'));
       await tester.pumpWidget(_buildWidget(items: items));
       int count = 0;
       for (int i = 0; i < 5; i++) {
@@ -126,9 +127,11 @@ void main() {
       expect(find.byIcon(Icons.radio_button_unchecked), findsOneWidget);
     });
 
-    testWidgets('shows view all button when onViewAll is provided', (tester) async {
+    testWidgets('shows view all button when onViewAll is provided',
+        (tester) async {
       await tester.pumpWidget(_buildWidget(onViewAll: () {}));
-      expect(find.byKey(const Key('registry_highlights_view_all')), findsOneWidget);
+      expect(find.byKey(const Key('registry_highlights_view_all')),
+          findsOneWidget);
     });
 
     testWidgets('view all button calls onViewAll callback', (tester) async {

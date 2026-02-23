@@ -18,8 +18,7 @@ class _FakeGamificationNotifier extends GamificationNotifier {
 Widget _buildScreen(GamificationState state) {
   return ProviderScope(
     overrides: [
-      gamificationProvider
-          .overrideWith(() => _FakeGamificationNotifier(state)),
+      gamificationProvider.overrideWith(() => _FakeGamificationNotifier(state)),
     ],
     child: const MaterialApp(
       home: GamificationScreen(babyProfileId: 'baby-1'),
@@ -57,8 +56,7 @@ void main() {
     testWidgets('shows empty state for name suggestions tab when empty',
         (tester) async {
       await tester.pumpWidget(_buildScreen(const GamificationState()));
-      expect(
-          find.byKey(const Key('no_name_suggestions_empty_state')),
+      expect(find.byKey(const Key('no_name_suggestions_empty_state')),
           findsOneWidget);
     });
 

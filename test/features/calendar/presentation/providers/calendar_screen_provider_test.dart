@@ -151,8 +151,9 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(SupabaseTables.events)).thenAnswer((_) =>
-            FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
+        when(mockDatabaseService.select(SupabaseTables.events)).thenAnswer(
+            (_) =>
+                FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -255,8 +256,9 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        when(mockDatabaseService.select(SupabaseTables.events)).thenAnswer((_) =>
-            FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
+        when(mockDatabaseService.select(SupabaseTables.events)).thenAnswer(
+            (_) =>
+                FakePostgrestBuilder([sampleEvent.toJson(), event2.toJson()]));
 
         final notifier = container.read(calendarScreenProvider.notifier);
         await notifier.loadEvents(babyProfileId: 'profile_1');
@@ -353,7 +355,7 @@ void main() {
     group('Real-time Updates', () {
       test('handles INSERT event', () async {
         final streamController = StreamController<Map<String, dynamic>>();
-        
+
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -382,18 +384,18 @@ void main() {
 
         // Wait for stream to be processed
         await Future.delayed(const Duration(milliseconds: 100));
-        
+
         // Check state before disposing
         final eventCount = notifier.state.events.length;
         expect(eventCount, equals(2));
-        
+
         // Clean up
         await streamController.close();
       });
 
       test('handles UPDATE event', () async {
         final streamController = StreamController<Map<String, dynamic>>();
-        
+
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -425,18 +427,18 @@ void main() {
 
         // Wait for stream to be processed
         await Future.delayed(const Duration(milliseconds: 100));
-        
+
         // Check state before disposing
         final eventTitle = notifier.state.events.first.title;
         expect(eventTitle, equals('Updated Event'));
-        
+
         // Clean up
         await streamController.close();
       });
 
       test('handles DELETE event', () async {
         final streamController = StreamController<Map<String, dynamic>>();
-        
+
         when(mockRealtimeService.subscribe(
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
@@ -459,11 +461,11 @@ void main() {
 
         // Wait for stream to be processed
         await Future.delayed(const Duration(milliseconds: 100));
-        
+
         // Check state before disposing
         final events = notifier.state.events;
         expect(events, isEmpty);
-        
+
         // Clean up
         await streamController.close();
       });

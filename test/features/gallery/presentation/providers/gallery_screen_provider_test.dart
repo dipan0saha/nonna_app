@@ -109,7 +109,8 @@ void main() {
         // Create container after setting up mocks
         container = createContainer();
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container!.read(galleryScreenProvider.notifier);
@@ -140,7 +141,8 @@ void main() {
         // Create container for this test
         container = createContainer();
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container!.read(galleryScreenProvider.notifier);
@@ -155,13 +157,14 @@ void main() {
       test('sets hasMore based on page size', () async {
         // Create container for this test
         container = createContainer();
-        
+
         final photos = List.generate(
           30,
           (i) => samplePhoto.copyWith(id: 'photo_$i'),
         );
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) =>
                 FakePostgrestBuilder(photos.map((p) => p.toJson()).toList()));
 
@@ -177,7 +180,8 @@ void main() {
 
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePhoto.toJson()]);
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container!.read(galleryScreenProvider.notifier);
@@ -193,7 +197,8 @@ void main() {
         // Create container for this test
         container = createContainer();
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenThrow(Exception('Database error'));
 
         final notifier = container!.read(galleryScreenProvider.notifier);
@@ -208,7 +213,8 @@ void main() {
         // Create container for this test
         container = createContainer();
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         final notifier = container!.read(galleryScreenProvider.notifier);
@@ -235,7 +241,8 @@ void main() {
           currentPage: 1,
         );
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([
                   samplePhoto.copyWith(id: 'photo_2').toJson(),
                 ]));
@@ -260,8 +267,8 @@ void main() {
 
         await notifier.loadMore();
 
-        verifyNever(
-            mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')));
+        verifyNever(mockDatabaseService.select(SupabaseTables.photos,
+            columns: anyNamed('columns')));
       });
 
       test('does not load more when hasMore is false', () async {
@@ -276,8 +283,8 @@ void main() {
 
         await notifier.loadMore();
 
-        verifyNever(
-            mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')));
+        verifyNever(mockDatabaseService.select(SupabaseTables.photos,
+            columns: anyNamed('columns')));
       });
 
       test('does not load more when babyProfileId is null', () async {
@@ -287,8 +294,8 @@ void main() {
         final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.loadMore();
 
-        verifyNever(
-            mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')));
+        verifyNever(mockDatabaseService.select(SupabaseTables.photos,
+            columns: anyNamed('columns')));
       });
 
       test('handles load more error', () async {
@@ -303,7 +310,8 @@ void main() {
           currentPage: 1,
         );
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenThrow(Exception('Network error'));
 
         await notifier.loadMore();
@@ -322,7 +330,8 @@ void main() {
           selectedBabyProfileId: 'profile_1',
         );
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.filterByTag('milestone');
@@ -344,7 +353,8 @@ void main() {
           selectedTag: 'milestone',
         );
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.clearFilters();
@@ -364,7 +374,8 @@ void main() {
           selectedBabyProfileId: 'profile_1',
         );
 
-        when(mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
 
         await notifier.refresh();
@@ -379,8 +390,8 @@ void main() {
         final notifier = container!.read(galleryScreenProvider.notifier);
         await notifier.refresh();
 
-        verifyNever(
-            mockDatabaseService.select(SupabaseTables.photos, columns: anyNamed('columns')));
+        verifyNever(mockDatabaseService.select(SupabaseTables.photos,
+            columns: anyNamed('columns')));
       });
     });
 

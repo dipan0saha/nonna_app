@@ -193,11 +193,12 @@ class _DayGrid extends StatelessWidget {
 
     for (var day = 1; day <= daysInMonth; day++) {
       final date = DateTime(focusedMonth.year, focusedMonth.month, day);
-      final isSelected = date == DateTime(
-        selectedDate.year,
-        selectedDate.month,
-        selectedDate.day,
-      );
+      final isSelected = date ==
+          DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+          );
       final isToday = date == todayNorm;
       final hasEvent = datesWithEvents.contains(date);
 
@@ -282,8 +283,7 @@ class _DayCell extends StatelessWidget {
             ),
             if (hasEvent)
               Container(
-                key: Key(
-                    'calendar_event_indicator_${date.toIso8601String()}'),
+                key: Key('calendar_event_indicator_${date.toIso8601String()}'),
                 width: 5,
                 height: 5,
                 margin: const EdgeInsets.only(top: 2),

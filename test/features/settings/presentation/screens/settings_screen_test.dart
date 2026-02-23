@@ -69,8 +69,8 @@ void main() {
 
     testWidgets('calls onSignOut when sign out tile tapped', (tester) async {
       var called = false;
-      await tester
-          .pumpWidget(_buildScreen(const SettingsState(), onSignOut: () => called = true));
+      await tester.pumpWidget(
+          _buildScreen(const SettingsState(), onSignOut: () => called = true));
       await tester.tap(find.byKey(const Key('sign_out_tile')));
       await tester.pump();
       expect(called, isTrue);

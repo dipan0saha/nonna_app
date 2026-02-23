@@ -80,7 +80,8 @@ void main() {
       expect(find.text('Description:'), findsOneWidget);
     });
 
-    testWidgets('shows purchased status when item is purchased', (tester) async {
+    testWidgets('shows purchased status when item is purchased',
+        (tester) async {
       await tester.pumpWidget(_buildScreen(_makeItem(), isPurchased: true));
       expect(find.text('Purchased'), findsOneWidget);
     });

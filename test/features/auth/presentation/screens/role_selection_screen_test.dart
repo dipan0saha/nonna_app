@@ -74,8 +74,8 @@ void main() {
         _buildRoleSelectionScreen(const AuthState.unauthenticated()),
       );
 
-      final button =
-          tester.widget<ElevatedButton>(find.byKey(const Key('continue_button')));
+      final button = tester
+          .widget<ElevatedButton>(find.byKey(const Key('continue_button')));
       expect(button.onPressed, isNull);
     });
 
@@ -88,12 +88,13 @@ void main() {
       await tester.tap(find.byKey(const Key('create_profile_card')));
       await tester.pump();
 
-      final button =
-          tester.widget<ElevatedButton>(find.byKey(const Key('continue_button')));
+      final button = tester
+          .widget<ElevatedButton>(find.byKey(const Key('continue_button')));
       expect(button.onPressed, isNotNull);
     });
 
-    testWidgets('calls onCreateProfile when create card selected and continue tapped',
+    testWidgets(
+        'calls onCreateProfile when create card selected and continue tapped',
         (tester) async {
       bool tapped = false;
       await tester.pumpWidget(
@@ -111,7 +112,8 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('calls onJoinProfile when join card selected and continue tapped',
+    testWidgets(
+        'calls onJoinProfile when join card selected and continue tapped',
         (tester) async {
       bool tapped = false;
       await tester.pumpWidget(

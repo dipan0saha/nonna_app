@@ -30,8 +30,7 @@ class SettingsState {
     bool? saveSuccess,
   }) {
     return SettingsState(
-      notificationsEnabled:
-          notificationsEnabled ?? this.notificationsEnabled,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       darkModeEnabled: darkModeEnabled ?? this.darkModeEnabled,
       language: language ?? this.language,
       isSaving: isSaving ?? this.isSaving,
@@ -67,7 +66,8 @@ class SettingsNotifier extends Notifier<SettingsState> {
   /// Save settings
   Future<void> saveSettings() async {
     try {
-      state = state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
+      state =
+          state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
       // TODO: persist to storage/database
       await Future<void>.delayed(const Duration(milliseconds: 200));
       if (!ref.mounted) return;

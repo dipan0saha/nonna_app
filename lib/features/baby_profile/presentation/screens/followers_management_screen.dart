@@ -122,7 +122,8 @@ class _FollowersManagementScreenState
           membership: membership,
           onRemove: () {
             if (membership.id == null) {
-              debugPrint('⚠️  BabyMembership.id is null for userId=${membership.userId}; falling back to userId as membershipId');
+              debugPrint(
+                  '⚠️  BabyMembership.id is null for userId=${membership.userId}; falling back to userId as membershipId');
             }
             _removeFollower(membership.id ?? membership.userId);
           },

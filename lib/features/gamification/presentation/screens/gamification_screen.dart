@@ -92,8 +92,7 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen>
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      _NameSuggestionsTab(
-                          suggestions: state.nameSuggestions),
+                      _NameSuggestionsTab(suggestions: state.nameSuggestions),
                       _VotesTab(votes: state.votes),
                     ],
                   ),

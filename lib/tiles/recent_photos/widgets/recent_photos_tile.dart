@@ -175,13 +175,10 @@ class _PhotoItem extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      item.isSquished
-                          ? Icons.favorite
-                          : Icons.favorite_border,
+                      item.isSquished ? Icons.favorite : Icons.favorite_border,
                       size: 12,
-                      color: item.isSquished
-                          ? AppColors.secondary
-                          : Colors.white,
+                      color:
+                          item.isSquished ? AppColors.secondary : Colors.white,
                     ),
                     const SizedBox(width: 3),
                     Text(

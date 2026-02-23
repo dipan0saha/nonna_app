@@ -62,9 +62,7 @@ class _CreateBabyProfileScreenState
       return;
     }
 
-    final profile = await ref
-        .read(babyProfileProvider.notifier)
-        .createProfile(
+    final profile = await ref.read(babyProfileProvider.notifier).createProfile(
           name: _nameController.text.trim(),
           userId: widget.userId,
           expectedBirthDate: _expectedBirthDate,

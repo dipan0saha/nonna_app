@@ -125,7 +125,8 @@ void main() {
 
         // Verify database was not called
         verifyNever(mockDatabaseService.select(SupabaseTables.registryItems));
-        verifyNever(mockDatabaseService.select(SupabaseTables.registryPurchases));
+        verifyNever(
+            mockDatabaseService.select(SupabaseTables.registryPurchases));
 
         final state = container!.read(recentPurchasesProvider);
         expect(state.purchases, hasLength(1));
@@ -173,7 +174,8 @@ void main() {
         // Verify database was called despite cache
         // Using greaterThanOrEqualTo because the provider makes multiple queries
         // (registry items + purchases) to build the full state
-        verify(mockDatabaseService.select(SupabaseTables.registryItems)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(SupabaseTables.registryItems))
+            .called(greaterThanOrEqualTo(1));
       });
 
       test('saves fetched purchases to cache', () async {
@@ -211,7 +213,8 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
             .thenReturn(FakePostgrestBuilder([]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases)).thenReturn(
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
+            .thenReturn(
           FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
         );
 
@@ -239,7 +242,8 @@ void main() {
 
         // Verify database was called (bypassing cache)
         // Using greaterThanOrEqualTo because the provider makes multiple queries
-        verify(mockDatabaseService.select(SupabaseTables.registryItems)).called(greaterThanOrEqualTo(1));
+        verify(mockDatabaseService.select(SupabaseTables.registryItems))
+            .called(greaterThanOrEqualTo(1));
       });
     });
 
@@ -251,7 +255,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
-        
+
         container = createContainer();
 
         // Setup initial state
@@ -281,7 +285,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
-        
+
         container = createContainer();
 
         // Setup initial state
@@ -298,7 +302,7 @@ void main() {
 
         final state = container!.read(recentPurchasesProvider);
         final isNotEmpty = state.purchases.isNotEmpty;
-        
+
         expect(isNotEmpty, isTrue);
 
         await streamController.close();

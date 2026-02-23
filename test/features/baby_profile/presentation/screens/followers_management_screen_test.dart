@@ -26,7 +26,8 @@ class _FakeBabyProfileNotifier extends BabyProfileNotifier {
   Future<bool> removeFollower({
     required String babyProfileId,
     required String membershipId,
-  }) async => true;
+  }) async =>
+      true;
 }
 
 BabyProfile _makeProfile() {
@@ -74,20 +75,20 @@ void main() {
     });
 
     testWidgets('shows loading indicator when isLoading', (tester) async {
-      await tester.pumpWidget(
-          _buildScreen(const BabyProfileState(isLoading: true)));
+      await tester
+          .pumpWidget(_buildScreen(const BabyProfileState(isLoading: true)));
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
     testWidgets('shows error message when error is set', (tester) async {
-      await tester.pumpWidget(
-          _buildScreen(const BabyProfileState(error: 'Failed')));
+      await tester
+          .pumpWidget(_buildScreen(const BabyProfileState(error: 'Failed')));
       expect(find.text('Failed'), findsOneWidget);
     });
 
     testWidgets('shows empty state when no followers', (tester) async {
-      await tester.pumpWidget(
-          _buildScreen(BabyProfileState(profile: _makeProfile())));
+      await tester
+          .pumpWidget(_buildScreen(BabyProfileState(profile: _makeProfile())));
       expect(find.byKey(const Key('no_followers_empty_state')), findsOneWidget);
     });
 
@@ -115,8 +116,8 @@ void main() {
 
     testWidgets('calls onInviteTap when invite button pressed', (tester) async {
       var called = false;
-      await tester.pumpWidget(
-          _buildScreen(const BabyProfileState(), onInviteTap: () => called = true));
+      await tester.pumpWidget(_buildScreen(const BabyProfileState(),
+          onInviteTap: () => called = true));
       await tester.tap(find.byKey(const Key('invite_follower_button')));
       await tester.pump();
       expect(called, isTrue);

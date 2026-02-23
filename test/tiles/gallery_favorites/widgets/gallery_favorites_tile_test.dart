@@ -69,7 +69,8 @@ void main() {
       expect(find.text('Failed to load'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when favorites list is empty', (tester) async {
+    testWidgets('shows empty state when favorites list is empty',
+        (tester) async {
       await tester.pumpWidget(_buildWidget());
       expect(find.text('No favorites yet'), findsOneWidget);
     });
@@ -79,7 +80,8 @@ void main() {
       expect(find.text('Gallery Favorites'), findsOneWidget);
     });
 
-    testWidgets('shows favorite rows when favorites are provided', (tester) async {
+    testWidgets('shows favorite rows when favorites are provided',
+        (tester) async {
       final items = [
         _makeItem(id: 'p1'),
         _makeItem(id: 'p2'),
@@ -115,9 +117,11 @@ void main() {
       expect(tapped, equals(item.photo));
     });
 
-    testWidgets('shows view all button when onViewAll is provided', (tester) async {
+    testWidgets('shows view all button when onViewAll is provided',
+        (tester) async {
       await tester.pumpWidget(_buildWidget(onViewAll: () {}));
-      expect(find.byKey(const Key('gallery_favorites_view_all')), findsOneWidget);
+      expect(
+          find.byKey(const Key('gallery_favorites_view_all')), findsOneWidget);
     });
 
     testWidgets('view all button calls onViewAll callback', (tester) async {

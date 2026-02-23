@@ -185,16 +185,14 @@ void main() {
       test('getData returns decoded map', () async {
         when(mockCache.get<String>('data_key'))
             .thenAnswer((_) async => jsonEncode({'answer': 42}));
-        final result =
-            await manager.getData<Map<String, dynamic>>('data_key');
+        final result = await manager.getData<Map<String, dynamic>>('data_key');
         expect(result, isNotNull);
         expect(result!['answer'], equals(42));
       });
 
       test('getData returns null for missing key', () async {
         when(mockCache.get<String>('missing')).thenAnswer((_) async => null);
-        final result =
-            await manager.getData<Map<String, dynamic>>('missing');
+        final result = await manager.getData<Map<String, dynamic>>('missing');
         expect(result, isNull);
       });
     });

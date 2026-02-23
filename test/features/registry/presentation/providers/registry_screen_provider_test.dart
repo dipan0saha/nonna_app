@@ -110,13 +110,13 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        
+
         // Mock registry_items query
-        when(mockDatabaseService.select(SupabaseTables.registryItems, 
+        when(mockDatabaseService.select(SupabaseTables.registryItems,
                 columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
-        
-        // Mock registry_purchases query  
+
+        // Mock registry_purchases query
         when(mockDatabaseService.select(SupabaseTables.registryPurchases,
                 columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
@@ -178,12 +178,12 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        
+
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems,
                 columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
-        
+
         // Mock registry_purchases query
         when(mockDatabaseService.select(SupabaseTables.registryPurchases,
                 columns: anyNamed('columns')))
@@ -205,12 +205,12 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        
+
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems,
                 columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
-        
+
         // Mock registry_purchases query
         when(mockDatabaseService.select(SupabaseTables.registryPurchases,
                 columns: anyNamed('columns')))
@@ -235,7 +235,7 @@ void main() {
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
-        
+
         // Mock registry_purchases query
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
@@ -377,7 +377,7 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-        
+
         // Mock both queries with call counter
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) {
@@ -417,11 +417,11 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
-        
+
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
-        
+
         // Mock registry_purchases query
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
@@ -444,11 +444,11 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
-        
+
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleItem.toJson()]));
-        
+
         // Mock registry_purchases query
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));

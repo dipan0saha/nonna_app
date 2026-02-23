@@ -6,7 +6,8 @@ import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 
 /// Type alias for GoRouter redirect callbacks.
-typedef RedirectFn = String? Function(BuildContext context, GoRouterState state);
+typedef RedirectFn = String? Function(
+    BuildContext context, GoRouterState state);
 
 /// Route guards for GoRouter navigation.
 ///

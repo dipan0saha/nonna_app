@@ -32,9 +32,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(profileProvider.notifier)
-          .loadProfile(userId: widget.userId);
+      ref.read(profileProvider.notifier).loadProfile(userId: widget.userId);
     });
   }
 

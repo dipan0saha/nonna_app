@@ -94,7 +94,8 @@ void main() {
 
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
@@ -112,7 +113,7 @@ void main() {
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
         expect(state.unreadCount, equals(1));
-        
+
         realtimeController.close();
       });
 
@@ -156,7 +157,8 @@ void main() {
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleNotification.toJson()]);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
@@ -172,7 +174,7 @@ void main() {
 
         // Verify database was called despite cache
         verify(mocks.database.select(any)).called(1);
-        
+
         realtimeController.close();
       });
 
@@ -185,7 +187,8 @@ void main() {
             sampleNotification.copyWith(id: 'notif_3', readAt: DateTime.now());
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
@@ -202,7 +205,7 @@ void main() {
 
         final state = container.read(notificationsProvider);
         expect(state.unreadCount, equals(2));
-        
+
         realtimeController.close();
       });
     });
@@ -213,7 +216,8 @@ void main() {
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
@@ -241,7 +245,7 @@ void main() {
             state.notifications.firstWhere((n) => n.id == 'notif_1');
         expect(notification.isRead, isTrue);
         expect(state.unreadCount, equals(0));
-        
+
         realtimeController.close();
       });
 
@@ -250,7 +254,8 @@ void main() {
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
@@ -271,7 +276,7 @@ void main() {
         // Verify cache was updated
         verify(mocks.cache.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .called(greaterThanOrEqualTo(1));
-        
+
         realtimeController.close();
       });
     });
@@ -284,7 +289,8 @@ void main() {
         final notif2 = sampleNotification.copyWith(id: 'notif_2', readAt: null);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
@@ -311,7 +317,7 @@ void main() {
           expect(notification.isRead, isTrue);
         }
         expect(state.unreadCount, equals(0));
-        
+
         realtimeController.close();
       });
     });
@@ -322,7 +328,8 @@ void main() {
 
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleNotification.toJson()]);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
@@ -335,7 +342,7 @@ void main() {
 
         // Verify database was called (bypassing cache)
         verify(mocks.database.select(any)).called(1);
-        
+
         realtimeController.close();
       });
     });
@@ -346,7 +353,8 @@ void main() {
 
         // Setup initial state
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        final realtimeController = StreamController<Map<String, dynamic>>.broadcast();
+        final realtimeController =
+            StreamController<Map<String, dynamic>>.broadcast();
         when(mocks.realtime.subscribe(
           table: anyNamed('table'),
           filter: anyNamed('filter'),
@@ -368,7 +376,7 @@ void main() {
         // In a real scenario, the realtime subscription would trigger this
 
         expect(initialCount, equals(1)); // Just verify initial state was set
-        
+
         realtimeController.close();
       });
     });

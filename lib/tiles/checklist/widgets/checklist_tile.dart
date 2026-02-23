@@ -59,7 +59,8 @@ class ChecklistTile extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text('Getting Started', style: context.textTheme.titleMedium),
+              child:
+                  Text('Getting Started', style: context.textTheme.titleMedium),
             ),
             Text(
               key: const Key('checklist_progress_text'),
@@ -75,8 +76,8 @@ class ChecklistTile extends StatelessWidget {
           LinearProgressIndicator(
             key: const Key('checklist_progress_bar'),
             value: progressPercentage / 100,
-            backgroundColor:
-                AppColors.onSurfaceHint(context.colorScheme).withValues(alpha: 0.2),
+            backgroundColor: AppColors.onSurfaceHint(context.colorScheme)
+                .withValues(alpha: 0.2),
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
         ],
@@ -150,9 +151,8 @@ class _ChecklistRow extends StatelessWidget {
                   Text(
                     item.title,
                     style: context.textTheme.bodyMedium?.copyWith(
-                      decoration: item.isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
+                      decoration:
+                          item.isCompleted ? TextDecoration.lineThrough : null,
                       color: item.isCompleted
                           ? AppColors.onSurfaceHint(context.colorScheme)
                           : null,

@@ -68,7 +68,8 @@ void main() {
       expect(find.text('Fetch failed'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when invitations list is empty', (tester) async {
+    testWidgets('shows empty state when invitations list is empty',
+        (tester) async {
       await tester.pumpWidget(_buildWidget());
       expect(find.text('No invitations sent'), findsOneWidget);
     });
@@ -84,8 +85,8 @@ void main() {
     });
 
     testWidgets('shows at most 5 invitations', (tester) async {
-      final invitations =
-          List.generate(7, (i) => _makeInvitation(id: 'i$i', email: 'u$i@x.com'));
+      final invitations = List.generate(
+          7, (i) => _makeInvitation(id: 'i$i', email: 'u$i@x.com'));
       await tester.pumpWidget(_buildWidget(invitations: invitations));
       int count = 0;
       for (int i = 0; i < 5; i++) {
@@ -100,13 +101,15 @@ void main() {
       expect(find.text('Invite Status'), findsOneWidget);
     });
 
-    testWidgets('shows pending count badge when pendingCount > 0', (tester) async {
+    testWidgets('shows pending count badge when pendingCount > 0',
+        (tester) async {
       await tester.pumpWidget(_buildWidget(pendingCount: 4));
       expect(find.byKey(const Key('pending_count_badge')), findsOneWidget);
       expect(find.text('4'), findsOneWidget);
     });
 
-    testWidgets('hides pending count badge when pendingCount is 0', (tester) async {
+    testWidgets('hides pending count badge when pendingCount is 0',
+        (tester) async {
       await tester.pumpWidget(_buildWidget());
       expect(find.byKey(const Key('pending_count_badge')), findsNothing);
     });
@@ -117,7 +120,8 @@ void main() {
       expect(find.byKey(const Key('status_chip_i1')), findsOneWidget);
     });
 
-    testWidgets('shows resend and revoke buttons for pending invitations', (tester) async {
+    testWidgets('shows resend and revoke buttons for pending invitations',
+        (tester) async {
       final inv = _makeInvitation(id: 'i1', status: InvitationStatus.pending);
       await tester.pumpWidget(
         _buildWidget(invitations: [inv], onResend: (_) {}, onRevoke: (_) {}),
@@ -126,7 +130,8 @@ void main() {
       expect(find.byKey(const Key('revoke_button_i1')), findsOneWidget);
     });
 
-    testWidgets('hides resend/revoke for non-pending invitations', (tester) async {
+    testWidgets('hides resend/revoke for non-pending invitations',
+        (tester) async {
       final inv = _makeInvitation(id: 'i1', status: InvitationStatus.accepted);
       await tester.pumpWidget(
         _buildWidget(invitations: [inv], onResend: (_) {}, onRevoke: (_) {}),
@@ -155,7 +160,8 @@ void main() {
       expect(revoked, equals(inv));
     });
 
-    testWidgets('shows view all button when onViewAll is provided', (tester) async {
+    testWidgets('shows view all button when onViewAll is provided',
+        (tester) async {
       await tester.pumpWidget(_buildWidget(onViewAll: () {}));
       expect(find.byKey(const Key('invites_status_view_all')), findsOneWidget);
     });

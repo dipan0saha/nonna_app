@@ -63,7 +63,8 @@ void main() {
       expect(find.text('Could not load'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when followers list is empty', (tester) async {
+    testWidgets('shows empty state when followers list is empty',
+        (tester) async {
       await tester.pumpWidget(_buildWidget());
       expect(find.text('No new followers recently'), findsOneWidget);
     });
@@ -73,7 +74,8 @@ void main() {
       expect(find.text('New Followers'), findsOneWidget);
     });
 
-    testWidgets('shows follower rows when followers are provided', (tester) async {
+    testWidgets('shows follower rows when followers are provided',
+        (tester) async {
       final followers = [
         _makeFollower(userId: 'u1'),
         _makeFollower(userId: 'u2'),
@@ -101,7 +103,8 @@ void main() {
       expect(find.byKey(const Key('removed_badge_u1')), findsOneWidget);
     });
 
-    testWidgets('shows active count badge when activeCount > 0', (tester) async {
+    testWidgets('shows active count badge when activeCount > 0',
+        (tester) async {
       await tester.pumpWidget(_buildWidget(activeCount: 3));
       expect(
           find.byKey(const Key('new_followers_count_badge')), findsOneWidget);
@@ -110,8 +113,7 @@ void main() {
 
     testWidgets('hides count badge when activeCount is 0', (tester) async {
       await tester.pumpWidget(_buildWidget(activeCount: 0));
-      expect(
-          find.byKey(const Key('new_followers_count_badge')), findsNothing);
+      expect(find.byKey(const Key('new_followers_count_badge')), findsNothing);
     });
 
     testWidgets('shows relationship label when present', (tester) async {
@@ -137,22 +139,19 @@ void main() {
     testWidgets('shows view all button when onViewAll is provided',
         (tester) async {
       await tester.pumpWidget(_buildWidget(onViewAll: () {}));
-      expect(
-          find.byKey(const Key('new_followers_view_all')), findsOneWidget);
+      expect(find.byKey(const Key('new_followers_view_all')), findsOneWidget);
     });
 
     testWidgets('view all button calls onViewAll callback', (tester) async {
       var called = false;
-      await tester.pumpWidget(
-          _buildWidget(onViewAll: () => called = true));
+      await tester.pumpWidget(_buildWidget(onViewAll: () => called = true));
       await tester.tap(find.byKey(const Key('new_followers_view_all')));
       expect(called, isTrue);
     });
 
     testWidgets('hides view all button when onViewAll is null', (tester) async {
       await tester.pumpWidget(_buildWidget());
-      expect(
-          find.byKey(const Key('new_followers_view_all')), findsNothing);
+      expect(find.byKey(const Key('new_followers_view_all')), findsNothing);
     });
 
     testWidgets('error retry calls onRefresh', (tester) async {

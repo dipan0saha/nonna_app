@@ -18,8 +18,7 @@ Widget _buildScreen({VoidCallback? onCreated, VoidCallback? onCancelled}) {
 
 void main() {
   group('RegistryItemCreationScreen', () {
-    testWidgets(
-        "renders Scaffold with key 'registry_item_creation_screen'",
+    testWidgets("renders Scaffold with key 'registry_item_creation_screen'",
         (tester) async {
       await tester.pumpWidget(_buildScreen());
       expect(

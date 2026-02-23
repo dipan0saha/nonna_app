@@ -39,7 +39,8 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
     });
   }
 
-  Future<void> _removeFollower(String babyProfileId, String membershipId) async {
+  Future<void> _removeFollower(
+      String babyProfileId, String membershipId) async {
     await ref.read(babyProfileProvider.notifier).removeFollower(
           babyProfileId: babyProfileId,
           membershipId: membershipId,
@@ -86,12 +87,11 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
               ),
               AppSpacing.verticalGapM,
               ElevatedButton(
-                onPressed: () => ref
-                    .read(babyProfileProvider.notifier)
-                    .loadProfile(
-                      babyProfileId: widget.babyProfileId,
-                      currentUserId: widget.currentUserId,
-                    ),
+                onPressed: () =>
+                    ref.read(babyProfileProvider.notifier).loadProfile(
+                          babyProfileId: widget.babyProfileId,
+                          currentUserId: widget.currentUserId,
+                        ),
                 child: const Text('Retry'),
               ),
             ],
@@ -130,7 +130,8 @@ class _BabyProfileScreenState extends ConsumerState<BabyProfileScreen> {
                 membership: m,
                 onRemove: () {
                   if (m.id == null) {
-                    debugPrint('⚠️  BabyMembership.id is null for userId=${m.userId}; falling back to userId as membershipId');
+                    debugPrint(
+                        '⚠️  BabyMembership.id is null for userId=${m.userId}; falling back to userId as membershipId');
                   }
                   _removeFollower(widget.babyProfileId, m.id ?? m.userId);
                 },

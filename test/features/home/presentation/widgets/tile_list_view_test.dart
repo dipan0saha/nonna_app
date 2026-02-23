@@ -75,7 +75,8 @@ void main() {
       expect(find.text('photo_tile'), findsOneWidget);
     });
 
-    testWidgets('has tile_list_view key when tiles are present', (tester) async {
+    testWidgets('has tile_list_view key when tiles are present',
+        (tester) async {
       final tiles = [_makeTile('1', 'some_tile', 1)];
       await tester.pumpWidget(_build(tiles: tiles));
       expect(find.byKey(const Key('tile_list_view')), findsOneWidget);

@@ -176,7 +176,8 @@ void main() {
 
         await manager.sync();
 
-        expect(statuses, containsAllInOrder([SyncStatus.syncing, SyncStatus.synced]));
+        expect(statuses,
+            containsAllInOrder([SyncStatus.syncing, SyncStatus.synced]));
       });
 
       test('sync sets status to error when handler returns false', () async {

@@ -152,21 +152,19 @@ void main() {
         ),
       );
 
-      final field = tester.widget<TextField>(
-          find.descendant(
-            of: find.byKey(const Key('auth_password_field')),
-            matching: find.byType(TextField),
-          ));
+      final field = tester.widget<TextField>(find.descendant(
+        of: find.byKey(const Key('auth_password_field')),
+        matching: find.byType(TextField),
+      ));
       expect(field.obscureText, isTrue);
 
       await tester.tap(find.byKey(const Key('password_visibility_toggle')));
       await tester.pump();
 
-      final updatedField = tester.widget<TextField>(
-          find.descendant(
-            of: find.byKey(const Key('auth_password_field')),
-            matching: find.byType(TextField),
-          ));
+      final updatedField = tester.widget<TextField>(find.descendant(
+        of: find.byKey(const Key('auth_password_field')),
+        matching: find.byType(TextField),
+      ));
       expect(updatedField.obscureText, isFalse);
       controller.dispose();
     });
@@ -197,7 +195,8 @@ void main() {
       await tester.tap(find.text('Submit'));
       await tester.pump();
 
-      expect(find.text('Password must be at least 8 characters'), findsOneWidget);
+      expect(
+          find.text('Password must be at least 8 characters'), findsOneWidget);
       controller.dispose();
     });
   });

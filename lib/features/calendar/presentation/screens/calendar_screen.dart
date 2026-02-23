@@ -109,14 +109,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 selectedDate: state.selectedDate,
                 datesWithEvents: state.datesWithEvents,
                 onDateSelected: (date) {
-                  ref
-                      .read(calendarScreenProvider.notifier)
-                      .selectDate(date);
+                  ref.read(calendarScreenProvider.notifier).selectDate(date);
                 },
                 onMonthChanged: (month) {
-                  ref
-                      .read(calendarScreenProvider.notifier)
-                      .goToMonth(month);
+                  ref.read(calendarScreenProvider.notifier).goToMonth(month);
                 },
               ),
             ),
@@ -162,8 +158,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       return SliverFillRemaining(
         child: ErrorView(
           message: state.error!,
-          onRetry: () =>
-              ref.read(calendarScreenProvider.notifier).retry(),
+          onRetry: () => ref.read(calendarScreenProvider.notifier).retry(),
         ),
       );
     }

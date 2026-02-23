@@ -125,7 +125,8 @@ void main() {
       test('handles errors gracefully', () async {
         // Setup mock to throw error
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(SupabaseTables.registryItems)).thenThrow(Exception('Database error'));
+        when(mocks.database.select(SupabaseTables.registryItems))
+            .thenThrow(Exception('Database error'));
 
         final notifier = container.read(registryHighlightsProvider.notifier);
         await notifier.fetchHighlights(babyProfileId: 'profile_1');
@@ -157,7 +158,8 @@ void main() {
         );
 
         // Verify database was called despite cache
-        verify(mocks.database.select(SupabaseTables.registryItems)).called(greaterThanOrEqualTo(1));
+        verify(mocks.database.select(SupabaseTables.registryItems))
+            .called(greaterThanOrEqualTo(1));
       });
 
       test('saves fetched items to cache', () async {
@@ -218,7 +220,8 @@ void main() {
         await notifier.refresh(babyProfileId: 'profile_1');
 
         // Verify database was called (bypassing cache)
-        verify(mocks.database.select(SupabaseTables.registryItems)).called(greaterThanOrEqualTo(1));
+        verify(mocks.database.select(SupabaseTables.registryItems))
+            .called(greaterThanOrEqualTo(1));
       });
     });
 

@@ -24,8 +24,7 @@ class InviteFollowersScreen extends ConsumerStatefulWidget {
       _InviteFollowersScreenState();
 }
 
-class _InviteFollowersScreenState
-    extends ConsumerState<InviteFollowersScreen> {
+class _InviteFollowersScreenState extends ConsumerState<InviteFollowersScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _emailController;
   bool _isSending = false;
@@ -63,8 +62,7 @@ class _InviteFollowersScreenState
     if (!mounted) return;
     setState(() {
       _isSending = false;
-      _successMessage =
-          'Invitation sent to ${_emailController.text.trim()}';
+      _successMessage = 'Invitation sent to ${_emailController.text.trim()}';
       _emailController.clear();
     });
     widget.onInviteSent?.call();

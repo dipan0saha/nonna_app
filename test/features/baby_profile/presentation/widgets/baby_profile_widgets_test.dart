@@ -119,7 +119,8 @@ void main() {
       );
     });
 
-    testWidgets('shows remove button when onRemove is provided', (tester) async {
+    testWidgets('shows remove button when onRemove is provided',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

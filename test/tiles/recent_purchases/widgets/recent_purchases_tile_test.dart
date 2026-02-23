@@ -60,7 +60,8 @@ void main() {
       expect(find.text('Fetch failed'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when purchases list is empty', (tester) async {
+    testWidgets('shows empty state when purchases list is empty',
+        (tester) async {
       await tester.pumpWidget(_buildWidget());
       expect(find.text('No recent purchases'), findsOneWidget);
     });

@@ -48,14 +48,14 @@ void main() {
     });
 
     testWidgets('shows description when provided', (tester) async {
-      await tester.pumpWidget(
-          _buildScreen(_makeEvent(description: 'Bring gifts!')));
+      await tester
+          .pumpWidget(_buildScreen(_makeEvent(description: 'Bring gifts!')));
       expect(find.byKey(const Key('event_description_text')), findsOneWidget);
     });
 
     testWidgets('shows location row when location is set', (tester) async {
-      await tester.pumpWidget(
-          _buildScreen(_makeEvent(location: 'Central Park')));
+      await tester
+          .pumpWidget(_buildScreen(_makeEvent(location: 'Central Park')));
       expect(find.byKey(const Key('event_location_row')), findsOneWidget);
     });
 

@@ -134,8 +134,8 @@ class _PurchaseRow extends StatelessWidget {
                     Text(
                       purchase.note!,
                       style: context.textTheme.bodySmall?.copyWith(
-                        color: AppColors.onSurfaceSecondary(
-                            context.colorScheme),
+                        color:
+                            AppColors.onSurfaceSecondary(context.colorScheme),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

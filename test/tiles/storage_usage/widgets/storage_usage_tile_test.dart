@@ -85,7 +85,8 @@ void main() {
       expect(find.byKey(const Key('storage_progress_bar')), findsOneWidget);
     });
 
-    testWidgets('shows photo count and available in detail text', (tester) async {
+    testWidgets('shows photo count and available in detail text',
+        (tester) async {
       final info = _makeInfo(photoCount: 50);
       await tester.pumpWidget(_buildWidget(info: info));
       expect(find.byKey(const Key('storage_detail_text')), findsOneWidget);

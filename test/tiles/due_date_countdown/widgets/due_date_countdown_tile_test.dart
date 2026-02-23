@@ -24,7 +24,9 @@ BabyCountdown _makeCountdown({
     profile: profile,
     daysUntilDueDate: daysUntil,
     isPastDue: isPastDue,
-    formattedCountdown: isPastDue ? '${daysUntil.abs()} days overdue' : '$daysUntil days until due date',
+    formattedCountdown: isPastDue
+        ? '${daysUntil.abs()} days overdue'
+        : '$daysUntil days until due date',
   );
 }
 
@@ -63,7 +65,8 @@ void main() {
       expect(find.text('Load error'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when countdowns list is empty', (tester) async {
+    testWidgets('shows empty state when countdowns list is empty',
+        (tester) async {
       await tester.pumpWidget(_buildWidget());
       expect(find.text('No due dates to display'), findsOneWidget);
     });
@@ -97,7 +100,8 @@ void main() {
     });
 
     testWidgets('shows Born! badge when past due', (tester) async {
-      final countdown = _makeCountdown(id: 'bp1', daysUntil: -3, isPastDue: true);
+      final countdown =
+          _makeCountdown(id: 'bp1', daysUntil: -3, isPastDue: true);
       await tester.pumpWidget(_buildWidget(countdowns: [countdown]));
       expect(find.text('Born!'), findsOneWidget);
     });

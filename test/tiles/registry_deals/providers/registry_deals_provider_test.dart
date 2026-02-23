@@ -74,12 +74,12 @@ void main() {
       test('sets loading state while fetching', () async {
         // Setup mock to delay response
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        
+
         // Mock registry_items query
         when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([]));
-        
-        // Mock registry_purchases query  
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -93,12 +93,12 @@ void main() {
       test('fetches deals from database when cache is empty', () async {
         // Setup mocks
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        
+
         // Mock registry_items query
         when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
-        
-        // Mock registry_purchases query  
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -147,12 +147,12 @@ void main() {
         // Setup mocks
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
-        
+
         // Mock registry_items query
         when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
-        
-        // Mock registry_purchases query  
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -170,12 +170,12 @@ void main() {
 
       test('saves fetched deals to cache', () async {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        
+
         // Mock registry_items query
         when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
-        
-        // Mock registry_purchases query  
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -193,7 +193,7 @@ void main() {
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        
+
         // Mock registry_items query
         when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([
@@ -201,8 +201,8 @@ void main() {
                   deal2.toJson(),
                   deal3.toJson(),
                 ]));
-        
-        // Mock registry_purchases query  
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -219,7 +219,7 @@ void main() {
         final deal3 = sampleDeal.copyWith(id: 'item_3', priority: 4);
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        
+
         // Mock registry_items query
         when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([
@@ -227,8 +227,8 @@ void main() {
                   deal2.toJson(),
                   deal3.toJson(),
                 ]));
-        
-        // Mock registry_purchases query  
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -244,12 +244,12 @@ void main() {
       test('refreshes deals with force refresh', () async {
         when(mocks.cache.get(any))
             .thenAnswer((_) async => [sampleDeal.toJson()]);
-        
+
         // Mock registry_items query
         when(mocks.database.select(SupabaseTables.registryItems))
             .thenAnswer((_) => FakePostgrestBuilder([sampleDeal.toJson()]));
-        
-        // Mock registry_purchases query  
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -269,12 +269,12 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        
+
         // Mock registry_items query
-        when(mocks.database.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([highPriorityDeal.toJson()]));
-        
-        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryItems)).thenAnswer(
+            (_) => FakePostgrestBuilder([highPriorityDeal.toJson()]));
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -292,12 +292,12 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        
+
         // Mock registry_items query
-        when(mocks.database.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
-        
-        // Mock registry_purchases query  
+        when(mocks.database.select(SupabaseTables.registryItems)).thenAnswer(
+            (_) => FakePostgrestBuilder([mediumPriorityDeal.toJson()]));
+
+        // Mock registry_purchases query
         when(mocks.database.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 

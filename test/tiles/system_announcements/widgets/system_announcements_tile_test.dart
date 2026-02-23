@@ -156,7 +156,8 @@ void main() {
     });
 
     testWidgets('shows announcement title and body', (tester) async {
-      final a = _makeAnnouncement(id: 'a1', title: 'Big News', body: 'Details here');
+      final a =
+          _makeAnnouncement(id: 'a1', title: 'Big News', body: 'Details here');
       await tester.pumpWidget(_buildWidget(announcements: [a]));
       expect(find.text('Big News'), findsOneWidget);
       expect(find.text('Details here'), findsOneWidget);

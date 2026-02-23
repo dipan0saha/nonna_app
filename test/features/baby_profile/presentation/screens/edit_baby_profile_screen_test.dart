@@ -60,8 +60,7 @@ Widget _buildScreen(
 }) {
   return ProviderScope(
     overrides: [
-      babyProfileProvider
-          .overrideWith(() => _FakeBabyProfileNotifier(state)),
+      babyProfileProvider.overrideWith(() => _FakeBabyProfileNotifier(state)),
     ],
     child: MaterialApp(
       home: EditBabyProfileScreen(
@@ -108,7 +107,8 @@ void main() {
       expect(find.text('Delete Profile'), findsOneWidget);
     });
 
-    testWidgets('Save button is disabled when isSaving is true', (tester) async {
+    testWidgets('Save button is disabled when isSaving is true',
+        (tester) async {
       await tester.pumpWidget(
         _buildScreen(
           BabyProfileState(

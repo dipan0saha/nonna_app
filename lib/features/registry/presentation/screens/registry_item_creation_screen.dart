@@ -88,8 +88,9 @@ class _RegistryItemCreationScreenState
                   border: OutlineInputBorder(),
                 ),
                 textInputAction: TextInputAction.next,
-                validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Item name is required' : null,
+                validator: (v) => v == null || v.trim().isEmpty
+                    ? 'Item name is required'
+                    : null,
               ),
               AppSpacing.verticalGapM,
               TextFormField(
@@ -130,8 +131,7 @@ class _RegistryItemCreationScreenState
                       max: 5,
                       divisions: 4,
                       label: '$_priority',
-                      onChanged: (v) =>
-                          setState(() => _priority = v.round()),
+                      onChanged: (v) => setState(() => _priority = v.round()),
                     ),
                   ),
                   SizedBox(

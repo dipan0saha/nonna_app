@@ -130,8 +130,7 @@ class _FollowerRow extends StatelessWidget {
                   Text(
                     'Joined $joinedDate',
                     style: context.textTheme.bodySmall?.copyWith(
-                      color:
-                          AppColors.onSurfaceSecondary(context.colorScheme),
+                      color: AppColors.onSurfaceSecondary(context.colorScheme),
                     ),
                   ),
                 ],

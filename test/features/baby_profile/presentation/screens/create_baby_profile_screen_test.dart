@@ -33,7 +33,8 @@ class _FakeBabyProfileNotifier extends BabyProfileNotifier {
     Gender? gender,
     String? profilePhotoUrl,
     String? defaultLastNameSource,
-  }) async => null;
+  }) async =>
+      null;
 }
 
 // ---------------------------------------------------------------------------
@@ -46,8 +47,7 @@ Widget _buildScreen(
 }) {
   return ProviderScope(
     overrides: [
-      babyProfileProvider
-          .overrideWith(() => _FakeBabyProfileNotifier(state)),
+      babyProfileProvider.overrideWith(() => _FakeBabyProfileNotifier(state)),
     ],
     child: MaterialApp(
       home: CreateBabyProfileScreen(
