@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' show min;
 
 import 'package:flutter/foundation.dart';
 
@@ -70,7 +71,8 @@ class NetworkResult<T> {
 /// - Automatic retry with exponential back-off
 /// - User notification callbacks for network events
 ///
-/// Dependencies: none (pure Dart)
+/// Dependencies:
+/// - Flutter `foundation.dart` (`debugPrint`) for diagnostic logging
 ///
 /// Usage:
 /// ```dart
@@ -123,9 +125,10 @@ class NetworkErrorHandler {
   /// Execute [operation] with automatic timeout, retry, and error handling.
   ///
   /// The operation is retried up to [_maxRetries] times using exponential
-  /// back-off starting at [_initialBackoff].  Only transient errors (network
-  /// connectivity failures, timeouts, and 5xx server errors) trigger retries.
-  /// Client errors (4xx) are considered permanent and are returned immediately.
+  /// back-off starting at [_initialBackoff].  All error categories except
+  /// [NetworkErrorType.clientError] are treated as retryable (including
+  /// [NetworkErrorType.unknown]).  Client errors (4xx) are considered permanent
+  /// and returned immediately without further attempts.
   ///
   /// Returns a [NetworkResult] that is either a success wrapping the returned
   /// value or a failure containing the last error and its category.
@@ -219,11 +222,18 @@ class NetworkErrorHandler {
 
   /// Exponential back-off: `initialBackoff * 2^(attempt - 1)`, capped at
   /// 32 × [_initialBackoff].
+  ///
+  /// Exposed for unit testing via [backoffDelay].
   Duration _backoffDelay(int attempt) {
     final factor = 1 << (attempt - 1); // 2^(attempt-1)
-    final capped = factor.clamp(1, 32);
-    return _initialBackoff * capped;
+    return _initialBackoff * min(factor, 32);
   }
+
+  /// Returns the back-off [Duration] for a given retry [attempt] (1-based).
+  ///
+  /// Exposed for unit testing.
+  @visibleForTesting
+  Duration backoffDelay(int attempt) => _backoffDelay(attempt);
 }
 
 /// Thrown by platform code on platforms that do not use [SocketException] for

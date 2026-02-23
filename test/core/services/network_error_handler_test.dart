@@ -273,19 +273,36 @@ void main() {
     // -----------------------------------------------------------------------
 
     group('Exponential back-off', () {
-      test('back-off doubles with each attempt', () async {
-        final delays = <Duration>[];
-        int calls = 0;
-
+      test('backoffDelay doubles with each attempt up to 32x cap',
+          () {
         final handler = NetworkErrorHandler(
-          maxRetries: 3,
           initialBackoff: const Duration(milliseconds: 10),
-          onRetrying: (attempt, _) {
-            // back-off delay for attempt n = initialBackoff * 2^(n-1)
-            final expected =
-                Duration(milliseconds: 10 * (1 << (attempt - 1)));
-            delays.add(expected);
-          },
+          maxRetries: 0,
+        );
+
+        // Verify the actual delay returned for each attempt number
+        expect(handler.backoffDelay(1).inMilliseconds, equals(10)); // 10 * 1
+        expect(handler.backoffDelay(2).inMilliseconds, equals(20)); // 10 * 2
+        expect(handler.backoffDelay(3).inMilliseconds, equals(40)); // 10 * 4
+        expect(handler.backoffDelay(4).inMilliseconds, equals(80)); // 10 * 8
+        expect(
+          handler.backoffDelay(6).inMilliseconds,
+          equals(320),
+        ); // 10 * 32 (2^5 = 32)
+        // Cap: attempts beyond 6 must not exceed 32× initialBackoff
+        expect(
+          handler.backoffDelay(10).inMilliseconds,
+          equals(320),
+        ); // capped at 32x
+      });
+
+      test('execute applies back-off between retries', () async {
+        var calls = 0;
+        final attemptNumbers = <int>[];
+        final handler = NetworkErrorHandler(
+          maxRetries: 2,
+          initialBackoff: Duration.zero,
+          onRetrying: (attempt, _) => attemptNumbers.add(attempt),
         );
 
         await handler.execute(() async {
@@ -293,10 +310,9 @@ void main() {
           throw const SocketException('Failure');
         });
 
-        expect(delays.length, equals(3));
-        expect(delays[0].inMilliseconds, equals(10)); // 10 * 2^0
-        expect(delays[1].inMilliseconds, equals(20)); // 10 * 2^1
-        expect(delays[2].inMilliseconds, equals(40)); // 10 * 2^2
+        // Verify retries were triggered with the correct attempt numbers
+        expect(calls, equals(3));
+        expect(attemptNumbers, equals([1, 2]));
       });
     });
 

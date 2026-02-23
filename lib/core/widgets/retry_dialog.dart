@@ -43,7 +43,10 @@ class RetryDialog extends StatefulWidget {
   /// [onRetry] is called when the user taps the retry button.
   ///           If it returns a [Future], a loading indicator is shown while
   ///           the future is pending.
-  /// [onCancel] is called when the user taps cancel or dismisses the dialog.
+  /// [onCancel] is called when the user taps the Cancel button.
+  ///           Note: dismissals via the system back button or route pop are
+  ///           **not** captured by this callback; handle those at the
+  ///           call site if needed.
   const RetryDialog({
     super.key,
     required this.message,
@@ -72,7 +75,10 @@ class RetryDialog extends StatefulWidget {
   /// When asynchronous, the button shows a loading indicator while waiting.
   final FutureOr<void> Function()? onRetry;
 
-  /// Callback invoked when the user cancels.
+  /// Callback invoked when the user taps the Cancel button.
+  ///
+  /// Note: this is not called for system back-button dismissals or barrier
+  /// taps. Use [PopScope] or handle those cases at the call site if needed.
   final VoidCallback? onCancel;
 
   @override
@@ -98,9 +104,13 @@ class _RetryDialogState extends State<RetryDialog> {
   void _handleCancel() {
     widget.onCancel?.call();
     if (mounted) {
-      // maybePop avoids errors when the widget is used outside a navigator
-      // route (e.g. inline in a scaffold body).
-      Navigator.of(context).maybePop(false);
+      // Only pop when this widget is hosted inside a popup/dialog route.
+      // This avoids accidentally navigating away when RetryDialog is
+      // embedded inline in a Scaffold body.
+      final route = ModalRoute.of(context);
+      if (route is PopupRoute) {
+        Navigator.of(context).pop(false);
+      }
     }
   }
 
@@ -148,7 +158,9 @@ class _RetryDialogState extends State<RetryDialog> {
 
 /// Shows a [RetryDialog] as a modal dialog.
 ///
-/// Returns `true` if the user tapped Retry, `false` if they cancelled.
+/// Returns `true` if the user tapped Retry, `false` if they tapped Cancel,
+/// or `null` if the dialog was dismissed by the system back button or (when
+/// [barrierDismissible] is `true`) a barrier tap.
 ///
 /// [context] The [BuildContext] used to show the dialog.
 /// [message] Error message displayed in the dialog body.
@@ -184,7 +196,7 @@ Future<bool?> showRetryDialog({
             }
           : null,
       // onCancel is intentionally omitted here; RetryDialog's internal
-      // _handleCancel calls maybePop(false) which closes the dialog and
+      // _handleCancel detects the PopupRoute and calls pop(false), which
       // causes showDialog to return false.
     ),
   );
