@@ -883,11 +883,32 @@
   - ✅ Time period selector (7d / 30d / 90d)
   - ✅ Loading shimmer, error, and empty/null-metrics states
   - ✅ Test file: `test/tiles/engagement_recap/widgets/engagement_recap_tile_test.dart`
-- [ ] Gallery Favorites Tile (`lib/tiles/gallery_favorites/widgets/gallery_favorites_tile.dart`)
-- [ ] Checklist Tile (`lib/tiles/checklist/widgets/checklist_tile.dart`)
-- [ ] Storage Usage Tile (`lib/tiles/storage_usage/widgets/storage_usage_tile.dart`)
-- [ ] System Announcements Tile (`lib/tiles/system_announcements/widgets/system_announcements_tile.dart`)
-- [ ] New Followers Tile (`lib/tiles/new_followers/widgets/new_followers_tile.dart`)
+- [x] Gallery Favorites Tile (`lib/tiles/gallery_favorites/widgets/gallery_favorites_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Top 5 most-squished photos with squish count badge
+  - ✅ Photo tap handler and "View all" support
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/gallery_favorites/widgets/gallery_favorites_tile_test.dart`
+- [x] Checklist Tile (`lib/tiles/checklist/widgets/checklist_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Progress bar and completed/total count in header
+  - ✅ Check/uncheck icon per item with toggle callback
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/checklist/widgets/checklist_tile_test.dart`
+- [x] Storage Usage Tile (`lib/tiles/storage_usage/widgets/storage_usage_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Color-coded progress bar (green/orange/red by usage %)
+  - ✅ Used/total, percentage, photo count, and available space
+  - ✅ Loading shimmer, error, and null-info states
+  - ✅ Test file: `test/tiles/storage_usage/widgets/storage_usage_tile_test.dart`
+- [x] System Announcements Tile (`lib/tiles/system_announcements/widgets/system_announcements_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Priority-colored icons (critical/high/medium/low)
+  - ✅ Per-announcement dismiss button, filters dismissed IDs
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/system_announcements/widgets/system_announcements_tile_test.dart`
+- [x] New Followers Tile (`lib/tiles/new_followers/widgets/new_followers_tile.dart`) - ✨ Created Feb 23, 2026
+  - ✅ Active/Removed status badges per follower
+  - ✅ Active count badge in header
+  - ✅ Follower tap handler and "View all" support
+  - ✅ Loading shimmer, error, and empty states
+  - ✅ Test file: `test/tiles/new_followers/widgets/new_followers_tile_test.dart`
 
 ---
 
