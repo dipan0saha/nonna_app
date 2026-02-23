@@ -1,8 +1,8 @@
 # Core Development Component Identification (Section 3)
 
-**Document Version**: 1.1
+**Document Version**: 1.2
 **Created**: February 1, 2026
-**Last Updated**: February 7, 2026
+**Last Updated**: February 23, 2026
 **Status**: Active
 **Purpose**: Comprehensive component list and architectural map for Production Readiness Checklist Section 3
 
@@ -233,26 +233,28 @@ Models represent the core data structures and business entities. The Nonna App r
 | Component | Location | Functionality | Dependencies |
 |-----------|----------|---------------|--------------|
 | **Owner Update Marker Model** | `lib/core/models/owner_update_marker.dart` | Cache invalidation tracker (baby_profile_id, tiles_last_updated_at, updated_by_user_id, reason); 1:1 with baby_profile; JSON serialization | baby_profile, user |
+| **System Announcement Model** | `lib/core/models/system_announcement.dart` | Global system announcement (id, title, body, priority [low/medium/high/critical], is_active, starts_at, ends_at); used by System Announcements tile; dismissal tracking; JSON serialization | None |
 
 **Test Files**:
 - `test/core/models/owner_update_marker_test.dart`
+- `test/core/models/system_announcement_test.dart`
 
 ---
 
 ### 3.1 Summary
 
-**Total Components**: 28 data models + converters/factories
-**Total Test Files**: 28 unit test files
+**Total Components**: 29 data models + converters/factories
+**Total Test Files**: 29 unit test files
 **Primary Locations**:
-- `lib/core/models/` (27 core models)
+- `lib/core/models/` (28 core models)
 - `lib/tiles/core/models/` (3 tile-specific models)
 
 **Deliverables**:
-- ✅ 28 Dart model classes with JSON serialization
+- ✅ 29 Dart model classes with JSON serialization
 - ✅ Validation logic for all constraints
 - ✅ Model factories and converters for API integration
 - ✅ Equals/hashCode overrides for value comparison
-- ✅ 28 comprehensive unit test files (≥80% coverage)
+- ✅ 29 comprehensive unit test files (≥80% coverage)
 
 ---
 
@@ -899,6 +901,8 @@ State management using Riverpod providers for dependency injection, reactive sta
 | **Registry Screen Provider** | `lib/features/registry/presentation/providers/registry_screen_provider.dart` | Registry state; item list; filters; purchase state; sorting | Registry Repository |
 | **Profile Provider** | `lib/features/profile/presentation/providers/profile_provider.dart` | User profile state; edit mode; validation; save state | User Repository |
 | **Baby Profile Provider** | `lib/features/baby_profile/presentation/providers/baby_profile_provider.dart` | Baby profile management; CRUD operations; membership management; owner operations | Baby Profile Repository |
+| **Gamification Provider** | `lib/features/gamification/presentation/providers/gamification_provider.dart` | Gamification state; name suggestions; prediction voting; leaderboard data | Database Service |
+| **Settings Provider** | `lib/features/settings/presentation/providers/settings_provider.dart` | App settings state; user preferences; notification toggles; theme preferences | Local Storage Service |
 
 **Test Files**:
 - `test/features/auth/presentation/providers/auth_provider_test.dart`
@@ -909,6 +913,8 @@ State management using Riverpod providers for dependency injection, reactive sta
 - `test/features/registry/presentation/providers/registry_screen_provider_test.dart`
 - `test/features/profile/presentation/providers/profile_provider_test.dart`
 - `test/features/baby_profile/presentation/providers/baby_profile_provider_test.dart`
+- `test/features/gamification/presentation/providers/gamification_provider_test.dart`
+- `test/features/settings/presentation/providers/settings_provider_test.dart`
 
 ---
 
@@ -1071,18 +1077,28 @@ Screen implementations including authentication flows, main app screens, feature
 
 | Component | Location | Functionality | Dependencies |
 |-----------|----------|---------------|--------------|
-| **Photo Gallery Screen** | `lib/features/photo_gallery/presentation/screens/photo_gallery_screen.dart` | Dedicated photo gallery view; masonry/grid layout; filters; zoom; slideshow | Photo Gallery Provider |
-| **Photo Upload Screen** | `lib/features/photo_gallery/presentation/screens/photo_upload_screen.dart` | Photo upload; caption input; tag input; multi-select; upload progress; batch upload | Storage Service |
-| **Photo Grid Widget** | `lib/features/photo_gallery/presentation/widgets/photo_grid.dart` | Grid layout; lazy loading; thumbnail caching; tap handling | None |
-| **Fun Screen** | `lib/features/fun/presentation/screens/fun_screen.dart` | Gamification features; name suggestions; prediction voting; leaderboard; engagement recap | Fun Provider |
-| **Fun Tile Grid** | `lib/features/fun/presentation/widgets/fun_tile_grid.dart` | Grid layout for fun tiles; vote widgets; name suggestion widgets | None |
+| **Baby Profile Screen** | `lib/features/baby_profile/presentation/screens/baby_profile_screen.dart` | Baby profile details; follower list (owner only); invitation management (owner only); edit button (owner only) | Baby Profile Provider |
+| **Create Baby Profile Screen** | `lib/features/baby_profile/presentation/screens/create_baby_profile_screen.dart` | Baby profile creation form; name, photo, due date; co-owner invitation; validation | Baby Profile Provider |
+| **Edit Baby Profile Screen** | `lib/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart` | Baby profile editing; update fields; delete profile (with confirmation); save/cancel | Baby Profile Provider |
+| **Invite Followers Screen** | `lib/features/baby_profile/presentation/screens/invite_followers_screen.dart` | Email-based follower invitation; invitation link generation; pending invitations list | Baby Profile Provider |
+| **Followers Management Screen** | `lib/features/baby_profile/presentation/screens/followers_management_screen.dart` | Active followers list; remove follower; follower details; membership management | Baby Profile Provider |
+| **Event Creation Screen** | `lib/features/calendar/presentation/screens/event_creation_screen.dart` | Event creation form; title, dates, location, video link, cover photo; validation; save/cancel | Calendar Screen Provider |
+| **Event Detail Screen** | `lib/features/calendar/presentation/screens/event_detail_screen.dart` | Event details view; RSVP buttons; comment thread; attendee list; edit (owner only) | Calendar Screen Provider |
+| **Registry Item Creation Screen** | `lib/features/registry/presentation/screens/registry_item_creation_screen.dart` | Registry item creation form; name, description, link, priority; validation; save/cancel | Registry Screen Provider |
+| **Gamification Screen** | `lib/features/gamification/presentation/screens/gamification_screen.dart` | Name suggestions; prediction voting; leaderboard; engagement recap | Gamification Provider |
+| **Settings Screen** | `lib/features/settings/presentation/screens/settings_screen.dart` | App settings; notification preferences; theme selection; account options; logout | Settings Provider |
 
 **Test Files**:
-- `test/features/photo_gallery/presentation/screens/photo_gallery_screen_test.dart`
-- `test/features/photo_gallery/presentation/screens/photo_upload_screen_test.dart`
-- `test/features/photo_gallery/presentation/widgets/photo_grid_test.dart`
-- `test/features/fun/presentation/screens/fun_screen_test.dart`
-- `test/features/fun/presentation/widgets/fun_tile_grid_test.dart`
+- `test/features/baby_profile/presentation/screens/baby_profile_screen_test.dart`
+- `test/features/baby_profile/presentation/screens/create_baby_profile_screen_test.dart`
+- `test/features/baby_profile/presentation/screens/edit_baby_profile_screen_test.dart`
+- `test/features/baby_profile/presentation/screens/invite_followers_screen_test.dart`
+- `test/features/baby_profile/presentation/screens/followers_management_screen_test.dart`
+- `test/features/calendar/presentation/screens/event_creation_screen_test.dart`
+- `test/features/calendar/presentation/screens/event_detail_screen_test.dart`
+- `test/features/registry/presentation/screens/registry_item_creation_screen_test.dart`
+- `test/features/gamification/presentation/screens/gamification_screen_test.dart`
+- `test/features/settings/presentation/screens/settings_screen_test.dart`
 
 ---
 
@@ -1090,12 +1106,14 @@ Screen implementations including authentication flows, main app screens, feature
 
 | Component | Location | Functionality | Dependencies |
 |-----------|----------|---------------|--------------|
-| **App Router** | `lib/core/router/app_router.dart` | GoRouter configuration; route definitions; deep linking; route guards; navigation stack; tab navigation | go_router package |
-| **Route Guards** | `lib/core/router/route_guards.dart` | Authentication guards; role-based guards; onboarding completion checks; redirect logic | Auth Provider |
+| **App Router** | `lib/core/router/app_router.dart` | GoRouter configuration; all 19 feature routes; AppRoutes constants; deep linking; route guards; RouterRefreshNotifier for auth state changes | go_router package |
+| **Route Guards** | `lib/core/router/route_guards.dart` | Auth redirect; path-list guard (requiresAuth); role-based guard (requiresRole); redirect logic | Auth Provider |
+| **Navigation Service** | `lib/core/navigation/navigation_service.dart` | Context-free navigation via GlobalKey<NavigatorState>; goTo/pushTo/replaceWith/pop/canPop methods; route constants via AppRoutes | go_router package |
 
 **Test Files**:
 - `test/core/router/app_router_test.dart`
 - `test/core/router/route_guards_test.dart`
+- `test/core/navigation/navigation_service_test.dart`
 
 ---
 
@@ -1103,10 +1121,14 @@ Screen implementations including authentication flows, main app screens, feature
 
 | Component | Location | Functionality | Dependencies |
 |-----------|----------|---------------|--------------|
-| **Responsive Layouts** | Applied across all screens | Breakpoint-based layouts; mobile (portrait/landscape); tablet; desktop; adaptive padding; responsive typography | LayoutBuilder, MediaQuery |
+| **Responsive Layout** | `lib/core/widgets/responsive_layout.dart` | Breakpoint-based layouts; mobile/tablet/desktop variants; adaptive grid; responsive padding/margins | LayoutBuilder, MediaQuery |
+| **Responsive Scaffold** | `lib/core/widgets/responsive_scaffold.dart` | Bottom nav on mobile; NavigationRail on tablet/desktop; adaptive scaffold | Breakpoint System |
+| **Breakpoint System** | `lib/core/utils/breakpoint_system.dart` | xs/sm/md/lg/xl breakpoints; predicates; current(); value<T>() selector | None |
 
 **Test Files**:
-- Responsive tests within each screen test file
+- `test/core/widgets/responsive_layout_test.dart`
+- `test/core/widgets/responsive_scaffold_test.dart`
+- `test/core/utils/breakpoint_system_test.dart`
 
 ---
 
@@ -1114,12 +1136,12 @@ Screen implementations including authentication flows, main app screens, feature
 
 | Component | Location | Functionality | Dependencies |
 |-----------|----------|---------------|--------------|
-| **Global Error Boundary** | `lib/core/widgets/error_boundary.dart` | Catches all uncaught errors; crash recovery UI; error reporting to Sentry; restart option; error details (debug mode) | Observability Service |
-| **Error Recovery Manager** | `lib/core/services/error_recovery_manager.dart` | Recovery strategies; state restoration; automatic retry; user guidance | None |
+| **Global Error Boundary** | `lib/core/widgets/error_boundary.dart` | Catches all uncaught errors; crash recovery UI; error reporting to Sentry via GlobalErrorBoundary; restart option; error details (debug mode) | Observability Service |
+| **Crash Recovery Handler** | `lib/core/services/crash_recovery_handler.dart` | SharedPreferences-backed crash detection; Sentry reporting; state restoration; crash count tracking | Local Storage Service |
 
 **Test Files**:
 - `test/core/widgets/error_boundary_test.dart`
-- `test/core/services/error_recovery_manager_test.dart`
+- `test/core/services/crash_recovery_handler_test.dart`
 
 ---
 
@@ -1179,34 +1201,35 @@ Each tile has its own widget implementation in `lib/tiles/*/widgets/`:
 
 ### 3.6 Summary
 
-**Total Components**: 50+ screen/widget components
-**Total Test Files**: 50+ widget/integration test files
+**Total Components**: 55+ screen/widget components
+**Total Test Files**: 55+ widget/integration test files
 **Primary Locations**:
 - `lib/features/auth/presentation/` (4 auth screens + widgets)
 - `lib/features/home/presentation/` (1 home screen + 2 widgets)
-- `lib/features/calendar/presentation/` (1 calendar screen + 1 widget)
+- `lib/features/calendar/presentation/` (3 screens + 1 widget)
 - `lib/features/gallery/presentation/` (2 gallery screens + 1 widget)
-- `lib/features/registry/presentation/` (2 registry screens + 1 widget)
+- `lib/features/registry/presentation/` (3 registry screens + 1 widget)
 - `lib/features/profile/presentation/` (2 profile screens + 1 widget)
-- `lib/features/baby_profile/presentation/` (3 baby profile screens + 1 widget)
-- `lib/features/photo_gallery/presentation/` (2 photo screens + 1 widget)
-- `lib/features/fun/presentation/` (1 fun screen + 1 widget)
+- `lib/features/baby_profile/presentation/` (5 baby profile screens + 1 widget)
+- `lib/features/gamification/presentation/` (1 gamification screen)
+- `lib/features/settings/presentation/` (1 settings screen)
 - `lib/tiles/*/widgets/` (15 tile widgets)
 - `lib/core/router/` (2 routing files)
-- `lib/core/widgets/` (3 error/offline widgets)
-- `lib/core/services/` (4 offline/error services)
+- `lib/core/navigation/` (1 navigation service)
+- `lib/core/widgets/` (responsive scaffold + error/offline widgets)
+- `lib/core/services/` (offline/error services)
 
 **Deliverables**:
 - ✅ Authentication screens (login, signup, role selection)
-- ✅ Main app screens and navigation (home, calendar, gallery, registry, fun)
-- ✅ Feature-specific screens (profile, baby profile, photo gallery)
-- ✅ Responsive layouts for all screens
-- ✅ Global error boundary and crash recovery
+- ✅ Main app screens and navigation (home, calendar, gallery, registry)
+- ✅ Feature-specific screens (profile, baby profile, gamification, settings)
+- ✅ Responsive layouts for all screens (responsive scaffold + breakpoint system)
+- ✅ Global error boundary and crash recovery handler
 - ✅ Offline-first caching implementation
 - ✅ Network failure handling with retry logic
 - ✅ 15 tile widget implementations
-- ✅ Navigation and routing with guards
-- ✅ 50+ comprehensive widget test files
+- ✅ Navigation and routing with guards (NavigationService, AppRouter, RouteGuards)
+- ✅ 55+ comprehensive widget test files
 
 ---
 
@@ -1218,7 +1241,7 @@ This section provides a comprehensive directory structure showing the exact loca
 ```
 lib/
 ├── core/                           # Shared infrastructure (Section 3.1-3.4)
-│   ├── models/                     # 27 data models (3.1)
+│   ├── models/                     # 28 data models (3.1)
 │   │   ├── user.dart
 │   │   ├── user_stats.dart
 │   │   ├── baby_profile.dart
@@ -1240,16 +1263,19 @@ lib/
 │   │   ├── name_suggestion_like.dart
 │   │   ├── notification.dart
 │   │   ├── activity_event.dart
+│   │   ├── system_announcement.dart
 │   │   └── owner_update_marker.dart
 │   │
-│   ├── services/                   # 12 core services (3.2)
+│   ├── services/                   # Core services (3.2, 3.6)
 │   │   ├── supabase_service.dart
+│   │   ├── app_initialization_service.dart
 │   │   ├── auth_service.dart
 │   │   ├── database_service.dart
 │   │   ├── storage_service.dart
 │   │   ├── cache_service.dart
 │   │   ├── local_storage_service.dart
 │   │   ├── realtime_service.dart
+│   │   ├── realtime_subscription_manager.dart
 │   │   ├── notification_service.dart
 │   │   ├── analytics_service.dart
 │   │   ├── observability_service.dart
@@ -1259,7 +1285,7 @@ lib/
 │   │   ├── data_deletion_handler.dart
 │   │   ├── state_persistence_manager.dart
 │   │   ├── persistence_strategies.dart
-│   │   ├── error_recovery_manager.dart
+│   │   ├── crash_recovery_handler.dart
 │   │   ├── offline_cache_manager.dart
 │   │   ├── sync_manager.dart
 │   │   └── network_error_handler.dart
@@ -1285,10 +1311,12 @@ lib/
 │   │   ├── image_helpers.dart
 │   │   ├── role_helpers.dart
 │   │   ├── share_helpers.dart
+│   │   ├── tile_loader.dart
 │   │   ├── accessibility_helpers.dart
 │   │   ├── color_contrast_validator.dart
 │   │   ├── dynamic_type_handler.dart
 │   │   ├── rtl_support_handler.dart
+│   │   ├── breakpoint_system.dart
 │   │   └── screen_size_utils.dart
 │   │
 │   ├── extensions/                 # Dart extensions (3.3)
@@ -1307,7 +1335,11 @@ lib/
 │   │   ├── tile_type.dart
 │   │   ├── screen_name.dart
 │   │   ├── notification_type.dart
-│   │   └── event_status.dart
+│   │   ├── event_status.dart
+│   │   ├── invitation_status.dart
+│   │   ├── rsvp_status.dart
+│   │   ├── gender.dart
+│   │   └── vote_type.dart
 │   │
 │   ├── typedefs/                   # Type aliases (3.3)
 │   │   └── callbacks.dart
@@ -1315,7 +1347,8 @@ lib/
 │   ├── constants/                  # App constants (3.3)
 │   │   ├── strings.dart
 │   │   ├── supabase_tables.dart
-│   │   └── performance_limits.dart
+│   │   ├── performance_limits.dart
+│   │   └── spacing.dart
 │   │
 │   ├── themes/                     # Theming (3.4)
 │   │   ├── app_theme.dart
@@ -1330,6 +1363,7 @@ lib/
 │   │   ├── custom_button.dart
 │   │   ├── shimmer_placeholder.dart
 │   │   ├── responsive_layout.dart
+│   │   ├── responsive_scaffold.dart
 │   │   ├── error_boundary.dart
 │   │   ├── offline_indicator.dart
 │   │   └── retry_dialog.dart
@@ -1339,11 +1373,6 @@ lib/
 │   │   ├── cache_manager.dart
 │   │   └── rls_validator.dart
 │   │
-│   ├── exceptions/                 # Custom exceptions (3.2)
-│   │   ├── app_exceptions.dart
-│   │   ├── supabase_exceptions.dart
-│   │   └── permission_exceptions.dart
-│   │
 │   ├── di/                         # Dependency injection (3.5)
 │   │   ├── providers.dart
 │   │   └── service_locator.dart
@@ -1352,13 +1381,16 @@ lib/
 │   │   ├── error_state_handler.dart
 │   │   └── loading_state_handler.dart
 │   │
+│   ├── navigation/                 # Context-free navigation (3.6)
+│   │   └── navigation_service.dart
+│   │
 │   ├── router/                     # Navigation (3.6)
 │   │   ├── app_router.dart
 │   │   └── route_guards.dart
 │   │
 │   └── config/                     # Configuration
 │       ├── app_config.dart
-│       └── environment.dart
+│       └── supabase_config.dart
 │
 ├── tiles/                          # Tile widgets (15 tiles) (3.5, 3.6)
 │   ├── core/                       # Tile infrastructure
@@ -1478,7 +1510,9 @@ lib/
 │   │   │   ├── providers/
 │   │   │   │   └── calendar_screen_provider.dart
 │   │   │   ├── screens/
-│   │   │   │   └── calendar_screen.dart
+│   │   │   │   ├── calendar_screen.dart
+│   │   │   │   ├── event_creation_screen.dart
+│   │   │   │   └── event_detail_screen.dart
 │   │   │   └── widgets/
 │   │   │       └── calendar_widget.dart
 │   │
@@ -1498,45 +1532,24 @@ lib/
 │   │   │   │   └── registry_screen_provider.dart
 │   │   │   ├── screens/
 │   │   │   │   ├── registry_screen.dart
-│   │   │   │   └── registry_item_detail_screen.dart
+│   │   │   │   ├── registry_item_detail_screen.dart
+│   │   │   │   └── registry_item_creation_screen.dart
 │   │   │   └── widgets/
 │   │   │       └── registry_filter_bar.dart
-│   │   ├── data/
-│   │   │   ├── models/
-│   │   │   │   └── registry_item_dto.dart
-│   │   │   ├── mappers/
-│   │   │   ├── repositories/
-│   │   │   │   └── registry_repository_impl.dart
-│   │   │   └── datasources/
-│   │   │       ├── remote/
-│   │   │       │   └── registry_remote_datasource.dart
-│   │   │       └── local/
-│   │   │           └── registry_cache.dart
-│   │   └── domain/
-│   │       ├── use_cases/
-│   │       │   ├── get_registry_items.dart
-│   │       │   └── purchase_item.dart
-│   │       └── entities/
-│   │           └── registry_item_entity.dart
 │   │
-│   ├── photo_gallery/
+│   ├── gamification/
 │   │   ├── presentation/
 │   │   │   ├── providers/
-│   │   │   │   └── photo_gallery_screen_provider.dart
-│   │   │   ├── screens/
-│   │   │   │   ├── photo_gallery_screen.dart
-│   │   │   │   └── photo_upload_screen.dart
-│   │   │   └── widgets/
-│   │   │       └── photo_grid.dart
+│   │   │   │   └── gamification_provider.dart
+│   │   │   └── screens/
+│   │   │       └── gamification_screen.dart
 │   │
-│   ├── fun/
+│   ├── settings/
 │   │   ├── presentation/
 │   │   │   ├── providers/
-│   │   │   │   └── fun_screen_provider.dart
-│   │   │   ├── screens/
-│   │   │   │   └── fun_screen.dart
-│   │   │   └── widgets/
-│   │   │       └── fun_tile_grid.dart
+│   │   │   │   └── settings_provider.dart
+│   │   │   └── screens/
+│   │   │       └── settings_screen.dart
 │   │
 │   ├── profile/
 │   │   ├── presentation/
@@ -1572,27 +1585,11 @@ lib/
 │       │   ├── screens/
 │       │   │   ├── baby_profile_screen.dart
 │       │   │   ├── create_baby_profile_screen.dart
-│       │   │   └── edit_baby_profile_screen.dart
+│       │   │   ├── edit_baby_profile_screen.dart
+│       │   │   ├── invite_followers_screen.dart
+│       │   │   └── followers_management_screen.dart
 │       │   └── widgets/
 │       │       └── baby_profile_widgets.dart
-│       ├── data/
-│       │   ├── models/
-│       │   │   └── baby_profile_dto.dart
-│       │   ├── mappers/
-│       │   ├── repositories/
-│       │   │   └── baby_profile_repository_impl.dart
-│       │   └── datasources/
-│       │       ├── remote/
-│       │       │   └── baby_profile_remote_datasource.dart
-│       │       └── local/
-│       │           └── baby_profile_cache.dart
-│       └── domain/
-│           ├── use_cases/
-│           │   ├── create_baby_profile.dart
-│           │   ├── update_baby_profile.dart
-│           │   └── get_baby_profiles.dart
-│           └── entities/
-│               └── baby_profile_entity.dart
 │
 ├── l10n/                           # Localization (3.4)
 │   ├── app_en.arb
@@ -1600,12 +1597,11 @@ lib/
 │   └── l10n.dart
 │
 ├── main.dart                       # App entry point
-└── app.dart                        # Root widget
 
 test/                               # Comprehensive tests
 ├── core/
-│   ├── models/                     # 28 model tests
-│   ├── services/                   # 20 service tests
+│   ├── models/                     # 29 model tests
+│   ├── services/                   # 20+ service tests
 │   ├── network/                    # 8 network tests
 │   ├── utils/                      # 12 utility tests
 │   ├── extensions/                 # 4 extension tests
@@ -1628,8 +1624,8 @@ test/                               # Comprehensive tests
 │   ├── calendar/                   # Calendar feature tests
 │   ├── gallery/                    # Gallery feature tests
 │   ├── registry/                   # Registry feature tests
-│   ├── photo_gallery/              # Photo gallery feature tests
-│   ├── fun/                        # Fun feature tests
+│   ├── gamification/               # Gamification feature tests
+│   ├── settings/                   # Settings feature tests
 │   ├── profile/                    # Profile feature tests
 │   └── baby_profile/               # Baby profile feature tests
 ├── l10n/                           # Localization tests
