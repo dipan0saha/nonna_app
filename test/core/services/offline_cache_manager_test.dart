@@ -233,10 +233,12 @@ void main() {
         expect(manager.pendingSyncCount, equals(0));
       });
 
-      test('cacheData does NOT call cache put when offline', () async {
-        // put is only called for the sync-queue persistence, not the user key
-        await manager.cacheData('offline_key', {'x': 1});
-        verifyNever(mockCache.put('offline_key', any));
+      test('cacheData writes to local cache even when offline', () async {
+        // Offline writes are cached locally for immediate reads
+        await manager.cacheData('offline_key', {'x': 42});
+        verify(mockCache.put('offline_key', any,
+                ttlMinutes: anyNamed('ttlMinutes')))
+            .called(1);
       });
     });
 
@@ -369,6 +371,7 @@ void main() {
           timestamp: DateTime(2024, 1, 15, 12),
           data: {'name': 'Alice'},
           retryCount: 2,
+          ttlMinutes: 30,
         );
 
         final restored = SyncOperation.fromJson(op.toJson());
@@ -378,19 +381,35 @@ void main() {
         expect(restored.timestamp, equals(op.timestamp));
         expect(restored.data, equals(op.data));
         expect(restored.retryCount, equals(op.retryCount));
+        expect(restored.ttlMinutes, equals(op.ttlMinutes));
       });
 
-      test('copyWith updates retryCount', () {
+      test('serialises without ttlMinutes when null', () {
+        final op = SyncOperation(
+          id: 'op_no_ttl',
+          key: 'k',
+          type: SyncOperationType.update,
+          timestamp: DateTime(2024),
+        );
+        final json = op.toJson();
+        expect(json.containsKey('ttlMinutes'), isFalse);
+        final restored = SyncOperation.fromJson(json);
+        expect(restored.ttlMinutes, isNull);
+      });
+
+      test('copyWith updates retryCount and preserves ttlMinutes', () {
         final op = SyncOperation(
           id: 'op_2',
           key: 'k',
           type: SyncOperationType.create,
           timestamp: DateTime(2024),
           retryCount: 0,
+          ttlMinutes: 60,
         );
         final updated = op.copyWith(retryCount: 3);
         expect(updated.retryCount, equals(3));
         expect(updated.id, equals(op.id));
+        expect(updated.ttlMinutes, equals(60));
       });
 
       test('all SyncOperationType values survive round-trip', () {
