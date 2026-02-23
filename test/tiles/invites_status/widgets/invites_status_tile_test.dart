@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/enums/invitation_status.dart';
 import 'package:nonna_app/core/models/invitation.dart';
+import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/tiles/invites_status/widgets/invites_status_tile.dart';
 
 Invitation _makeInvitation({

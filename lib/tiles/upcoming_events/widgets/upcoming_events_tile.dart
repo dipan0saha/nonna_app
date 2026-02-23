@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/enums/rsvp_status.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/tiles/upcoming_events/models/event_with_rsvp.dart';
 
-/// Tile widget that displays upcoming events.
+export 'package:nonna_app/tiles/upcoming_events/models/event_with_rsvp.dart';
+
+/// Tile widget that displays upcoming events with optional RSVP status.
 class UpcomingEventsTile extends StatelessWidget {
   const UpcomingEventsTile({
     super.key,
@@ -21,7 +25,9 @@ class UpcomingEventsTile extends StatelessWidget {
     this.onViewAll,
   });
 
-  final List<Event> events;
+  /// Events to display. Use [EventWithRsvp] to include the current user's RSVP
+  /// status alongside each event; the RSVP indicator will be shown when present.
+  final List<EventWithRsvp> events;
   final bool isLoading;
   final String? error;
   final void Function(Event)? onEventTap;
@@ -75,20 +81,21 @@ class UpcomingEventsTile extends StatelessWidget {
     final displayEvents = events.take(3).toList();
     return Column(
       children: displayEvents
-          .map((event) => _EventCard(event: event, onTap: onEventTap))
+          .map((item) => _EventCard(item: item, onTap: onEventTap))
           .toList(),
     );
   }
 }
 
 class _EventCard extends StatelessWidget {
-  const _EventCard({required this.event, this.onTap});
+  const _EventCard({required this.item, this.onTap});
 
-  final Event event;
+  final EventWithRsvp item;
   final void Function(Event)? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final event = item.event;
     final dateStr = DateFormat('MMM d, yyyy').format(event.startsAt);
 
     return InkWell(
@@ -130,16 +137,15 @@ class _EventCard extends StatelessWidget {
                         Icon(
                           Icons.location_on_outlined,
                           size: 14,
-                          color:
-                              AppColors.onSurfaceHint(context.colorScheme),
+                          color: AppColors.onSurfaceHint(context.colorScheme),
                         ),
                         AppSpacing.horizontalGapXS,
                         Expanded(
                           child: Text(
                             event.location!,
                             style: context.textTheme.bodySmall?.copyWith(
-                              color: AppColors.onSurfaceHint(
-                                  context.colorScheme),
+                              color:
+                                  AppColors.onSurfaceHint(context.colorScheme),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -151,8 +157,34 @@ class _EventCard extends StatelessWidget {
                 ],
               ),
             ),
+            if (item.hasRsvp) ...[
+              AppSpacing.horizontalGapS,
+              _RsvpBadge(
+                key: Key('rsvp_badge_${event.id}'),
+                status: item.rsvpStatus!,
+              ),
+            ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Small icon chip showing the user's RSVP response.
+class _RsvpBadge extends StatelessWidget {
+  const _RsvpBadge({super.key, required this.status});
+
+  final RsvpStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: status.displayName,
+      child: Icon(
+        status.icon,
+        size: 18,
+        color: status.color,
       ),
     );
   }

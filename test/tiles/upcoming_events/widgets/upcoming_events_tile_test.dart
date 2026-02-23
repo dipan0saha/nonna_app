@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:nonna_app/core/enums/rsvp_status.dart';
 import 'package:nonna_app/core/models/event.dart';
+import 'package:nonna_app/core/models/event_rsvp.dart';
+import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/tiles/upcoming_events/models/event_with_rsvp.dart';
 import 'package:nonna_app/tiles/upcoming_events/widgets/upcoming_events_tile.dart';
 
 Event _makeEvent({
@@ -22,8 +26,30 @@ Event _makeEvent({
   );
 }
 
+EventWithRsvp _makeEventWithRsvp({
+  String id = 'e1',
+  String title = 'Baby Shower',
+  String? location,
+  RsvpStatus? rsvpStatus,
+}) {
+  final event = _makeEvent(id: id, title: title, location: location);
+  EventRsvp? rsvp;
+  if (rsvpStatus != null) {
+    final now = DateTime.now();
+    rsvp = EventRsvp(
+      id: 'rsvp_$id',
+      eventId: id,
+      userId: 'u1',
+      status: rsvpStatus,
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
+  return EventWithRsvp(event: event, rsvp: rsvp);
+}
+
 Widget _buildWidget({
-  List<Event> events = const [],
+  List<EventWithRsvp> events = const [],
   bool isLoading = false,
   String? error,
   void Function(Event)? onEventTap,
@@ -67,7 +93,10 @@ void main() {
     });
 
     testWidgets('shows events when provided', (tester) async {
-      final events = [_makeEvent(id: 'e1', title: 'Shower'), _makeEvent(id: 'e2', title: 'Party')];
+      final events = [
+        _makeEventWithRsvp(id: 'e1', title: 'Shower'),
+        _makeEventWithRsvp(id: 'e2', title: 'Party'),
+      ];
       await tester.pumpWidget(_buildWidget(events: events));
       expect(find.byKey(const Key('event_card_e1')), findsOneWidget);
       expect(find.byKey(const Key('event_card_e2')), findsOneWidget);
@@ -76,7 +105,7 @@ void main() {
     testWidgets('shows at most 3 events', (tester) async {
       final events = List.generate(
         5,
-        (i) => _makeEvent(id: 'e$i', title: 'Event $i'),
+        (i) => _makeEventWithRsvp(id: 'e$i', title: 'Event $i'),
       );
       await tester.pumpWidget(_buildWidget(events: events));
       expect(find.byType(InkWell), findsNWidgets(3));
@@ -89,15 +118,19 @@ void main() {
 
     testWidgets('calls onEventTap when event card is tapped', (tester) async {
       Event? tappedEvent;
-      final event = _makeEvent();
+      final item = _makeEventWithRsvp();
       await tester.pumpWidget(
-        _buildWidget(events: [event], onEventTap: (e) => tappedEvent = e),
+        _buildWidget(
+          events: [item],
+          onEventTap: (e) => tappedEvent = e,
+        ),
       );
       await tester.tap(find.byKey(const Key('event_card_e1')));
-      expect(tappedEvent, equals(event));
+      expect(tappedEvent, equals(item.event));
     });
 
-    testWidgets('shows view all button when onViewAll is provided', (tester) async {
+    testWidgets('shows view all button when onViewAll is provided',
+        (tester) async {
       await tester.pumpWidget(_buildWidget(onViewAll: () {}));
       expect(find.byKey(const Key('upcoming_events_view_all')), findsOneWidget);
     });
@@ -115,8 +148,8 @@ void main() {
     });
 
     testWidgets('shows location when event has one', (tester) async {
-      final event = _makeEvent(location: 'Central Park');
-      await tester.pumpWidget(_buildWidget(events: [event]));
+      final item = _makeEventWithRsvp(location: 'Central Park');
+      await tester.pumpWidget(_buildWidget(events: [item]));
       expect(find.text('Central Park'), findsOneWidget);
     });
 
@@ -127,6 +160,18 @@ void main() {
       );
       await tester.tap(find.byIcon(Icons.refresh));
       expect(called, isTrue);
+    });
+
+    testWidgets('shows RSVP badge when rsvp is provided', (tester) async {
+      final item = _makeEventWithRsvp(rsvpStatus: RsvpStatus.yes);
+      await tester.pumpWidget(_buildWidget(events: [item]));
+      expect(find.byKey(const Key('rsvp_badge_e1')), findsOneWidget);
+    });
+
+    testWidgets('hides RSVP badge when no rsvp', (tester) async {
+      final item = _makeEventWithRsvp(); // no rsvp
+      await tester.pumpWidget(_buildWidget(events: [item]));
+      expect(find.byKey(const Key('rsvp_badge_e1')), findsNothing);
     });
   });
 }

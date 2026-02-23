@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/enums/notification_type.dart';
 import 'package:nonna_app/core/models/notification.dart' as app_notification;
+import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/tiles/notifications/widgets/notifications_tile.dart';
 
 app_notification.Notification _makeNotification({

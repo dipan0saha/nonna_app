@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/models/registry_item.dart';
-import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
+import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/tiles/registry_highlights/models/registry_item_with_status.dart';
 import 'package:nonna_app/tiles/registry_highlights/widgets/registry_highlights_tile.dart';
 
 RegistryItemWithStatus _makeItem({

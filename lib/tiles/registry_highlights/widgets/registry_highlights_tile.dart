@@ -6,7 +6,7 @@ import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
-import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
+import 'package:nonna_app/tiles/registry_highlights/models/registry_item_with_status.dart';
 
 /// Tile widget that displays registry highlights with priority and purchase status.
 class RegistryHighlightsTile extends StatelessWidget {

@@ -6,19 +6,9 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/registry_item.dart';
 import '../../../core/models/registry_purchase.dart';
+import '../models/registry_item_with_status.dart';
 
-/// Registry item with purchase status
-class RegistryItemWithStatus {
-  final RegistryItem item;
-  final bool isPurchased;
-  final List<RegistryPurchase> purchases;
-
-  const RegistryItemWithStatus({
-    required this.item,
-    required this.isPurchased,
-    this.purchases = const [],
-  });
-}
+export '../models/registry_item_with_status.dart';
 
 /// Registry Highlights provider for the Registry Highlights tile
 ///

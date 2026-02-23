@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/models/photo.dart';
+import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/tiles/recent_photos/models/photo_with_squish_count.dart';
 import 'package:nonna_app/tiles/recent_photos/widgets/recent_photos_tile.dart';
 
 Photo _makePhoto({String id = 'p1', String? caption}) {
@@ -17,8 +19,20 @@ Photo _makePhoto({String id = 'p1', String? caption}) {
   );
 }
 
+PhotoWithSquishCount _makeItem({
+  String id = 'p1',
+  String? caption,
+  int squishCount = 0,
+  bool isSquished = false,
+}) =>
+    PhotoWithSquishCount(
+      photo: _makePhoto(id: id, caption: caption),
+      squishCount: squishCount,
+      isSquished: isSquished,
+    );
+
 Widget _buildWidget({
-  List<Photo> photos = const [],
+  List<PhotoWithSquishCount> photos = const [],
   bool isLoading = false,
   String? error,
   void Function(Photo)? onPhotoTap,
@@ -62,16 +76,15 @@ void main() {
     });
 
     testWidgets('shows photos when provided', (tester) async {
-      final photos = [_makePhoto(id: 'p1'), _makePhoto(id: 'p2')];
+      final photos = [_makeItem(id: 'p1'), _makeItem(id: 'p2')];
       await tester.pumpWidget(_buildWidget(photos: photos));
       expect(find.byKey(const Key('photo_item_p1')), findsOneWidget);
       expect(find.byKey(const Key('photo_item_p2')), findsOneWidget);
     });
 
     testWidgets('shows at most 6 photos', (tester) async {
-      final photos = List.generate(8, (i) => _makePhoto(id: 'p$i'));
+      final photos = List.generate(8, (i) => _makeItem(id: 'p$i'));
       await tester.pumpWidget(_buildWidget(photos: photos));
-      // 6 photo items in the grid
       int count = 0;
       for (int i = 0; i < 6; i++) {
         if (tester.any(find.byKey(Key('photo_item_p$i')))) count++;
@@ -87,15 +100,19 @@ void main() {
 
     testWidgets('calls onPhotoTap when photo is tapped', (tester) async {
       Photo? tappedPhoto;
-      final photo = _makePhoto();
+      final item = _makeItem();
       await tester.pumpWidget(
-        _buildWidget(photos: [photo], onPhotoTap: (p) => tappedPhoto = p),
+        _buildWidget(
+          photos: [item],
+          onPhotoTap: (p) => tappedPhoto = p,
+        ),
       );
       await tester.tap(find.byKey(const Key('photo_item_p1')));
-      expect(tappedPhoto, equals(photo));
+      expect(tappedPhoto, equals(item.photo));
     });
 
-    testWidgets('shows view all button when onViewAll is provided', (tester) async {
+    testWidgets('shows view all button when onViewAll is provided',
+        (tester) async {
       await tester.pumpWidget(_buildWidget(onViewAll: () {}));
       expect(find.byKey(const Key('recent_photos_view_all')), findsOneWidget);
     });
@@ -113,8 +130,8 @@ void main() {
     });
 
     testWidgets('shows caption when photo has one', (tester) async {
-      final photo = _makePhoto(caption: 'First smile');
-      await tester.pumpWidget(_buildWidget(photos: [photo]));
+      final item = _makeItem(caption: 'First smile');
+      await tester.pumpWidget(_buildWidget(photos: [item]));
       expect(find.text('First smile'), findsOneWidget);
     });
 
@@ -125,6 +142,21 @@ void main() {
       );
       await tester.tap(find.byIcon(Icons.refresh));
       expect(called, isTrue);
+    });
+
+    testWidgets('shows squish count overlay when squishCount > 0',
+        (tester) async {
+      final item = _makeItem(id: 'p1', squishCount: 5);
+      await tester.pumpWidget(_buildWidget(photos: [item]));
+      expect(find.byKey(const Key('squish_count_p1')), findsOneWidget);
+      expect(find.text('5'), findsOneWidget);
+    });
+
+    testWidgets('hides squish count overlay when squishCount is 0',
+        (tester) async {
+      final item = _makeItem(id: 'p1', squishCount: 0);
+      await tester.pumpWidget(_buildWidget(photos: [item]));
+      expect(find.byKey(const Key('squish_count_p1')), findsNothing);
     });
   });
 }

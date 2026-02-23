@@ -7,8 +7,11 @@ import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/tiles/recent_photos/models/photo_with_squish_count.dart';
 
-/// Tile widget that displays a grid of recent photos.
+export 'package:nonna_app/tiles/recent_photos/models/photo_with_squish_count.dart';
+
+/// Tile widget that displays a grid of recent photos with squish counts.
 class RecentPhotosTile extends StatelessWidget {
   const RecentPhotosTile({
     super.key,
@@ -20,7 +23,9 @@ class RecentPhotosTile extends StatelessWidget {
     this.onViewAll,
   });
 
-  final List<Photo> photos;
+  /// Photos to display. Use [PhotoWithSquishCount] to include engagement
+  /// counts and the current user's squish state alongside each photo.
+  final List<PhotoWithSquishCount> photos;
   final bool isLoading;
   final String? error;
   final void Function(Photo)? onPhotoTap;
@@ -99,45 +104,98 @@ class RecentPhotosTile extends StatelessWidget {
       mainAxisSpacing: AppSpacing.xs,
       crossAxisSpacing: AppSpacing.xs,
       children: displayPhotos
-          .map((photo) => _PhotoItem(photo: photo, onTap: onPhotoTap))
+          .map(
+            (item) => _PhotoItem(
+              item: item,
+              onTap: onPhotoTap,
+            ),
+          )
           .toList(),
     );
   }
 }
 
 class _PhotoItem extends StatelessWidget {
-  const _PhotoItem({required this.photo, this.onTap});
+  const _PhotoItem({required this.item, this.onTap});
 
-  final Photo photo;
+  final PhotoWithSquishCount item;
   final void Function(Photo)? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final photo = item.photo;
+
     return InkWell(
       key: Key('photo_item_${photo.id}'),
       onTap: onTap != null ? () => onTap!(photo) : null,
       borderRadius: BorderRadius.circular(AppSpacing.xs),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.primaryLight,
-          borderRadius: BorderRadius.circular(AppSpacing.xs),
-        ),
-        child: photo.caption != null
-            ? Center(
-                child: Padding(
-                  padding: AppSpacing.compactPadding,
-                  child: Text(
-                    photo.caption!,
-                    style: context.textTheme.bodySmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              )
-            : const Center(
-                child: Icon(Icons.photo, color: AppColors.primaryDark),
+      child: Stack(
+        children: [
+          // Photo thumbnail placeholder (coloured background)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.primaryLight,
+                borderRadius: BorderRadius.circular(AppSpacing.xs),
               ),
+              child: photo.caption != null
+                  ? Center(
+                      child: Padding(
+                        padding: AppSpacing.compactPadding,
+                        child: Text(
+                          photo.caption!,
+                          style: context.textTheme.bodySmall,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : const Center(
+                      child: Icon(Icons.photo, color: AppColors.primaryDark),
+                    ),
+            ),
+          ),
+          // Squish count overlay
+          if (item.squishCount > 0)
+            Positioned(
+              bottom: AppSpacing.xs / 2,
+              right: AppSpacing.xs / 2,
+              child: Container(
+                key: Key('squish_count_${photo.id}'),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 6,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(AppSpacing.xs),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      item.isSquished
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      size: 12,
+                      color: item.isSquished
+                          ? AppColors.secondary
+                          : Colors.white,
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      '${item.squishCount}',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
