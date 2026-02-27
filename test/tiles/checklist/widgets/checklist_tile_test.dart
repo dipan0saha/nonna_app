@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
-import 'package:nonna_app/tiles/checklist/providers/checklist_provider.dart';
 import 'package:nonna_app/tiles/checklist/widgets/checklist_tile.dart';
 
 ChecklistItem _makeItem({

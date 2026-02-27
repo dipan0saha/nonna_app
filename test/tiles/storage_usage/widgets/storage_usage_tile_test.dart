@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
-import 'package:nonna_app/tiles/storage_usage/providers/storage_usage_provider.dart';
 import 'package:nonna_app/tiles/storage_usage/widgets/storage_usage_tile.dart';
 
 StorageUsageInfo _makeInfo({

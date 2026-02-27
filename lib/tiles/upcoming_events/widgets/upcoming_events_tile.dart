@@ -195,13 +195,11 @@ class _TileHeader extends StatelessWidget {
     required this.title,
     this.onViewAll,
     this.viewAllKey,
-    this.trailing,
   });
 
   final String title;
   final VoidCallback? onViewAll;
   final Key? viewAllKey;
-  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +208,6 @@ class _TileHeader extends StatelessWidget {
         Expanded(
           child: Text(title, style: context.textTheme.titleMedium),
         ),
-        if (trailing != null) trailing!,
         if (onViewAll != null)
           TextButton(
             key: viewAllKey,

@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
-import 'package:nonna_app/tiles/gallery_favorites/providers/gallery_favorites_provider.dart';
 import 'package:nonna_app/tiles/gallery_favorites/widgets/gallery_favorites_tile.dart';
 
 Photo _makePhoto({String id = 'p1', String? caption}) {

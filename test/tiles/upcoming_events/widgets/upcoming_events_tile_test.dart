@@ -5,7 +5,6 @@ import 'package:nonna_app/core/enums/rsvp_status.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/models/event_rsvp.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
-import 'package:nonna_app/tiles/upcoming_events/models/event_with_rsvp.dart';
 import 'package:nonna_app/tiles/upcoming_events/widgets/upcoming_events_tile.dart';
 
 Event _makeEvent({

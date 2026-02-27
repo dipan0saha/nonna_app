@@ -144,7 +144,6 @@ class GlobalErrorBoundary extends StatefulWidget {
 
 class _GlobalErrorBoundaryState extends State<GlobalErrorBoundary> {
   Object? _error;
-  StackTrace? _stackTrace;
   int _resetKey = 0;
 
   FlutterExceptionHandler? _previousHandler;
@@ -171,7 +170,6 @@ class _GlobalErrorBoundaryState extends State<GlobalErrorBoundary> {
     if (mounted) {
       setState(() {
         _error = details.exception;
-        _stackTrace = details.stack;
       });
     }
   }
@@ -179,7 +177,6 @@ class _GlobalErrorBoundaryState extends State<GlobalErrorBoundary> {
   void _reset() {
     setState(() {
       _error = null;
-      _stackTrace = null;
       _resetKey++;
     });
   }
