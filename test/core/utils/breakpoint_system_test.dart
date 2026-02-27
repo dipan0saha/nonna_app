@@ -43,7 +43,7 @@ void main() {
   });
 
   group('BreakpointSystem.current', () {
-    Widget _build(double width, Key key) => MaterialApp(
+    Widget buildBreakpointWidget(double width, Key key) => MaterialApp(
           home: MediaQuery(
             data: MediaQueryData(size: Size(width, 800)),
             child: Builder(
@@ -57,31 +57,31 @@ void main() {
 
     testWidgets('returns xs for 400 dp', (tester) async {
       const k = Key('bp');
-      await tester.pumpWidget(_build(400, k));
+      await tester.pumpWidget(buildBreakpointWidget(400, k));
       expect(find.text('xs'), findsOneWidget);
     });
 
     testWidgets('returns sm for 700 dp', (tester) async {
       const k = Key('bp');
-      await tester.pumpWidget(_build(700, k));
+      await tester.pumpWidget(buildBreakpointWidget(700, k));
       expect(find.text('sm'), findsOneWidget);
     });
 
     testWidgets('returns md for 1100 dp', (tester) async {
       const k = Key('bp');
-      await tester.pumpWidget(_build(1100, k));
+      await tester.pumpWidget(buildBreakpointWidget(1100, k));
       expect(find.text('md'), findsOneWidget);
     });
 
     testWidgets('returns lg for 1500 dp', (tester) async {
       const k = Key('bp');
-      await tester.pumpWidget(_build(1500, k));
+      await tester.pumpWidget(buildBreakpointWidget(1500, k));
       expect(find.text('lg'), findsOneWidget);
     });
 
     testWidgets('returns xl for 2000 dp', (tester) async {
       const k = Key('bp');
-      await tester.pumpWidget(_build(2000, k));
+      await tester.pumpWidget(buildBreakpointWidget(2000, k));
       expect(find.text('xl'), findsOneWidget);
     });
   });

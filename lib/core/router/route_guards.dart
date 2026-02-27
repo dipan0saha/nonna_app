@@ -88,7 +88,7 @@ class RouteGuards {
   /// )
   /// ```
   static RedirectFn requiresRole(
-    ProviderListenable<UserRole?> roleProvider, {
+    Provider<UserRole?> roleProvider, {
     required List<UserRole> allowedRoles,
     String fallbackPath = '/home',
   }) =>

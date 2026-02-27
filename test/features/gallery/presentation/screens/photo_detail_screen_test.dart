@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/features/gallery/presentation/screens/photo_detail_screen.dart';
-import 'package:nonna_app/features/gallery/presentation/widgets/squish_photo_widget.dart';
 
 // ---------------------------------------------------------------------------
 // Helper factory for Photo

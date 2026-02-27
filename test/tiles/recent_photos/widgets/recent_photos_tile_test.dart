@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
-import 'package:nonna_app/tiles/recent_photos/models/photo_with_squish_count.dart';
 import 'package:nonna_app/tiles/recent_photos/widgets/recent_photos_tile.dart';
 
 Photo _makePhoto({String id = 'p1', String? caption}) {
