@@ -199,10 +199,12 @@ class NetworkErrorHandler {
     // HttpException carries status codes in its message; parse when possible.
     if (error is HttpException) {
       final msg = error.message.toLowerCase();
-      if (RegExp(r'\b5\d{2}\b').hasMatch(msg))
+      if (RegExp(r'\b5\d{2}\b').hasMatch(msg)) {
         return NetworkErrorType.serverError;
-      if (RegExp(r'\b4\d{2}\b').hasMatch(msg))
+      }
+      if (RegExp(r'\b4\d{2}\b').hasMatch(msg)) {
         return NetworkErrorType.clientError;
+      }
       return NetworkErrorType.serverError;
     }
 
@@ -216,10 +218,12 @@ class NetworkErrorHandler {
         msg.contains('failed host lookup')) {
       return NetworkErrorType.noConnection;
     }
-    if (RegExp(r'\b5\d{2}\b').hasMatch(msg))
+    if (RegExp(r'\b5\d{2}\b').hasMatch(msg)) {
       return NetworkErrorType.serverError;
-    if (RegExp(r'\b4\d{2}\b').hasMatch(msg))
+    }
+    if (RegExp(r'\b4\d{2}\b').hasMatch(msg)) {
       return NetworkErrorType.clientError;
+    }
 
     return NetworkErrorType.unknown;
   }

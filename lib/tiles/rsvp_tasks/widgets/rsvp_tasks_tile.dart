@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';

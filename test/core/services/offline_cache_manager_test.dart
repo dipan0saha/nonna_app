@@ -12,7 +12,7 @@ void main() {
     late OfflineCacheManager manager;
 
     /// Returns a MockCacheService pre-configured for common operations.
-    MockCacheService _buildCache() {
+    MockCacheService buildCache() {
       final mock = MockCacheService();
       when(mock.get<String>(any)).thenAnswer((_) async => null);
       when(mock.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
@@ -22,7 +22,7 @@ void main() {
     }
 
     setUp(() {
-      mockCache = _buildCache();
+      mockCache = buildCache();
     });
 
     tearDown(() async {
