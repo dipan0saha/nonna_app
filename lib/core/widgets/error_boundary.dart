@@ -1,6 +1,7 @@
+import 'dart:async' show scheduleMicrotask, unawaited;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:nonna_app/core/services/observability_service.dart';
 
 /// A widget that displays a fallback UI when [error] is set.
@@ -163,13 +164,20 @@ class _GlobalErrorBoundaryState extends State<GlobalErrorBoundary> {
 
   void _handleFlutterError(FlutterErrorDetails details) {
     _previousHandler?.call(details);
-    ObservabilityService.captureException(
-      details.exception,
-      stackTrace: details.stack,
-    );
     if (mounted) {
-      setState(() {
-        _error = details.exception;
+      // Defer setState to a microtask to avoid "setState called during build" error.
+      // This allows the current build cycle to complete before we update state.
+      scheduleMicrotask(() {
+        if (mounted) {
+          setState(() {
+            _error = details.exception;
+          });
+          // Report to Sentry after UI update completes
+          unawaited(ObservabilityService.captureException(
+            details.exception,
+            stackTrace: details.stack,
+          ));
+        }
       });
     }
   }
