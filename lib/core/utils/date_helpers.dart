@@ -148,7 +148,7 @@ class DateHelpers {
 
   /// Calculate weeks until a due date
   static int weeksUntil(DateTime dueDate) {
-    return (daysUntil(dueDate) / 7).floor();
+    return (daysUntil(dueDate) / 7).round();
   }
 
   /// Calculate months until a due date
