@@ -105,9 +105,10 @@ void main() {
       await tester.pumpWidget(
         _buildScreen(
           CalendarScreenState(isLoading: true),
-          babyProfileId: 'p1',
+          userRole: UserRole.owner,
         ),
       );
+      await tester.pump();
       expect(find.byType(ShimmerCard), findsNWidgets(3));
     });
 
@@ -115,9 +116,10 @@ void main() {
       await tester.pumpWidget(
         _buildScreen(
           CalendarScreenState(error: 'Load failed'),
-          babyProfileId: 'p1',
+          userRole: UserRole.owner,
         ),
       );
+      await tester.pump();
       expect(find.text('Load failed'), findsOneWidget);
     });
 
@@ -126,7 +128,7 @@ void main() {
       await tester.pumpWidget(
         _buildScreen(
           CalendarScreenState(),
-          babyProfileId: 'p1',
+          userRole: UserRole.owner,
         ),
       );
       await tester.pump();
@@ -173,8 +175,12 @@ void main() {
         },
       );
       await tester.pumpWidget(
-        _buildScreen(state, babyProfileId: 'p1'),
+        _buildScreen(
+          state,
+          userRole: UserRole.owner,
+        ),
       );
+      await tester.pump();
       expect(find.text('Birthday Party'), findsOneWidget);
     });
 

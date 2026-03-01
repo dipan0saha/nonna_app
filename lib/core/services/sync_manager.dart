@@ -206,6 +206,7 @@ class SyncManager {
 
     try {
       var allSucceeded = true;
+      String? failureReason;
 
       for (final entry in _syncHandlers.entries) {
         final key = entry.key;
@@ -214,10 +215,12 @@ class SyncManager {
           final success = await handler(since);
           if (!success) {
             allSucceeded = false;
+            failureReason ??= 'Sync handler "$key" reported failure';
             debugPrint('⚠️  Sync handler "$key" reported failure');
           }
         } catch (e) {
           allSucceeded = false;
+          failureReason ??= e.toString();
           debugPrint('❌ Sync handler "$key" threw: $e');
         }
       }
@@ -229,7 +232,7 @@ class SyncManager {
         _setSyncStatus(SyncStatus.synced);
         debugPrint('✅ Sync completed at $_lastSyncTime');
       } else {
-        _handleSyncFailure('One or more sync handlers failed');
+        _handleSyncFailure(failureReason ?? 'One or more sync handlers failed');
       }
     } catch (e) {
       _handleSyncFailure(e.toString());

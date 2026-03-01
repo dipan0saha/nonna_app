@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/event.dart';
@@ -100,26 +99,27 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           : null,
       body: RefreshIndicator(
         onRefresh: _onRefresh,
-        child: CustomScrollView(
-          slivers: [
-            // Calendar widget pinned at top
-            SliverToBoxAdapter(
-              child: CalendarWidget(
-                focusedMonth: state.focusedMonth,
-                selectedDate: state.selectedDate,
-                datesWithEvents: state.datesWithEvents,
-                onDateSelected: (date) {
-                  ref.read(calendarScreenProvider.notifier).selectDate(date);
-                },
-                onMonthChanged: (month) {
-                  ref.read(calendarScreenProvider.notifier).goToMonth(month);
-                },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Calendar widget
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.m),
+                child: CalendarWidget(
+                  focusedMonth: state.focusedMonth,
+                  selectedDate: state.selectedDate,
+                  datesWithEvents: state.datesWithEvents,
+                  onDateSelected: (date) {
+                    ref.read(calendarScreenProvider.notifier).selectDate(date);
+                  },
+                  onMonthChanged: (month) {
+                    ref.read(calendarScreenProvider.notifier).goToMonth(month);
+                  },
+                ),
               ),
-            ),
-            const SliverToBoxAdapter(child: Divider()),
-            // Selected-date label
-            SliverToBoxAdapter(
-              child: Padding(
+              const Divider(),
+              // Selected-date label
+              Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.m,
                   vertical: AppSpacing.xs,
@@ -129,33 +129,34 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
-            ),
-            // Event list area
-            _buildEventSliver(state),
-          ],
+              // Event list area
+              _buildEventList(state),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildEventSliver(CalendarScreenState state) {
+  Widget _buildEventList(CalendarScreenState state) {
     if (state.isLoading) {
-      return SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (_, __) => const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.m,
-              vertical: AppSpacing.xs / 2,
-            ),
-            child: ShimmerCard(height: 80, hasImage: false),
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 3,
+        itemBuilder: (_, __) => const Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.m,
+            vertical: AppSpacing.xs / 2,
           ),
-          childCount: 3,
+          child: ShimmerCard(height: 80, hasImage: false),
         ),
       );
     }
 
     if (state.error != null) {
-      return SliverFillRemaining(
+      return Container(
+        constraints: const BoxConstraints(minHeight: 300),
         child: ErrorView(
           message: state.error!,
           onRetry: () => ref.read(calendarScreenProvider.notifier).retry(),
@@ -166,22 +167,22 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final events = state.eventsForSelectedDate;
 
     if (events.isEmpty) {
-      return const SliverFillRemaining(
-        child: EmptyState(
+      return Container(
+        constraints: const BoxConstraints(minHeight: 300),
+        child: const EmptyState(
           message: 'No events for this day',
           icon: Icons.event_available_outlined,
         ),
       );
     }
 
-    return SliverPadding(
+    return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) => _EventCard(event: events[index]),
-          childCount: events.length,
-        ),
-      ),
+      children: [
+        ...events.map((event) => _EventCard(event: event)),
+      ],
     );
   }
 }

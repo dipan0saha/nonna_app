@@ -41,15 +41,18 @@ void main() {
       container = null;
     });
 
-    ProviderContainer createContainer() {
-      // Setup realtime stubs before creating container since provider subscribes during build
+    void setupDefaultMocks() {
+      // Setup default realtime stubs
       when(mockRealtimeService.subscribe(
         table: anyNamed('table'),
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
       when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
+    }
 
+    ProviderContainer createContainer() {
+      setupDefaultMocks();
       return ProviderContainer(
         overrides: [
           databaseServiceProvider.overrideWithValue(mockDatabaseService),
@@ -206,11 +209,6 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([recentFollower.toJson()]));
 
@@ -231,11 +229,6 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -265,14 +258,10 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
-            .thenReturn(
-          FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
+            .thenAnswer(
+          (_) =>
+              FakePostgrestBuilder(followers.map((f) => f.toJson()).toList()),
         );
 
         await container!.read(newFollowersProvider.notifier).fetchFollowers(
@@ -294,11 +283,6 @@ void main() {
             .thenAnswer((_) async {});
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [sampleFollower.toJson()]);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -314,17 +298,11 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles new follower', () async {
-        final streamController = StreamController<Map<String, dynamic>>();
         // Setup initial state
         when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => streamController.stream);
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -338,22 +316,14 @@ void main() {
             container!.read(newFollowersProvider).followers.length;
 
         expect(initialCount, equals(1));
-
-        await streamController.close();
       });
 
       test('handles follower removed', () async {
-        final streamController = StreamController<Map<String, dynamic>>();
         // Setup initial state
         when(mockCacheService.isInitialized).thenReturn(true);
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => streamController.stream);
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -367,8 +337,6 @@ void main() {
             container!.read(newFollowersProvider).followers.length;
 
         expect(followersLength, equals(1));
-
-        await streamController.close();
       });
     });
 
@@ -380,11 +348,6 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -402,11 +365,6 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([sampleFollower.toJson()]));
 
@@ -439,11 +397,6 @@ void main() {
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
-        when(mockRealtimeService.subscribe(
-          table: anyNamed('table'),
-          channelName: anyNamed('channelName'),
-          filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.empty());
         when(mockDatabaseService.select(SupabaseTables.babyMemberships))
             .thenAnswer((_) => FakePostgrestBuilder([
                   follower1.toJson(),

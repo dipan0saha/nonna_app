@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:nonna_app/core/services/observability_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Handles app crash detection and state recovery between sessions.
 ///
@@ -103,6 +102,7 @@ class CrashRecoveryHandler {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_crashKey);
       await prefs.remove(_crashMessageKey);
+      _crashed = false;
     } catch (e) {
       debugPrint('⚠️  CrashRecoveryHandler: could not clear crash state: $e');
     }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 
@@ -60,54 +59,55 @@ class CalendarWidget extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-        children: [
-          _MonthHeader(
-            focusedMonth: focusedMonth,
-            onPreviousMonth: onMonthChanged == null
-                ? null
-                : () => onMonthChanged!(
-                      DateTime(focusedMonth.year, focusedMonth.month - 1),
-                    ),
-            onNextMonth: onMonthChanged == null
-                ? null
-                : () => onMonthChanged!(
-                      DateTime(focusedMonth.year, focusedMonth.month + 1),
-                    ),
-          ),
-          // Weekday label row
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-            child: Row(
-              children: _weekdayLabels
-                  .map(
-                    (label) => Expanded(
-                      child: Center(
-                        child: Text(
-                          label,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                  ),
+          children: [
+            _MonthHeader(
+              focusedMonth: focusedMonth,
+              onPreviousMonth: onMonthChanged == null
+                  ? null
+                  : () => onMonthChanged!(
+                        DateTime(focusedMonth.year, focusedMonth.month - 1),
+                      ),
+              onNextMonth: onMonthChanged == null
+                  ? null
+                  : () => onMonthChanged!(
+                        DateTime(focusedMonth.year, focusedMonth.month + 1),
+                      ),
+            ),
+            // Weekday label row
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+              child: Row(
+                children: _weekdayLabels
+                    .map(
+                      (label) => Expanded(
+                        child: Center(
+                          child: Text(
+                            label,
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
             ),
-          ),
-          const SizedBox(height: AppSpacing.xs / 2),
-          // Day grid
-          _DayGrid(
-            focusedMonth: focusedMonth,
-            selectedDate: selectedDate,
-            datesWithEvents: datesWithEvents,
-            onDateSelected: onDateSelected,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-        ],
+            const SizedBox(height: AppSpacing.xs / 2),
+            // Day grid
+            _DayGrid(
+              focusedMonth: focusedMonth,
+              selectedDate: selectedDate,
+              datesWithEvents: datesWithEvents,
+              onDateSelected: onDateSelected,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+          ],
+        ),
       ),
     );
   }

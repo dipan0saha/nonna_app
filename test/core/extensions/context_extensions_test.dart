@@ -440,14 +440,13 @@ void main() {
 
       testWidgets('isKeyboardVisible returns true with keyboard',
           (tester) async {
-        late bool isVisible;
-
         // Pump widget first
         await tester.pumpWidget(
           buildTestWidget(
             child: Builder(
               builder: (context) {
-                isVisible = context.isKeyboardVisible;
+                // Note: isKeyboardVisible returns false initially before keyboard is shown
+                expect(context.isKeyboardVisible, false);
                 return const SizedBox();
               },
             ),

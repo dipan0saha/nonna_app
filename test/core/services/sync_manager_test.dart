@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/services/sync_manager.dart';
 
-import '../../mocks/mock_services.mocks.dart';
 import '../../helpers/mock_factory.dart';
+import '../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('SyncManager', () {
@@ -172,9 +172,16 @@ void main() {
         manager.registerSyncHandler('test', (_) async => true);
 
         final statuses = <SyncStatus>[];
-        manager.syncStatusStream.listen(statuses.add);
+        final subscription = manager.syncStatusStream.listen(statuses.add);
+        addTearDown(subscription.cancel);
+
+        // Ensure listener is registered before starting sync
+        await Future.microtask(() {});
 
         await manager.sync();
+
+        // Allow event loop to deliver queued events to listeners
+        await Future.delayed(Duration.zero);
 
         expect(statuses,
             containsAllInOrder([SyncStatus.syncing, SyncStatus.synced]));

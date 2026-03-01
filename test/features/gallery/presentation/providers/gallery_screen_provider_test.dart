@@ -20,17 +20,6 @@ void main() {
     late MockRealtimeService mockRealtimeService;
 
     ProviderContainer createContainer() {
-      // Reset realtime service to ensure clean state
-      reset(mockRealtimeService);
-
-      // Setup realtime stubs before creating container since provider subscribes during build
-      when(mockRealtimeService.subscribe(
-        table: anyNamed('table'),
-        channelName: anyNamed('channelName'),
-        filter: anyNamed('filter'),
-      )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
-      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
-
       return ProviderContainer(
         overrides: [
           databaseServiceProvider.overrideWithValue(mockDatabaseService),
@@ -64,6 +53,12 @@ void main() {
           .thenAnswer((_) async {});
       when(mockDatabaseService.select(SupabaseTables.photos))
           .thenAnswer((_) => FakePostgrestBuilder([]));
+      when(mockRealtimeService.subscribe(
+        table: anyNamed('table'),
+        channelName: anyNamed('channelName'),
+        filter: anyNamed('filter'),
+      )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+      when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
     });
 
     tearDown(() {
@@ -438,6 +433,11 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
+        
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
+            
         container = createContainer();
 
         final notifier = container!.read(galleryScreenProvider.notifier);
@@ -467,6 +467,11 @@ void main() {
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
         )).thenAnswer((_) => streamController.stream);
+        
+        when(mockDatabaseService.select(SupabaseTables.photos,
+                columns: anyNamed('columns')))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePhoto.toJson()]));
+            
         container = createContainer();
 
         final notifier = container!.read(galleryScreenProvider.notifier);

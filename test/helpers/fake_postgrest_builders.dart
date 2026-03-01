@@ -54,6 +54,8 @@ class FakePostgrestBuilder
   final List<Map<String, dynamic>> _data;
   final Exception? _error;
   final Duration? _delay;
+  String? _orderColumn;
+  bool _ascending = false;
 
   FakePostgrestBuilder(this._data, {Exception? error, Duration? delay})
       : _error = error,
@@ -191,10 +193,13 @@ class FakePostgrestBuilder
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> order(String column,
-          {bool ascending = false,
-          bool nullsFirst = false,
-          String? referencedTable}) =>
-      this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
+      {bool ascending = false,
+      bool nullsFirst = false,
+      String? referencedTable}) {
+    _orderColumn = column;
+    _ascending = ascending;
+    return this as PostgrestFilterBuilder<List<Map<String, dynamic>>>;
+  }
 
   @override
   PostgrestFilterBuilder<List<Map<String, dynamic>>> limit(int count,
@@ -255,7 +260,40 @@ class FakePostgrestBuilder
       throw _error;
     }
 
-    return onValue(_data);
+    // Apply sorting if order() was called
+    final sortedData = _applySorting(_data);
+    return onValue(sortedData);
+  }
+
+  /// Apply sorting to the data based on order column and direction
+  List<Map<String, dynamic>> _applySorting(List<Map<String, dynamic>> data) {
+    if (_orderColumn == null) return data;
+
+    final sortedData = List<Map<String, dynamic>>.from(data);
+    sortedData.sort((a, b) {
+      final aValue = a[_orderColumn];
+      final bValue = b[_orderColumn];
+
+      if (aValue == null && bValue == null) return 0;
+      if (aValue == null) return _ascending ? 1 : -1;
+      if (bValue == null) return _ascending ? -1 : 1;
+
+      // Handle DateTime objects
+      if (aValue is DateTime && bValue is DateTime) {
+        final comparison = aValue.compareTo(bValue);
+        return _ascending ? comparison : -comparison;
+      }
+
+      // Handle Comparable objects (String, int, etc.)
+      if (aValue is Comparable && bValue is Comparable) {
+        final comparison = (aValue).compareTo(bValue);
+        return _ascending ? comparison : -comparison;
+      }
+
+      return 0;
+    });
+
+    return sortedData;
   }
 }
 
