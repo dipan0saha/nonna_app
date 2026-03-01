@@ -6,7 +6,7 @@ void main() {
     group('table names', () {
       test('has user-related tables', () {
         expect(SupabaseTables.users, 'users');
-        expect(SupabaseTables.userProfiles, 'user_profiles');
+        expect(SupabaseTables.userProfiles, 'profiles');
         expect(SupabaseTables.userStats, 'user_stats');
       });
 

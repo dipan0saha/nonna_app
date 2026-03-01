@@ -35,7 +35,7 @@ class SupabaseTables {
 
   // User-related tables
   static const String users = 'users';
-  static const String userProfiles = 'user_profiles';
+  static const String userProfiles = 'profiles';
   static const String userStats = 'user_stats';
 
   // Baby profile tables

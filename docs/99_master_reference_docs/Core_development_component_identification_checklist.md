@@ -240,7 +240,7 @@
   - Production readiness improved from 7.5/10 to 8.5/10
 - [x] Profile Creation Trigger - ✅ Feb 6, 2026
   - Created migration: 20260206000001_profile_creation_trigger.sql
-  - Automatic user_profiles record creation on signup
+  - Automatic profiles record creation on signup
   - Automatic user_stats record creation with initial values
   - SECURITY DEFINER function with proper permissions
 - [x] Hardcoded Constants Fixed - ✅ Feb 6, 2026

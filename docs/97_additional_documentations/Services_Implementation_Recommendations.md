@@ -1,16 +1,16 @@
 # Services Implementation Recommendations
 
-**Document Version**: 1.0  
-**Created**: February 5, 2026  
-**Purpose**: Document recommended improvements for services implementation  
-**Status**: Pending Implementation  
+**Document Version**: 1.0
+**Created**: February 5, 2026
+**Purpose**: Document recommended improvements for services implementation
+**Status**: Pending Implementation
 
 ---
 
 ## 1. Profile Creation on Signup (Critical)
 
 ### Issue
-Currently, when a user signs up via `AuthService.signUpWithEmail()`, a user record is created in Supabase Auth (`auth.users` table) but NOT in the application's `user_profiles` table. This creates a data inconsistency where:
+Currently, when a user signs up via `AuthService.signUpWithEmail()`, a user record is created in Supabase Auth (`auth.users` table) but NOT in the application's `profiles` table. This creates a data inconsistency where:
 - User can authenticate successfully
 - Database queries requiring user profile fail
 - RLS policies may not work correctly
@@ -37,7 +37,7 @@ CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
   -- Insert new user profile when auth.users record is created
-  INSERT INTO public.user_profiles (
+  INSERT INTO public.profiles (
     user_id,
     email,
     display_name,
@@ -51,7 +51,7 @@ BEGIN
     NOW(),
     NOW()
   );
-  
+
   -- Also create user_stats record
   INSERT INTO public.user_stats (
     user_id,
@@ -68,7 +68,7 @@ BEGIN
     NOW(),
     NOW()
   );
-  
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -88,7 +88,7 @@ INSERT INTO auth.users (email, encrypted_password, email_confirmed_at, raw_user_
 VALUES ('test@example.com', 'hashed', NOW(), '{"display_name": "Test User"}');
 
 -- Verify profile was created
-SELECT * FROM user_profiles WHERE email = 'test@example.com';
+SELECT * FROM profiles WHERE email = 'test@example.com';
 SELECT * FROM user_stats WHERE user_id IN (SELECT id FROM auth.users WHERE email = 'test@example.com');
 ```
 
@@ -267,7 +267,7 @@ class DatabaseService {
   }) async {
     if (useCache && _cacheManager != null) {
       final cacheKey = 'db:$table:$columns';
-      
+
       return await _cacheManager!.getOrFetch<List<Map<String, dynamic>>>(
         key: cacheKey,
         fetcher: () => _fetchFromDatabase(table, columns),
@@ -422,7 +422,7 @@ class RealtimeService {
         }
       }
       _channels.clear();
-      
+
       debugPrint('✅ Reconnected to realtime');
     });
   }
@@ -437,7 +437,7 @@ Document the intentional behavior:
 
 ```dart
 /// Dispose of the notification service
-/// 
+///
 /// Note: The notification click stream controller is intentionally NOT closed
 /// to allow notifications to be processed even after service disposal. This
 /// ensures that background notifications can still trigger navigation.
@@ -468,7 +468,7 @@ Future<void> dispose() async {
 ## 5. Testing Requirements
 
 ### Profile Creation
-- [ ] Test signup creates user_profiles record
+- [ ] Test signup creates profiles record
 - [ ] Test signup creates user_stats record
 - [ ] Test trigger handles duplicate signups gracefully
 - [ ] Test trigger handles missing display_name
@@ -499,7 +499,7 @@ If issues arise:
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
 -- Manually clean up test data
-DELETE FROM user_profiles WHERE email LIKE '%test%';
+DELETE FROM profiles WHERE email LIKE '%test%';
 DELETE FROM user_stats WHERE user_id IN (SELECT id FROM auth.users WHERE email LIKE '%test%');
 ```
 
@@ -513,7 +513,7 @@ DELETE FROM user_stats WHERE user_id IN (SELECT id FROM auth.users WHERE email L
 ## 7. Success Metrics
 
 ### Profile Creation
-- ✅ 100% of signups create user_profiles record
+- ✅ 100% of signups create profiles record
 - ✅ Zero profile-related errors in production logs
 - ✅ All RLS policies work correctly
 
@@ -525,6 +525,6 @@ DELETE FROM user_stats WHERE user_id IN (SELECT id FROM auth.users WHERE email L
 
 ---
 
-**Document Owner**: Development Team  
-**Review Cycle**: Before each sprint  
+**Document Owner**: Development Team
+**Review Cycle**: Before each sprint
 **Last Updated**: February 5, 2026

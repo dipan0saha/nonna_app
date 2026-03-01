@@ -1,10 +1,10 @@
 # Services Review Report - Section 3.2
 ## Comprehensive Services Implementation Review
 
-**Document Version**: 2.0  
-**Review Date**: February 5, 2026  
-**Reviewer**: AI Development Agent  
-**Status**: Complete - Awaiting Senior Review  
+**Document Version**: 2.0
+**Review Date**: February 5, 2026
+**Reviewer**: AI Development Agent
+**Status**: Complete - Awaiting Senior Review
 
 ---
 
@@ -58,8 +58,8 @@ This report provides a comprehensive review of all 15 services in Section 3.2 (S
 
 **Dependency Graph:**
 ```
-AuthService 
-  → AnalyticsService 
+AuthService
+  → AnalyticsService
       → ObservabilityService
   → AppInitializationService
   → ErrorHandler
@@ -104,7 +104,7 @@ DataExportHandler → BackupService
    - AuthService calls `AnalyticsService.instance`
    - StorageService calls `AnalyticsService.instance`
    - Multiple services call `ObservabilityService.captureException()`
-   
+
    **Problem**: Tight coupling to concrete implementations
    **Impact**: Limits testability and flexibility
 
@@ -232,7 +232,7 @@ debugPrint('📧 Deletion confirmation token generated');
 | RealtimeService | ✅ Medium | Last-known subscription state |
 | SupabaseService | ✅ Medium | RPC result caching |
 
-**Impact:** 
+**Impact:**
 - Unnecessary database load
 - Slower app performance
 - Higher Supabase costs
@@ -312,11 +312,11 @@ final response = await _supabase.auth.signUp(
 );
 // ... logs analytics
 return response;
-// ❌ No call to DatabaseService.insert('user_profiles', ...)
+// ❌ No call to DatabaseService.insert('profiles', ...)
 ```
 
 **Impact:**
-- User exists in Supabase Auth but NOT in `user_profiles` table
+- User exists in Supabase Auth but NOT in `profiles` table
 - Database queries requiring user profile fail
 - RLS policies may not work correctly without profile
 
@@ -330,7 +330,7 @@ return response;
 
 2. **Option B**: Add profile creation in AuthService
    ```dart
-   await _databaseService.insert('user_profiles', {
+   await _databaseService.insert('profiles', {
      'user_id': response.user!.id,
      'email': email,
      'display_name': displayName,
@@ -406,7 +406,7 @@ Future<List<Map<String, dynamic>>> select(String table) async {
 }
 
 // Repositories convert to models
-final users = await databaseService.select('user_profiles');
+final users = await databaseService.select('profiles');
 final userModels = users.map((u) => User.fromJson(u)).toList();
 ```
 
@@ -785,8 +785,8 @@ After these fixes, the services will be production-ready with a score of **9/10*
 
 ---
 
-**Report Approved By**: _Pending Senior Review_  
-**Date**: _TBD_  
+**Report Approved By**: _Pending Senior Review_
+**Date**: _TBD_
 **Sign-off**: _TBD_
 
 ---

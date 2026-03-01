@@ -113,3 +113,4 @@ google-services.json
 GoogleService-Info.plist
 .secrets.baseline
 .secrets/
+.personal_notes/
