@@ -100,17 +100,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Logo / title
               const Icon(
                 Icons.child_care,
-                size: 72,
+                size: 48,
                 color: AppColors.primary,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Text(
                 'Welcome back',
                 textAlign: TextAlign.center,
@@ -124,7 +124,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       color: AppColors.textSecondary,
                     ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 8),
+
+              // Sign up link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account? ",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  TextButton(
+                    key: const Key('go_to_signup_button'),
+                    onPressed: widget.onSignUpTap,
+                    child: const Text('Sign Up'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
 
               // Error message
               if (authState.hasError && authState.errorMessage != null) ...[
@@ -185,24 +202,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     : () =>
                         ref.read(authProvider.notifier).signInWithFacebook(),
                 isLoading: isLoading,
-              ),
-
-              const SizedBox(height: 32),
-
-              // Sign up link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account? ",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  TextButton(
-                    key: const Key('go_to_signup_button'),
-                    onPressed: widget.onSignUpTap,
-                    child: const Text('Sign Up'),
-                  ),
-                ],
               ),
             ],
           ),

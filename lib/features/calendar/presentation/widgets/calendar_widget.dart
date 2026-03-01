@@ -56,8 +56,10 @@ class CalendarWidget extends StatelessWidget {
     return Container(
       key: const Key('calendar_widget'),
       color: Theme.of(context).colorScheme.surface,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
         children: [
           _MonthHeader(
             focusedMonth: focusedMonth,

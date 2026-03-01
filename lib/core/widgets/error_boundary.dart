@@ -163,23 +163,26 @@ class _GlobalErrorBoundaryState extends State<GlobalErrorBoundary> {
   }
 
   void _handleFlutterError(FlutterErrorDetails details) {
-    _previousHandler?.call(details);
-    if (mounted) {
-      // Defer setState to a microtask to avoid "setState called during build" error.
-      // This allows the current build cycle to complete before we update state.
-      scheduleMicrotask(() {
-        if (mounted) {
-          setState(() {
-            _error = details.exception;
-          });
-          // Report to Sentry after UI update completes
-          unawaited(ObservabilityService.captureException(
-            details.exception,
-            stackTrace: details.stack,
-          ));
-        }
-      });
+    if (!mounted) {
+      // Widget already disposed; hand off to the original handler so the
+      // error is not silently swallowed.
+      _previousHandler?.call(details);
+      return;
     }
+    // Defer setState to a microtask to avoid "setState called during build" error.
+    // This allows the current build cycle to complete before we update state.
+    scheduleMicrotask(() {
+      if (mounted) {
+        setState(() {
+          _error = details.exception;
+        });
+        // Report to Sentry after UI update completes
+        unawaited(ObservabilityService.captureException(
+          details.exception,
+          stackTrace: details.stack,
+        ));
+      }
+    });
   }
 
   void _reset() {

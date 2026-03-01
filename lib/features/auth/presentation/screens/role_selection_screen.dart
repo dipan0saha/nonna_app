@@ -56,7 +56,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
         ],
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -107,7 +107,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                 onTap: () => setState(() => _selectedRole = _Role.join),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 24),
 
               // Continue button
               ElevatedButton(

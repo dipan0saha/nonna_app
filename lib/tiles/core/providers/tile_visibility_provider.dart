@@ -316,17 +316,12 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
       return {};
     }
 
-    try {
-      final data = localStorageService.getObject(key);
-      if (data == null) return {};
+    final data = localStorageService.getObject(key);
+    if (data == null) return {};
 
-      // Parse object to Map<String, bool>
-      final Map<String, dynamic> jsonMap = Map<String, dynamic>.from(data);
-      return jsonMap.map((key, value) => MapEntry(key, value as bool));
-    } catch (e) {
-      debugPrint('⚠️  Failed to load visibility from storage: $e');
-      return {};
-    }
+    // Parse object to Map<String, bool>
+    final Map<String, dynamic> jsonMap = Map<String, dynamic>.from(data);
+    return jsonMap.map((key, value) => MapEntry(key, value as bool));
   }
 
   /// Save visibility preferences to storage
