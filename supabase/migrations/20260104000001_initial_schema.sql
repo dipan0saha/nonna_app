@@ -253,12 +253,10 @@ CREATE TABLE IF NOT EXISTS public.birth_date_predictions (
 -- Table: notifications
 CREATE TABLE IF NOT EXISTS public.notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  recipient_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   baby_profile_id UUID REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
-  title TEXT NOT NULL CHECK (char_length(title) <= 100),
-  body TEXT NOT NULL CHECK (char_length(body) <= 500),
-  type TEXT NOT NULL CHECK (type IN ('new_photo', 'new_comment', 'event_rsvp', 'registry_purchase', 'new_follower', 'birth_announcement')),
-  payload JSONB,
+  type TEXT NOT NULL,
+  payload JSONB DEFAULT '{}'::jsonb,
   read_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -314,4 +312,73 @@ CREATE TABLE IF NOT EXISTS public.tile_configs (
   params JSONB,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ========================================
+-- Voting & Suggestions Domain
+-- ========================================
+
+-- Table: gender_votes
+CREATE TABLE IF NOT EXISTS public.gender_votes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  vote TEXT NOT NULL CHECK (vote IN ('male', 'female')),
+  deleted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Table: birth_date_predictions
+CREATE TABLE IF NOT EXISTS public.birth_date_predictions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  predicted_date DATE NOT NULL,
+  deleted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Table: name_suggestions
+CREATE TABLE IF NOT EXISTS public.name_suggestions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+  suggested_by_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL CHECK (char_length(name) <= 100),
+  votes_count INT NOT NULL DEFAULT 0,
+  deleted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Table: name_suggestion_likes
+CREATE TABLE IF NOT EXISTS public.name_suggestion_likes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name_suggestion_id UUID NOT NULL REFERENCES public.name_suggestions(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(name_suggestion_id, user_id)
+);
+
+-- ========================================
+-- Activity Domain
+-- ========================================
+
+-- Table: activity_events
+CREATE TABLE IF NOT EXISTS public.activity_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+  actor_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  type TEXT NOT NULL,
+  payload JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Table: photo_tags
+CREATE TABLE IF NOT EXISTS public.photo_tags (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  photo_id UUID NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
+  tag TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

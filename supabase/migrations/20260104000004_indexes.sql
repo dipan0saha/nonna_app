@@ -21,3 +21,7 @@ CREATE INDEX idx_invitations_pending ON public.invitations(baby_profile_id, stat
 -- GIN indexes for JSONB and array columns
 CREATE INDEX idx_tile_configs_params ON public.tile_configs USING GIN (params);
 CREATE INDEX idx_photos_tags ON public.photos USING GIN (tags);
+
+-- Activity events indexes
+CREATE INDEX idx_activity_events_baby_profile ON public.activity_events(baby_profile_id);
+CREATE INDEX idx_activity_events_created_at ON public.activity_events(created_at DESC);

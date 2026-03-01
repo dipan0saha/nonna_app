@@ -182,11 +182,33 @@ CREATE POLICY "Followers can mark items as purchased"
 
 CREATE POLICY "Users can view own notifications"
   ON public.notifications FOR SELECT
-  USING (auth.uid() = user_id);
+  USING (auth.uid() = recipient_user_id);
 
 CREATE POLICY "Users can update own notifications"
   ON public.notifications FOR UPDATE
-  USING (auth.uid() = user_id);
+  USING (auth.uid() = recipient_user_id);
+
+-- ========================================
+-- Activity Events RLS Policies
+-- ========================================
+
+CREATE POLICY "Users can read activity events for baby profiles they follow"
+  ON public.activity_events FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.baby_memberships
+      WHERE baby_memberships.baby_profile_id = activity_events.baby_profile_id
+        AND baby_memberships.user_id = auth.uid()
+        AND baby_memberships.removed_at IS NULL
+    )
+  );
+
+-- ========================================
+-- Grant Permissions
+-- ========================================
+
+GRANT SELECT ON public.activity_events TO authenticated;
+GRANT INSERT ON public.activity_events TO postgres;
 
 -- ========================================
 -- Apply similar RLS policies for remaining tables
