@@ -121,7 +121,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
       state = state.copyWith(
         events: events,
         isLoading: false,
-        hasMore: events.length >= _pageSize,
+        hasMore: events.isNotEmpty,
         currentPage: 1,
       );
 
@@ -163,7 +163,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
       state = state.copyWith(
         events: updatedEvents,
         isLoading: false,
-        hasMore: newEvents.length >= _pageSize,
+        hasMore: newEvents.isNotEmpty,
         currentPage: state.currentPage + 1,
       );
 
@@ -274,6 +274,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
       _subscriptionId = channelName;
 
       _subscriptionManager.subscribe(channelName, stream, (payload) {
+        if (payload is! Map<String, dynamic>) return;
         _handleRealtimeUpdate(payload, babyProfileId);
       });
 

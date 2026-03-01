@@ -428,5 +428,5 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
 /// await notifier.loadEvents(babyProfileId: 'abc');
 /// ```
 final calendarScreenProvider =
-    NotifierProvider.autoDispose<CalendarScreenNotifier, CalendarScreenState>(
+    NotifierProvider<CalendarScreenNotifier, CalendarScreenState>(
         CalendarScreenNotifier.new);

@@ -154,6 +154,7 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
         .limit(_maxItems);
 
     return (response as List)
+        .take(_maxItems)
         .map((json) => RegistryItem.fromJson(json as Map<String, dynamic>))
         .toList();
   }

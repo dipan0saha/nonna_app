@@ -240,10 +240,16 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
   Future<void> clearFilters() async {
     if (state.selectedBabyProfileId == null) return;
 
-    state = state.copyWith(
+    state = GalleryScreenState(
+      photos: state.photos,
+      isLoading: state.isLoading,
+      isLoadingMore: state.isLoadingMore,
       currentFilter: GalleryFilter.all,
       selectedTag: null,
       selectedDate: null,
+      hasMore: state.hasMore,
+      currentPage: state.currentPage,
+      selectedBabyProfileId: state.selectedBabyProfileId,
     );
 
     await loadPhotos(
@@ -367,6 +373,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
       _subscriptionId = channelName;
 
       _subscriptionManager.subscribe(channelName, stream, (payload) {
+        if (payload is! Map<String, dynamic>) return;
         _handleRealtimeUpdate(payload, babyProfileId);
       });
 
@@ -433,6 +440,6 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 /// await notifier.loadPhotos(babyProfileId: 'abc');
 /// ```
 final galleryScreenProvider =
-    NotifierProvider.autoDispose<GalleryScreenNotifier, GalleryScreenState>(
+    NotifierProvider<GalleryScreenNotifier, GalleryScreenState>(
   GalleryScreenNotifier.new,
 );

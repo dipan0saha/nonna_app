@@ -117,7 +117,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
       state = state.copyWith(
         photos: photos,
         isLoading: false,
-        hasMore: photos.length >= _pageSize,
+        hasMore: photos.isNotEmpty,
         currentPage: 1,
       );
 
@@ -159,7 +159,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
       state = state.copyWith(
         photos: updatedPhotos,
         isLoading: false,
-        hasMore: newPhotos.length >= _pageSize,
+        hasMore: newPhotos.isNotEmpty,
         currentPage: state.currentPage + 1,
       );
 
@@ -263,6 +263,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
       _subscriptionId = channelName;
 
       stream.listen((payload) {
+        if (payload is! Map<String, dynamic>) return;
         _handleRealtimeUpdate(payload, babyProfileId);
       });
 

@@ -94,16 +94,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Icon(
                 Icons.child_care,
-                size: 72,
+                size: 48,
                 color: AppColors.primary,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Text(
                 'Create your account',
                 textAlign: TextAlign.center,
@@ -117,7 +117,23 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       color: AppColors.textSecondary,
                     ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 8),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Already have an account? ',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  TextButton(
+                    key: const Key('go_to_login_button'),
+                    onPressed: widget.onLoginTap,
+                    child: const Text('Sign In'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
 
               // Error banner
               if (authState.hasError && authState.errorMessage != null) ...[
@@ -202,23 +218,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     : () =>
                         ref.read(authProvider.notifier).signInWithFacebook(),
                 isLoading: isLoading,
-              ),
-
-              const SizedBox(height: 32),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Already have an account? ',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  TextButton(
-                    key: const Key('go_to_login_button'),
-                    onPressed: widget.onLoginTap,
-                    child: const Text('Sign In'),
-                  ),
-                ],
               ),
             ],
           ),

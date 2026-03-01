@@ -130,6 +130,7 @@ class OfflineCacheManager {
 
   bool _isOnline = true;
   bool _isInitialized = false;
+  bool _isProcessingQueue = false;
   Timer? _connectivityTimer;
   Timer? _syncTimer;
 
@@ -323,42 +324,49 @@ class OfflineCacheManager {
   Future<void> processQueue() async {
     _ensureInitialized();
 
+    if (_isProcessingQueue) return;
+
     if (_syncQueue.isEmpty) {
       debugPrint('📋 Sync queue is empty – nothing to process');
       return;
     }
 
+    _isProcessingQueue = true;
     debugPrint('🔄 Processing sync queue (${_syncQueue.length} operations)…');
 
     final toRemove = <SyncOperation>[];
 
-    for (final operation in List<SyncOperation>.from(_syncQueue)) {
-      try {
-        await _applyOperation(operation);
-        toRemove.add(operation);
-      } catch (e) {
-        debugPrint('❌ Failed to apply operation ${operation.id}: $e');
-        final updated =
-            operation.copyWith(retryCount: operation.retryCount + 1);
-        final idx = _syncQueue.indexOf(operation);
-        if (idx >= 0) {
-          _syncQueue[idx] = updated;
-        }
-        if (updated.retryCount >= _maxRetries) {
-          debugPrint(
-              '⚠️  Operation ${operation.id} exceeded max retries – discarding');
+    try {
+      for (final operation in List<SyncOperation>.from(_syncQueue)) {
+        try {
+          await _applyOperation(operation);
           toRemove.add(operation);
+        } catch (e) {
+          debugPrint('❌ Failed to apply operation ${operation.id}: $e');
+          final updated =
+              operation.copyWith(retryCount: operation.retryCount + 1);
+          final idx = _syncQueue.indexOf(operation);
+          if (idx >= 0) {
+            _syncQueue[idx] = updated;
+          }
+          if (updated.retryCount >= _maxRetries) {
+            debugPrint(
+                '⚠️  Operation ${operation.id} exceeded max retries – discarding');
+            toRemove.add(operation);
+          }
         }
       }
-    }
 
-    for (final op in toRemove) {
-      _syncQueue.removeWhere((e) => e.id == op.id);
-    }
+      for (final op in toRemove) {
+        _syncQueue.removeWhere((e) => e.id == op.id);
+      }
 
-    await _persistSyncQueue();
-    debugPrint(
-        '✅ Sync queue processed – ${toRemove.length} operations applied');
+      await _persistSyncQueue();
+      debugPrint(
+          '✅ Sync queue processed – ${toRemove.length} operations applied');
+    } finally {
+      _isProcessingQueue = false;
+    }
   }
 
   /// Clear the sync queue without processing.
@@ -446,14 +454,15 @@ class OfflineCacheManager {
       case SyncOperationType.create:
       case SyncOperationType.update:
         if (operation.data != null) {
-          // Resolve any conflict between the queued write and data that may
-          // have been written to cache from another source while offline.
-          Map<String, dynamic> dataToWrite = operation.data!;
+          // Only update local cache when conflict resolution is needed
+          // (i.e., when another source has also written to the cache).
+          // If there is no existing cached value the data was already
+          // written by cacheData() and doesn't need to be written again.
           final existing = await _cacheService.get<String>(operation.key);
           if (existing != null) {
             try {
               final existingData = jsonDecode(existing) as Map<String, dynamic>;
-              dataToWrite = resolveConflict(
+              final dataToWrite = resolveConflict(
                 localData: operation.data!,
                 remoteData: existingData,
                 localTimestamp: operation.timestamp,
@@ -464,15 +473,15 @@ class OfflineCacheManager {
                 // localWins strategies are unaffected by the missing
                 // timestamp.
               );
+              await _cacheService.put(
+                operation.key,
+                jsonEncode(dataToWrite),
+                ttlMinutes: operation.ttlMinutes,
+              );
             } catch (_) {
-              // Malformed cached data – use the queued payload.
+              // Malformed cached data – leave the original queued payload.
             }
           }
-          await _cacheService.put(
-            operation.key,
-            jsonEncode(dataToWrite),
-            ttlMinutes: operation.ttlMinutes,
-          );
         }
       case SyncOperationType.delete:
         await _cacheService.delete(operation.key);
