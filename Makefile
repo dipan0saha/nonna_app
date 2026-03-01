@@ -1,6 +1,6 @@
 # Makefile for Local CI/CD
 
-.PHONY: help doctor deps format analyze test build-android build-ios build-web ci all clean run test-integration coverage-report pre-commit lint-fix
+.PHONY: help doctor deps format analyze test build-android build-ios build-web ci all clean run test-integration coverage-report pre-commit lint-fix test-all test-update test-quick
 
 # Default target
 help:
@@ -13,6 +13,9 @@ help:
 	@echo "  analyze        - Analyze Flutter code (fatal warnings)"
 	@echo "  lint-fix       - Auto-fix lints where possible"
 	@echo "  test           - Run Flutter tests with coverage"
+	@echo "  test-all       - Run all test subcategories and update automated_tests/TEST_COMMANDS.md"
+	@echo "  test-update    - Same as test-all"
+	@echo "  test-quick     - Run quick tests on specific category (example: make test-quick CATEGORY=core)"
 	@echo "  test-integration - Run integration tests"
 	@echo "  pre-commit     - Run pre-commit hooks"
 	@echo "  coverage-report - Generate HTML coverage report"
@@ -72,6 +75,33 @@ analyze:
 # Run tests with coverage
 test:
 	flutter test --coverage --reporter expanded
+
+# Run all test subcategories and update automated_tests/TEST_COMMANDS.md
+test-all:
+	python3 automated_tests/run_tests_and_update.py
+	@echo "✅ Test results updated in automated_tests/TEST_COMMANDS.md"
+
+# Alias for test-all
+test-update: test-all
+
+# Quick test runner for specific categories
+test-quick:
+	@if [ -z "$(CATEGORY)" ]; then \
+		echo "Usage: make test-quick CATEGORY=<category> [SUBCATEGORY=<subcategory>]"; \
+		echo ""; \
+		echo "Examples:"; \
+		echo "  make test-quick CATEGORY=core"; \
+		echo "  make test-quick CATEGORY=core SUBCATEGORY=models"; \
+		echo "  make test-quick CATEGORY=features SUBCATEGORY=auth"; \
+		echo "  make test-quick CATEGORY=tiles SUBCATEGORY=checklist"; \
+		echo "  make test-quick CATEGORY=all"; \
+	else \
+		if [ -z "$(SUBCATEGORY)" ]; then \
+			python3 automated_tests/quick_test.py $(CATEGORY); \
+		else \
+			python3 automated_tests/quick_test.py $(CATEGORY) $(SUBCATEGORY); \
+		fi \
+	fi
 
 # Build Android APK
 build-android:
