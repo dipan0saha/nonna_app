@@ -37,6 +37,26 @@ INSERT INTO public.profiles (user_id, display_name, avatar_url, biometric_enable
 ON CONFLICT (user_id) DO NOTHING;
 
 -- ============================================================================
+-- SECTION 1.5: PROFILES - Secondary Owners / Grandparents (10 users, 1 per baby)
+-- Note: These users are added as third owners for testing purposes;
+--       session_replication_role='replica' bypasses the max-2-owners trigger.
+-- ============================================================================
+
+INSERT INTO public.profiles (user_id, display_name, avatar_url, biometric_enabled, created_at, updated_at) VALUES
+    ('30000000-3001-3001-3001-000000003001', 'Grandma Betty Johnson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Betty0', false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('30000001-3001-3001-3001-000000003001', 'Grandpa Richard Davis', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Richard1', false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('30000002-3001-3001-3001-000000003001', 'Grandma Patricia Smith', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Patricia2', false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('30000003-3001-3001-3001-000000003001', 'Grandpa Thomas Brown', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Thomas3', false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('30000004-3001-3001-3001-000000003001', 'Grandma Barbara Wilson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Barbara4', false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('30000005-3001-3001-3001-000000003001', 'Grandpa George Martinez', 'https://api.dicebear.com/7.x/avataaars/svg?seed=George5', false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('30000006-3001-3001-3001-000000003001', 'Grandma Linda Garcia', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda6', false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('30000007-3001-3001-3001-000000003001', 'Grandpa Donald Lee', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Donald7', false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('30000008-3001-3001-3001-000000003001', 'Grandma Helen Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Helen8', false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('30000009-3001-3001-3001-000000003001', 'Grandpa Frank Taylor', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Frank9', false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days')
+
+ON CONFLICT (user_id) DO NOTHING;
+
+-- ============================================================================
 -- SECTION 2: PROFILES - Followers (120 users, 12 per baby)
 -- ============================================================================
 

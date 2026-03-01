@@ -32,12 +32,10 @@ BEGIN
   -- Also create user_stats record
   INSERT INTO public.user_stats (
     user_id,
-    photos_uploaded,
-    events_created,
-    comments_added,
-    squishes_given,
-    last_active_at,
-    created_at,
+    events_attended_count,
+    items_purchased_count,
+    photos_squished_count,
+    comments_added_count,
     updated_at
   )
   VALUES (
@@ -46,8 +44,6 @@ BEGIN
     0,
     0,
     0,
-    NOW(),
-    NOW(),
     NOW()
   );
 
