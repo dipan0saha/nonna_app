@@ -121,9 +121,7 @@ class AuthNotifier extends Notifier<AuthState> {
       // Use provided session or fall back to currentSession
       final authService = ref.read(authServiceProvider);
       final effectiveSession = session ??
-          (authService.currentUser != null
-              ? supabase.Supabase.instance.client.auth.currentSession
-              : null);
+          (authService.currentUser != null ? authService.currentSession : null);
 
       // Handle null session gracefully
       if (effectiveSession == null) {

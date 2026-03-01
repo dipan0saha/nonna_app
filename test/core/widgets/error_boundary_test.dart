@@ -14,11 +14,6 @@ class _ThrowingWidget extends StatelessWidget {
 }
 
 void main() {
-  // Suppress expected Flutter error output during tests.
-  final originalOnError = FlutterError.onError;
-  setUp(() => FlutterError.onError = (details) {});
-  tearDown(() => FlutterError.onError = originalOnError);
-
   group('ErrorBoundary', () {
     testWidgets('renders child when no error', (tester) async {
       await tester.pumpWidget(
@@ -34,9 +29,12 @@ void main() {
 
     testWidgets('shows custom fallback when provided and error is set',
         (tester) async {
-      // ErrorBoundary is a UI wrapper; errors are surfaced by GlobalErrorBoundary.
-      // We test the custom fallback by wrapping with GlobalErrorBoundary which
-      // calls setError on its inner error boundary on FlutterError.
+      // Save the original FlutterError handler to restore it after test
+      final originalHandler = FlutterError.onError;
+      addTearDown(() {
+        FlutterError.onError = originalHandler;
+      });
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -51,12 +49,17 @@ void main() {
       );
       await tester.pump();
 
-      // GlobalErrorBoundary catches the error and shows its own full-screen UI.
       expect(find.text('Something went wrong'), findsOneWidget);
     });
 
     testWidgets('shows default fallback card via GlobalErrorBoundary',
         (tester) async {
+      // Save the original FlutterError handler to restore it after test
+      final originalHandler = FlutterError.onError;
+      addTearDown(() {
+        FlutterError.onError = originalHandler;
+      });
+
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -87,6 +90,12 @@ void main() {
     });
 
     testWidgets('shows fallback and allows recovery on error', (tester) async {
+      // Save the original FlutterError handler to restore it after test
+      final originalHandler = FlutterError.onError;
+      addTearDown(() {
+        FlutterError.onError = originalHandler;
+      });
+
       await tester.pumpWidget(
         const MaterialApp(
           home: GlobalErrorBoundary(
@@ -98,18 +107,20 @@ void main() {
 
       expect(find.text('Something went wrong'), findsOneWidget);
 
-      // Tap "Try again" — GlobalErrorBoundary resets its key, forcing a rebuild.
       await tester.tap(find.widgetWithText(FilledButton, 'Try again'));
       await tester.pump();
 
-      // The ThrowingWidget immediately throws again, so the fallback re-appears.
       expect(find.text('Something went wrong'), findsOneWidget);
     });
 
     testWidgets('does not show error details in release-like mode',
         (tester) async {
-      // In tests kDebugMode is typically true, so error details ARE shown.
-      // This test simply verifies the "Something went wrong" text is always present.
+      // Save the original FlutterError handler to restore it after test
+      final originalHandler = FlutterError.onError;
+      addTearDown(() {
+        FlutterError.onError = originalHandler;
+      });
+
       await tester.pumpWidget(
         const MaterialApp(
           home: GlobalErrorBoundary(

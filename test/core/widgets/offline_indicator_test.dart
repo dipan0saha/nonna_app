@@ -317,7 +317,7 @@ void main() {
 
       // Come back online
       controller.add(true);
-      await tester.pump();
+      await tester.pumpAndSettle();
       expect(find.byIcon(Icons.wifi_off), findsNothing);
 
       await controller.close();

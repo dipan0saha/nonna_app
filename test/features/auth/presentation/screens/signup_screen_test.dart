@@ -98,8 +98,11 @@ void main() {
         _buildSignupScreen(const AuthState.unauthenticated()),
       );
 
+      // Scroll to the sign-up button and tap it
+      await tester.ensureVisible(find.byKey(const Key('sign_up_button')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('sign_up_button')));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // At minimum the name field should have an error
       expect(find.text('Name is required'), findsOneWidget);
@@ -121,8 +124,11 @@ void main() {
           find.byKey(const Key('signup_confirm_password_field')),
           'password123');
 
+      // Scroll to the sign-up button and tap it
+      await tester.ensureVisible(find.byKey(const Key('sign_up_button')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('sign_up_button')));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(
         find.text('You must accept the terms to continue'),

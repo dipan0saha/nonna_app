@@ -1,16 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nonna_app/core/di/providers.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
+import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('AuthNotifier Tests', () {
@@ -34,6 +34,11 @@ void main() {
       tokenType: 'bearer',
       user: mockUser,
     );
+
+    setUpAll(() {
+      // Initialize Flutter bindings for tests that require platform channels (e.g., biometric auth)
+      TestWidgetsFlutterBinding.ensureInitialized();
+    });
 
     setUp(() {
       mockAuthService = MockFactory.createAuthService();
@@ -85,6 +90,7 @@ void main() {
 
       test('loads user profile when current user exists', () async {
         when(mockAuthService.currentUser).thenReturn(mockUser);
+        when(mockAuthService.currentSession).thenReturn(mockSession);
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 

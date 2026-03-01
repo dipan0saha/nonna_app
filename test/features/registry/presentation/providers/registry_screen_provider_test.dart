@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
@@ -10,8 +10,8 @@ import 'package:nonna_app/core/models/registry_purchase.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 
 import '../../../../helpers/fake_postgrest_builders.dart';
-import '../../../../mocks/mock_services.mocks.dart';
 import '../../../../helpers/mock_factory.dart';
+import '../../../../mocks/mock_services.mocks.dart';
 
 void main() {
   group('RegistryScreenProvider Tests', () {
@@ -109,7 +109,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => Stream.empty());
 
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems,
@@ -177,7 +177,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => Stream.empty());
 
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems,
@@ -204,7 +204,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => Stream.empty());
 
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems,
@@ -230,7 +230,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => Stream.empty());
 
         // Mock registry_items query
         when(mockDatabaseService.select(SupabaseTables.registryItems))
@@ -376,7 +376,7 @@ void main() {
           table: anyNamed('table'),
           channelName: anyNamed('channelName'),
           filter: anyNamed('filter'),
-        )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+        )).thenAnswer((_) => Stream.empty());
 
         // Mock both queries with call counter
         when(mockDatabaseService.select(any, columns: anyNamed('columns')))

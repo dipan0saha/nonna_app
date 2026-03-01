@@ -42,7 +42,7 @@ void main() {
         table: anyNamed('table'),
         channelName: anyNamed('channelName'),
         filter: anyNamed('filter'),
-      )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
+      )).thenAnswer((_) => Stream.empty());
       when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async {});
 
       container = ProviderContainer(
@@ -322,9 +322,15 @@ void main() {
         );
 
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
-        when(mocks.database.select(any)).thenReturn(
-          FakePostgrestBuilder(deals.map((d) => d.toJson()).toList()),
+
+        // Mock registry_items query
+        when(mocks.database.select(SupabaseTables.registryItems)).thenAnswer(
+          (_) => FakePostgrestBuilder(deals.map((d) => d.toJson()).toList()),
         );
+
+        // Mock registry_purchases query
+        when(mocks.database.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container.read(registryDealsProvider.notifier);
         await notifier.fetchDeals(babyProfileId: 'profile_1');
