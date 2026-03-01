@@ -37,3 +37,10 @@ CREATE INDEX idx_photos_tags ON public.photos USING GIN (tags);
 -- Activity events indexes
 CREATE INDEX idx_activity_events_baby_profile ON public.activity_events(baby_profile_id);
 CREATE INDEX idx_activity_events_created_at ON public.activity_events(created_at DESC);
+
+-- Additional indexes from data model specification
+CREATE INDEX idx_photo_squishes_photo_id ON public.photo_squishes(photo_id);
+CREATE INDEX idx_photo_tags_tag ON public.photo_tags(tag);
+CREATE INDEX idx_tile_configs_screen_role ON public.tile_configs(screen_id, role);
+CREATE INDEX idx_name_suggestion_likes_user_id ON public.name_suggestion_likes(user_id);
+CREATE INDEX idx_registry_items_priority ON public.registry_items(priority);

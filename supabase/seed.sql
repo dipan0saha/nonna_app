@@ -1170,6 +1170,277 @@ ON CONFLICT (id) DO NOTHING;
 -- END OF ADDITIONAL SEED DATA
 -- ============================================================================
 
+-- ============================================================================
+-- SECTION 23: NOTIFICATION PREFERENCES (all 150 users)
+-- Each user gets a notification_preferences record with varied settings to
+-- test all combinations of push/email preference toggles.
+-- ============================================================================
+
+INSERT INTO public.notification_preferences (
+    user_id,
+    push_new_photos, push_new_comments, push_event_rsvps,
+    push_registry_purchases, push_new_followers, push_birth_announcements,
+    email_new_photos, email_weekly_digest,
+    created_at, updated_at
+) VALUES
+    -- Owners: all notifications enabled (default)
+    ('10000000-1001-1001-1001-000000001001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('20000000-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('10000001-1001-1001-1001-000000001001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('20000001-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('10000002-1001-1001-1001-000000001001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('20000002-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('10000003-1001-1001-1001-000000001001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('20000003-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('10000004-1001-1001-1001-000000001001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('20000004-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('10000005-1001-1001-1001-000000001001', true, true, true, true, true, true, true,  true, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('20000005-2001-2001-2001-000000002001', true, true, true, true, true, true, true,  true, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('10000006-1001-1001-1001-000000001001', true, true, true, true, true, true, true,  true, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('20000006-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('10000007-1001-1001-1001-000000001001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('20000007-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('10000008-1001-1001-1001-000000001001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('20000008-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('10000009-1001-1001-1001-000000001001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
+    ('20000009-2001-2001-2001-000000002001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
+    -- Secondary owners / grandparents (registered, no baby membership)
+    ('30000000-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('30000001-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('30000002-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('30000003-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('30000004-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('30000005-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('30000006-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('30000007-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('30000008-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('30000009-3001-3001-3001-000000003001', true, true, false, true, true, true, false, true, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
+    -- Followers batch 1 (baby 0): all defaults
+    ('40000000-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
+    ('40000001-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days'),
+    ('40000002-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days'),
+    ('40000003-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+    ('40000004-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days'),
+    ('40000005-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('40000006-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days'),
+    ('40000007-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days'),
+    ('40000008-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('40000009-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days'),
+    -- Followers: some with customized/reduced notifications (tests opt-out scenarios)
+    ('4000000a-4001-4001-4001-000000004001', true,  false, true,  true, false, true, false, false, NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days'),
+    ('4000000b-4001-4001-4001-000000004001', true,  false, true,  true, false, true, false, false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('4000000c-4001-4001-4001-000000004001', true,  true,  false, true, true,  true, false, true,  NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days'),
+    ('4000000d-4001-4001-4001-000000004001', true,  true,  false, true, true,  true, false, true,  NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days'),
+    ('4000000e-4001-4001-4001-000000004001', false, true,  true,  true, true,  true, false, true,  NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('4000000f-4001-4001-4001-000000004001', false, true,  true,  true, true,  true, false, true,  NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+    ('40000010-4001-4001-4001-000000004001', true,  true,  true,  false, true,  true, false, true,  NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days'),
+    ('40000011-4001-4001-4001-000000004001', true,  true,  true,  false, true,  true, false, true,  NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('40000012-4001-4001-4001-000000004001', false, false, false, false, false, false, false, false, NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days'),
+    ('40000013-4001-4001-4001-000000004001', true,  true,  true,  true, true,  true, true,  true,  NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days'),
+    -- Remaining followers: all defaults
+    ('40000014-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('40000015-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days'),
+    ('40000016-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days'),
+    ('40000017-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('40000018-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days'),
+    ('40000019-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+    ('4000001a-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('4000001b-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days'),
+    ('4000001c-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days'),
+    ('4000001d-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('4000001e-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
+    ('4000001f-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days'),
+    ('40000020-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days'),
+    ('40000021-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+    ('40000022-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days'),
+    ('40000023-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('40000024-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days'),
+    ('40000025-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days'),
+    ('40000026-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('40000027-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days'),
+    ('40000028-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days'),
+    ('40000029-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('4000002a-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days'),
+    ('4000002b-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days'),
+    ('4000002c-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('4000002d-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+    ('4000002e-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days'),
+    ('4000002f-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('40000030-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days'),
+    ('40000031-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days'),
+    ('40000032-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('40000033-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days'),
+    ('40000034-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days'),
+    ('40000035-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('40000036-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days'),
+    ('40000037-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+    ('40000038-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('40000039-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days'),
+    ('4000003a-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days'),
+    ('4000003b-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('4000003c-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
+    ('4000003d-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days'),
+    ('4000003e-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days'),
+    ('4000003f-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+    ('40000040-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days'),
+    ('40000041-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('40000042-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days'),
+    ('40000043-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days'),
+    ('40000044-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('40000045-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days'),
+    ('40000046-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days'),
+    ('40000047-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('40000048-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days'),
+    ('40000049-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days'),
+    ('4000004a-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('4000004b-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+    ('4000004c-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days'),
+    ('4000004d-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('4000004e-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days'),
+    ('4000004f-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days'),
+    ('40000050-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('40000051-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days'),
+    ('40000052-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days'),
+    ('40000053-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('40000054-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days'),
+    ('40000055-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+    ('40000056-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('40000057-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days'),
+    ('40000058-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days'),
+    ('40000059-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('4000005a-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '25 days', NOW() - INTERVAL '25 days'),
+    ('4000005b-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '26 days', NOW() - INTERVAL '26 days'),
+    ('4000005c-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '27 days', NOW() - INTERVAL '27 days'),
+    ('4000005d-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '28 days', NOW() - INTERVAL '28 days'),
+    ('4000005e-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '29 days', NOW() - INTERVAL '29 days'),
+    ('4000005f-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('40000060-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '31 days', NOW() - INTERVAL '31 days'),
+    ('40000061-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '32 days', NOW() - INTERVAL '32 days'),
+    ('40000062-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('40000063-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '34 days', NOW() - INTERVAL '34 days'),
+    ('40000064-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '35 days', NOW() - INTERVAL '35 days'),
+    ('40000065-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('40000066-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '37 days', NOW() - INTERVAL '37 days'),
+    ('40000067-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '38 days', NOW() - INTERVAL '38 days'),
+    ('40000068-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('40000069-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+    ('4000006a-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '41 days', NOW() - INTERVAL '41 days'),
+    ('4000006b-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('4000006c-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '43 days', NOW() - INTERVAL '43 days'),
+    ('4000006d-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '44 days', NOW() - INTERVAL '44 days'),
+    ('4000006e-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('4000006f-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '46 days', NOW() - INTERVAL '46 days'),
+    ('40000070-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '47 days', NOW() - INTERVAL '47 days'),
+    ('40000071-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('40000072-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '49 days', NOW() - INTERVAL '49 days'),
+    ('40000073-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '50 days', NOW() - INTERVAL '50 days'),
+    ('40000074-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('40000075-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '52 days', NOW() - INTERVAL '52 days'),
+    ('40000076-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '53 days', NOW() - INTERVAL '53 days'),
+    ('40000077-4001-4001-4001-000000004001', true, true, true, true, true, true, false, true, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days')
+ON CONFLICT (user_id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 24: PHOTO TAGS
+-- Tags associated with specific photos for categorization and filtering.
+-- Tests array tag queries via GIN index on photo_tags.tag.
+-- ============================================================================
+
+INSERT INTO public.photo_tags (id, photo_id, tag, created_at)
+SELECT
+    gen_random_uuid(),
+    p.id,
+    t.tag,
+    p.created_at
+FROM public.photos p
+CROSS JOIN (
+    VALUES ('ultrasound'), ('bump_update'), ('nursery'), ('gender_reveal'), ('baby_shower')
+) AS t(tag)
+WHERE (p.storage_path LIKE '%ultrasound%' AND t.tag = 'ultrasound')
+   OR (p.storage_path LIKE '%bump%'       AND t.tag = 'bump_update')
+   OR (p.storage_path LIKE '%nursery%'    AND t.tag = 'nursery')
+   OR (p.storage_path LIKE '%gender%'     AND t.tag = 'gender_reveal')
+   OR (p.storage_path LIKE '%shower%'     AND t.tag = 'baby_shower')
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 25: SCENARIO COMPLETION UPDATES
+-- These UPDATE statements ensure full coverage of all app scenarios that
+-- cannot be represented purely through INSERT statements.
+-- ============================================================================
+
+-- Scenario A: Post-birth baby (baby 9 - Lucas Taylor has been born)
+-- Tests: actual_birth_date display, post-birth vote accuracy calculations,
+--        countdown tile switching from "expected" to "born X days ago"
+UPDATE public.baby_profiles
+SET actual_birth_date = (NOW() - INTERVAL '5 days')::DATE,
+    gender = 'male',
+    updated_at = NOW() - INTERVAL '5 days'
+WHERE id = 'b0000009-b001-b001-b001-00000000b001';
+
+-- Scenario B: Soft-deleted baby profile (baby 8 - Isabella Anderson deleted her profile)
+-- Tests: deleted profiles are excluded from all queries; cascade to memberships/content
+UPDATE public.baby_profiles
+SET deleted_at = NOW() - INTERVAL '2 days',
+    updated_at = NOW() - INTERVAL '2 days'
+WHERE id = 'b0000008-b001-b001-b001-00000000b001';
+
+-- Scenario C: Soft-deleted photo (tests photo RLS soft-delete filtering)
+UPDATE public.photos
+SET deleted_at = NOW() - INTERVAL '3 days',
+    updated_at = NOW() - INTERVAL '3 days'
+WHERE baby_profile_id = 'b0000003-b001-b001-b001-00000000b001'
+  AND storage_path LIKE '%baby_clothes%';
+
+-- Scenario D: Soft-deleted event (tests event RLS soft-delete filtering)
+UPDATE public.events
+SET deleted_at = NOW() - INTERVAL '2 days',
+    updated_at = NOW() - INTERVAL '2 days'
+WHERE baby_profile_id = 'b0000004-b001-b001-b001-00000000b001'
+  AND title = 'Meet and Greet';
+
+-- Scenario E: Soft-deleted registry item (tests registry RLS soft-delete filtering)
+UPDATE public.registry_items
+SET deleted_at = NOW() - INTERVAL '1 day',
+    updated_at = NOW() - INTERVAL '1 day'
+WHERE baby_profile_id = 'b0000002-b001-b001-b001-00000000b001'
+  AND name = 'Baby Swing';
+
+-- Scenario F: Soft-deleted photo comment (moderated by owner)
+UPDATE public.photo_comments
+SET deleted_at = NOW() - INTERVAL '2 days',
+    deleted_by_user_id = '10000000-1001-1001-1001-000000001001'
+WHERE user_id = '40000005-4001-4001-4001-000000004001'
+  AND body = 'You look radiant! ✨';
+
+-- Scenario G: Soft-deleted event comment (moderated by owner)
+UPDATE public.event_comments
+SET deleted_at = NOW() - INTERVAL '1 day',
+    deleted_by_user_id = '10000001-1001-1001-1001-000000001001'
+WHERE user_id = '4000000d-4001-4001-4001-000000004001'
+  AND body LIKE '%I think it''s a girl%';
+
+-- Scenario H: Removed follower (follower who left / was removed)
+-- Tests: removed follower loses access to baby content (RLS filtering on removed_at)
+UPDATE public.baby_memberships
+SET removed_at = NOW() - INTERVAL '1 day',
+    updated_at = NOW() - INTERVAL '1 day'
+WHERE id = '3a3dd48c-00c2-46e5-886f-c983f3c06fcf';
+-- (This is '4000006c-4001-4001-4001-000000004001' / 'Family Friend' follower of baby 9)
+
+-- Scenario I: Biometric authentication enabled for some users
+-- Tests: biometric login flow and preference persistence
+UPDATE public.profiles
+SET biometric_enabled = true,
+    updated_at = NOW()
+WHERE user_id IN (
+    '10000000-1001-1001-1001-000000001001',
+    '20000001-2001-2001-2001-000000002001',
+    '40000005-4001-4001-4001-000000004001',
+    '40000013-4001-4001-4001-000000004001'
+);
+
+-- ============================================================================
 -- Display summary of additional data
 DO $$
 BEGIN
@@ -1189,7 +1460,15 @@ BEGIN
     RAISE NOTICE 'Name Suggestion Likes: %', (SELECT COUNT(*) FROM public.name_suggestion_likes);
     RAISE NOTICE 'Invitations: %', (SELECT COUNT(*) FROM public.invitations);
     RAISE NOTICE 'Notifications: %', (SELECT COUNT(*) FROM public.notifications);
+    RAISE NOTICE 'Notification Preferences: %', (SELECT COUNT(*) FROM public.notification_preferences);
     RAISE NOTICE 'Activity Events: %', (SELECT COUNT(*) FROM public.activity_events);
+    RAISE NOTICE 'Soft-deleted photos: %', (SELECT COUNT(*) FROM public.photos WHERE deleted_at IS NOT NULL);
+    RAISE NOTICE 'Soft-deleted events: %', (SELECT COUNT(*) FROM public.events WHERE deleted_at IS NOT NULL);
+    RAISE NOTICE 'Soft-deleted registry items: %', (SELECT COUNT(*) FROM public.registry_items WHERE deleted_at IS NOT NULL);
+    RAISE NOTICE 'Post-birth babies: %', (SELECT COUNT(*) FROM public.baby_profiles WHERE actual_birth_date IS NOT NULL AND deleted_at IS NULL);
+    RAISE NOTICE 'Deleted baby profiles: %', (SELECT COUNT(*) FROM public.baby_profiles WHERE deleted_at IS NOT NULL);
+    RAISE NOTICE 'Removed followers: %', (SELECT COUNT(*) FROM public.baby_memberships WHERE removed_at IS NOT NULL);
+    RAISE NOTICE 'Biometric-enabled users: %', (SELECT COUNT(*) FROM public.profiles WHERE biometric_enabled = true);
     RAISE NOTICE '====================================';
 END $$;
 
