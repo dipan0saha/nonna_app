@@ -5,9 +5,9 @@
 -- Table: profiles
 CREATE TABLE IF NOT EXISTS public.profiles (
   user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  display_name TEXT NOT NULL CHECK (char_length(display_name) >= 1 AND char_length(display_name) <= 50),
+  display_name TEXT,
   avatar_url TEXT,
-  bio TEXT CHECK (char_length(bio) <= 500),
+  biometric_enabled BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -15,12 +15,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 -- Table: user_stats
 CREATE TABLE IF NOT EXISTS public.user_stats (
   user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  photos_uploaded INT NOT NULL DEFAULT 0,
-  comments_added INT NOT NULL DEFAULT 0,
-  events_created INT NOT NULL DEFAULT 0,
-  squishes_given INT NOT NULL DEFAULT 0,
-  last_active_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  events_attended_count INT DEFAULT 0,
+  items_purchased_count INT DEFAULT 0,
+  photos_squished_count INT DEFAULT 0,
+  comments_added_count INT DEFAULT 0,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -31,16 +29,15 @@ CREATE TABLE IF NOT EXISTS public.user_stats (
 -- Table: baby_profiles
 CREATE TABLE IF NOT EXISTS public.baby_profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL CHECK (char_length(name) >= 1 AND char_length(name) <= 100),
+  name TEXT NOT NULL,
+  default_last_name_source TEXT,
   profile_photo_url TEXT,
   expected_birth_date DATE,
   actual_birth_date DATE,
   gender TEXT CHECK (gender IN ('male', 'female', 'unknown')),
-  bio TEXT CHECK (char_length(bio) <= 1000),
-  deleted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  CHECK (expected_birth_date IS NOT NULL OR actual_birth_date IS NOT NULL)
+  deleted_at TIMESTAMPTZ
 );
 
 -- Table: baby_memberships
@@ -49,10 +46,10 @@ CREATE TABLE IF NOT EXISTS public.baby_memberships (
   baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   role TEXT NOT NULL CHECK (role IN ('owner', 'follower')),
-  relationship_label TEXT CHECK (char_length(relationship_label) <= 50),
-  removed_at TIMESTAMPTZ,
+  relationship_label TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  removed_at TIMESTAMPTZ,
   UNIQUE(baby_profile_id, user_id)
 );
 
@@ -62,25 +59,22 @@ CREATE TABLE IF NOT EXISTS public.invitations (
   baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
   invited_by_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   invitee_email TEXT NOT NULL,
-  relationship_label TEXT NOT NULL CHECK (char_length(relationship_label) <= 50),
   token_hash TEXT UNIQUE NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'revoked', 'expired')),
-  accepted_by_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   accepted_at TIMESTAMPTZ,
-  expires_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '7 days'),
+  accepted_by_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Table: owner_update_markers
 CREATE TABLE IF NOT EXISTS public.owner_update_markers (
-  baby_profile_id UUID PRIMARY KEY REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
-  last_updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  photo_updated_at TIMESTAMPTZ,
-  event_updated_at TIMESTAMPTZ,
-  registry_updated_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  baby_profile_id UUID UNIQUE NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+  tiles_last_updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_by_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  reason TEXT
 );
 
 -- ========================================
@@ -94,22 +88,11 @@ CREATE TABLE IF NOT EXISTS public.photos (
   uploaded_by_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   storage_path TEXT NOT NULL,
   thumbnail_path TEXT,
-  caption TEXT CHECK (char_length(caption) <= 500),
+  caption TEXT,
   tags TEXT[],
-  deleted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- Table: photo_comments
-CREATE TABLE IF NOT EXISTS public.photo_comments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  photo_id UUID NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  comment_text TEXT NOT NULL CHECK (char_length(comment_text) >= 1 AND char_length(comment_text) <= 500),
-  deleted_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  deleted_at TIMESTAMPTZ
 );
 
 -- Table: photo_squishes
@@ -117,18 +100,27 @@ CREATE TABLE IF NOT EXISTS public.photo_squishes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   photo_id UUID NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  deleted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(photo_id, user_id)
+);
+
+-- Table: photo_comments
+CREATE TABLE IF NOT EXISTS public.photo_comments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  photo_id UUID NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  body TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  deleted_at TIMESTAMPTZ,
+  deleted_by_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 -- Table: photo_tags
 CREATE TABLE IF NOT EXISTS public.photo_tags (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tag_name TEXT NOT NULL CHECK (char_length(tag_name) >= 1 AND char_length(tag_name) <= 50),
-  usage_count INT NOT NULL DEFAULT 0,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE(tag_name)
+  photo_id UUID NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
+  tag TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- ========================================
@@ -140,14 +132,16 @@ CREATE TABLE IF NOT EXISTS public.events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
   created_by_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  title TEXT NOT NULL CHECK (char_length(title) >= 1 AND char_length(title) <= 100),
-  description TEXT CHECK (char_length(description) <= 1000),
-  event_date TIMESTAMPTZ NOT NULL,
-  location TEXT CHECK (char_length(location) <= 200),
-  cover_photo_path TEXT,
-  deleted_at TIMESTAMPTZ,
+  title TEXT NOT NULL,
+  starts_at TIMESTAMPTZ NOT NULL,
+  ends_at TIMESTAMPTZ,
+  description TEXT,
+  location TEXT,
+  video_link TEXT,
+  cover_photo_url TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  deleted_at TIMESTAMPTZ
 );
 
 -- Table: event_comments
@@ -155,10 +149,10 @@ CREATE TABLE IF NOT EXISTS public.event_comments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id UUID NOT NULL REFERENCES public.events(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  comment_text TEXT NOT NULL CHECK (char_length(comment_text) >= 1 AND char_length(comment_text) <= 500),
-  deleted_at TIMESTAMPTZ,
+  body TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  deleted_at TIMESTAMPTZ,
+  deleted_by_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 -- Table: event_rsvps
@@ -166,8 +160,7 @@ CREATE TABLE IF NOT EXISTS public.event_rsvps (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   event_id UUID NOT NULL REFERENCES public.events(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  status TEXT NOT NULL CHECK (status IN ('attending', 'not_attending', 'maybe')),
-  deleted_at TIMESTAMPTZ,
+  status TEXT NOT NULL CHECK (status IN ('yes', 'no', 'maybe')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(event_id, user_id)
@@ -182,17 +175,13 @@ CREATE TABLE IF NOT EXISTS public.registry_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
   created_by_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  item_name TEXT NOT NULL CHECK (char_length(item_name) >= 1 AND char_length(item_name) <= 200),
-  description TEXT CHECK (char_length(description) <= 1000),
-  url TEXT,
-  price NUMERIC(10, 2),
-  priority INT CHECK (priority BETWEEN 1 AND 5),
-  quantity_needed INT NOT NULL DEFAULT 1 CHECK (quantity_needed > 0),
-  quantity_purchased INT NOT NULL DEFAULT 0 CHECK (quantity_purchased >= 0),
-  image_url TEXT,
-  deleted_at TIMESTAMPTZ,
+  name TEXT NOT NULL,
+  description TEXT,
+  link_url TEXT,
+  priority INT DEFAULT 3 CHECK (priority >= 1 AND priority <= 5),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  deleted_at TIMESTAMPTZ
 );
 
 -- Table: registry_purchases
@@ -200,50 +189,46 @@ CREATE TABLE IF NOT EXISTS public.registry_purchases (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   registry_item_id UUID NOT NULL REFERENCES public.registry_items(id) ON DELETE CASCADE,
   purchased_by_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  quantity INT NOT NULL DEFAULT 1 CHECK (quantity > 0),
-  deleted_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  purchased_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  note TEXT
 );
 
 -- ========================================
 -- Gamification Domain
 -- ========================================
 
--- Table: name_suggestions
-CREATE TABLE IF NOT EXISTS public.name_suggestions (
+-- Table: votes (unified gender and birthdate predictions)
+CREATE TABLE IF NOT EXISTS public.votes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
-  suggested_by_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL CHECK (char_length(name) >= 1 AND char_length(name) <= 100),
-  votes_count INT NOT NULL DEFAULT 0,
-  deleted_at TIMESTAMPTZ,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  vote_type TEXT NOT NULL CHECK (vote_type IN ('gender', 'birthdate')),
+  value_text TEXT,
+  value_date DATE,
+  is_anonymous BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Table: gender_votes
-CREATE TABLE IF NOT EXISTS public.gender_votes (
+-- Table: name_suggestions
+CREATE TABLE IF NOT EXISTS public.name_suggestions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  vote TEXT NOT NULL CHECK (vote IN ('male', 'female')),
-  deleted_at TIMESTAMPTZ,
+  gender TEXT CHECK (gender IN ('male', 'female', 'unknown')),
+  suggested_name TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE(baby_profile_id, user_id)
+  deleted_at TIMESTAMPTZ
 );
 
--- Table: birth_date_predictions
-CREATE TABLE IF NOT EXISTS public.birth_date_predictions (
+-- Table: name_suggestion_likes
+CREATE TABLE IF NOT EXISTS public.name_suggestion_likes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
+  name_suggestion_id UUID NOT NULL REFERENCES public.name_suggestions(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  predicted_date DATE NOT NULL,
-  deleted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE(baby_profile_id, user_id)
+  UNIQUE(name_suggestion_id, user_id)
 );
 
 -- ========================================
@@ -283,22 +268,20 @@ CREATE TABLE IF NOT EXISTS public.notification_preferences (
 -- Table: screens
 CREATE TABLE IF NOT EXISTS public.screens (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  screen_name TEXT UNIQUE NOT NULL CHECK (char_length(screen_name) <= 50),
-  screen_title TEXT NOT NULL CHECK (char_length(screen_title) <= 100),
-  description TEXT CHECK (char_length(description) <= 500),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  screen_name TEXT UNIQUE NOT NULL,
+  description TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Table: tile_definitions
 CREATE TABLE IF NOT EXISTS public.tile_definitions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tile_type TEXT UNIQUE NOT NULL CHECK (char_length(tile_type) <= 50),
-  tile_name TEXT NOT NULL CHECK (char_length(tile_name) <= 100),
-  description TEXT CHECK (char_length(description) <= 500),
-  default_config JSONB,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  tile_type TEXT UNIQUE NOT NULL,
+  description TEXT,
+  schema_params JSONB,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Table: tile_configs
@@ -306,59 +289,11 @@ CREATE TABLE IF NOT EXISTS public.tile_configs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   screen_id UUID NOT NULL REFERENCES public.screens(id) ON DELETE CASCADE,
   tile_definition_id UUID NOT NULL REFERENCES public.tile_definitions(id) ON DELETE CASCADE,
-  baby_profile_id UUID REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
-  position INT NOT NULL CHECK (position >= 0),
+  role TEXT NOT NULL CHECK (role IN ('owner', 'follower')),
+  display_order INT NOT NULL,
   is_visible BOOLEAN NOT NULL DEFAULT TRUE,
   params JSONB,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- ========================================
--- Voting & Suggestions Domain
--- ========================================
-
--- Table: gender_votes
-CREATE TABLE IF NOT EXISTS public.gender_votes (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  vote TEXT NOT NULL CHECK (vote IN ('male', 'female')),
-  deleted_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- Table: birth_date_predictions
-CREATE TABLE IF NOT EXISTS public.birth_date_predictions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  predicted_date DATE NOT NULL,
-  deleted_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- Table: name_suggestions
-CREATE TABLE IF NOT EXISTS public.name_suggestions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  baby_profile_id UUID NOT NULL REFERENCES public.baby_profiles(id) ON DELETE CASCADE,
-  suggested_by_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL CHECK (char_length(name) <= 100),
-  votes_count INT NOT NULL DEFAULT 0,
-  deleted_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- Table: name_suggestion_likes
-CREATE TABLE IF NOT EXISTS public.name_suggestion_likes (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name_suggestion_id UUID NOT NULL REFERENCES public.name_suggestions(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE(name_suggestion_id, user_id)
 );
 
 -- ========================================
@@ -372,13 +307,5 @@ CREATE TABLE IF NOT EXISTS public.activity_events (
   actor_user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   type TEXT NOT NULL,
   payload JSONB,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- Table: photo_tags
-CREATE TABLE IF NOT EXISTS public.photo_tags (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  photo_id UUID NOT NULL REFERENCES public.photos(id) ON DELETE CASCADE,
-  tag TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
