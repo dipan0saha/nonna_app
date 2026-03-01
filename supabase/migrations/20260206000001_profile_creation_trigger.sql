@@ -80,5 +80,3 @@ COMMENT ON FUNCTION public.handle_new_user() IS
   'Automatically creates profiles and user_stats records when a new user signs up. '
   'Ensures data consistency between auth.users and application tables.';
 
-COMMENT ON TRIGGER on_auth_user_created ON auth.users IS
-  'Triggers handle_new_user() function to create user profile and stats on signup.';
