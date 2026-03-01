@@ -91,20 +91,17 @@ class TestRunner:
             output = result.stdout + result.stderr
 
             # Parse output for test counts using regex
-            # Pattern: +2214 ~6 -11: means 2214 passed, ~6 running, -11 failed
-            match = re.search(r"\+(\d+)(?:\s+~\d+)?\s+-(\d+):", output)
-            if match:
-                passed = int(match.group(1))
-                failed = int(match.group(2))
+            # Handles both formats:
+            # - "+51: All tests passed!" (success format)
+            # - "+397 -1:" (format with failures)
+            # - "00:00 +121 -1: Some tests failed" (timestamped format)
+            # Find ALL matches and use the LAST one (final summary line)
+            matches = list(re.finditer(r"\+(\d+).*?(?:-(\d+))?:", output))
+            if matches:
+                last_match = matches[-1]
+                passed = int(last_match.group(1))
+                failed = int(last_match.group(2)) if last_match.group(2) else 0
                 return passed, failed
-
-            # If no match with the main pattern, look for "All tests passed" or "Some tests failed"
-            if "All tests passed" in output:
-                # Extract just the passed count
-                match = re.search(r"\+(\d+):", output)
-                if match:
-                    passed = int(match.group(1))
-                    return passed, 0
 
             return 0, 0
 
@@ -194,8 +191,8 @@ class TestRunner:
         # Update Core Tests table
         core_table = self._build_core_table()
         content = re.sub(
-            r"(## Core Tests \([\d\d]+ files\)\n\nOrganized by 16 subcategories:\n\n)\|.*?\n\|",
-            r"\1|",
+            r"(## Core Tests \([\d\d]+ files\)\n\nOrganized by 16 subcategories:\n\n).*?(?=\n---)",
+            f"\\1\n{core_table}",
             content,
             flags=re.DOTALL,
             count=1,
@@ -204,8 +201,8 @@ class TestRunner:
         # Update Features Tests table
         features_table = self._build_features_table()
         content = re.sub(
-            r"(## Features Tests \([\d\d]+ files\)\n\nOrganized by 9 features:\n\n)\|.*?\n\|",
-            r"\1|",
+            r"(## Features Tests \([\d\d]+ files\)\n\nOrganized by 9 features:\n\n).*?(?=\n---)",
+            f"\\1\n{features_table}",
             content,
             flags=re.DOTALL,
             count=1,
@@ -213,6 +210,13 @@ class TestRunner:
 
         # Update Tiles Tests table
         tiles_table = self._build_tiles_table()
+        content = re.sub(
+            r"(## Tiles Tests \([\d\d]+ files\)\n\nOrganized by 16 tile types:\n\n).*?(?=\n---)",
+            f"\\1\n{tiles_table}",
+            content,
+            flags=re.DOTALL,
+            count=1,
+        )
 
         # Update summary section
         summary = self._build_summary()
