@@ -7,11 +7,11 @@
 | Category | Count | Passed | Failed | Status |
 |----------|-------|--------|--------|--------|
 | test/accessibility | 1 | 24 | 0 | ✅ Pass |
-| test/core | 108 | 2210 | 0 | ✅ Pass |
+| test/core | 108 | 2366 | 0 | ✅ Pass |
 | test/features | 37 | 413 | 0 | ✅ Pass |
 | test/l10n | 1 | 25 | 0 | ✅ Pass |
 | test/tiles | 35 | 492 | 0 | ✅ Pass |
-| **TOTAL** | **190** | **3164** | **0** | ✅ All Passed |
+| **TOTAL** | **190** | **3320** | **0** | ✅ All Passed |
 ---
 
 ## Quick Commands
@@ -68,7 +68,7 @@ Organized by 16 subcategories:
 | Services | - | 265 | 0 | `flutter test test/core/services` |
 | Themes | - | 156 | 0 | `flutter test test/core/themes` |
 | Utils | - | 501 | 0 | `flutter test test/core/utils` |
-| Widgets | - | 0 | 0 | `flutter test test/core/widgets` |
+| Widgets | - | 156 | 0 | `flutter test test/core/widgets` |
 
 ---
 
@@ -255,5 +255,5 @@ flutter drive --target=integration_test/path_to_test.dart
 
 ---
 
-Generated: February 28, 2026 at 23:08:02
+Generated: February 28, 2026 at 23:15:40
 Total Test Files: 190
