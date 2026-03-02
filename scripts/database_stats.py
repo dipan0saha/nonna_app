@@ -130,13 +130,29 @@ class SupabaseDatabaseStats:
         """
         Get the row count for a specific table.
 
+        Uses pg_stat_user_tables for better permission handling with RLS.
+        Falls back to COUNT(*) if statistics unavailable.
+
         Args:
             schema: Schema name
             table: Table name
 
         Returns:
-            Number of rows in the table, or -1 if error
+            Number of rows in the table, or -1 if unable to count
         """
+        # Try pg_stat_user_tables first (has better permissions with RLS)
+        try:
+            query = sql.SQL(
+                "SELECT n_live_tup FROM pg_stat_user_tables WHERE relname = {} AND schemaname = {}"
+            ).format(sql.Literal(table), sql.Literal(schema))
+            self.cursor.execute(query)
+            result = self.cursor.fetchone()
+            if result:
+                return result[0]
+        except psycopg2.Error:
+            pass
+
+        # Fall back to COUNT(*) for user tables
         try:
             query = sql.SQL("SELECT COUNT(*) FROM {}.{}").format(
                 sql.Identifier(schema), sql.Identifier(table)
@@ -144,6 +160,7 @@ class SupabaseDatabaseStats:
             self.cursor.execute(query)
             return self.cursor.fetchone()[0]
         except psycopg2.Error:
+            # Return -1 to indicate error, will display as N/A
             return -1
 
     def get_table_size(self, schema: str, table: str) -> str:
@@ -218,7 +235,7 @@ class SupabaseDatabaseStats:
             if ttype == "BASE TABLE":
                 row_count = self.get_row_count(schema, name)
                 size = self.get_table_size(schema, name)
-                rows_display = f"{row_count:,}" if row_count >= 0 else "ERROR"
+                rows_display = f"{row_count:,}" if row_count >= 0 else "N/A"
             else:
                 rows_display = "—"
                 size = "—"
@@ -241,11 +258,14 @@ class SupabaseDatabaseStats:
             views = sum(1 for t in items if t["table_type"] == "VIEW")
 
             total_rows = sum(
-                self.get_row_count(schema, t["table_name"])
-                for t in items
-                if t["table_type"] == "BASE TABLE"
+                count
+                for count in [
+                    self.get_row_count(schema, t["table_name"])
+                    for t in items
+                    if t["table_type"] == "BASE TABLE"
+                ]
+                if count >= 0
             )
-            total_rows = total_rows if total_rows >= 0 else 0
 
             print(f"\n{Colors.BOLD}🗂️  Schema: {schema}{Colors.NC}")
             print(f"   ├─ Base Tables: {base_tables}")
