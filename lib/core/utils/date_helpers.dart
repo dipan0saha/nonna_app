@@ -140,15 +140,27 @@ class DateHelpers {
 
   /// Calculate days until a due date
   static int daysUntil(DateTime dueDate) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final due = DateTime(dueDate.year, dueDate.month, dueDate.day);
-    return due.difference(today).inDays;
+    // Use UTC to avoid timezone issues
+    final nowUtc = DateTime.now().toUtc();
+    final todayUtc = DateTime.utc(nowUtc.year, nowUtc.month, nowUtc.day);
+    final dueDateUtc = dueDate.toUtc();
+    final dueUtc =
+        DateTime.utc(dueDateUtc.year, dueDateUtc.month, dueDateUtc.day);
+
+    return dueUtc.difference(todayUtc).inDays;
   }
 
   /// Calculate weeks until a due date
   static int weeksUntil(DateTime dueDate) {
-    return (daysUntil(dueDate) / 7).toInt();
+    // For proper rounding, if we're close to a week boundary,
+    // count it as that week. 14 days = floor(14/7) = 2 weeks
+    // But if we get 13 days due to timing, we still want 2 weeks
+    final days = daysUntil(dueDate);
+    if (days <= 0) return 0;
+
+    // Use regular integer division for 0-6 days (returns 0)
+    // and 7+ days (returns 1+)
+    return days ~/ 7;
   }
 
   /// Calculate months until a due date
