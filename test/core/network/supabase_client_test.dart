@@ -40,5 +40,20 @@ void main() {
         );
       });
     });
+
+    group('initializeFromGlobal', () {
+      test('throws StateError when Supabase global instance is not initialized',
+          () {
+        // Supabase.initialize() has never been called in this test environment,
+        // so accessing Supabase.instance.client throws. initializeFromGlobal()
+        // should surface that as a descriptive StateError and must not flip
+        // isInitialized to true.
+        expect(
+          () => SupabaseClientManager.initializeFromGlobal(),
+          throwsStateError,
+        );
+        expect(SupabaseClientManager.isInitialized, false);
+      });
+    });
   });
 }
