@@ -74,6 +74,28 @@ class SupabaseClientManager {
     }
   }
 
+  /// Initialize from an already-initialized global [Supabase] instance.
+  ///
+  /// Use this when [Supabase.initialize] has already been called elsewhere
+  /// (e.g. via [SupabaseConfig.initialize]) and only the singleton client
+  /// reference needs to be set.
+  static void initializeFromGlobal() {
+    if (_isInitialized) {
+      debugPrint('⚠️  Supabase client already initialized');
+      return;
+    }
+    try {
+      _client = Supabase.instance.client;
+      _isInitialized = true;
+      debugPrint('✅ Supabase client initialized from global instance');
+    } catch (e) {
+      throw StateError(
+        'Cannot initialize SupabaseClientManager: Supabase global instance '
+        'is not initialized. Call Supabase.initialize() first. ($e)',
+      );
+    }
+  }
+
   /// Dispose the client (for testing purposes)
   @visibleForTesting
   static void dispose() {
