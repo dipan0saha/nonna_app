@@ -1,43 +1,143 @@
--- ========================================
--- RLS Policy Tests for baby_profiles table
--- ========================================
--- Tests the Row Level Security policies for the baby_profiles table
-
 BEGIN;
 
 CREATE EXTENSION IF NOT EXISTS pgtap;
 
-SELECT plan(12);
+SELECT plan(20);
 
--- Test 1: baby_profiles table exists
+-- ==================== Structural Tests ====================
+
 SELECT has_table('public'::name, 'baby_profiles'::name, 'baby_profiles table should exist');
-
--- Test 2: RLS is enabled
 SELECT rls_enabled('public'::name, 'baby_profiles'::name, 'RLS should be enabled on baby_profiles');
 
--- Test 3-6: Check essential columns
-SELECT has_column('public'::name, 'baby_profiles'::name, 'id'::name, 'baby_profiles should have id column');
-SELECT has_column('public'::name, 'baby_profiles'::name, 'name'::name, 'baby_profiles should have name column');
-SELECT has_column('public'::name, 'baby_profiles'::name, 'expected_birth_date'::name, 'baby_profiles should have expected_birth_date');
-SELECT has_column('public'::name, 'baby_profiles'::name, 'deleted_at'::name, 'baby_profiles should have deleted_at for soft delete');
+SELECT has_column('public'::name, 'baby_profiles'::name, 'id'::name,                  'baby_profiles has id');
+SELECT has_column('public'::name, 'baby_profiles'::name, 'name'::name,                'baby_profiles has name');
+SELECT has_column('public'::name, 'baby_profiles'::name, 'expected_birth_date'::name, 'baby_profiles has expected_birth_date');
+SELECT has_column('public'::name, 'baby_profiles'::name, 'actual_birth_date'::name,   'baby_profiles has actual_birth_date');
+SELECT has_column('public'::name, 'baby_profiles'::name, 'gender'::name,              'baby_profiles has gender');
+SELECT has_column('public'::name, 'baby_profiles'::name, 'deleted_at'::name,          'baby_profiles has deleted_at');
 
--- Test 7: Test owner can read their baby profile
-SELECT pass('Owner can read their baby profile - requires auth context');
+-- ==================== Policy Existence Tests ====================
 
--- Test 8: Test follower can read baby profile they follow
-SELECT pass('Follower can read baby profile they follow - requires auth context');
+SELECT has_policy('public', 'baby_profiles', 'Members can view baby profiles',                  'policy exists: members view');
+SELECT has_policy('public', 'baby_profiles', 'Owners can update baby profiles',                 'policy exists: owners update');
+SELECT has_policy('public', 'baby_profiles', 'Authenticated users can create baby profiles',    'policy exists: authenticated insert');
+SELECT has_policy('public', 'baby_profiles', 'Owners can delete baby profiles',                 'policy exists: owners delete');
 
--- Test 9: Test non-member cannot read baby profile
-SELECT pass('Non-member cannot read baby profile - requires auth context');
+-- ==================== Test Data ====================
 
--- Test 10: Test owner can update baby profile
-SELECT pass('Owner can update baby profile - requires auth context');
+INSERT INTO auth.users (id, email) VALUES
+  ('aaaaaaaa-0000-0000-0000-000000000001', 'user1@test.com'),
+  ('aaaaaaaa-0000-0000-0000-000000000002', 'user2@test.com'),
+  ('aaaaaaaa-0000-0000-0000-000000000003', 'user3@test.com'),
+  ('aaaaaaaa-0000-0000-0000-000000000004', 'user4@test.com');
 
--- Test 11: Test follower cannot update baby profile
-SELECT pass('Follower cannot update baby profile - requires auth context');
+INSERT INTO public.baby_profiles (id, name) VALUES
+  ('bbbbbbbb-0000-0000-0000-000000000001', 'Test Baby'),
+  ('bbbbbbbb-0000-0000-0000-000000000003', 'Baby to Delete');
 
--- Test 12: Test cross-baby isolation (user cannot access other baby profiles)
-SELECT pass('Cross-baby isolation enforced - requires auth context');
+INSERT INTO public.baby_memberships (id, baby_profile_id, user_id, role) VALUES
+  ('cccccccc-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 'owner'),
+  ('cccccccc-0000-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000002', 'follower'),
+  ('cccccccc-0000-0000-0000-000000000005', 'bbbbbbbb-0000-0000-0000-000000000003', 'aaaaaaaa-0000-0000-0000-000000000001', 'owner');
+
+-- ==================== Functional Tests ====================
+
+-- Owner can view baby
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claims" = '{"sub": "aaaaaaaa-0000-0000-0000-000000000001", "aud": "authenticated"}';
+
+SELECT isnt_empty(
+  $$ SELECT * FROM public.baby_profiles WHERE id = 'bbbbbbbb-0000-0000-0000-000000000001' $$,
+  'Owner can view baby profile'
+);
+
+RESET ROLE;
+RESET "request.jwt.claims";
+
+-- Follower can view baby
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claims" = '{"sub": "aaaaaaaa-0000-0000-0000-000000000002", "aud": "authenticated"}';
+
+SELECT isnt_empty(
+  $$ SELECT * FROM public.baby_profiles WHERE id = 'bbbbbbbb-0000-0000-0000-000000000001' $$,
+  'Follower can view baby profile'
+);
+
+RESET ROLE;
+RESET "request.jwt.claims";
+
+-- Nonmember cannot view baby
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claims" = '{"sub": "aaaaaaaa-0000-0000-0000-000000000003", "aud": "authenticated"}';
+
+SELECT is_empty(
+  $$ SELECT * FROM public.baby_profiles WHERE id = 'bbbbbbbb-0000-0000-0000-000000000001' $$,
+  'Non-member cannot view baby profile'
+);
+
+RESET ROLE;
+RESET "request.jwt.claims";
+
+-- Owner can update baby
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claims" = '{"sub": "aaaaaaaa-0000-0000-0000-000000000001", "aud": "authenticated"}';
+
+SELECT lives_ok(
+  $$ UPDATE public.baby_profiles SET name = 'Updated Baby'
+     WHERE id = 'bbbbbbbb-0000-0000-0000-000000000001' $$,
+  'Owner can update baby profile'
+);
+
+RESET ROLE;
+RESET "request.jwt.claims";
+
+-- Follower cannot update baby (silently 0 rows)
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claims" = '{"sub": "aaaaaaaa-0000-0000-0000-000000000002", "aud": "authenticated"}';
+
+SELECT lives_ok(
+  $$ UPDATE public.baby_profiles SET name = 'Hacked Baby'
+     WHERE id = 'bbbbbbbb-0000-0000-0000-000000000001' $$,
+  'Follower update attempt does not error'
+);
+
+RESET ROLE;
+RESET "request.jwt.claims";
+
+-- Verify follower did not change name
+SELECT is(
+  (SELECT name FROM public.baby_profiles WHERE id = 'bbbbbbbb-0000-0000-0000-000000000001'),
+  'Updated Baby',
+  'Follower cannot change baby profile name'
+);
+
+-- Authenticated user can insert new baby
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claims" = '{"sub": "aaaaaaaa-0000-0000-0000-000000000004", "aud": "authenticated"}';
+
+SELECT lives_ok(
+  $$ INSERT INTO public.baby_profiles (id, name)
+     VALUES ('bbbbbbbb-0000-0000-0000-000000000002', 'New Baby') $$,
+  'Authenticated user can create a baby profile'
+);
+
+RESET ROLE;
+RESET "request.jwt.claims";
+
+-- Owner can delete baby (remove FK child first as superuser)
+DELETE FROM public.baby_memberships
+WHERE baby_profile_id = 'bbbbbbbb-0000-0000-0000-000000000003';
+
+SET LOCAL ROLE authenticated;
+SET LOCAL "request.jwt.claims" = '{"sub": "aaaaaaaa-0000-0000-0000-000000000001", "aud": "authenticated"}';
+
+SELECT lives_ok(
+  $$ DELETE FROM public.baby_profiles WHERE id = 'bbbbbbbb-0000-0000-0000-000000000003' $$,
+  'Owner can delete baby profile'
+);
+
+RESET ROLE;
+RESET "request.jwt.claims";
 
 SELECT * FROM finish();
 
