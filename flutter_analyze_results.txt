@@ -1,4 +1,4 @@
 Analyzing nonna_app...                                          
 
-warning • The value of the local variable 'isVisible' isn't used • test/core/extensions/context_extensions_test.dart:443:19 • unused_local_variable
+warning • The value of the local variable 'error' isn't used • test/core/widgets/error_boundary_test.dart:22:13 • unused_local_variable
 
