@@ -88,11 +88,24 @@ class SupabaseClientManager {
       _client = Supabase.instance.client;
       _isInitialized = true;
       debugPrint('✅ Supabase client initialized from global instance');
-    } catch (e) {
-      throw StateError(
-        'Cannot initialize SupabaseClientManager: Supabase global instance '
-        'is not initialized. Call Supabase.initialize() first. ($e)',
+    } on StateError catch (e, stackTrace) {
+      Error.throwWithStackTrace(
+        StateError(
+          'Cannot initialize SupabaseClientManager: Supabase global instance '
+          'is not initialized. Call Supabase.initialize() first. ($e)',
+        ),
+        stackTrace,
       );
+    } on AssertionError catch (e, stackTrace) {
+      Error.throwWithStackTrace(
+        StateError(
+          'Cannot initialize SupabaseClientManager: Supabase global instance '
+          'is not initialized. Call Supabase.initialize() first. ($e)',
+        ),
+        stackTrace,
+      );
+    } catch (e) {
+      rethrow;
     }
   }
 
