@@ -43,7 +43,7 @@ INSERT INTO public.event_rsvps (id, event_id, user_id, status) VALUES
   ('44444444-0000-0000-0000-000000000001',
    '22222222-0000-0000-0000-000000000001',
    'aaaaaaaa-0000-0000-0000-000000000001',
-   'going');
+   'yes');
 
 -- ==================== Functional Tests ====================
 
@@ -82,7 +82,7 @@ SELECT lives_ok(
      VALUES ('44444444-0000-0000-0000-000000000002',
              '22222222-0000-0000-0000-000000000001',
              'aaaaaaaa-0000-0000-0000-000000000002',
-             'going') $$,
+             'yes') $$,
   'Member can create event RSVP'
 );
 
@@ -98,7 +98,7 @@ SELECT throws_ok(
      VALUES ('44444444-0000-0000-0000-000000000099',
              '22222222-0000-0000-0000-000000000001',
              'aaaaaaaa-0000-0000-0000-000000000003',
-             'going') $$,
+             'no') $$,
   '42501', NULL,
   'Non-member cannot create event RSVP'
 );
@@ -118,7 +118,7 @@ SELECT lives_ok(
 
 -- User2 cannot update user1 RSVP (silently 0 rows)
 SELECT lives_ok(
-  $$ UPDATE public.event_rsvps SET status = 'not_going'
+  $$ UPDATE public.event_rsvps SET status = 'no'
      WHERE id = '44444444-0000-0000-0000-000000000001' $$,
   'User cannot update another user''s RSVP (silently 0 rows)'
 );
@@ -129,7 +129,7 @@ RESET "request.jwt.claims";
 -- Verify user1 RSVP status unchanged
 SELECT is(
   (SELECT status FROM public.event_rsvps WHERE id = '44444444-0000-0000-0000-000000000001'),
-  'going',
+  'yes',
   'User1 RSVP status was not changed by user2'
 );
 

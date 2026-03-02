@@ -39,9 +39,9 @@ INSERT INTO public.baby_memberships (id, baby_profile_id, user_id, role) VALUES
 
 -- vote1: user1 non-anonymous, vote2: user2 anonymous, vote3: user4 anonymous
 INSERT INTO public.votes (id, baby_profile_id, user_id, vote_type, is_anonymous) VALUES
-  ('77777777-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 'boy',  FALSE),
-  ('77777777-0000-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000002', 'girl', TRUE),
-  ('77777777-0000-0000-0000-000000000003', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000004', 'boy',  TRUE);
+  ('77777777-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 'gender',    FALSE),
+  ('77777777-0000-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000002', 'birthdate', TRUE),
+  ('77777777-0000-0000-0000-000000000003', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000004', 'gender',    TRUE);
 
 -- ==================== Functional Tests ====================
 
@@ -94,7 +94,7 @@ SELECT lives_ok(
      VALUES ('77777777-0000-0000-0000-000000000004',
              'bbbbbbbb-0000-0000-0000-000000000001',
              'aaaaaaaa-0000-0000-0000-000000000002',
-             'girl', FALSE) $$,
+             'gender', FALSE) $$,
   'Member can create a vote'
 );
 
@@ -110,7 +110,7 @@ SELECT throws_ok(
      VALUES ('77777777-0000-0000-0000-000000000099',
              'bbbbbbbb-0000-0000-0000-000000000001',
              'aaaaaaaa-0000-0000-0000-000000000003',
-             'boy', FALSE) $$,
+             'gender', FALSE) $$,
   '42501', NULL,
   'Non-member cannot create a vote'
 );
@@ -123,7 +123,7 @@ SET LOCAL ROLE authenticated;
 SET LOCAL "request.jwt.claims" = '{"sub": "aaaaaaaa-0000-0000-0000-000000000001", "aud": "authenticated"}';
 
 SELECT lives_ok(
-  $$ UPDATE public.votes SET vote_type = 'girl'
+  $$ UPDATE public.votes SET vote_type = 'birthdate'
      WHERE id = '77777777-0000-0000-0000-000000000001' $$,
   'User can update own vote'
 );
