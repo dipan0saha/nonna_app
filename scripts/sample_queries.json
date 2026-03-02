@@ -1,0 +1,29 @@
+{
+  "description": "Sample queries for Supabase database",
+  "queries": [
+    {
+      "name": "activity_events_sample",
+      "description": "Fetch first 5 records from activity_events table",
+      "sql": "SELECT * FROM public.activity_events LIMIT 5;",
+      "limit": 5
+    },
+    {
+      "name": "activity_events_count",
+      "description": "Count total records in activity_events table",
+      "sql": "SELECT COUNT(*) as total_records FROM public.activity_events;",
+      "limit": 1
+    },
+    {
+      "name": "app_versions",
+      "description": "Fetch app versions",
+      "sql": "SELECT * FROM public.app_versions LIMIT 10;",
+      "limit": 10
+    },
+    {
+      "name": "baby_profiles",
+      "description": "Fetch baby profiles",
+      "sql": "SELECT id, name FROM public.baby_profiles LIMIT 5;",
+      "limit": 5
+    }
+  ]
+}
