@@ -2,10 +2,10 @@
 
 ## Document Information
 
-**Document Version**: 1.0  
-**Last Updated**: January 4, 2026  
-**Author**: Technical Team  
-**Status**: Configuration Guide  
+**Document Version**: 1.0
+**Last Updated**: January 4, 2026
+**Author**: Technical Team
+**Status**: Configuration Guide
 **Section**: 2.3 - Third-Party Integrations Setup
 
 ## Executive Summary
@@ -133,12 +133,12 @@ class SupabaseConfig {
     'SUPABASE_URL',
     defaultValue: 'https://YOUR_PROJECT_REF.supabase.co',
   );
-  
+
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
     defaultValue: 'YOUR_ANON_KEY',
   );
-  
+
   // Optionally load from secure storage or assets
   static Future<void> initialize() async {
     await Supabase.initialize(
@@ -560,10 +560,21 @@ Navigate to Reports → Overview:
 
 **Error Tracking**:
 
-- Integrate with Sentry for comprehensive error tracking
-- Configure Sentry DSN in Flutter app
-- Monitor error rates and patterns
-- Set up alerts for critical errors
+- Use **Firebase Crashlytics** for comprehensive error and crash tracking (see `FIREBASE_CRASHLYTICS_SETUP.md`)
+- ✅ **Why Crashlytics instead of Sentry?**
+  - **Cost**: Crashlytics is **100% FREE** (Sentry costs $29+/month)
+  - **No Redundancy**: Eliminates duplicate error tracking when already using Firebase Analytics
+  - **Seamless Integration**: Works alongside Firebase Analytics and Performance Monitoring
+  - **Full Feature Parity**: Provides all capabilities Sentry offers for Flutter apps:
+    - Crash reporting with stack traces
+    - User session context and breadcrumbs
+    - Custom error logging and custom keys
+    - Real-time alerting and notifications
+    - Grouped error analysis and trends
+  - **Maintenance**: Single error tracking system reduces complexity
+- Configure Firebase Crashlytics in Flutter app (automatic with Firebase init)
+- Monitor error rates and patterns in Firebase Console → Crashlytics dashboard
+- Set up alerts for critical crash rate increases in Firebase Console
 
 ### 5.3 Backup and Recovery
 
@@ -684,7 +695,7 @@ class SupabaseConfig {
   static const String supabaseUrl = bool.fromEnvironment('dart.vm.product')
     ? 'https://prod-project-ref.supabase.co'
     : 'https://dev-project-ref.supabase.co';
-    
+
   static const String supabaseAnonKey = bool.fromEnvironment('dart.vm.product')
     ? 'PROD_ANON_KEY'
     : 'DEV_ANON_KEY';
@@ -975,7 +986,7 @@ This document provides comprehensive guidance for setting up and configuring a S
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: January 4, 2026  
-**Next Review**: Before Core Development Phase (Section 3.x)  
+**Document Version**: 1.0
+**Last Updated**: January 4, 2026
+**Next Review**: Before Core Development Phase (Section 3.x)
 **Status**: Configuration Guide - Ready for Implementation
