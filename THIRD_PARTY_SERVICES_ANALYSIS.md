@@ -1,5 +1,74 @@
 # Third-Party Services Analysis for Nonna App
 
+---
+
+## ⚡ Copilot Review Assessment (March 3, 2026)
+
+> **Review performed by GitHub Copilot** against actual codebase (`pubspec.yaml`, `lib/core/services/`, `lib/main.dart`).
+
+### Overall Verdict: Mostly correct with 4 items that need correction
+
+---
+
+### ✅ Confirmed Correct
+| Finding | Verdict |
+|---------|---------|
+| Supabase is fully integrated (database, auth, storage, realtime, edge functions) | ✅ Correct |
+| Firebase Analytics, Crashlytics, Performance, Core are all in `pubspec.yaml` and initialized in `AppInitializationService` | ✅ Correct |
+| Firebase Storage is NOT needed — Supabase Storage is already sufficient | ✅ Correct |
+| OneSignal (`onesignal_flutter: ^5.0.0`) is in `pubspec.yaml` and initialized | ✅ Correct |
+| Google OAuth (`google_sign_in`) and Facebook OAuth (`flutter_facebook_auth`) are configured | ✅ Correct |
+| SendGrid is not a Flutter package; it is integrated as a Supabase Edge Function backend service | ✅ Correct |
+| `sentry_flutter: ^9.9.1` is in `pubspec.yaml` alongside Firebase Crashlytics (duplication exists) | ✅ Correct |
+
+---
+
+### ❌ Corrections Required
+
+#### 1. Firebase Auth vs Supabase Auth (Detailed Service Analysis table)
+**Incorrect claim**: "User Auth | Firebase Auth + Google/Facebook | ✅"  
+**Correction**: The app uses **Supabase Auth** (not Firebase Auth) for user authentication. `firebase_auth` is not in `pubspec.yaml` and is never imported. `auth_service.dart` uses `SupabaseClient` exclusively. Google and Facebook are OAuth providers routed through Supabase Auth, not Firebase Auth.
+
+#### 2. Sentry Removal — Important Missing Context
+**Partially correct**: The recommendation to remove Sentry and consolidate on Firebase Crashlytics is valid, but the analysis is **incomplete** about what removal involves:
+
+- `lib/core/services/observability_service.dart` is built entirely on Sentry (~300 lines of breadcrumbs, user context, tags, performance transactions).
+- `lib/core/widgets/error_boundary.dart` (`GlobalErrorBoundary`) depends on `ObservabilityService`.
+- `lib/core/services/crash_recovery_handler.dart` depends on `ObservabilityService`.
+- **Critical**: Sentry is **not initialized** in `main.dart` or `AppInitializationService` — meaning `ObservabilityService` is effectively **dead code** right now. The app already runs entirely on Firebase Crashlytics for crash reporting.
+
+**Implication**: Removing `sentry_flutter` from `pubspec.yaml` also requires refactoring `observability_service.dart`, `error_boundary.dart`, and `crash_recovery_handler.dart`. See updated steps in Issue #1 below.
+
+#### 3. OneSignal Free Tier: 30K MAU vs 10K MAU
+**Incorrect claim**: "Free tier (up to 30K MAU)"  
+**Correction**: OneSignal's free tier supports up to **10,000 subscribers/MAU**, not 30K. This is documented in `docs/05_third_party_integrations/05_Push_Notification_Configuration.md`.
+
+#### 4. Quick Reference Links — Files Do Not Exist
+**Incorrect claim**: Links to `ONESIGNAL_SETUP.md`, `FIREBASE_SETUP.md`, and `SENDGRID_SETUP.md` in the Quick Reference Links section.  
+**Correction**: These files **do not exist** in the repository. The actual setup guides are located at:
+- OneSignal: `docs/05_third_party_integrations/05_Push_Notification_Configuration.md`
+- Firebase Analytics/Crashlytics: `docs/05_third_party_integrations/06_Analytics_Setup_Document.md`
+- SendGrid: Configured via Supabase Edge Functions (no standalone setup guide exists yet)
+
+---
+
+### 📋 Corrected Next Steps (Priority Order)
+
+1. **Remove Sentry (this week)** — complete the following steps together:
+   - Remove `sentry_flutter: ^9.9.1` from `pubspec.yaml`
+   - Delete or rewrite `lib/core/services/observability_service.dart` using Firebase Crashlytics APIs
+   - Update `lib/core/widgets/error_boundary.dart` to use Firebase Crashlytics directly
+   - Update `lib/core/services/crash_recovery_handler.dart` to use Firebase Crashlytics directly
+   - Run `flutter pub get && flutter clean`
+
+2. **Add SendGrid (this week)** — create SendGrid account and set secrets in Supabase; the Edge Function infrastructure already exists (`supabase/functions/notification-trigger/`)
+
+3. **Fix auth table reference (documentation only)** — update "Firebase Auth" → "Supabase Auth" wherever it appears in internal docs
+
+4. **Verify Firebase initialization (next sprint)** — confirm Analytics, Crashlytics, and Performance are tracking correctly in production builds
+
+---
+
 ## Executive Summary
 
 Your app currently uses **6-7 major services**. After thorough analysis of your codebase, database schema, and roadmap, I've identified what you need, what's redundant, and what's missing.
@@ -25,8 +94,8 @@ Your app currently uses **6-7 major services**. After thorough analysis of your 
 - **Status**: ✅ In pubspec.yaml
 - **Used For**: Push notifications to iOS/Android
 - **Features**: Cross-platform, analytics, segmentation
-- **Cost**: Free tier (up to 30K MAU)
-- **Setup Guide**: ✅ [ONESIGNAL_SETUP.md](ONESIGNAL_SETUP.md)
+- **Cost**: Free tier (up to 10K MAU)
+- **Setup Guide**: ✅ [Push Notification Configuration](docs/05_third_party_integrations/05_Push_Notification_Configuration.md)
 - **Keep**: YES - Essential for engagement
 
 ### 3. **Firebase Suite**
@@ -38,7 +107,7 @@ Your app currently uses **6-7 major services**. After thorough analysis of your 
   - ✅ Firebase Core (`firebase_core: ^4.3.0`)
   - ❌ Firebase Storage NOT integrated
 - **Cost**: Free tier generous, pay only for exceeding limits
-- **Setup Guide**: ✅ [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
+- **Setup Guide**: ✅ [Analytics Setup Document](docs/05_third_party_integrations/06_Analytics_Setup_Document.md)
 - **Keep**: YES - For analytics & monitoring
 
 ### 4. **SendGrid** (Transactional Email)
@@ -50,7 +119,7 @@ Your app currently uses **6-7 major services**. After thorough analysis of your 
   - Email digests (V1.1)
   - Photo notifications
 - **Cost**: Free tier (100 emails/day)
-- **Setup Guide**: ✅ [SENDGRID_SETUP.md](SENDGRID_SETUP.md)
+- **Setup Guide**: ⏳ No standalone guide yet (SendGrid is configured via Supabase Edge Functions — see `supabase/functions/notification-trigger/`)
 - **Keep**: YES - Essential for engagement
 
 ### 5. **Google & Facebook OAuth**
@@ -96,6 +165,7 @@ Both do the same thing. You're paying (or will pay) for overlapping functionalit
 - Firebase connections are faster (Google Data Centers)
 - Less expensive (free tier vs. Sentry's paid plans)
 - Dashboard is integrated with Firebase Analytics
+- **Sentry is not currently initialized** in `AppInitializationService` or `main.dart` — `ObservabilityService` is effectively dead code already
 
 **Steps to Remove:**
 1. Remove from `pubspec.yaml`:
@@ -103,10 +173,11 @@ Both do the same thing. You're paying (or will pay) for overlapping functionalit
    # DELETE THIS LINE:
    sentry_flutter: ^9.9.1
    ```
-2. Remove Sentry initialization from `main.dart`
-3. Remove Sentry integration from any error handlers
-4. Cancel Sentry account if not using elsewhere
-5. Run: `flutter pub get && flutter clean && flutter build apk --debug`
+2. Rewrite `lib/core/services/observability_service.dart` using Firebase Crashlytics APIs (breadcrumbs can be replaced with `FirebaseCrashlytics.instance.log()`, user context with `setUserIdentifier()`)
+3. Update `lib/core/widgets/error_boundary.dart` — replace `ObservabilityService.captureException()` with `FirebaseCrashlytics.instance.recordError()`
+4. Update `lib/core/services/crash_recovery_handler.dart` — replace `ObservabilityService` calls with Firebase Crashlytics equivalents
+5. Cancel Sentry account if not using elsewhere
+6. Run: `flutter pub get && flutter clean && flutter build apk --debug`
 
 **Keep Using:**
 - Firebase Crashlytics (free, better integrated)
@@ -153,7 +224,7 @@ You need cloud storage for photos, but Firebase Storage is not in your dependenc
 | **Supabase** | ✅ Configured | Database, auth, storage | Free tier sufficient |
 | **Firebase Analytics** | ✅ Configured | User behavior tracking | Free |
 | **Firebase Crashlytics** | ✅ Configured | Error/crash monitoring | Free |
-| **OneSignal** | ✅ In code | Push notifications | Free (30K MAU) |
+| **OneSignal** | ✅ In code | Push notifications | Free (10K MAU) |
 | **Google OAuth** | ✅ Configured | Social login | Free |
 | **Facebook OAuth** | ✅ Configured | Social login | Free |
 
@@ -196,7 +267,7 @@ Your app has these features:
 
 | Feature | Service Required | Status |
 |---------|-----------------|--------|
-| User Auth | Firebase Auth + Google/Facebook | ✅ |
+| User Auth | Supabase Auth + Google/Facebook OAuth | ✅ |
 | Photo Storage | Supabase Storage | ✅ |
 | Push Notifications | OneSignal | ✅ |
 | Analytics | Firebase Analytics | ✅ |
@@ -301,7 +372,7 @@ Your app has these features:
 - ✅ **Google/Facebook OAuth** → Social login
 
 ### Add (Required)
-- ⏳ **SendGrid** → Transactional emails (see SENDGRID_SETUP.md)
+- ⏳ **SendGrid** → Transactional emails (see `supabase/functions/notification-trigger/` for Edge Function setup)
 
 ### Plan Later (V1.1+)
 - 📹 **Video Storage** → Mux or Firebase Storage
@@ -314,9 +385,10 @@ Your app has these features:
 
 | Doc | Purpose |
 |-----|---------|
-| [ONESIGNAL_SETUP.md](ONESIGNAL_SETUP.md) | Push notifications |
-| [FIREBASE_SETUP.md](FIREBASE_SETUP.md) | Analytics & monitoring |
-| [SENDGRID_SETUP.md](SENDGRID_SETUP.md) | Transactional emails |
+| [Push Notification Configuration](docs/05_third_party_integrations/05_Push_Notification_Configuration.md) | OneSignal push notifications setup |
+| [Analytics Setup Document](docs/05_third_party_integrations/06_Analytics_Setup_Document.md) | Firebase Analytics, Crashlytics & Performance |
+| [Supabase Project Configuration](docs/05_third_party_integrations/01_Supabase_Project_Configuration.md) | Supabase setup (database, auth, storage, edge functions) |
+| [Authentication Setup Guide](docs/05_third_party_integrations/02_Authentication_Setup_Guide.md) | Supabase Auth + Google/Facebook OAuth |
 
 ---
 
