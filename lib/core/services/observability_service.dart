@@ -34,6 +34,11 @@ class ObservabilityService {
       await FirebaseCrashlytics.instance
           .setCrashlyticsCollectionEnabled(!kDebugMode);
 
+      // Tag every report with the current environment so crashes can be
+      // filtered/grouped by environment in the Firebase console.
+      await FirebaseCrashlytics.instance
+          .setCustomKey('environment', environment);
+
       _isInitialized = true;
 
       debugPrint('✅ ObservabilityService initialized');
@@ -54,13 +59,13 @@ class ObservabilityService {
   /// [hint] Optional hint with additional context
   static Future<void> captureException(
     dynamic exception, {
-    dynamic stackTrace,
+    StackTrace? stackTrace,
     String? hint,
   }) async {
     try {
       await FirebaseCrashlytics.instance.recordError(
         exception,
-        stackTrace as StackTrace?,
+        stackTrace,
         reason: hint,
       );
 
@@ -100,7 +105,9 @@ class ObservabilityService {
   }) {
     try {
       final prefix = category != null ? '[$category] ' : '';
-      FirebaseCrashlytics.instance.log('$prefix$message');
+      final dataSuffix =
+          data != null && data.isNotEmpty ? ' | data: $data' : '';
+      FirebaseCrashlytics.instance.log('$prefix$message$dataSuffix');
     } catch (e) {
       debugPrint('❌ Error adding breadcrumb: $e');
     }
@@ -166,6 +173,12 @@ class ObservabilityService {
       }
       if (username != null) {
         await FirebaseCrashlytics.instance.setCustomKey('username', username);
+      }
+      if (extras != null) {
+        for (final entry in extras.entries) {
+          await FirebaseCrashlytics.instance
+              .setCustomKey('user.extra.${entry.key}', entry.value.toString());
+        }
       }
 
       debugPrint('✅ User context set: $userId');
