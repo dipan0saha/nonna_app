@@ -217,20 +217,18 @@ NotificationService.notificationClickStream.listen((data) {
 #### 8. Observability Service
 **Location**: `lib/core/services/observability_service.dart`
 
-Sentry crash reporting and error logging.
+Firebase Crashlytics crash reporting and error logging.
 
 **Features**:
 - Crash reporting
 - Error logging
-- Performance monitoring
-- Custom breadcrumbs
+- Custom breadcrumbs (via Crashlytics log)
 - User context
 
 **Usage Example**:
 ```dart
 // Initialize
 await ObservabilityService.initialize(
-  dsn: 'your-sentry-dsn',
   environment: 'production',
 );
 

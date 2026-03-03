@@ -129,7 +129,7 @@ class _DefaultErrorCard extends StatelessWidget {
 /// App-level error boundary that wraps the entire widget tree.
 ///
 /// - Intercepts [FlutterError.onError] to catch all framework errors.
-/// - Reports caught errors to [ObservabilityService] (Sentry).
+/// - Reports caught errors to [ObservabilityService] (Firebase Crashlytics).
 /// - Shows a full-screen recovery UI with a restart button.
 ///
 /// Only one `GlobalErrorBoundary` should exist in the widget tree to avoid
@@ -176,7 +176,7 @@ class _GlobalErrorBoundaryState extends State<GlobalErrorBoundary> {
         setState(() {
           _error = details.exception;
         });
-        // Report to Sentry after UI update completes
+        // Report to Firebase Crashlytics after UI update completes
         unawaited(ObservabilityService.captureException(
           details.exception,
           stackTrace: details.stack,

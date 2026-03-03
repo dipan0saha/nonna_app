@@ -32,7 +32,7 @@ void main() {
         expect(AppInitializationService.initialize, isNotNull);
       });
 
-      test('initializes Sentry observability', () async {
+      test('initializes Firebase Crashlytics observability', () async {
         // Verify service structure
         expect(AppInitializationService.initialize, isNotNull);
       });
@@ -61,7 +61,7 @@ void main() {
         // 1. Supabase (required first)
         // 2. Firebase (analytics/crashlytics)
         // 3. OneSignal (notifications)
-        // 4. Sentry (observability)
+        // 4. Firebase Crashlytics (observability)
         expect(AppInitializationService.initialize, isNotNull);
       });
 

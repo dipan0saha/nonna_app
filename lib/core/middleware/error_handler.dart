@@ -231,9 +231,9 @@ class ErrorHandler {
 
   /// Report error to monitoring service
   ///
-  /// This is a placeholder for integration with services like Sentry
+  /// This is a placeholder for integration with services like Firebase Crashlytics
   static void _reportError(Object error, StackTrace? stackTrace) {
-    // Report to ObservabilityService (Sentry)
+    // Report to ObservabilityService (Firebase Crashlytics)
     if (ObservabilityService.isInitialized) {
       ObservabilityService.captureException(
         error,
