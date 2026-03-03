@@ -137,7 +137,7 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
 
 /// Provides the observability service
 ///
-/// Handles error reporting and performance monitoring via Sentry.
+/// Handles error reporting and crash logging via Firebase Crashlytics.
 final observabilityServiceProvider = Provider<ObservabilityService>((ref) {
   return ObservabilityService();
 });

@@ -1,10 +1,10 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 /// Observability service for crash reporting and error logging
 ///
-/// Uses Sentry for crash reporting, error logging, performance monitoring,
-/// custom breadcrumbs, user context, and release tracking
+/// Uses Firebase Crashlytics for crash reporting, error logging,
+/// custom breadcrumbs, and user context.
 class ObservabilityService {
   static bool _isInitialized = false;
   static String? _environment;
@@ -16,15 +16,11 @@ class ObservabilityService {
   // Initialization
   // ==========================================
 
-  /// Initialize Sentry
+  /// Initialize the observability service
   ///
-  /// [dsn] Sentry DSN (Data Source Name)
   /// [environment] Environment name (e.g., 'development', 'production')
-  /// [tracesSampleRate] Percentage of transactions to trace (0.0 - 1.0)
   static Future<void> initialize({
-    required String dsn,
     String environment = 'production',
-    double tracesSampleRate = 0.1,
   }) async {
     if (_isInitialized) {
       debugPrint('⚠️  ObservabilityService already initialized');
@@ -34,36 +30,9 @@ class ObservabilityService {
     try {
       _environment = environment;
 
-      await SentryFlutter.init(
-        (options) {
-          options.dsn = dsn;
-          options.environment = environment;
-          options.tracesSampleRate = tracesSampleRate;
-
-          // Enable performance monitoring
-          options.enableAutoPerformanceTracing = true;
-
-          // Attach stack traces to all messages
-          options.attachStacktrace = true;
-
-          // Send default PII (Personally Identifiable Information)
-          options.sendDefaultPii = false;
-
-          // Debug mode only in development
-          options.debug = kDebugMode;
-
-          // Release version - should match pubspec.yaml version
-          // TODO: Extract from pubspec.yaml or pass as parameter
-          options.release = 'nonna_app@1.0.0';
-
-          // Distribution identifier - should be based on build environment
-          // TODO: Extract from environment or build configuration
-          options.dist = '1';
-
-          // Before send callback for filtering events
-          options.beforeSend = (event, hint) => _beforeSend(event, hint: hint);
-        },
-      );
+      // Disable Crashlytics collection in debug mode
+      await FirebaseCrashlytics.instance
+          .setCrashlyticsCollectionEnabled(!kDebugMode);
 
       _isInitialized = true;
 
@@ -88,16 +57,11 @@ class ObservabilityService {
     dynamic stackTrace,
     String? hint,
   }) async {
-    if (!_isInitialized) {
-      debugPrint('⚠️  ObservabilityService not initialized');
-      return;
-    }
-
     try {
-      await Sentry.captureException(
+      await FirebaseCrashlytics.instance.recordError(
         exception,
-        stackTrace: stackTrace,
-        hint: hint != null ? Hint.withMap({'hint': hint}) : null,
+        stackTrace as StackTrace?,
+        reason: hint,
       );
 
       debugPrint('📊 Exception captured: $exception');
@@ -109,18 +73,9 @@ class ObservabilityService {
   /// Capture a message
   ///
   /// [message] The message to capture
-  /// [level] Severity level
-  static Future<void> captureMessage(
-    String message, {
-    SentryLevel level = SentryLevel.info,
-  }) async {
-    if (!_isInitialized) {
-      debugPrint('⚠️  ObservabilityService not initialized');
-      return;
-    }
-
+  static Future<void> captureMessage(String message) async {
     try {
-      await Sentry.captureMessage(message, level: level);
+      FirebaseCrashlytics.instance.log(message);
       debugPrint('📊 Message captured: $message');
     } catch (e) {
       debugPrint('❌ Error capturing message: $e');
@@ -137,25 +92,15 @@ class ObservabilityService {
   ///
   /// [message] Breadcrumb message
   /// [category] Breadcrumb category (e.g., 'navigation', 'http', 'user')
-  /// [level] Severity level
   /// [data] Additional data
   static void addBreadcrumb({
     required String message,
     String? category,
-    SentryLevel level = SentryLevel.info,
     Map<String, dynamic>? data,
   }) {
-    if (!_isInitialized) return;
-
     try {
-      Sentry.addBreadcrumb(
-        Breadcrumb(
-          message: message,
-          category: category,
-          level: level,
-          data: data,
-        ),
-      );
+      final prefix = category != null ? '[$category] ' : '';
+      FirebaseCrashlytics.instance.log('$prefix$message');
     } catch (e) {
       debugPrint('❌ Error adding breadcrumb: $e');
     }
@@ -169,7 +114,6 @@ class ObservabilityService {
     addBreadcrumb(
       message: 'Navigation: $from -> $to',
       category: 'navigation',
-      data: {'from': from, 'to': to},
     );
   }
 
@@ -180,13 +124,8 @@ class ObservabilityService {
     int? statusCode,
   }) {
     addBreadcrumb(
-      message: 'HTTP $method: $url',
+      message: 'HTTP $method: $url${statusCode != null ? ' ($statusCode)' : ''}',
       category: 'http',
-      data: {
-        'method': method,
-        'url': url,
-        if (statusCode != null) 'status_code': statusCode,
-      },
     );
   }
 
@@ -218,19 +157,16 @@ class ObservabilityService {
     String? username,
     Map<String, dynamic>? extras,
   }) async {
-    if (!_isInitialized) return;
-
     try {
-      await Sentry.configureScope((scope) {
-        scope.setUser(
-          SentryUser(
-            id: userId,
-            email: email,
-            username: username,
-            data: extras,
-          ),
-        );
-      });
+      if (userId != null) {
+        await FirebaseCrashlytics.instance.setUserIdentifier(userId);
+      }
+      if (email != null) {
+        await FirebaseCrashlytics.instance.setCustomKey('email', email);
+      }
+      if (username != null) {
+        await FirebaseCrashlytics.instance.setCustomKey('username', username);
+      }
 
       debugPrint('✅ User context set: $userId');
     } catch (e) {
@@ -240,12 +176,8 @@ class ObservabilityService {
 
   /// Clear user context (on logout)
   static Future<void> clearUser() async {
-    if (!_isInitialized) return;
-
     try {
-      await Sentry.configureScope((scope) {
-        scope.setUser(null);
-      });
+      await FirebaseCrashlytics.instance.setUserIdentifier('');
 
       debugPrint('✅ User context cleared');
     } catch (e) {
@@ -260,27 +192,22 @@ class ObservabilityService {
   /// Set custom context
   ///
   /// [key] Context key
-  /// [value] Context value
+  /// [value] Context value (converted to String; complex objects use toString())
   static Future<void> setContext(String key, dynamic value) async {
-    if (!_isInitialized) return;
-
     try {
-      await Sentry.configureScope((scope) {
-        scope.setContexts(key, value);
-      });
+      await FirebaseCrashlytics.instance.setCustomKey(key, value.toString());
     } catch (e) {
       debugPrint('❌ Error setting context: $e');
     }
   }
 
   /// Remove custom context
+  ///
+  /// Firebase Crashlytics does not support removing custom keys;
+  /// the value is overwritten with an empty string to clear it.
   static Future<void> removeContext(String key) async {
-    if (!_isInitialized) return;
-
     try {
-      await Sentry.configureScope((scope) {
-        scope.setContexts(key, null);
-      });
+      await FirebaseCrashlytics.instance.setCustomKey(key, '');
     } catch (e) {
       debugPrint('❌ Error removing context: $e');
     }
@@ -297,109 +224,28 @@ class ObservabilityService {
   /// [key] Tag key
   /// [value] Tag value
   static Future<void> setTag(String key, String value) async {
-    if (!_isInitialized) return;
-
     try {
-      await Sentry.configureScope((scope) {
-        scope.setTag(key, value);
-      });
+      await FirebaseCrashlytics.instance.setCustomKey(key, value);
     } catch (e) {
       debugPrint('❌ Error setting tag: $e');
     }
   }
 
   /// Remove a tag
+  ///
+  /// Firebase Crashlytics does not support removing custom keys;
+  /// the value is overwritten with an empty string to clear it.
   static Future<void> removeTag(String key) async {
-    if (!_isInitialized) return;
-
     try {
-      await Sentry.configureScope((scope) {
-        scope.removeTag(key);
-      });
+      await FirebaseCrashlytics.instance.setCustomKey(key, '');
     } catch (e) {
       debugPrint('❌ Error removing tag: $e');
     }
   }
 
   // ==========================================
-  // Performance Monitoring
-  // ==========================================
-
-  /// Start a transaction for performance monitoring
-  ///
-  /// [name] Transaction name
-  /// [operation] Operation name
-  static ISentrySpan? startTransaction({
-    required String name,
-    required String operation,
-  }) {
-    if (!_isInitialized) return null;
-
-    try {
-      final transaction = Sentry.startTransaction(name, operation);
-      return transaction;
-    } catch (e) {
-      debugPrint('❌ Error starting transaction: $e');
-      return null;
-    }
-  }
-
-  /// Start a child span within a transaction
-  ///
-  /// [transaction] Parent transaction
-  /// [operation] Operation name
-  /// [description] Optional description
-  static ISentrySpan? startChildSpan({
-    required ISentrySpan transaction,
-    required String operation,
-    String? description,
-  }) {
-    try {
-      return transaction.startChild(operation, description: description);
-    } catch (e) {
-      debugPrint('❌ Error starting child span: $e');
-      return null;
-    }
-  }
-
-  // ==========================================
-  // Event Filtering
-  // ==========================================
-
-  /// Before send callback for filtering events
-  static SentryEvent? _beforeSend(SentryEvent event, {Hint? hint}) {
-    // Filter out events in development if needed
-    if (kDebugMode && _environment == 'development') {
-      // You can choose to not send events in development
-      // return null;
-    }
-
-    // Filter out specific errors
-    final formatted = event.message?.formatted;
-    if (formatted != null && formatted.contains('SocketException')) {
-      // Don't send socket exceptions in certain cases
-      // return null;
-    }
-
-    return event;
-  }
-
-  // ==========================================
   // Utility Methods
   // ==========================================
-
-  /// Close Sentry (for clean shutdown)
-  static Future<void> close() async {
-    if (!_isInitialized) return;
-
-    try {
-      await Sentry.close();
-      _isInitialized = false;
-      debugPrint('✅ ObservabilityService closed');
-    } catch (e) {
-      debugPrint('❌ Error closing ObservabilityService: $e');
-    }
-  }
 
   /// Get the current environment
   static String? get environment => _environment;

@@ -116,15 +116,5 @@ void main() {
         );
       });
     });
-
-    group('startTransaction', () {
-      test('returns null when not initialized', () {
-        final transaction = ObservabilityService.startTransaction(
-          name: 'test',
-          operation: 'test_op',
-        );
-        expect(transaction, null);
-      });
-    });
   });
 }
