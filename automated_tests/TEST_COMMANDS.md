@@ -6,12 +6,12 @@
 
 | Category | Count | Passed | Failed | Status |
 |----------|-------|--------|--------|--------|
-| test/accessibility | 1 | 24 | 0 | ✅ Pass |
-| test/core | 108 | 2366 | 0 | ✅ Pass |
-| test/features | 37 | 413 | 0 | ✅ Pass |
-| test/l10n | 1 | 25 | 0 | ✅ Pass |
-| test/tiles | 35 | 492 | 0 | ✅ Pass |
-| **TOTAL** | **190** | **3320** | **0** | ✅ All Passed |
+| test/accessibility | 1 | 0 | 0 | ✅ Pass |
+| test/core | 108 | 0 | 0 | ✅ Pass |
+| test/features | 37 | 0 | 0 | ✅ Pass |
+| test/l10n | 1 | 0 | 0 | ✅ Pass |
+| test/tiles | 35 | 0 | 0 | ✅ Pass |
+| **TOTAL** | **190** | **0** | **0** | ✅ All Passed |
 ---
 
 ## Quick Commands
@@ -53,22 +53,22 @@ Organized by 16 subcategories:
 
 | Subcategory | Count | Passed | Failed | Command |
 |-------------|-------|--------|--------|----------|
-| Config | - | 51 | 0 | `flutter test test/core/config` |
-| Constants | - | 66 | 0 | `flutter test test/core/constants` |
-| Di | - | 42 | 0 | `flutter test test/core/di` |
-| Enums | - | 163 | 0 | `flutter test test/core/enums` |
-| Extensions | - | 208 | 0 | `flutter test test/core/extensions` |
-| Middleware | - | 71 | 0 | `flutter test test/core/middleware` |
-| Mixins | - | 119 | 0 | `flutter test test/core/mixins` |
-| Models | - | 361 | 0 | `flutter test test/core/models` |
-| Navigation | - | 6 | 0 | `flutter test test/core/navigation` |
-| Network | - | 88 | 0 | `flutter test test/core/network` |
-| Providers | - | 83 | 0 | `flutter test test/core/providers` |
-| Router | - | 30 | 0 | `flutter test test/core/router` |
-| Services | - | 265 | 0 | `flutter test test/core/services` |
-| Themes | - | 156 | 0 | `flutter test test/core/themes` |
-| Utils | - | 501 | 0 | `flutter test test/core/utils` |
-| Widgets | - | 156 | 0 | `flutter test test/core/widgets` |
+| Config | - | 0 | 0 | `flutter test test/core/config` |
+| Constants | - | 0 | 0 | `flutter test test/core/constants` |
+| Di | - | 0 | 0 | `flutter test test/core/di` |
+| Enums | - | 0 | 0 | `flutter test test/core/enums` |
+| Extensions | - | 0 | 0 | `flutter test test/core/extensions` |
+| Middleware | - | 0 | 0 | `flutter test test/core/middleware` |
+| Mixins | - | 0 | 0 | `flutter test test/core/mixins` |
+| Models | - | 0 | 0 | `flutter test test/core/models` |
+| Navigation | - | 0 | 0 | `flutter test test/core/navigation` |
+| Network | - | 0 | 0 | `flutter test test/core/network` |
+| Providers | - | 0 | 0 | `flutter test test/core/providers` |
+| Router | - | 0 | 0 | `flutter test test/core/router` |
+| Services | - | 0 | 0 | `flutter test test/core/services` |
+| Themes | - | 0 | 0 | `flutter test test/core/themes` |
+| Utils | - | 0 | 0 | `flutter test test/core/utils` |
+| Widgets | - | 0 | 0 | `flutter test test/core/widgets` |
 
 ---
 
@@ -79,15 +79,15 @@ Organized by 9 features:
 
 | Feature | Count | Passed | Failed | Command |
 |---------|-------|--------|--------|----------|
-| Auth | - | 99 | 0 | `flutter test test/features/auth/presentation` |
-| Baby Profile | - | 72 | 0 | `flutter test test/features/baby_profile/presentation` |
-| Calendar | - | 57 | 0 | `flutter test test/features/calendar/presentation` |
-| Gallery | - | 40 | 0 | `flutter test test/features/gallery/presentation` |
-| Gamification | - | 6 | 0 | `flutter test test/features/gamification/presentation` |
-| Home | - | 39 | 0 | `flutter test test/features/home/presentation` |
-| Profile | - | 45 | 0 | `flutter test test/features/profile/presentation` |
-| Registry | - | 47 | 0 | `flutter test test/features/registry/presentation` |
-| Settings | - | 8 | 0 | `flutter test test/features/settings/presentation` |
+| Auth | - | 0 | 0 | `flutter test test/features/auth/presentation` |
+| Baby Profile | - | 0 | 0 | `flutter test test/features/baby_profile/presentation` |
+| Calendar | - | 0 | 0 | `flutter test test/features/calendar/presentation` |
+| Gallery | - | 0 | 0 | `flutter test test/features/gallery/presentation` |
+| Gamification | - | 0 | 0 | `flutter test test/features/gamification/presentation` |
+| Home | - | 0 | 0 | `flutter test test/features/home/presentation` |
+| Profile | - | 0 | 0 | `flutter test test/features/profile/presentation` |
+| Registry | - | 0 | 0 | `flutter test test/features/registry/presentation` |
+| Settings | - | 0 | 0 | `flutter test test/features/settings/presentation` |
 
 ---
 
@@ -106,22 +106,22 @@ Organized by 16 tile types:
 
 | Tile Type | Count | Passed | Failed | Command |
 |-----------|-------|--------|--------|----------|
-| Core | - | 89 | 0 | `flutter test test/tiles/core` |
-| Checklist | - | 30 | 0 | `flutter test test/tiles/checklist` |
-| Due Date Countdown | - | 25 | 0 | `flutter test test/tiles/due_date_countdown` |
-| Engagement Recap | - | 19 | 0 | `flutter test test/tiles/engagement_recap` |
-| Gallery Favorites | - | 14 | 0 | `flutter test test/tiles/gallery_favorites` |
-| Invites Status | - | 29 | 0 | `flutter test test/tiles/invites_status` |
-| New Followers | - | 32 | 0 | `flutter test test/tiles/new_followers` |
-| Notifications | - | 29 | 0 | `flutter test test/tiles/notifications` |
-| Recent Photos | - | 30 | 0 | `flutter test test/tiles/recent_photos` |
-| Recent Purchases | - | 26 | 0 | `flutter test test/tiles/recent_purchases` |
-| Registry Deals | - | 29 | 0 | `flutter test test/tiles/registry_deals` |
-| Registry Highlights | - | 26 | 0 | `flutter test test/tiles/registry_highlights` |
-| Rsvp Tasks | - | 27 | 0 | `flutter test test/tiles/rsvp_tasks` |
-| Storage Usage | - | 29 | 0 | `flutter test test/tiles/storage_usage` |
-| System Announcements | - | 28 | 0 | `flutter test test/tiles/system_announcements` |
-| Upcoming Events | - | 30 | 0 | `flutter test test/tiles/upcoming_events` |
+| Core | - | 0 | 0 | `flutter test test/tiles/core` |
+| Checklist | - | 0 | 0 | `flutter test test/tiles/checklist` |
+| Due Date Countdown | - | 0 | 0 | `flutter test test/tiles/due_date_countdown` |
+| Engagement Recap | - | 0 | 0 | `flutter test test/tiles/engagement_recap` |
+| Gallery Favorites | - | 0 | 0 | `flutter test test/tiles/gallery_favorites` |
+| Invites Status | - | 0 | 0 | `flutter test test/tiles/invites_status` |
+| New Followers | - | 0 | 0 | `flutter test test/tiles/new_followers` |
+| Notifications | - | 0 | 0 | `flutter test test/tiles/notifications` |
+| Recent Photos | - | 0 | 0 | `flutter test test/tiles/recent_photos` |
+| Recent Purchases | - | 0 | 0 | `flutter test test/tiles/recent_purchases` |
+| Registry Deals | - | 0 | 0 | `flutter test test/tiles/registry_deals` |
+| Registry Highlights | - | 0 | 0 | `flutter test test/tiles/registry_highlights` |
+| Rsvp Tasks | - | 0 | 0 | `flutter test test/tiles/rsvp_tasks` |
+| Storage Usage | - | 0 | 0 | `flutter test test/tiles/storage_usage` |
+| System Announcements | - | 0 | 0 | `flutter test test/tiles/system_announcements` |
+| Upcoming Events | - | 0 | 0 | `flutter test test/tiles/upcoming_events` |
 
 ---
 
@@ -255,5 +255,5 @@ flutter drive --target=integration_test/path_to_test.dart
 
 ---
 
-Generated: March 01, 2026 at 19:36:43
+Generated: April 11, 2026 at 14:32:24
 Total Test Files: 190

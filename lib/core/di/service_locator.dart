@@ -90,7 +90,7 @@ class ServiceLocator {
 
   /// Register core services
   static void _registerCoreServices([SupabaseClient? supabaseClient]) {
-    register<AuthService>(AuthService(supabaseClient));
+    register<AuthService>(AuthService(supabase: supabaseClient));
   }
 
   /// Register data services
@@ -98,7 +98,7 @@ class ServiceLocator {
     register<DatabaseService>(DatabaseService(supabaseClient));
     register<CacheService>(CacheService());
     register<LocalStorageService>(LocalStorageService());
-    register<StorageService>(StorageService(supabaseClient));
+    register<StorageService>(StorageService(supabase: supabaseClient));
   }
 
   /// Register realtime and notification services

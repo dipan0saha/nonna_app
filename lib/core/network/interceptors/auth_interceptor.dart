@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../middleware/error_handler.dart';
+
 /// Auth interceptor for handling JWT token injection, refresh, and retry logic
 ///
 /// **Functional Requirements**: Section 3.2.5 - Network Layer
@@ -50,52 +52,65 @@ class AuthInterceptor {
   ///
   /// [operation] The async operation to execute
   /// [retryCount] Current retry attempt (default: 0)
+  /// [operationName] Optional context for telemetry logging
   ///
   /// Automatically handles 401 errors by refreshing the token and retrying
-  /// Throws an exception after max retries are exhausted
+  /// Throws an [AppException] after max retries are exhausted
   Future<T> executeWithRetry<T>(
     Future<T> Function() operation, {
     int retryCount = 0,
+    String? operationName,
   }) async {
     try {
       return await operation();
-    } on AuthException catch (e) {
-      // Handle auth-specific errors
+    } on AuthException catch (e, stackTrace) {
       if (e.statusCode == '401') {
-        return await _handle401Error(operation, retryCount);
+        return await _handle401Error(operation, retryCount, operationName);
       }
-      rethrow;
-    } on PostgrestException catch (e) {
-      // Handle Postgrest errors (includes auth errors)
+      return _throwAppException(e, stackTrace, operationName);
+    } on PostgrestException catch (e, stackTrace) {
       if (e.code == '401' || e.code == 'PGRST301') {
-        return await _handle401Error(operation, retryCount);
+        return await _handle401Error(operation, retryCount, operationName);
       }
-      rethrow;
-    } catch (e) {
-      // For other errors, retry with exponential backoff
-      if (retryCount < _maxRetries) {
+      return _throwAppException(e, stackTrace, operationName);
+    } catch (e, stackTrace) {
+      // For other errors, check if retry is appropriate
+      if (retryCount < _maxRetries && ErrorHandler.isRetryable(e)) {
         final delay = _calculateRetryDelay(retryCount);
         debugPrint(
           '⚠️  Request failed, retrying in ${delay.inMilliseconds}ms (attempt ${retryCount + 1}/$_maxRetries)',
         );
         await Future.delayed(delay);
-        return await executeWithRetry(operation, retryCount: retryCount + 1);
+        return await executeWithRetry(operation, retryCount: retryCount + 1, operationName: operationName);
       }
-      rethrow;
+      return _throwAppException(e, stackTrace, operationName);
     }
+  }
+
+  Never _throwAppException(Object e, StackTrace stackTrace, String? operationName) {
+    final message = ErrorHandler.mapErrorToMessage(e);
+    final contextMsg = operationName != null ? 'Error in $operationName: $message' : message;
+    
+    debugPrint('❌ $contextMsg');
+    ErrorHandler.reportWithContext(e, {'operation': operationName ?? 'unknown'}, stackTrace: stackTrace);
+    
+    throw AppException(
+      message,
+      originalException: e,
+      stackTrace: stackTrace,
+    );
   }
 
   /// Handle 401 errors by refreshing token and retrying
   Future<T> _handle401Error<T>(
     Future<T> Function() operation,
     int retryCount,
+    String? operationName,
   ) async {
     if (retryCount >= _maxRetries) {
       debugPrint('❌ Max retries exceeded for 401 error, logging out');
       await _handleLogout();
-      throw AuthException(
-        'Authentication failed after $_maxRetries attempts',
-      );
+      _throwAppException(AuthException('Authentication failed after $_maxRetries attempts'), StackTrace.current, operationName);
     }
 
     try {
@@ -108,7 +123,7 @@ class AuthInterceptor {
       if (response.session == null) {
         debugPrint('❌ Token refresh failed, no session returned');
         await _handleLogout();
-        throw AuthException('Token refresh failed');
+        _throwAppException(AuthException('Token refresh failed'), StackTrace.current, operationName);
       }
 
       debugPrint('✅ Token refreshed successfully');
@@ -116,19 +131,19 @@ class AuthInterceptor {
       // Retry the operation with the new token
       final delay = _calculateRetryDelay(retryCount);
       await Future.delayed(delay);
-      return await executeWithRetry(operation, retryCount: retryCount + 1);
-    } catch (e) {
+      return await executeWithRetry(operation, retryCount: retryCount + 1, operationName: operationName);
+    } catch (e, stackTrace) {
       debugPrint('❌ Error refreshing token: $e');
 
       // If refresh fails, attempt one more time before logging out
       if (retryCount < _maxRetries - 1) {
         final delay = _calculateRetryDelay(retryCount);
         await Future.delayed(delay);
-        return await _handle401Error(operation, retryCount + 1);
+        return await _handle401Error(operation, retryCount + 1, operationName);
       }
 
       await _handleLogout();
-      rethrow;
+      return _throwAppException(e, stackTrace, operationName);
     }
   }
 

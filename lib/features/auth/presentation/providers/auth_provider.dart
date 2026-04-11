@@ -288,13 +288,26 @@ class AuthNotifier extends Notifier<AuthState> {
 
       final authService = ref.read(authServiceProvider);
       final localStorage = ref.read(localStorageServiceProvider);
+      final cacheService = ref.read(cacheServiceProvider);
+      final offlineCacheManager = ref.read(offlineCacheManagerProvider);
 
       await authService.signOut();
-      await _clearSession(localStorage);
+
+      // Perform comprehensive data wipe across all persistent storage
+      if (localStorage.isInitialized) {
+        await localStorage.clearAll();
+      }
+      if (cacheService.isInitialized) {
+        await cacheService.clear();
+      }
+      if (offlineCacheManager.isInitialized) {
+        await offlineCacheManager.clearQueue();
+      }
+
       if (!ref.mounted) return;
 
       state = const AuthState.unauthenticated();
-      debugPrint('✅ User signed out');
+      debugPrint('✅ User signed out and local data wiped completely');
     } catch (e) {
       if (!ref.mounted) return;
       debugPrint('❌ Sign out error: $e');
@@ -401,18 +414,6 @@ class AuthNotifier extends Notifier<AuthState> {
       debugPrint('✅ Session persisted');
     } catch (e) {
       debugPrint('⚠️  Failed to persist session: $e');
-    }
-  }
-
-  /// Clear persisted session
-  Future<void> _clearSession(LocalStorageService localStorage) async {
-    if (!localStorage.isInitialized) return;
-
-    try {
-      await localStorage.remove(_sessionKey);
-      debugPrint('✅ Session cleared');
-    } catch (e) {
-      debugPrint('⚠️  Failed to clear session: $e');
     }
   }
 

@@ -45,7 +45,7 @@ void main() {
 
     group('Service Registration', () {
       test('register() adds service to registry', () {
-        final testService = AuthService(mockSupabaseClient);
+        final testService = AuthService(supabase: mockSupabaseClient);
         ServiceLocator.register<AuthService>(testService);
 
         final retrieved = ServiceLocator.get<AuthService>();
@@ -54,7 +54,7 @@ void main() {
 
       test('registerLazy() adds factory to registry', () {
         ServiceLocator.registerLazy<AuthService>(
-            () => AuthService(mockSupabaseClient));
+            () => AuthService(supabase: mockSupabaseClient));
 
         final service = ServiceLocator.get<AuthService>();
         expect(service, isA<AuthService>());
@@ -64,7 +64,7 @@ void main() {
         var creationCount = 0;
         ServiceLocator.registerLazy<AuthService>(() {
           creationCount++;
-          return AuthService(mockSupabaseClient);
+          return AuthService(supabase: mockSupabaseClient);
         });
 
         final service1 = ServiceLocator.get<AuthService>();
@@ -75,7 +75,7 @@ void main() {
       });
 
       test('unregister() removes service from registry', () {
-        final testService = AuthService(mockSupabaseClient);
+        final testService = AuthService(supabase: mockSupabaseClient);
         ServiceLocator.register<AuthService>(testService);
 
         ServiceLocator.unregister<AuthService>();
@@ -122,7 +122,7 @@ void main() {
       });
 
       test('getTestOverrides() returns overrides for provided mocks', () {
-        final mockAuth = AuthService(mockSupabaseClient);
+        final mockAuth = AuthService(supabase: mockSupabaseClient);
 
         final overrides = ServiceLocator.getTestOverrides(
           mockAuth: mockAuth,
@@ -133,7 +133,7 @@ void main() {
       });
 
       test('getTestOverrides() supports multiple service overrides', () {
-        final mockAuth = AuthService(mockSupabaseClient);
+        final mockAuth = AuthService(supabase: mockSupabaseClient);
         final mockDatabase = DatabaseService(mockSupabaseClient);
         final mockCache = CacheService();
 

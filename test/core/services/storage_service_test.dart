@@ -10,16 +10,21 @@ void main() {
     late StorageService storageService;
     late MockSupabaseClient mockSupabaseClient;
     late MockSupabaseStorageClient mockStorage;
+    late MockAnalyticsService mockAnalyticsService;
 
     setUp(() {
       mockSupabaseClient = MockFactory.createSupabaseClient();
       mockStorage = MockFactory.createSupabaseStorageClient();
+      mockAnalyticsService = MockAnalyticsService();
 
       // Mock the storage getter
       when(mockSupabaseClient.storage).thenReturn(mockStorage);
 
       // Initialize service with mock client
-      storageService = StorageService(mockSupabaseClient);
+      storageService = StorageService(
+        supabase: mockSupabaseClient,
+        analytics: mockAnalyticsService,
+      );
     });
 
     group('File Validation', () {

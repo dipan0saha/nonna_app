@@ -11,9 +11,13 @@ import 'app_initialization_service.dart';
 /// Handles email/password, Google OAuth, and Facebook OAuth
 class AuthService {
   final SupabaseClient _supabase;
+  final AnalyticsService _analytics;
 
-  AuthService([SupabaseClient? client])
-      : _supabase = client ?? (Supabase.instance.client);
+  AuthService({
+    SupabaseClient? supabase,
+    AnalyticsService? analytics,
+  })  : _supabase = supabase ?? Supabase.instance.client,
+        _analytics = analytics ?? AnalyticsService.instance;
 
   // Google Sign-In configuration
   final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -53,7 +57,7 @@ class AuthService {
       );
 
       if (response.user != null) {
-        await AnalyticsService.instance.logSignUp(signUpMethod: 'email');
+        await _analytics.logSignUp(signUpMethod: 'email');
       }
 
       return response;
@@ -76,7 +80,7 @@ class AuthService {
       );
 
       if (response.user != null) {
-        await AnalyticsService.instance.logLogin(loginMethod: 'email');
+        await _analytics.logLogin(loginMethod: 'email');
         // Set user ID in background, don't block on it
         _setUserIdInServices(response.user!.id);
       }
@@ -161,7 +165,7 @@ class AuthService {
       );
 
       if (response.user != null) {
-        await AnalyticsService.instance.logLogin(loginMethod: 'google');
+        await _analytics.logLogin(loginMethod: 'google');
         // Set user ID in background, don't block on it
         _setUserIdInServices(response.user!.id);
       }
@@ -200,7 +204,7 @@ class AuthService {
       );
 
       if (response.user != null) {
-        await AnalyticsService.instance.logLogin(loginMethod: 'facebook');
+        await _analytics.logLogin(loginMethod: 'facebook');
         // Set user ID in background, don't block on it
         _setUserIdInServices(response.user!.id);
       }

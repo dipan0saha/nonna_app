@@ -1,0 +1,977 @@
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:00 +0: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:00 +0: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService isInitialized returns false before initialization
+00:00 +1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService isOnboardingCompleted throws StateError when not initialized
+00:00 +2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService setOnboardingCompleted throws StateError when not initialized
+00:00 +3: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService themeMode throws StateError when not initialized
+00:00 +4: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService setThemeMode throws StateError when not initialized
+00:00 +5: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService languageCode throws StateError when not initialized
+00:00 +6: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService setLanguageCode throws StateError when not initialized
+00:00 +7: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService isAnalyticsEnabled throws StateError when not initialized
+00:00 +8: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService setAnalyticsEnabled throws StateError when not initialized
+00:00 +9: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService isNotificationsEnabled throws StateError when not initialized
+00:00 +10: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService setNotificationsEnabled throws StateError when not initialized
+00:00 +11: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService selectedBabyProfileId throws StateError when not initialized
+00:00 +12: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService setSelectedBabyProfileId throws StateError when not initialized
+00:00 +13: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService isBiometricEnabled throws StateError when not initialized
+00:00 +14: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/local_storage_service_test.dart: LocalStorageService setBiometricEnabled throws StateError when not initialized
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:00 +15: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Initialization starts as not initialized
+00:00 +16: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Initialization initializes successfully
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+✅ StatePersistenceManager disposed
+00:00 +17: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Initialization handles double initialization
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+⚠️  StatePersistenceManager already initialized
+✅ StatePersistenceManager disposed
+00:00 +18: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Initialization throws when accessing before initialization
+00:00 +19: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State saves and loads state successfully
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved test_key (TTL: nullmin)
+💾 State saved: test_key
+💾 Memory: Loaded test_key
+✅ StatePersistenceManager disposed
+00:00 +20: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State returns null for non-existent key
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: non_existent not found
+✅ StatePersistenceManager disposed
+00:00 +21: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State handles multiple states
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved state1 (TTL: nullmin)
+💾 State saved: state1
+💾 Memory: Saved state2 (TTL: nullmin)
+💾 State saved: state2
+💾 Memory: Loaded state1
+💾 Memory: Loaded state2
+✅ StatePersistenceManager disposed
+00:00 +22: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved test_key (TTL: 0min)
+💾 State saved: test_key
+00:00 +22: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load saves and loads data successfully
+💾 Memory: Saved test_key (TTL: nullmin)
+💾 Memory: Loaded test_key
+00:00 +23: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+00:00 +23: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load returns null for non-existent key
+💾 Memory: non_existent not found
+00:00 +24: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+00:00 +24: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load respects TTL expiration
+💾 Memory: Saved test_key (TTL: 0min)
+00:00 +25: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+00:00 +26: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+00:00 +27: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+00:00 +28: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+00:00 +29: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+00:00 +30: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+00:00 +31: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State respects TTL expiration
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+test/core/services/storage_service_test.dart:22:38: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+      storageService = StorageService(mockSupabaseClient);
+                                     ^
+lib/core/services/storage_service.dart:24:3: Context: Found this candidate, but the arguments don't match.
+  StorageService({
+  ^^^^^^^^^^^^^^
+💾 Memory: test_key expired
+✅ StatePersistenceManager disposed
+00:00 +32: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load respects TTL expiration
+00:00 +32: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Save and Load State saves to memory by default
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key (TTL: nullmin)
+💾 State saved: key
+💾 Memory: Loaded key
+✅ StatePersistenceManager disposed
+00:00 +33: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load respects TTL expiration
+00:00 +33: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Delete State deletes state successfully
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved test_key (TTL: nullmin)
+💾 State saved: test_key
+💾 Memory: Deleted test_key
+💾 State deleted: test_key
+💾 Memory: test_key not found
+✅ StatePersistenceManager disposed
+00:00 +34: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load respects TTL expiration
+00:00 +34: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Delete State handles deleting non-existent key
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Deleted non_existent
+💾 State deleted: non_existent
+✅ StatePersistenceManager disposed
+00:00 +35: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load respects TTL expiration
+00:00 +35: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns true for existing state
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved test_key (TTL: nullmin)
+💾 State saved: test_key
+✅ StatePersistenceManager disposed
+00:00 +36: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load respects TTL expiration
+00:00 +36: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for non-existent state
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+✅ StatePersistenceManager disposed
+00:00 +37: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load respects TTL expiration
+00:00 +37: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for expired state
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved test_key (TTL: 0min)
+💾 State saved: test_key
+00:00 +37 -1: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/storage_service_test.dart [E]
+  Failed to load "/Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/storage_service_test.dart":
+  Compilation failed for testPath=/Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/storage_service_test.dart: test/core/services/storage_service_test.dart:22:38: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+        storageService = StorageService(mockSupabaseClient);
+                                       ^
+  lib/core/services/storage_service.dart:24:3: Context: Found this candidate, but the arguments don't match.
+    StorageService({
+    ^^^^^^^^^^^^^^
+  .
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:00 +37 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load respects TTL expiration
+💾 Memory: test_key expired
+00:00 +38 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for expired state
+00:00 +38 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy save and load saves multiple keys independently
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 Memory: Saved key2 (TTL: nullmin)
+💾 Memory: Loaded key1
+💾 Memory: Loaded key2
+00:00 +39 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for expired state
+00:00 +39 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy delete deletes existing key
+💾 Memory: Saved test_key (TTL: nullmin)
+💾 Memory: Deleted test_key
+💾 Memory: test_key not found
+00:00 +40 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for expired state
+00:00 +40 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy delete handles deleting non-existent key
+💾 Memory: Deleted non_existent
+00:00 +41 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for expired state
+00:00 +41 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy has returns true for existing key
+💾 Memory: Saved test_key (TTL: nullmin)
+00:00 +42 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for expired state
+00:00 +43 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for expired state
+00:00 +43 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy has returns false for expired key
+💾 Memory: Saved test_key (TTL: 0min)
+00:00 +43 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Has State returns false for expired state
+✅ StatePersistenceManager disposed
+00:00 +44 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy has returns false for expired key
+00:00 +44 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Clear All clears all states
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 State saved: key1
+💾 Memory: Saved key2 (TTL: nullmin)
+💾 State saved: key2
+💾 Memory: Cleared all data
+💾 All state cleared
+✅ StatePersistenceManager disposed
+00:00 +45 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy has returns false for expired key
+00:00 +45 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys returns all state keys
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 State saved: key1
+💾 Memory: Saved key2 (TTL: nullmin)
+💾 State saved: key2
+✅ StatePersistenceManager disposed
+00:00 +46 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy has returns false for expired key
+00:00 +46 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys returns empty list when no states
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+✅ StatePersistenceManager disposed
+00:00 +47 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy has returns false for expired key
+00:00 +47 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 State saved: key1
+💾 Memory: Saved key2 (TTL: 0min)
+💾 State saved: key2
+00:00 +48 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+00:00 +48 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy clear clears all data
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 Memory: Saved key2 (TTL: nullmin)
+💾 Memory: Cleared all data
+00:00 +49 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+00:00 +49 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys returns all valid keys
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 Memory: Saved key2 (TTL: nullmin)
+00:00 +50 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+00:00 +50 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 Memory: Saved key2 (TTL: 0min)
+00:00 +50 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/realtime_service_test.dart: RealtimeService isConnected returns false initially
+✅ RealtimeService disposed
+00:00 +51 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+00:00 +51 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/realtime_service_test.dart: RealtimeService activeChannelsCount returns 0 initially
+✅ RealtimeService disposed
+00:00 +52 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+00:00 +52 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/realtime_service_test.dart: RealtimeService activeChannelNames returns empty list initially
+✅ RealtimeService disposed
+00:00 +53 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+00:00 +53 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/realtime_service_test.dart: RealtimeService isHealthy returns false when not connected
+✅ RealtimeService disposed
+00:00 +54 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+00:00 +54 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/realtime_service_test.dart: RealtimeService dispose completes without errors
+✅ RealtimeService disposed
+✅ RealtimeService disposed
+00:00 +55 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Get All Keys excludes expired states
+✅ StatePersistenceManager disposed
+00:00 +56 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +56 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Persistence Levels saves to memory level
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key (TTL: nullmin)
+💾 State saved: key
+💾 Memory: Loaded key
+✅ StatePersistenceManager disposed
+00:00 +57 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +57 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Persistence Levels loads from specific strategy
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key (TTL: nullmin)
+💾 State saved: key
+💾 Memory: Loaded key
+✅ StatePersistenceManager disposed
+00:00 +58 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +58 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Persistence Levels checks existence in specific strategy
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key (TTL: nullmin)
+💾 State saved: key
+✅ StatePersistenceManager disposed
+00:00 +59 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +59 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Hydration hydrates provider state from persisted data
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved counter_provider (TTL: nullmin)
+💾 State saved: counter_provider
+💾 Memory: Loaded counter_provider
+✅ StatePersistenceManager disposed
+00:00 +60 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +60 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Sync manual sync completes without error
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key (TTL: nullmin)
+💾 State saved: key
+💾 Memory: Loaded key
+🔄 Background sync completed
+✅ StatePersistenceManager disposed
+00:00 +61 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +61 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Dispose disposes successfully
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+✅ StatePersistenceManager disposed
+00:00 +62 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +62 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Dispose handles dispose when not initialized
+✅ StatePersistenceManager disposed
+00:00 +63 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +64 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +65 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +65 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Complex Data Types handles nested objects
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved complex (TTL: nullmin)
+💾 State saved: complex
+💾 Memory: Loaded complex
+✅ StatePersistenceManager disposed
+00:00 +66 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +66 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Complex Data Types handles arrays
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved array (TTL: nullmin)
+💾 State saved: array
+💾 Memory: Loaded array
+✅ StatePersistenceManager disposed
+00:00 +67 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +67 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Edge Cases handles empty state
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved empty (TTL: nullmin)
+💾 State saved: empty
+💾 Memory: Loaded empty
+✅ StatePersistenceManager disposed
+00:00 +68 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +68 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Edge Cases handles overwriting state
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key (TTL: nullmin)
+💾 State saved: key
+💾 Memory: Saved key (TTL: nullmin)
+💾 State saved: key
+💾 Memory: Loaded key
+✅ StatePersistenceManager disposed
+00:00 +69 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +69 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/state_persistence_manager_test.dart: StatePersistenceManager Edge Cases handles concurrent saves to different keys
+🗑️  Eviction timer started (interval: 0min)
+✅ StatePersistenceManager initialized
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 Memory: Saved key2 (TTL: nullmin)
+💾 Memory: Saved key3 (TTL: nullmin)
+💾 State saved: key1
+💾 State saved: key2
+💾 State saved: key3
+💾 Memory: Loaded key1
+💾 Memory: Loaded key2
+💾 Memory: Loaded key3
+✅ StatePersistenceManager disposed
+00:00 +70 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy getAllKeys excludes expired keys
+00:00 +71 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: MemoryPersistenceStrategy evict removes expired entries
+💾 Memory: Saved key1 (TTL: nullmin)
+💾 Memory: Saved key2 (TTL: 0min)
+💾 Memory: Evicted 1 expired entries
+00:00 +72 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: PersistenceStrategy Interface MemoryPersistenceStrategy implements PersistenceStrategy
+00:00 +73 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: Data Types handles complex nested data
+💾 Memory: Saved test (TTL: nullmin)
+💾 Memory: Loaded test
+00:00 +74 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: Data Types handles empty maps
+💾 Memory: Saved empty (TTL: nullmin)
+💾 Memory: Loaded empty
+00:00 +75 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: Edge Cases handles overwriting existing key
+💾 Memory: Saved key (TTL: nullmin)
+💾 Memory: Saved key (TTL: nullmin)
+💾 Memory: Loaded key
+00:00 +76 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: Edge Cases handles TTL of zero duration
+💾 Memory: Saved key (TTL: 0min)
+💾 Memory: key expired
+00:00 +77 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/persistence_strategies_test.dart: Edge Cases handles very long TTL
+💾 Memory: Saved key (TTL: 525600min)
+💾 Memory: Loaded key
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:01 +78 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/backup_service_test.dart: BackupService exportUserData exports user data successfully
+  Skip: Mocking Postgrest builders with maybeSingle() is not supported in this test setup
+00:01 +78 ~1 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/backup_service_test.dart: BackupService exportUserData throws error when database fails
+  Skip: Mocking Postgrest builders with complex chains is not supported in this test setup
+00:01 +78 ~2 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/backup_service_test.dart: BackupService backupPhotos returns backed up photo paths
+  Skip: Mocking Postgrest builders is not supported in this test setup
+00:01 +78 ~3 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/backup_service_test.dart: BackupService backupPhotos returns empty list when no photos found
+  Skip: Mocking Postgrest builders is not supported in this test setup
+00:01 +78 ~4 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/backup_service_test.dart: BackupService hasAutomaticBackupsEnabled returns false by default
+  Skip: Mocking Postgrest builders is not supported in this test setup
+00:01 +78 ~5 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/backup_service_test.dart: BackupService getLastBackupDate returns null when no previous backup
+  Skip: Mocking Postgrest builders is not supported in this test setup
+00:01 +78 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/data_deletion_handler_test.dart: DataDeletionHandler requestDeletionConfirmation generates confirmation token
+📧 Deletion confirmation token generated successfully
+00:01 +79 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/data_deletion_handler_test.dart: DataDeletionHandler deleteUserAccount returns false when database operations fail
+🗑️ Starting account deletion for user test-user-id
+🗑️ Deleting user photos...
+❌ Error deleting user photos: Exception: Database error
+❌ Error deleting user account: Exception: Database error
+00:01 +80 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/data_deletion_handler_test.dart: DataDeletionHandler deleteUserAccount returns false when confirmation token verification fails
+🗑️ Starting account deletion for user test-user-id
+⚠️ Token verification not implemented - rejecting deletion request
+⚠️ Implement token storage and verification before production use
+❌ Error deleting user account: Exception: Invalid confirmation token
+00:01 +81 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService has static initialize method
+00:01 +82 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService initialize method is async
+00:01 +83 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Initialization Steps initializes Supabase
+00:01 +84 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Initialization Steps initializes Firebase
+00:01 +85 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Initialization Steps initializes OneSignal notifications
+00:01 +86 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Initialization Steps initializes Firebase Crashlytics observability
+00:01 +87 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Error Handling handles initialization errors gracefully
+00:01 +88 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Error Handling logs errors to debug console
+00:01 +89 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Error Handling captures exceptions in ObservabilityService
+00:01 +90 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Service Dependencies initializes services in correct order
+00:01 +91 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Service Dependencies handles missing environment variables
+00:01 +92 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Platform Support supports Android platform
+00:01 +93 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Platform Support supports iOS platform
+00:01 +94 ~6 -1: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/app_initialization_service_test.dart: AppInitializationService Platform Support supports Web platform
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+test/core/services/auth_service_test.dart:22:32: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+      authService = AuthService(mockSupabaseClient);
+                               ^
+lib/core/services/auth_service.dart:16:3: Context: Found this candidate, but the arguments don't match.
+  AuthService({
+  ^^^^^^^^^^^
+00:02 +95 ~6 -2: loading /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/auth_service_test.dart [E]
+  Failed to load "/Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/auth_service_test.dart":
+  Compilation failed for testPath=/Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/auth_service_test.dart: test/core/services/auth_service_test.dart:22:32: Error: Too many positional arguments: 0 allowed, but 1 found.
+  Try removing the extra positional arguments.
+        authService = AuthService(mockSupabaseClient);
+                                 ^
+  lib/core/services/auth_service.dart:16:3: Context: Found this candidate, but the arguments don't match.
+    AuthService({
+    ^^^^^^^^^^^
+  .
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:02 +95 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/crash_recovery_handler_test.dart: CrashRecoveryHandler hasPreviousCrash returns false before initialize
+00:02 +96 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/crash_recovery_handler_test.dart: CrashRecoveryHandler initialize completes without throwing
+00:02 +97 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/crash_recovery_handler_test.dart: CrashRecoveryHandler handleCrash completes without throwing
+💥 CrashRecoveryHandler: Exception: boom
+❌ Error capturing exception: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:02 +98 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/crash_recovery_handler_test.dart: CrashRecoveryHandler clearCrashState completes without throwing
+00:02 +99 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/crash_recovery_handler_test.dart: CrashRecoveryHandler restoreState completes without throwing
+🔄 CrashRecoveryHandler: restoring state after crash
+00:02 +100 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/crash_recovery_handler_test.dart: CrashRecoveryHandler hasPreviousCrash returns false after clearCrashState
+00:02 +101 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/crash_recovery_handler_test.dart: CrashRecoveryHandler crash flag is persisted and cleared across initialize calls
+💥 CrashRecoveryHandler: Exception: boom
+❌ Error capturing exception: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+⚠️  CrashRecoveryHandler: previous crash detected
+🔄 CrashRecoveryHandler: restoring state after crash
+00:02 +102 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/force_update_service_test.dart: ForceUpdateService Version Comparison UpdateInfo model contains correct information
+00:02 +103 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/force_update_service_test.dart: ForceUpdateService Version Comparison UpdateInfo toString returns formatted string
+00:02 +104 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/force_update_service_test.dart: ForceUpdateService Development Bypass shouldBypassForDevelopment returns true in debug mode
+00:02 +105 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/force_update_service_test.dart: ForceUpdateService needsUpdate returns false when no minimum version is set
+❌ Error checking for updates: MissingPluginException(No implementation found for method getAll on channel dev.fluttercommunity.plus/package_info)
+00:02 +106 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/force_update_service_test.dart: ForceUpdateService needsUpdate returns false when there is an error checking version
+❌ Error checking for updates: MissingPluginException(No implementation found for method getAll on channel dev.fluttercommunity.plus/package_info)
+00:02 +107 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/force_update_service_test.dart: ForceUpdateService getStoreUrl returns null when there is an error
+❌ Error fetching store URL: Exception: Database error
+00:02 +108 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/force_update_service_test.dart: ForceUpdateService shouldShowUpdatePrompt returns false in development mode
+00:02 +109 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/force_update_service_test.dart: ForceUpdateService getUpdateInfo returns null when there is an error
+❌ Error getting update info: MissingPluginException(No implementation found for method getAll on channel dev.fluttercommunity.plus/package_info)
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:02 +110 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Successful execution returns success result when operation completes
+✅ NetworkErrorHandler: succeeded on attempt 1
+00:02 +111 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Successful execution records one attempt on first-try success
+✅ NetworkErrorHandler: succeeded on attempt 1
+00:02 +112 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Successful execution works with non-primitive result types
+✅ NetworkErrorHandler: succeeded on attempt 1
+00:02 +113 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Timeout handling returns timeout failure when operation exceeds timeout
+00:02 +114 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Timeout handling returns timeout failure when operation exceeds timeout
+00:03 +115 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Timeout handling returns timeout failure when operation exceeds timeout
+00:03 +116 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Timeout handling returns timeout failure when operation exceeds timeout
+00:03 +117 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Timeout handling returns timeout failure when operation exceeds timeout
+00:03 +118 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Timeout handling returns timeout failure when operation exceeds timeout
+❌ NetworkErrorHandler: attempt 1 failed (timeout): TimeoutException after 0:00:00.050000: Future not completed
+00:03 +119 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Timeout handling categorises TimeoutException as timeout
+00:03 +120 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Network connection errors categorises SocketException as noConnection
+00:03 +121 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Network connection errors categorises NetworkException as noConnection
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:03 +122 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Network connection errors categorises string-based connection refused message as noConnection
+00:03 +123 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Network connection errors categorises failed host lookup as noConnection
+00:03 +124 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Server errors categorises HttpException with 500 message as serverError
+00:03 +125 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Server errors categorises string with 503 as serverError
+00:03 +126 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Server errors categorises HttpException without status code as serverError
+00:03 +127 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Client errors categorises HttpException with 404 message as clientError
+00:03 +128 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Client errors categorises string with 401 as clientError
+00:03 +129 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Client errors does not retry client errors
+❌ NetworkErrorHandler: attempt 1 failed (clientError): HttpException: 404 Not Found
+00:03 +130 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService isInitialized returns false before initialization
+00:03 +131 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService isInitialized returns false before initialization
+00:03 +131 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Retry behaviour retries the specified number of times on transient errors
+❌ NetworkErrorHandler: attempt 1 failed (noConnection): SocketException: Unreachable
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 1 of 3)…
+❌ NetworkErrorHandler: attempt 2 failed (noConnection): SocketException: Unreachable
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 2 of 3)…
+❌ NetworkErrorHandler: attempt 3 failed (noConnection): SocketException: Unreachable
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 3 of 3)…
+❌ NetworkErrorHandler: attempt 4 failed (noConnection): SocketException: Unreachable
+00:03 +132 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService isInitialized returns false before initialization
+00:03 +132 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Retry behaviour succeeds on retry after initial failure
+❌ NetworkErrorHandler: attempt 1 failed (noConnection): SocketException: Temporary failure
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 1 of 2)…
+❌ NetworkErrorHandler: attempt 2 failed (noConnection): SocketException: Temporary failure
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 2 of 2)…
+✅ NetworkErrorHandler: succeeded on attempt 3
+00:03 +133 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService isInitialized returns false before initialization
+00:03 +133 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Retry behaviour respects maxRetries = 0 (no retries)
+❌ NetworkErrorHandler: attempt 1 failed (noConnection): SocketException: Failure
+00:03 +134 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService isInitialized returns false before initialization
+00:03 +134 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Retry behaviour invokes onRetrying callback before each retry
+❌ NetworkErrorHandler: attempt 1 failed (noConnection): SocketException: Failure
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 1 of 2)…
+❌ NetworkErrorHandler: attempt 2 failed (noConnection): SocketException: Failure
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 2 of 2)…
+❌ NetworkErrorHandler: attempt 3 failed (noConnection): SocketException: Failure
+00:03 +135 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService isInitialized returns false before initialization
+00:03 +135 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Retry behaviour invokes onNetworkError for every failed attempt
+❌ NetworkErrorHandler: attempt 1 failed (noConnection): SocketException: Failure
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 1 of 2)…
+❌ NetworkErrorHandler: attempt 2 failed (noConnection): SocketException: Failure
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 2 of 2)…
+❌ NetworkErrorHandler: attempt 3 failed (noConnection): SocketException: Failure
+00:03 +136 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService isInitialized returns false before initialization
+00:03 +137 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Exponential back-off backoffDelay doubles with each attempt up to 32x cap
+00:03 +138 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService playerId returns null before initialization
+00:03 +138 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Exponential back-off execute applies back-off between retries
+❌ NetworkErrorHandler: attempt 1 failed (noConnection): SocketException: Failure
+00:03 +139 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler Exponential back-off execute applies back-off between retries
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 1 of 2)…
+❌ NetworkErrorHandler: attempt 2 failed (noConnection): SocketException: Failure
+🔄 NetworkErrorHandler: retrying in 0ms (attempt 2 of 2)…
+❌ NetworkErrorHandler: attempt 3 failed (noConnection): SocketException: Failure
+00:03 +140 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService areNotificationsEnabled returns default value before initialization
+00:03 +141 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/notification_service_test.dart: NotificationService areNotificationsEnabled returns default value before initialization
+00:03 +142 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler NetworkResult failure result has correct properties
+00:03 +143 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler NetworkException has default message
+00:03 +144 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/network_error_handler_test.dart: NetworkErrorHandler NetworkException accepts custom message
+00:03 +145 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService can be created with mock Firebase Analytics
+00:03 +146 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService User Tracking sets user ID correctly
+00:03 +147 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService User Tracking sets user properties correctly
+00:03 +148 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Event Logging logs screen view events
+00:03 +149 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Event Logging logs custom events with parameters
+00:03 +150 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Event Logging logs signup events
+00:03 +151 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Event Logging logs login events
+00:03 +152 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Error Handling handles Firebase initialization errors gracefully
+00:03 +153 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Error Handling logs errors to ObservabilityService
+00:03 +154 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Photo Events logs photo upload events
+00:03 +155 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Photo Events logs photo view events
+00:03 +156 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Photo Events logs photo share events
+00:03 +157 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Event Events logs event creation
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:03 +158 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Event Events logs RSVP actions
+00:03 +159 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Registry Events logs registry item view
+00:03 +160 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/analytics_service_test.dart: AnalyticsService Registry Events logs registry purchase
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:03 +161 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/supabase_service_test.dart: SupabaseService provides access to current user
+00:03 +162 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService isInitialized returns false before initialization
+00:03 +163 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService environment returns null before initialization
+00:03 +164 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService captureException does not throw when not initialized
+❌ Error capturing exception: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +165 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService captureMessage does not throw when not initialized
+❌ Error capturing message: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +166 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService addBreadcrumb does not throw when not initialized
+❌ Error adding breadcrumb: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +167 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService addNavigationBreadcrumb does not throw when not initialized
+❌ Error adding breadcrumb: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +168 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService addHttpBreadcrumb does not throw when not initialized
+❌ Error adding breadcrumb: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +169 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService addUserActionBreadcrumb does not throw when not initialized
+❌ Error adding breadcrumb: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +170 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService setUser does not throw when not initialized
+❌ Error setting user context: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +171 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService clearUser does not throw when not initialized
+❌ Error clearing user context: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +172 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService setContext does not throw when not initialized
+❌ Error setting context: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+00:03 +173 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/observability_service_test.dart: ObservabilityService setTag does not throw when not initialized
+❌ Error setting tag: [core/no-app] No Firebase App '[DEFAULT]' has been created - call Firebase.initializeApp()
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+Package flutter_facebook_auth:macos references facebook_auth_desktop:macos as the default plugin, but the package does not exist, or is not a plugin package.
+Ask the maintainers of flutter_facebook_auth to either avoid referencing a default implementation via `platforms: macos: default_package: facebook_auth_desktop` or create a plugin named facebook_auth_desktop.
+
+00:03 +174 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/data_export_handler_test.dart: DataExportHandler estimateExportSize returns estimated size of export
+00:03 +175 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/data_export_handler_test.dart: DataExportHandler estimateExportSize returns 0 on error
+❌ Error estimating export size: Exception: Error
+00:03 +176 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/data_export_handler_test.dart: DataExportHandler emailDataExport logs email operation without error
+📧 Would email data export to test@example.com
+📦 ZIP file: /tmp/export.zip
+00:03 +177 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/data_export_handler_test.dart: DataExportHandler generateDownloadLink returns null indicating feature not implemented
+🔗 Would generate download link for /tmp/export.zip
+00:04 +178 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Initialization starts as not initialized
+00:04 +179 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization starts as not initialized
+00:04 +180 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization starts as not initialized
+00:04 +181 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization starts as not initialized
+00:04 +182 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization starts as not initialized
+00:04 +183 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Initialization throws StateError on subscribeToRealtime before initialization
+00:04 +184 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization throws StateError on cacheData before initialization
+00:04 +185 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Initialization isInitialized is true after initialize()
+🔄 Background sync started (interval: 5min)
+✅ SyncManager initialized
+00:04 +186 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Initialization isInitialized is true after initialize()
+✅ SyncManager disposed
+00:04 +187 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization throws StateError on processQueue before initialization
+00:04 +188 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Initialization handles double initialization gracefully
+🔄 Background sync started (interval: 5min)
+✅ SyncManager initialized
+⚠️  SyncManager already initialized
+✅ SyncManager disposed
+00:04 +189 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization isInitialized is true after initialize()
+00:04 +190 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization isInitialized is true after initialize()
+00:04 +190 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Initialization lastSyncTime is null before first sync
+🔄 Background sync started (interval: 5min)
+✅ SyncManager initialized
+✅ SyncManager disposed
+00:04 +191 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization isInitialized is true after initialize()
+00:04 +191 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Initialization retryCount starts at zero
+🔄 Background sync started (interval: 5min)
+✅ SyncManager initialized
+✅ SyncManager disposed
+00:04 +192 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization isInitialized is true after initialize()
+✅ OfflineCacheManager initialized
+00:04 +192 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Handler registration registerSyncHandler registers a handler
+🔄 Background sync started (interval: 5min)
+✅ SyncManager initialized
+📌 Registered sync handler for: test
+00:04 +192 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization isInitialized is true after initialize()
+✅ OfflineCacheManager disposed
+00:04 +193 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Handler registration registerSyncHandler registers a handler
+🔄 Starting sync (since: null)…
+00:04 +193 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization handles double initialization gracefully
+✅ OfflineCacheManager initialized
+⚠️  OfflineCacheManager already initialized
+✅ OfflineCacheManager disposed
+00:04 +193 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Handler registration registerSyncHandler registers a handler
+✅ Sync completed at 2026-04-11 14:38:40.464871
+00:04 +194 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Handler registration registerSyncHandler registers a handler
+✅ SyncManager disposed
+00:04 +195 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization pendingSyncCount starts at zero
+00:04 +195 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Handler registration unregisterSyncHandler removes a handler
+🔄 Background sync started (interval: 5min)
+✅ SyncManager initialized
+📌 Registered sync handler for: test
+00:04 +195 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization pendingSyncCount starts at zero
+✅ OfflineCacheManager initialized
+00:04 +195 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Handler registration unregisterSyncHandler removes a handler
+🗑️  Unregistered sync handler for: test
+🔄 Starting sync (since: null)…
+00:04 +195 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Initialization pendingSyncCount starts at zero
+✅ OfflineCacheManager disposed
+00:04 +195 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Handler registration unregisterSyncHandler removes a handler
+✅ Sync completed at 2026-04-11 14:38:40.466843
+00:04 +196 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager Handler registration unregisterSyncHandler removes a handler
+✅ SyncManager disposed
+00:04 +197 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity checkConnectivity returns true when checker returns true
+✅ OfflineCacheManager initialized
+00:04 +197 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync with no handlers sets status to synced
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+00:04 +197 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity checkConnectivity returns true when checker returns true
+✅ OfflineCacheManager disposed
+00:04 +197 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync with no handlers sets status to synced
+🔄 Starting sync (since: null)…
+00:04 +198 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync with no handlers sets status to synced
+✅ Sync completed at 2026-04-11 14:38:40.468036
+✅ SyncManager disposed
+00:04 +199 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity checkConnectivity returns false when checker returns false
+✅ OfflineCacheManager initialized
+00:04 +199 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync passes lastSyncTime to handler
+🔄 Background sync started (interval: 60min)
+00:04 +199 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity checkConnectivity returns false when checker returns false
+📵 Device is offline
+00:04 +199 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync passes lastSyncTime to handler
+✅ SyncManager initialized
+00:04 +199 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity checkConnectivity returns false when checker returns false
+✅ OfflineCacheManager disposed
+00:04 +199 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync passes lastSyncTime to handler
+📌 Registered sync handler for: test
+00:04 +200 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync passes lastSyncTime to handler
+🔄 Starting sync (since: null)…
+✅ Sync completed at 2026-04-11 14:38:40.469420
+🔄 Starting sync (since: 2026-04-11 14:38:40.469420)…
+✅ Sync completed at 2026-04-11 14:38:40.469607
+✅ SyncManager disposed
+00:04 +201 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity updateConnectivity toggles isOnline
+✅ OfflineCacheManager initialized
+📵 Device is offline
+🌐 Device is online
+✅ OfflineCacheManager disposed
+00:04 +202 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync updates lastSyncTime on success
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+📌 Registered sync handler for: test
+🔄 Starting sync (since: null)…
+✅ Sync completed at 2026-04-11 14:38:40.471058
+✅ SyncManager disposed
+00:04 +202 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits false when going offline
+✅ OfflineCacheManager initialized
+00:04 +203 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits false when going offline
+00:04 +203 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync emits syncing then synced via stream
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+📌 Registered sync handler for: test
+🔄 Starting sync (since: null)…
+✅ Sync completed at 2026-04-11 14:38:40.472786
+00:04 +203 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits false when going offline
+📵 Device is offline
+00:04 +203 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync emits syncing then synced via stream
+✅ SyncManager disposed
+00:04 +204 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits false when going offline
+00:04 +204 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets status to error when handler returns false
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+📌 Registered sync handler for: test
+🔄 Starting sync (since: null)…
+⚠️  Sync handler "test" reported failure
+00:04 +204 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits false when going offline
+✅ OfflineCacheManager disposed
+00:04 +205 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets status to error when handler returns false
+❌ Sync failed: Sync handler "test" reported failure
+🔁 Scheduling retry 1/3 in 2s
+✅ SyncManager disposed
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits true when coming back online
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets lastError when handler fails
+🔄 Background sync started (interval: 60min)
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits true when coming back online
+✅ OfflineCacheManager initialized
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets lastError when handler fails
+✅ SyncManager initialized
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits true when coming back online
+📵 Device is offline
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets lastError when handler fails
+📌 Registered sync handler for: test
+🔄 Starting sync (since: null)…
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits true when coming back online
+🌐 Device is online
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets lastError when handler fails
+⚠️  Sync handler "test" reported failure
+❌ Sync failed: Sync handler "test" reported failure
+🔁 Scheduling retry 1/3 in 2s
+✅ SyncManager disposed
+00:04 +206 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits true when coming back online
+✅ OfflineCacheManager disposed
+00:04 +207 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity connectivityStream emits true when coming back online
+00:04 +208 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync ignores concurrent call when already syncing
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+📌 Registered sync handler for: slow
+00:04 +208 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity does not emit duplicate connectivity events
+✅ OfflineCacheManager initialized
+00:04 +208 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync ignores concurrent call when already syncing
+🔄 Starting sync (since: null)…
+00:04 +208 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity does not emit duplicate connectivity events
+📵 Device is offline
+00:04 +208 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync ignores concurrent call when already syncing
+⚠️  Sync already in progress – skipping
+✅ Sync completed at 2026-04-11 14:38:40.479436
+✅ SyncManager disposed
+00:04 +209 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Connectivity does not emit duplicate connectivity events
+✅ OfflineCacheManager disposed
+00:04 +210 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets status to error when handler throws
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+📌 Registered sync handler for: throws
+🔄 Starting sync (since: null)…
+00:04 +210 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) cacheData calls cache put when online
+✅ OfflineCacheManager initialized
+00:04 +210 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets status to error when handler throws
+❌ Sync handler "throws" threw: Exception: network error
+❌ Sync failed: Exception: network error
+🔁 Scheduling retry 1/3 in 2s
+00:04 +210 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) cacheData calls cache put when online
+💾 Cached data locally for key: my_key
+00:04 +210 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager sync() sync sets status to error when handler throws
+✅ SyncManager disposed
+00:04 +211 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) cacheData calls cache put when online
+00:04 +211 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager forceFullSync() forceFullSync resets lastSyncTime to null before syncing
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+📌 Registered sync handler for: test
+🔄 Starting sync (since: null)…
+✅ Sync completed at 2026-04-11 14:38:40.482898
+📌 Registered sync handler for: capture
+🔄 Starting sync (since: null)…
+00:04 +211 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) cacheData calls cache put when online
+✅ OfflineCacheManager disposed
+00:04 +211 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager forceFullSync() forceFullSync resets lastSyncTime to null before syncing
+✅ Sync completed at 2026-04-11 14:38:40.483212
+00:04 +212 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager forceFullSync() forceFullSync resets lastSyncTime to null before syncing
+✅ SyncManager disposed
+00:04 +213 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) cacheData does not enqueue when online
+✅ OfflineCacheManager initialized
+💾 Cached data locally for key: my_key
+00:04 +213 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager retrySync() retrySync does not throw when called after a failed sync
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+00:04 +213 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) cacheData does not enqueue when online
+✅ OfflineCacheManager disposed
+00:04 +214 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager retrySync() retrySync does not throw when called after a failed sync
+📌 Registered sync handler for: fail
+🔄 Starting sync (since: null)…
+⚠️  Sync handler "fail" reported failure
+❌ Sync failed: Sync handler "fail" reported failure
+🔁 Scheduling retry 1/3 in 2s
+🔁 Scheduling retry 1/3 in 2s
+✅ SyncManager disposed
+00:04 +214 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) deleteData calls cache delete when online
+✅ OfflineCacheManager initialized
+00:04 +215 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) deleteData calls cache delete when online
+00:04 +215 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager retrySync() after sync failure lastError is set
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+📌 Registered sync handler for: fail
+00:04 +215 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) deleteData calls cache delete when online
+✅ OfflineCacheManager disposed
+00:04 +215 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager retrySync() after sync failure lastError is set
+🔄 Starting sync (since: null)…
+⚠️  Sync handler "fail" reported failure
+00:04 +216 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager retrySync() after sync failure lastError is set
+❌ Sync failed: Sync handler "fail" reported failure
+🔁 Scheduling retry 1/3 in 2s
+✅ SyncManager disposed
+00:04 +217 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) getData returns decoded map
+✅ OfflineCacheManager initialized
+00:04 +217 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager retrySync() retryCount starts at 0 before any failure
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+✅ SyncManager disposed
+00:04 +218 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) getData returns decoded map
+✅ OfflineCacheManager disposed
+00:04 +219 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime returns a stream
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+00:04 +219 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (online) getData returns null for missing key
+✅ OfflineCacheManager initialized
+✅ OfflineCacheManager disposed
+00:04 +220 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime returns a stream
+00:04 +220 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) cacheData enqueues operation when offline
+✅ OfflineCacheManager initialized
+📵 Device is offline
+💾 Cached data locally for key: offline_key
+📋 Enqueued update for key: offline_key (queue size: 1)
+📋 Queued offline write for key: offline_key
+✅ OfflineCacheManager disposed
+00:04 +221 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime returns a stream
+00:04 +221 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) deleteData enqueues operation when offline
+✅ OfflineCacheManager initialized
+📵 Device is offline
+📋 Enqueued delete for key: del_key (queue size: 1)
+✅ OfflineCacheManager disposed
+00:04 +222 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime returns a stream
+00:04 +222 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) multiple operations accumulate in queue
+✅ OfflineCacheManager initialized
+📵 Device is offline
+💾 Cached data locally for key: k1
+📋 Enqueued update for key: k1 (queue size: 1)
+📋 Queued offline write for key: k1
+💾 Cached data locally for key: k2
+00:04 +222 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime returns a stream
+✅ SyncManager disposed
+00:04 +222 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) multiple operations accumulate in queue
+📋 Enqueued update for key: k2 (queue size: 2)
+00:04 +223 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) multiple operations accumulate in queue
+📋 Queued offline write for key: k2
+📋 Enqueued delete for key: k3 (queue size: 3)
+✅ OfflineCacheManager disposed
+00:04 +224 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+🔄 Background sync started (interval: 60min)
+✅ SyncManager initialized
+📌 Registered sync handler for: rt_test
+00:04 +224 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) clearQueue empties the sync queue
+✅ OfflineCacheManager initialized
+📵 Device is offline
+00:04 +224 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+🔄 Starting sync (since: null)…
+00:04 +224 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) clearQueue empties the sync queue
+💾 Cached data locally for key: k1
+00:04 +224 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+✅ Sync completed at 2026-04-11 14:38:40.495823
+00:04 +224 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) clearQueue empties the sync queue
+📋 Enqueued update for key: k1 (queue size: 1)
+📋 Queued offline write for key: k1
+🗑️  Sync queue cleared
+✅ OfflineCacheManager disposed
+00:04 +225 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +225 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Cache operations (offline) cacheData writes to local cache even when offline
+✅ OfflineCacheManager initialized
+📵 Device is offline
+💾 Cached data locally for key: offline_key
+📋 Enqueued update for key: offline_key (queue size: 1)
+📋 Queued offline write for key: offline_key
+✅ OfflineCacheManager disposed
+00:04 +226 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +226 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager processQueue applies queued update operations
+✅ OfflineCacheManager initialized
+📵 Device is offline
+💾 Cached data locally for key: queued_key
+📋 Enqueued update for key: queued_key (queue size: 1)
+📋 Queued offline write for key: queued_key
+🌐 Device is online
+🔄 Processing sync queue (1 operations)…
+✅ Sync queue processed – 1 operations applied
+✅ OfflineCacheManager disposed
+00:04 +227 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +227 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager processQueue applies queued delete operations
+✅ OfflineCacheManager initialized
+📵 Device is offline
+📋 Enqueued delete for key: del_key (queue size: 1)
+🌐 Device is online
+🔄 Processing sync queue (1 operations)…
+✅ Sync queue processed – 1 operations applied
+✅ OfflineCacheManager disposed
+00:04 +228 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +228 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager processQueue processQueue does nothing when queue is empty
+✅ OfflineCacheManager initialized
+📋 Sync queue is empty – nothing to process
+✅ OfflineCacheManager disposed
+00:04 +229 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +229 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Conflict resolution lastWriteWins returns local when local is newer
+✅ OfflineCacheManager initialized
+✅ OfflineCacheManager disposed
+00:04 +230 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +230 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Conflict resolution lastWriteWins returns remote when remote is newer
+✅ OfflineCacheManager initialized
+✅ OfflineCacheManager disposed
+00:04 +231 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +231 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Conflict resolution lastWriteWins returns remote when no timestamps provided
+✅ OfflineCacheManager initialized
+✅ OfflineCacheManager disposed
+00:04 +232 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +232 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Conflict resolution remoteWins always returns remote data
+✅ OfflineCacheManager initialized
+✅ OfflineCacheManager initialized
+✅ OfflineCacheManager disposed
+✅ OfflineCacheManager disposed
+00:04 +233 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +233 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/offline_cache_manager_test.dart: OfflineCacheManager Conflict resolution localWins always returns local data
+✅ OfflineCacheManager initialized
+✅ OfflineCacheManager initialized
+✅ OfflineCacheManager disposed
+✅ OfflineCacheManager disposed
+00:04 +234 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +235 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +236 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +237 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+00:04 +238 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager subscribeToRealtime() subscribeToRealtime triggers sync on realtime event
+✅ SyncManager disposed
+00:04 +239 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager SyncStatus has expected values
+00:04 +240 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager SyncError has message and timestamp
+00:04 +241 ~6 -2: /Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/test/core/services/sync_manager_test.dart: SyncManager SyncError toString contains message and timestamp
+00:04 +242 ~6 -2: Some tests failed.

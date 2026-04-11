@@ -9,6 +9,7 @@ import '../services/database_service.dart';
 import '../services/local_storage_service.dart';
 import '../services/notification_service.dart';
 import '../services/observability_service.dart';
+import '../services/offline_cache_manager.dart';
 import '../services/realtime_service.dart';
 import '../services/realtime_subscription_manager.dart';
 import '../services/storage_service.dart';
@@ -55,7 +56,8 @@ final supabaseClientProvider = Provider<SupabaseClient>((ref) {
 /// Singleton pattern - one instance for the entire app.
 final authServiceProvider = Provider<AuthService>((ref) {
   final client = ref.watch(supabaseClientProvider);
-  return AuthService(client);
+  final analytics = ref.watch(analyticsServiceProvider);
+  return AuthService(supabase: client, analytics: analytics);
 });
 
 // ==========================================
@@ -78,6 +80,15 @@ final cacheServiceProvider = Provider<CacheService>((ref) {
   return CacheService();
 });
 
+/// Provides the offline cache manager
+///
+/// Manages the queue of offline operations and conflict resolution.
+/// Relies on cacheServiceProvider for local data caching.
+final offlineCacheManagerProvider = Provider<OfflineCacheManager>((ref) {
+  final cacheService = ref.watch(cacheServiceProvider);
+  return OfflineCacheManager(cacheService: cacheService);
+});
+
 /// Provides the local storage service
 ///
 /// Handles persistent local storage using SharedPreferences and Hive.
@@ -91,7 +102,8 @@ final localStorageServiceProvider = Provider<LocalStorageService>((ref) {
 /// Manages file uploads, downloads, and Supabase storage operations.
 final storageServiceProvider = Provider<StorageService>((ref) {
   final client = ref.watch(supabaseClientProvider);
-  return StorageService(client);
+  final analytics = ref.watch(analyticsServiceProvider);
+  return StorageService(supabase: client, analytics: analytics);
 });
 
 // ==========================================

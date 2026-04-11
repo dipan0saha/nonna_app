@@ -10,16 +10,21 @@ void main() {
     late AuthService authService;
     late MockSupabaseClient mockSupabaseClient;
     late MockGoTrueClient mockAuth;
+    late MockAnalyticsService mockAnalyticsService;
 
     setUp(() {
       mockSupabaseClient = MockFactory.createSupabaseClient();
       mockAuth = MockFactory.createGoTrueClient();
+      mockAnalyticsService = MockAnalyticsService();
 
       // Mock the auth getter
       when(mockSupabaseClient.auth).thenReturn(mockAuth);
 
       // Initialize service with mock client
-      authService = AuthService(mockSupabaseClient);
+      authService = AuthService(
+        supabase: mockSupabaseClient,
+        analytics: mockAnalyticsService,
+      );
     });
 
     group('currentUser', () {

@@ -3,6 +3,23 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/observability_service.dart';
 
+/// A unified exception class that surfaces user-friendly error messages
+/// while safely preserving original exception data for monitoring telemetry.
+class AppException implements Exception {
+  final String message;
+  final Object? originalException;
+  final StackTrace? stackTrace;
+
+  AppException(
+    this.message, {
+    this.originalException,
+    this.stackTrace,
+  });
+
+  @override
+  String toString() => message;
+}
+
 /// Global error handler for network, auth, and validation errors
 ///
 /// **Functional Requirements**: Section 3.2.7 - Middleware

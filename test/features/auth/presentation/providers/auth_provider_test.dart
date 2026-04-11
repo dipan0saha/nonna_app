@@ -6,11 +6,105 @@ import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
+import 'package:nonna_app/core/services/offline_cache_manager.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 import '../../../../helpers/fake_postgrest_builders.dart';
 import '../../../../helpers/mock_factory.dart';
 import '../../../../mocks/mock_services.mocks.dart';
+
+class MockOfflineCacheManager extends Mock implements OfflineCacheManager {
+  @override
+  bool get isInitialized => (super.noSuchMethod(
+        Invocation.getter(#isInitialized),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  bool get isOnline => (super.noSuchMethod(
+        Invocation.getter(#isOnline),
+        returnValue: true,
+      ) as bool);
+
+  @override
+  int get pendingSyncCount => (super.noSuchMethod(
+        Invocation.getter(#pendingSyncCount),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  Future<void> clearQueue() => (super.noSuchMethod(
+        Invocation.method(#clearQueue, []),
+        returnValue: Future<void>.value(),
+        returnValueForMissingStub: Future<void>.value(),
+      ) as Future<void>);
+
+  @override
+  Future<void> initialize() => (super.noSuchMethod(
+        Invocation.method(#initialize, []),
+        returnValue: Future<void>.value(),
+        returnValueForMissingStub: Future<void>.value(),
+      ) as Future<void>);
+
+  @override
+  Future<void> dispose() => (super.noSuchMethod(
+        Invocation.method(#dispose, []),
+        returnValue: Future<void>.value(),
+        returnValueForMissingStub: Future<void>.value(),
+      ) as Future<void>);
+
+  @override
+  Future<void> processQueue() => (super.noSuchMethod(
+        Invocation.method(#processQueue, []),
+        returnValue: Future<void>.value(),
+        returnValueForMissingStub: Future<void>.value(),
+      ) as Future<void>);
+
+  @override
+  Future<bool> checkConnectivity() => (super.noSuchMethod(
+        Invocation.method(#checkConnectivity, []),
+        returnValue: Future<bool>.value(true),
+      ) as Future<bool>);
+
+  @override
+  Future<void> cacheData(String key, Map<String, dynamic> data,
+          {int? ttlMinutes}) =>
+      (super.noSuchMethod(
+        Invocation.method(#cacheData, [key, data], {#ttlMinutes: ttlMinutes}),
+        returnValue: Future<void>.value(),
+        returnValueForMissingStub: Future<void>.value(),
+      ) as Future<void>);
+
+  @override
+  Future<void> deleteData(String key) => (super.noSuchMethod(
+        Invocation.method(#deleteData, [key]),
+        returnValue: Future<void>.value(),
+        returnValueForMissingStub: Future<void>.value(),
+      ) as Future<void>);
+
+  @override
+  Stream<bool> get connectivityStream => (super.noSuchMethod(
+        Invocation.getter(#connectivityStream),
+        returnValue: const Stream<bool>.empty(),
+      ) as Stream<bool>);
+
+  @override
+  Map<String, dynamic> resolveConflict({
+    required Map<String, dynamic> localData,
+    required Map<String, dynamic> remoteData,
+    DateTime? localTimestamp,
+    DateTime? remoteTimestamp,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(#resolveConflict, [], {
+          #localData: localData,
+          #remoteData: remoteData,
+          #localTimestamp: localTimestamp,
+          #remoteTimestamp: remoteTimestamp,
+        }),
+        returnValue: <String, dynamic>{},
+      ) as Map<String, dynamic>);
+}
 
 void main() {
   group('AuthNotifier Tests', () {
@@ -19,6 +113,8 @@ void main() {
     late MockAuthService mockAuthService;
     late MockDatabaseService mockDatabaseService;
     late MockLocalStorageService mockLocalStorage;
+    late MockCacheService mockCacheService;
+    late MockOfflineCacheManager mockOfflineCacheManager;
     late StreamController<supabase.AuthState> authStateController;
 
     final mockUser = supabase.User(
@@ -41,9 +137,14 @@ void main() {
     });
 
     setUp(() {
+      // Clear any stale Mockito stub-recording state from previous test tearDown
+      resetMockitoState();
+
       mockAuthService = MockFactory.createAuthService();
       mockDatabaseService = MockFactory.createDatabaseService();
       mockLocalStorage = MockFactory.createLocalStorageService();
+      mockCacheService = MockFactory.createCacheService();
+      mockOfflineCacheManager = MockOfflineCacheManager();
 
       authStateController = StreamController<supabase.AuthState>.broadcast();
 
@@ -56,16 +157,25 @@ void main() {
       when(mockLocalStorage.setBool(any, any)).thenAnswer((_) async {});
       when(mockLocalStorage.getString(any)).thenReturn(null);
       when(mockLocalStorage.setString(any, any)).thenAnswer((_) async {});
+      when(mockLocalStorage.clearAll()).thenAnswer((_) async {});
       when(mockLocalStorage.remove(any)).thenAnswer((_) async {});
       when(mockLocalStorage.get(any)).thenReturn(null);
       when(mockLocalStorage.put(any, any)).thenAnswer((_) async {});
       when(mockLocalStorage.setObject(any, any)).thenAnswer((_) async {});
+
+      when(mockCacheService.isInitialized).thenReturn(true);
+      when(mockCacheService.clear()).thenAnswer((_) async {});
+      
+      when(mockOfflineCacheManager.isInitialized).thenReturn(true);
+      when(mockOfflineCacheManager.clearQueue()).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
           authServiceProvider.overrideWithValue(mockAuthService),
           databaseServiceProvider.overrideWithValue(mockDatabaseService),
           localStorageServiceProvider.overrideWithValue(mockLocalStorage),
+          cacheServiceProvider.overrideWithValue(mockCacheService),
+          offlineCacheManagerProvider.overrideWithValue(mockOfflineCacheManager),
         ],
       );
 
@@ -75,9 +185,6 @@ void main() {
     tearDown(() {
       authStateController.close();
       container.dispose();
-      reset(mockAuthService);
-      reset(mockDatabaseService);
-      reset(mockLocalStorage);
     });
 
     group('Initial State', () {
@@ -101,6 +208,8 @@ void main() {
             authServiceProvider.overrideWithValue(mockAuthService),
             databaseServiceProvider.overrideWithValue(mockDatabaseService),
             localStorageServiceProvider.overrideWithValue(mockLocalStorage),
+            cacheServiceProvider.overrideWithValue(mockCacheService),
+            offlineCacheManagerProvider.overrideWithValue(mockOfflineCacheManager),
           ],
         );
         notifier = container.read(authProvider.notifier);
@@ -285,7 +394,6 @@ void main() {
     group('signOut', () {
       test('successfully signs out', () async {
         when(mockAuthService.signOut()).thenAnswer((_) async => {});
-        when(mockLocalStorage.remove(any)).thenAnswer((_) async => {});
 
         await notifier.signOut();
 
@@ -293,7 +401,9 @@ void main() {
         expect(notifier.state.user, isNull);
         expect(notifier.state.session, isNull);
         verify(mockAuthService.signOut()).called(1);
-        verify(mockLocalStorage.remove(any)).called(1);
+        verify(mockLocalStorage.clearAll()).called(1);
+        verify(mockCacheService.clear()).called(1);
+        verify(mockOfflineCacheManager.clearQueue()).called(1);
       });
 
       test('handles sign out error', () async {

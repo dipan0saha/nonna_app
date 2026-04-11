@@ -5,21 +5,6 @@ import '../middleware/error_handler.dart';
 import '../network/interceptors/auth_interceptor.dart';
 import '../network/supabase_client.dart';
 
-/// Custom exception for database operations that preserves the original error
-class DatabaseException implements Exception {
-  final String message;
-  final Object? originalException;
-  final StackTrace? stackTrace;
-
-  DatabaseException(
-    this.message, {
-    this.originalException,
-    this.stackTrace,
-  });
-
-  @override
-  String toString() => message;
-}
 
 /// Database service for typed query execution and transaction support
 ///
@@ -56,21 +41,9 @@ class DatabaseService {
     String table,
     Map<String, dynamic> data,
   ) async {
-    return await _authInterceptor.executeWithRetry(() async {
-      try {
-        final response = await _client.from(table).insert(data).select();
-
-        return response;
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error inserting into $table: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+    return await _authInterceptor.executeWithRetry(
+      () async => await _client.from(table).insert(data).select(), operationName: 'inserting into',
+    );
   }
 
   /// Insert multiple rows into a table
@@ -81,21 +54,9 @@ class DatabaseService {
     String table,
     List<Map<String, dynamic>> data,
   ) async {
-    return await _authInterceptor.executeWithRetry(() async {
-      try {
-        final response = await _client.from(table).insert(data).select();
-
-        return response;
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error inserting multiple rows into $table: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+    return await _authInterceptor.executeWithRetry(
+      () async => await _client.from(table).insert(data).select(), operationName: 'inserting multiple rows into',
+    );
   }
 
   /// Update data in a table
@@ -120,25 +81,15 @@ class DatabaseService {
     Map<String, dynamic> data, {
     String? onConflict,
   }) async {
-    return await _authInterceptor.executeWithRetry(() async {
-      try {
+    return await _authInterceptor.executeWithRetry(
+      () async {
         final query = onConflict != null
             ? _client.from(table).upsert(data, onConflict: onConflict)
             : _client.from(table).upsert(data);
-
-        final response = await query.select();
-
-        return response;
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error upserting into $table: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+        return await query.select();
+      }, 
+      operationName: 'upserting into $table',
+    );
   }
 
   /// Upsert multiple rows into a table
@@ -151,25 +102,15 @@ class DatabaseService {
     List<Map<String, dynamic>> data, {
     String? onConflict,
   }) async {
-    return await _authInterceptor.executeWithRetry(() async {
-      try {
+    return await _authInterceptor.executeWithRetry(
+      () async {
         final query = onConflict != null
             ? _client.from(table).upsert(data, onConflict: onConflict)
             : _client.from(table).upsert(data);
-
-        final response = await query.select();
-
-        return response;
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error upserting multiple rows into $table: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+        return await query.select();
+      }, 
+      operationName: 'upserting multiple rows into $table',
+    );
   }
 
   /// Delete data from a table
@@ -192,19 +133,9 @@ class DatabaseService {
     String functionName, {
     Map<String, dynamic>? params,
   }) async {
-    return await _authInterceptor.executeWithRetry(() async {
-      try {
-        return await _client.rpc(functionName, params: params);
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error executing RPC $functionName: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+    return await _authInterceptor.executeWithRetry(
+      () async => await _client.rpc(functionName, params: params), operationName: 'executing RPC',
+    );
   }
 
   // ==========================================
@@ -228,8 +159,7 @@ class DatabaseService {
     bool ascending = true,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      try {
-        final from = page * pageSize;
+      final from = page * pageSize;
         final to = from + pageSize - 1;
 
         dynamic query = _client.from(table).select(columns);
@@ -250,16 +180,7 @@ class DatabaseService {
           totalCount: totalCount,
           totalPages: (totalCount / pageSize).ceil(),
         );
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error getting paginated data from $table: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+    }, operationName: 'getting paginated data from');
   }
 
   // ==========================================
@@ -275,18 +196,8 @@ class DatabaseService {
     Map<String, dynamic>? params,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      try {
-        await _client.rpc(transactionFunctionName, params: params);
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error executing transaction: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+      await _client.rpc(transactionFunctionName, params: params);
+    }, operationName: 'executing transaction');
   }
 
   // ==========================================
@@ -304,8 +215,7 @@ class DatabaseService {
     int batchSize = 100,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      try {
-        for (var i = 0; i < data.length; i += batchSize) {
+      for (var i = 0; i < data.length; i += batchSize) {
           final end =
               (i + batchSize < data.length) ? i + batchSize : data.length;
           final batch = data.sublist(i, end);
@@ -315,16 +225,7 @@ class DatabaseService {
           debugPrint(
               '✅ Inserted batch ${i ~/ batchSize + 1} (${batch.length} items)');
         }
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error in batch insert: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+    }, operationName: 'in batch insert');
   }
 
   // ==========================================
@@ -341,43 +242,23 @@ class DatabaseService {
     required String column,
     required dynamic value,
   }) async {
-    return await _authInterceptor.executeWithRetry(() async {
-      try {
+    return await _authInterceptor.executeWithRetry(
+      () async {
         final response =
             await _client.from(table).select('id').eq(column, value).limit(1);
-
         return (response as List).isNotEmpty;
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error checking existence in $table: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+      }, 
+      operationName: 'checking existence in $table',
+    );
   }
 
   /// Count records in a table
   ///
   /// [table] The table name
   Future<int> count(String table) async {
-    return await _authInterceptor.executeWithRetry(() async {
-      try {
-        final response = await _client.from(table).count();
-
-        return response;
-      } catch (e, stackTrace) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error counting records in $table: $message');
-        throw DatabaseException(
-          message,
-          originalException: e,
-          stackTrace: stackTrace,
-        );
-      }
-    });
+    return await _authInterceptor.executeWithRetry(
+      () async => await _client.from(table).count(), operationName: 'counting records in',
+    );
   }
 }
 

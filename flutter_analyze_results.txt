@@ -1,4 +1,5 @@
 Analyzing nonna_app...                                          
 
+warning • Unused import: '../middleware/error_handler.dart' • lib/core/services/database_service.dart:4:8 • unused_import
 warning • The value of the local variable 'error' isn't used • test/core/widgets/error_boundary_test.dart:22:13 • unused_local_variable
 

@@ -17,11 +17,15 @@ import 'analytics_service.dart';
 /// Handles photo compression, upload to Supabase Storage, and URL generation
 class StorageService {
   final SupabaseClient _supabase;
+  final AnalyticsService _analytics;
   final ImagePicker _picker = ImagePicker();
   late final AuthInterceptor _authInterceptor;
 
-  StorageService([SupabaseClient? client])
-      : _supabase = client ?? Supabase.instance.client {
+  StorageService({
+    SupabaseClient? supabase,
+    AnalyticsService? analytics,
+  })  : _supabase = supabase ?? Supabase.instance.client,
+        _analytics = analytics ?? AnalyticsService.instance {
     _authInterceptor = AuthInterceptor(_supabase);
   }
 
@@ -148,8 +152,7 @@ class StorageService {
     required String bucket,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      try {
-        final file = File(filePath);
+      final file = File(filePath);
         if (!await file.exists()) {
           throw Exception('File not found: $filePath');
         }
@@ -190,12 +193,7 @@ class StorageService {
         debugPrint('✅ File uploaded successfully: $publicUrl');
 
         return publicUrl;
-      } catch (e) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error uploading file: $message');
-        throw Exception(message);
-      }
-    });
+    }, operationName: 'uploading file');
   }
 
   /// Upload photo to gallery bucket
@@ -206,8 +204,7 @@ class StorageService {
     List<String>? tags,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      try {
-        // Validate file
+      // Validate file
         _validateImageFile(imageFile);
 
         // Read image bytes
@@ -229,7 +226,7 @@ class StorageService {
             );
 
         // Log analytics event
-        await AnalyticsService.instance.logPhotoUploaded(
+        await _analytics.logPhotoUploaded(
           babyProfileId: babyProfileId,
           hasCaption: caption != null && caption.isNotEmpty,
           hasTags: tags != null && tags.isNotEmpty,
@@ -237,12 +234,7 @@ class StorageService {
         );
 
         return storagePath;
-      } catch (e) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error uploading gallery photo: $message');
-        throw Exception(message);
-      }
-    });
+    }, operationName: 'uploading gallery photo');
   }
 
   /// Upload user avatar
@@ -251,8 +243,7 @@ class StorageService {
     required String userId,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      try {
-        _validateImageFile(imageFile);
+      _validateImageFile(imageFile);
 
         final imageBytes = await imageFile.readAsBytes();
         final fileName = '${const Uuid().v4()}.jpg';
@@ -268,12 +259,7 @@ class StorageService {
             );
 
         return storagePath;
-      } catch (e) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error uploading user avatar: $message');
-        throw Exception(message);
-      }
-    });
+    }, operationName: 'uploading user avatar');
   }
 
   /// Upload baby profile photo
@@ -282,8 +268,7 @@ class StorageService {
     required String babyProfileId,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      try {
-        _validateImageFile(imageFile);
+      _validateImageFile(imageFile);
 
         final imageBytes = await imageFile.readAsBytes();
         final fileName = '${const Uuid().v4()}.jpg';
@@ -299,12 +284,7 @@ class StorageService {
             );
 
         return storagePath;
-      } catch (e) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error uploading baby profile photo: $message');
-        throw Exception(message);
-      }
-    });
+    }, operationName: 'uploading baby profile photo');
   }
 
   /// Upload event cover photo
@@ -313,8 +293,7 @@ class StorageService {
     required String babyProfileId,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      try {
-        _validateImageFile(imageFile);
+      _validateImageFile(imageFile);
 
         final imageBytes = await imageFile.readAsBytes();
         final fileName = '${const Uuid().v4()}.jpg';
@@ -330,12 +309,7 @@ class StorageService {
             );
 
         return storagePath;
-      } catch (e) {
-        final message = ErrorHandler.mapErrorToMessage(e);
-        debugPrint('❌ Error uploading event photo: $message');
-        throw Exception(message);
-      }
-    });
+    }, operationName: 'uploading event photo');
   }
 
   // ==========================================
