@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nonna_app/core/middleware/error_handler.dart';
 import 'package:nonna_app/core/network/interceptors/auth_interceptor.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../mocks/mock_services.mocks.dart';
 import '../../../helpers/mock_factory.dart';
@@ -133,13 +135,14 @@ void main() {
         expect(result, 'success');
       });
 
-      test('retries on generic error and succeeds', () async {
+      test('retries on retryable error and succeeds', () async {
         var attempts = 0;
         final result = await authInterceptor.executeWithRetry<String>(
           () async {
             attempts++;
             if (attempts < 2) {
-              throw Exception('Temporary error');
+              // PostgrestException with 'timeout' in the message IS retryable
+              throw PostgrestException(message: 'Request timeout', code: '500');
             }
             return 'success';
           },
@@ -149,12 +152,22 @@ void main() {
         expect(attempts, 2);
       });
 
-      test('throws error after max retries', () async {
+      test('throws AppException for non-retryable error', () async {
         expect(
           () => authInterceptor.executeWithRetry<String>(
-            () async => throw Exception('Persistent error'),
+            () async => throw Exception('Non-retryable error'),
           ),
-          throwsA(isA<Exception>()),
+          throwsA(isA<AppException>()),
+        );
+      });
+
+      test('throws AppException after max retries exhausted', () async {
+        expect(
+          () => authInterceptor.executeWithRetry<String>(
+            () async =>
+                throw PostgrestException(message: 'timeout', code: '500'),
+          ),
+          throwsA(isA<AppException>()),
         );
       });
     });

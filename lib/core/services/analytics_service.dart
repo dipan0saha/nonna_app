@@ -12,22 +12,35 @@ class AnalyticsService {
     return _instance!;
   }
   AnalyticsService._internal([FirebaseAnalytics? analytics])
-      : _analytics = analytics ?? FirebaseAnalytics.instance;
+      : _analytics = analytics ?? _tryGetFirebaseAnalytics();
+
+  /// Safely attempt to get FirebaseAnalytics.instance.
+  /// Returns null when Firebase has not been initialized (e.g. in unit tests).
+  static FirebaseAnalytics? _tryGetFirebaseAnalytics() {
+    try {
+      return FirebaseAnalytics.instance;
+    } catch (e) {
+      debugPrint('⚠️  Firebase Analytics not available: $e');
+      return null;
+    }
+  }
 
   static AnalyticsService get instance => AnalyticsService();
 
-  final FirebaseAnalytics _analytics;
+  final FirebaseAnalytics? _analytics;
   bool _isEnabled = false;
 
   /// Get Firebase Analytics observer for navigation tracking
-  FirebaseAnalyticsObserver get observer {
-    return FirebaseAnalyticsObserver(analytics: _analytics);
+  FirebaseAnalyticsObserver? get observer {
+    final analytics = _analytics;
+    if (analytics == null) return null;
+    return FirebaseAnalyticsObserver(analytics: analytics);
   }
 
   /// Enable analytics collection (with user consent)
   Future<void> enable() async {
     try {
-      await _analytics.setAnalyticsCollectionEnabled(true);
+      await _analytics?.setAnalyticsCollectionEnabled(true);
       _isEnabled = true;
       debugPrint('✅ Analytics enabled');
     } catch (e) {
@@ -41,7 +54,7 @@ class AnalyticsService {
   /// Disable analytics collection (user opt-out)
   Future<void> disable() async {
     try {
-      await _analytics.setAnalyticsCollectionEnabled(false);
+      await _analytics?.setAnalyticsCollectionEnabled(false);
       _isEnabled = false;
       debugPrint('✅ Analytics disabled');
     } catch (e) {
@@ -63,7 +76,7 @@ class AnalyticsService {
   Future<void> logSignUp({required String signUpMethod}) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logSignUp(signUpMethod: signUpMethod);
+      await _analytics?.logSignUp(signUpMethod: signUpMethod);
     } catch (e) {
       debugPrint('❌ Error logging signup: $e');
       await ObservabilityService.captureException(e,
@@ -75,7 +88,7 @@ class AnalyticsService {
   Future<void> logLogin({required String loginMethod}) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logLogin(loginMethod: loginMethod);
+      await _analytics?.logLogin(loginMethod: loginMethod);
     } catch (e) {
       debugPrint('❌ Error logging login: $e');
       await ObservabilityService.captureException(e,
@@ -95,7 +108,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'baby_profile_created',
         parameters: {
           'baby_profile_id': babyProfileId,
@@ -115,7 +128,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'baby_profile_followed',
         parameters: {
           'baby_profile_id': babyProfileId,
@@ -140,7 +153,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'photo_uploaded',
         parameters: {
           'baby_profile_id': babyProfileId,
@@ -161,7 +174,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'photo_viewed',
         parameters: {'photo_id': photoId, 'baby_profile_id': babyProfileId},
       );
@@ -178,7 +191,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'photo_commented',
         parameters: {
           'photo_id': photoId,
@@ -198,7 +211,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'photo_squished',
         parameters: {'photo_id': photoId, 'baby_profile_id': babyProfileId},
       );
@@ -220,7 +233,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'event_created',
         parameters: {
           'event_id': eventId,
@@ -242,7 +255,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'event_rsvp',
         parameters: {
           'event_id': eventId,
@@ -268,7 +281,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'registry_item_added',
         parameters: {
           'item_id': itemId,
@@ -290,7 +303,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'registry_item_purchased',
         parameters: {
           'item_id': itemId,
@@ -314,7 +327,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'invitation_sent',
         parameters: {
           'baby_profile_id': babyProfileId,
@@ -333,7 +346,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logEvent(
+      await _analytics?.logEvent(
         name: 'invitation_accepted',
         parameters: {
           'baby_profile_id': babyProfileId,
@@ -353,7 +366,7 @@ class AnalyticsService {
   Future<void> setUserId(String userId) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.setUserId(id: userId);
+      await _analytics?.setUserId(id: userId);
     } catch (e) {
       debugPrint('❌ Error setting user ID: $e');
     }
@@ -366,7 +379,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.setUserProperty(name: name, value: value);
+      await _analytics?.setUserProperty(name: name, value: value);
     } catch (e) {
       debugPrint('❌ Error setting user property: $e');
     }
@@ -383,7 +396,7 @@ class AnalyticsService {
   }) async {
     if (!_isEnabled) return;
     try {
-      await _analytics.logScreenView(
+      await _analytics?.logScreenView(
         screenName: screenName,
         screenClass: screenClass ?? screenName,
       );
