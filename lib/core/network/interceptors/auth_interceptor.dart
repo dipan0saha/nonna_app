@@ -92,6 +92,7 @@ class AuthInterceptor {
     final contextMsg = operationName != null ? 'Error in $operationName: $message' : message;
     
     debugPrint('❌ $contextMsg');
+    debugPrint('❌ ORIGINAL EXCEPTION: $e');
     ErrorHandler.reportWithContext(e, {'operation': operationName ?? 'unknown'}, stackTrace: stackTrace);
     
     throw AppException(

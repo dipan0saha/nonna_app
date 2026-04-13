@@ -42,6 +42,7 @@ GRANT EXECUTE ON FUNCTION public.is_baby_owner(uuid, uuid) TO authenticated;
 -- Photo/Event/Registry Helper Functions
 -- ========================================
 
+DROP FUNCTION IF EXISTS is_photo_member(uuid, uuid) CASCADE;
 CREATE OR REPLACE FUNCTION is_photo_member(user_id uuid, photo_id uuid)
 RETURNS BOOLEAN
 LANGUAGE sql
@@ -58,6 +59,7 @@ AS $$
   );
 $$;
 
+DROP FUNCTION IF EXISTS is_photo_owner(uuid, uuid) CASCADE;
 CREATE OR REPLACE FUNCTION is_photo_owner(user_id uuid, photo_id uuid)
 RETURNS BOOLEAN
 LANGUAGE sql
@@ -75,6 +77,7 @@ AS $$
   );
 $$;
 
+DROP FUNCTION IF EXISTS is_event_member(uuid, uuid) CASCADE;
 CREATE OR REPLACE FUNCTION is_event_member(user_id uuid, event_id uuid)
 RETURNS BOOLEAN
 LANGUAGE sql
@@ -91,6 +94,7 @@ AS $$
   );
 $$;
 
+DROP FUNCTION IF EXISTS is_registry_item_member(uuid, uuid) CASCADE;
 CREATE OR REPLACE FUNCTION is_registry_item_member(user_id uuid, registry_item_id uuid)
 RETURNS BOOLEAN
 LANGUAGE sql

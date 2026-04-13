@@ -5,6 +5,9 @@ import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
+import 'package:nonna_app/core/router/app_router.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
@@ -128,9 +131,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildBody(HomeScreenState state) {
     // No profile or role configured yet
     if (widget.babyProfileId == null || widget.userRole == null) {
-      return const EmptyState(
+      return EmptyState(
         message: 'Select a baby profile to get started',
         icon: Icons.child_care,
+        actionLabel: 'Create Profile',
+        onAction: () {
+          final userId = ref.read(authProvider).user?.id ?? '';
+          context.push(AppRoutes.babyProfileCreate, extra: {'userId': userId});
+        },
       );
     }
 

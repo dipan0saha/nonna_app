@@ -1,9 +1,10 @@
 # Nonna App Project Structure (Dynamic Tile-Based Architecture)
 
-**Document Version**: 2.3
-**Last Updated**: February 23, 2026
+**Document Version**: 2.4
+**Last Updated**: April 13, 2026
 **Location**: `docs/99_master_reference_docs/App_Structure_Nonna.md`
-**Status**: Living Document - Updated to reflect current implementation state
+**Status**: Living Document - Updated to reflect current implementation state (including in-progress integrations)
+
 
 This structure is optimized for the Nonna app's dynamic, tile-based UI with role-driven content, Supabase backend, and support for owner/follower aggregation. Tiles are parameterized, reusable widgets placed at the top level (`lib/tiles/`) for maximum reusability across screens, while features handle screen-specific logic and composition.
 
@@ -11,9 +12,10 @@ This structure is optimized for the Nonna app's dynamic, tile-based UI with role
 
 **IMPORTANT**: This document describes both the **current state** and **planned architecture** of the Nonna App. All core development components have been implemented.
 
-### Current State (As of February 23, 2026)
+### Current State (As of April 13, 2026)
 
-All core development components are implemented: core infrastructure, tiles layer, features layer, navigation, offline-first support, and all 15 tile widgets:
+Core infrastructure, tiles layer, and features layer are implemented. **Note**: The dynamic `TileFactory` integration in the `HomeScreen` is currently being refactored/implemented; screens currently use a simplified tile list view.
+
 
 ```
 nonna_app/
@@ -44,9 +46,11 @@ nonna_app/
 │   │   ├── auth/                 # Authentication feature
 │   │   ├── baby_profile/         # Baby profile management
 │   │   ├── calendar/             # Calendar feature
+│   │   ├── fun/                  # Legacy/Placeholder feature
 │   │   ├── gallery/              # Photo gallery feature
 │   │   ├── gamification/         # Gamification (name suggestions, voting)
 │   │   ├── home/                 # Home screen feature
+│   │   ├── photo_gallery/        # Placeholder/Refactoring feature
 │   │   ├── profile/              # User profile feature
 │   │   ├── registry/             # Registry feature
 │   │   └── settings/             # App settings feature
@@ -79,16 +83,21 @@ nonna_app/
 │   ├── tiles/                    # Tile layer tests
 │   └── helpers/                  # Test helpers
 ├── docs/                         # Comprehensive documentation
-├── supabase/                     # Supabase configuration and migrations
-├── android/, ios/, linux/, macos/, windows/  # Platform-specific code
-└── discovery/                    # Discovery phase documentation
+├── supabase/                     # Supabase configuration, migrations, and tests
+│   ├── migrations/
+│   ├── functions/
+│   ├── tests/                    # Database and RLS tests
+│   └── monitoring/               # Performance monitoring scripts
+├── android/, ios/, linux/, macos/, windows/, web/  # Platform-specific code
+└── scripts/                      # Build, deploy, and utility scripts
 ```
 
-**Current Development Status**: All core development components complete as of February 23, 2026.
-- All 15 tile widgets implemented with providers and widget tests
-- All feature screens implemented (auth, home, calendar, gallery, registry, profile, baby profile, gamification, settings)
-- Navigation, offline-first, error boundaries, network failure handling all implemented
-- Comprehensive test coverage across all layers
+**Current Development Status**: Core development components are largely complete as of April 13, 2026.
+- All 15 tile widgets implemented with providers and widget tests.
+- All core feature screens implemented (auth, home, calendar, gallery, registry, profile, baby profile, gamification, settings).
+- Navigation, offline-first, error boundaries, and network failure handling are implemented.
+- **In Progress**: Centralized `TileFactory` and dynamic screen configuration are currently being refactored for better decoupling.
+- Comprehensive test coverage across all layers.
 
 ## Architecture Overview
 
@@ -121,10 +130,15 @@ nonna_app/
 │   └── ISSUE_TEMPLATE/
 ├── supabase/                 # Supabase configuration
 │   ├── migrations/          # Database migrations
-│   ├── functions/           # Edge functions (e.g., /tile-configs)
+│   ├── functions/           # Edge functions
+│   ├── tests/               # Database/RLS unit tests
+│   ├── monitoring/          # Grafana/Dashboards/Monitoring
+│   ├── docs/                # Database-specific documentation
+│   ├── tools/               # Internal DB management tools
 │   ├── config.toml
-│   └── seed.sql            # Seed data for development
+│   └── seed/                # Seed data for development
 ├── config/                   # Environment files
+│   ├── .env
 │   ├── .env.example
 │   ├── .env.dev
 │   └── .env.prod
@@ -240,7 +254,7 @@ nonna_app/
 │   │   │   │   ├── tile_params.dart      # Parameters for tile queries
 │   │   │   │   └── tile_state.dart       # Common tile state (loading, error, data)
 │   │   │   ├── widgets/
-│   │   │   │   ├── tile_factory.dart     # Instantiates tiles based on configs
+│   │   │   │   ├── tile_factory.dart     # [IN PROGRESS] Instantiates tiles based on configs
 │   │   │   │   ├── base_tile.dart        # Abstract base for all tiles
 │   │   │   │   └── tile_container.dart   # Common tile wrapper (padding, styling)
 │   │   │   ├── providers/
@@ -720,7 +734,10 @@ nonna_app/
 │   │   │   │   │   ├── invite_followers_screen.dart
 │   │   │   │   │   └── followers_management_screen.dart
 │   │   │   │   └── widgets/
-│   │   │   │       └── baby_profile_widgets.dart
+│   │   │   │   └── baby_profile_widgets.dart
+│   │   │
+│   │   ├── fun/                  # Legacy/Placeholder
+│   │   └── photo_gallery/        # Placeholder/Refactoring
 │   │
 │   ├── main.dart                 # App entry point
 │
@@ -754,10 +771,8 @@ nonna_app/
 │       └── ...
 │
 ├── integration_test/             # Full app integration tests
-│   ├── app_flow_test.dart        # Complete user journeys
-│   ├── owner_flow_test.dart      # Owner-specific flows
-│   ├── follower_flow_test.dart   # Follower-specific flows
-│   └── tile_interaction_test.dart
+│   ├── third_party_connectivity_test.dart # Connectivity checks (Firebase, Supabase, etc.)
+│   └── ...                       # Flow-based tests [IN PROGRESS/REFACTORING]
 │
 ├── assets/                       # Static resources
 │   ├── images/

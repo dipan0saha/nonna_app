@@ -145,7 +145,12 @@ class AppInitializationService {
 
   /// Initialize OneSignal Push Notifications
   static Future<void> _initializeOneSignal() async {
-    await OneSignalConfig.initialize();
+    await OneSignalConfig.initialize().timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        debugPrint('⚠️ OneSignal initialization timed out');
+      },
+    );
     debugPrint('✅ OneSignal initialized');
   }
 

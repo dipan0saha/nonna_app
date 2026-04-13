@@ -1,5 +1,10 @@
 Analyzing nonna_app...                                          
 
+warning • Unused import: 'package:flutter/material.dart' • integration_test/events_integration_test.dart:1:8 • unused_import
+warning • Unused import: 'package:flutter/material.dart' • integration_test/gallery_integration_test.dart:1:8 • unused_import
+warning • Unused import: 'package:flutter/material.dart' • integration_test/gamification_integration_test.dart:1:8 • unused_import
+warning • Unused import: 'package:flutter/material.dart' • integration_test/registry_integration_test.dart:1:8 • unused_import
+warning • The operand can't be 'null', so the condition is always 'true' • integration_test/third_party_connectivity_test.dart:47:41 • unnecessary_null_comparison
 warning • Unused import: '../middleware/error_handler.dart' • lib/core/services/database_service.dart:4:8 • unused_import
 warning • The value of the local variable 'error' isn't used • test/core/widgets/error_boundary_test.dart:22:13 • unused_local_variable
 
