@@ -1,6 +1,6 @@
 # Makefile for Local CI/CD
 
-.PHONY: help doctor deps format analyze test build-android build-ios build-web ci all clean run test-integration coverage-report pre-commit lint-fix test-all test-update test-quick
+.PHONY: help doctor deps format analyze test build-android build-ios build-web ci all clean run test-integration test-integration-android test-integration-ios test-integration-auto coverage-report pre-commit lint-fix test-all test-update test-quick
 
 # Default target
 help:
@@ -16,7 +16,10 @@ help:
 	@echo "  test-all       - Run all test subcategories and update automated_tests/TEST_COMMANDS.md"
 	@echo "  test-update    - Same as test-all"
 	@echo "  test-quick     - Run quick tests on specific category (example: make test-quick CATEGORY=core)"
-	@echo "  test-integration - Run integration tests"
+	@echo "  test-integration - Run integration tests (automated with emulator management)"
+	@echo "  test-integration-android - Run integration tests on Android device/emulator"
+	@echo "  test-integration-ios - Run integration tests on iOS simulator"
+	@echo "  test-integration-auto - Auto-manage emulator and run tests (recommended)"
 	@echo "  pre-commit     - Run pre-commit hooks"
 	@echo "  coverage-report - Generate HTML coverage report"
 	@echo "  clean          - Clean build artifacts"
@@ -124,10 +127,36 @@ lint-fix:
 	dart fix --apply
 	@echo "✅ Auto-fixable lints applied"
 
-# Run integration tests
-test-integration:
-	flutter test integration_test/
+# Run integration tests (automated with emulator management)
+test-integration-auto:
+	@chmod +x run_integration_tests.sh
+	./run_integration_tests.sh
+
+# Run integration tests on Android device/emulator (device must be already running)
+test-integration-android:
+	@DEVICE=$$(adb devices | grep "device$$" | awk '{print $$1}' | head -1); \
+	if [ -z "$$DEVICE" ]; then \
+		echo "❌ No Android device/emulator connected"; \
+		echo "   Start emulator first or connect a device"; \
+		exit 1; \
+	fi; \
+	echo "Running tests on $$DEVICE..."; \
+	flutter test integration_test/app_test.dart -d "$$DEVICE" --verbose
 	@echo "✅ Integration tests completed"
+
+# Run integration tests on iOS simulator
+test-integration-ios:
+	@DEVICE=$$(xcrun simctl list devices available | grep -E "Booted|Ready" | awk '{print $$1}' | head -1); \
+	if [ -z "$$DEVICE" ]; then \
+		echo "⚠️  No iOS simulator found running"; \
+		echo "   Start a simulator first"; \
+		exit 1; \
+	fi; \
+	flutter test integration_test/app_test.dart -d simulator --verbose
+	@echo "✅ Integration tests completed"
+
+# Alias for test-integration-auto (recommended for local development)
+test-integration: test-integration-auto
 
 # Run pre-commit checks
 pre-commit:
