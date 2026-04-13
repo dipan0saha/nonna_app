@@ -108,8 +108,8 @@ class AuthNotifier extends Notifier<AuthState> {
 
       // Fetch user model from database
       final response = await databaseService
-          .select(SupabaseTables.users)
-          .eq(SupabaseTables.id, user.id)
+          .select(SupabaseTables.userProfiles)
+          .eq(SupabaseTables.userId, user.id)
           .maybeSingle();
       if (!ref.mounted) return;
 

@@ -21,6 +21,7 @@ class AuthService {
 
   // Google Sign-In configuration
   final GoogleSignIn _googleSignIn = GoogleSignIn(
+    serverClientId: '905947106371-7locdmnoebo4fq8959bdbioh3nbib4ac.apps.googleusercontent.com',
     scopes: [
       'email',
       'profile',
