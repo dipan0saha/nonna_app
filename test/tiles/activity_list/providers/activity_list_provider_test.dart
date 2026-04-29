@@ -5,7 +5,7 @@ import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
-  group('EngagementRecapProvider Tests', () {
+  group('ActivityListProvider Tests', () {
     late MockServiceContainer mocks;
 
     setUp(() {

@@ -5,6 +5,9 @@ import 'package:nonna_app/core/models/user_stats.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/profile/presentation/providers/profile_provider.dart';
 import 'package:nonna_app/features/profile/presentation/widgets/profile_widgets.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nonna_app/core/router/app_router.dart';
 
 /// Profile screen showing user avatar, stats, and settings actions.
 ///
@@ -109,17 +112,29 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ProfileSettingsItem(
             icon: Icons.edit,
             label: 'Edit Profile',
-            onTap: widget.onEditTap ?? () {},
+            onTap: widget.onEditTap ??
+                () {
+                  context.push('${AppRoutes.profile}/edit',
+                      extra: {'userId': widget.userId});
+                },
           ),
           ProfileSettingsItem(
             icon: Icons.settings,
             label: 'Settings',
-            onTap: widget.onSettingsTap ?? () {},
+            onTap: widget.onSettingsTap ??
+                () {
+                  context.push(AppRoutes.settings);
+                },
           ),
           ProfileSettingsItem(
             icon: Icons.logout,
             label: 'Logout',
-            onTap: widget.onLogoutTap ?? () {},
+            onTap: widget.onLogoutTap ??
+                () async {
+                  final router = GoRouter.of(context);
+                  await ref.read(authProvider.notifier).signOut();
+                  router.go(AppRoutes.login);
+                },
             trailing: const Icon(Icons.logout, color: AppColors.error),
           ),
         ],
@@ -141,7 +156,7 @@ class _StatsSection extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: AppSpacing.s,
       mainAxisSpacing: AppSpacing.s,
-      childAspectRatio: 2.0,
+      childAspectRatio: 1.4,
       children: [
         ProfileStatCard(
           label: 'Events Attended',

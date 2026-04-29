@@ -107,9 +107,9 @@ The `HomeScreen` accepts `babyProfileId`, `userRole`, and `isDualRole` props and
 | `UpcomingEventsTile` | Home, Calendar |
 | `RecentPhotosTile` | Home, Gallery |
 | `RegistryHighlightsTile` | Home, Registry |
-| `DueDateCountdownTile` | Home |
+| `CountdownTile` | Home |
 | `ChecklistTile` | Home |
-| `EngagementRecapTile` | Home |
+| `ActivityListTile` | Home |
 | `GalleryFavoritesTile` | Home, Gallery |
 | `InvitesStatusTile` | Home |
 | `NewFollowersTile` | Home |
@@ -162,11 +162,10 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 - Supabase Edge Functions: `tile-configs`, `notification-trigger`, `image-processing`
 - Localization (English + Spanish)
 - Theming, error boundaries, offline cache and network failure handling
-
-### In Progress
-- **Centralized `TileFactory`** — dynamic tile instantiation from Supabase `tile_configs`/`screen_configs` tables. HomeScreen currently uses a simplified `TileListView` as an interim solution.
+- **Centralized `TileFactory`** — dynamic tile instantiation from Supabase `tile_configs`/`screen_configs` tables mapped to all 15 tile components.
 
 ### Pending (Production Readiness Checklist)
+- Implement `ConsumerStatefulWidget` smart wrappers for remaining 11 tiles inside `TileFactory`.
 - Unit test coverage to 80% minimum (sections 4.1–4.4)
 - Widget, integration, performance, and golden tests (sections 4.2–4.5)
 - App store deployment pipeline
@@ -179,7 +178,7 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 |---|---|
 | `lib/main.dart` | Entry point — initializes Supabase/Firebase/OneSignal, launches with `ProviderScope` |
 | `lib/core/router/app_router.dart` | GoRouter config with all named routes and auth redirect guards |
-| `lib/tiles/core/widgets/tile_factory.dart` | [IN PROGRESS] Dynamic tile instantiation from Supabase configs |
+| `lib/core/utils/tile_factory.dart` | Core utility for dynamic tile instantiation from Supabase configs |
 | `lib/features/home/presentation/screens/home_screen.dart` | Main screen composing tiles via `TileListView` |
 | `lib/core/services/app_initialization_service.dart` | Bootstraps all third-party SDKs with graceful degradation |
 | `lib/core/di/providers.dart` | Global Riverpod providers (auth, Supabase) |
@@ -187,3 +186,157 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 | `pubspec.yaml` | Dependency manifest |
 | `supabase/migrations/` | Database migration scripts |
 | `supabase/functions/` | Edge Functions (TypeScript/Deno) |
+
+---
+
+## Supabase Database Schema
+
+### Tables
+
+#### User Identity
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `profiles` | `user_id` (PK→auth), `display_name`, `avatar_url`, `biometric_enabled` | Public user profile; auto-created on signup |
+| `user_stats` | `user_id` (PK→auth), `events_attended_count`, `items_purchased_count`, `photos_squished_count`, `comments_added_count` | Engagement counters; auto-incremented by triggers |
+
+#### Baby Profile
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `baby_profiles` | `id`, `name`, `expected_birth_date`, `actual_birth_date`, `gender`, `profile_photo_url`, `created_by`, `deleted_at` | Core baby record; soft-deleted; `created_by` allows creator access before membership is set |
+| `baby_memberships` | `id`, `baby_profile_id`, `user_id`, `role` (`owner`/`follower`), `relationship_label`, `removed_at` | Links users to babies with role; max 2 owners enforced by trigger; soft-removed |
+| `invitations` | `id`, `baby_profile_id`, `invited_by_user_id`, `invitee_email`, `token_hash`, `expires_at`, `status` (`pending`/`accepted`/`revoked`/`expired`) | Token-based email invitations to join a baby profile |
+| `owner_update_markers` | `id`, `baby_profile_id` (UNIQUE), `tiles_last_updated_at`, `reason` | Timestamp of last content change per baby; drives tile cache invalidation |
+
+#### Photo Gallery
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `photos` | `id`, `baby_profile_id`, `uploaded_by_user_id`, `storage_path`, `thumbnail_path`, `caption`, `tags[]`, `deleted_at` | Photo uploads; soft-deleted |
+| `photo_squishes` | `id`, `photo_id`, `user_id` | "Squish" reactions (like/heart) on photos; unique per user per photo |
+| `photo_comments` | `id`, `photo_id`, `user_id`, `body`, `deleted_at` | Comments on photos; soft-deleted |
+| `photo_tags` | `id`, `photo_id`, `tag` | Free-form string tags applied to photos |
+
+#### Calendar & Events
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `events` | `id`, `baby_profile_id`, `created_by_user_id`, `title`, `starts_at`, `ends_at`, `description`, `location`, `video_link`, `cover_photo_url`, `deleted_at` | Calendar events; soft-deleted; max 2 per day per baby enforced by trigger |
+| `event_comments` | `id`, `event_id`, `user_id`, `body`, `deleted_at` | Comments on events; soft-deleted |
+| `event_rsvps` | `id`, `event_id`, `user_id`, `status` (`yes`/`no`/`maybe`) | RSVP per user per event; unique constraint |
+
+#### Registry
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `registry_items` | `id`, `baby_profile_id`, `created_by_user_id`, `name`, `description`, `link_url`, `priority` (1–5), `deleted_at` | Baby registry wishlist items; soft-deleted |
+| `registry_purchases` | `id`, `registry_item_id`, `purchased_by_user_id`, `purchased_at`, `note` | Records of purchased registry items |
+
+#### Gamification
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `votes` | `id`, `baby_profile_id`, `user_id`, `vote_type` (`gender`/`birthdate`), `value_text`, `value_date`, `is_anonymous` | Community predictions on gender or birth date |
+| `name_suggestions` | `id`, `baby_profile_id`, `user_id`, `suggested_name`, `gender`, `deleted_at` | User-submitted baby name suggestions; soft-deleted |
+| `name_suggestion_likes` | `id`, `name_suggestion_id`, `user_id` | Likes on name suggestions; unique per user per suggestion |
+
+#### Notifications
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `notifications` | `id`, `recipient_user_id`, `baby_profile_id`, `type`, `payload` (JSONB), `read_at` | In-app notifications; `read_at` null = unread |
+| `notification_preferences` | `user_id` (PK), `push_*` flags, `email_*` flags | Per-user toggle for push and email notifications |
+
+#### Tile System
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `screens` | `id`, `screen_name` (UNIQUE), `is_active` | Registry of app screens that can host tiles |
+| `tile_definitions` | `id`, `tile_type` (UNIQUE), `description`, `schema_params` (JSONB), `is_active` | Catalog of available tile types with their parameter schema |
+| `tile_configs` | `id`, `screen_id`, `tile_definition_id`, `role` (`owner`/`follower`), `display_order`, `is_visible`, `params` (JSONB) | Per-screen, per-role layout config for each tile |
+
+#### Activity & App Meta
+| Table | Key Columns | Purpose |
+|---|---|---|
+| `activity_events` | `id`, `baby_profile_id`, `actor_user_id`, `type`, `payload` (JSONB) | Audit log of user actions (feed/activity stream) |
+| `app_versions` | `id`, `platform`, `minimum_version`, `store_url`, `is_active` | Minimum required app version per platform for force-update checks |
+
+---
+
+### Storage Buckets
+
+| Bucket | Visibility | Max Size | Formats | Purpose |
+|---|---|---|---|---|
+| `user-avatars` | Public | 5 MB | JPEG, PNG, WebP | User profile photos |
+| `baby-profile-photos` | Public | 5 MB | JPEG, PNG, WebP | Baby profile cover photos |
+| `gallery-photos` | Private (RLS) | 10 MB | JPEG, PNG | Family photo gallery uploads |
+| `event-photos` | Private (RLS) | 10 MB | JPEG, PNG | Event cover/attachment photos |
+
+---
+
+### Database Triggers & Functions
+
+#### Auto-maintenance
+| Function / Trigger | Fires On | Purpose |
+|---|---|---|
+| `update_updated_at` | BEFORE UPDATE on all tables with `updated_at` | Keeps `updated_at` current automatically |
+| `handle_new_user` / `on_auth_user_created` | AFTER INSERT on `auth.users` | Auto-creates `profiles` and `user_stats` rows on signup |
+
+#### Content Change Markers
+| Function / Trigger | Fires On | Purpose |
+|---|---|---|
+| `update_photo_marker` / `photo_marker_trigger` | AFTER INSERT/UPDATE/DELETE on `photos` | Updates `owner_update_markers.tiles_last_updated_at` with `reason='photo_updated'` |
+| `update_event_marker` / `event_marker_trigger` | AFTER INSERT/UPDATE/DELETE on `events` | Same for `reason='event_updated'` |
+| `update_registry_marker` / `registry_marker_trigger` | AFTER INSERT/UPDATE/DELETE on `registry_items` | Same for `reason='registry_updated'` |
+
+#### Business Rule Enforcement
+| Function / Trigger | Fires On | Purpose |
+|---|---|---|
+| `enforce_max_two_owners` / `check_max_owners` | BEFORE INSERT/UPDATE on `baby_memberships` | Raises exception if a 3rd owner is added to a baby profile |
+| `enforce_max_two_events_per_day` / `check_max_events_per_day` | BEFORE INSERT/UPDATE on `events` | Raises exception if >2 events exist for the same baby on the same day |
+
+#### User Stat Counters
+| Function / Trigger | Fires On | Purpose |
+|---|---|---|
+| `increment_events_attended` / `count_event_rsvp` | AFTER INSERT/UPDATE on `event_rsvps` | +1 to `events_attended_count` when RSVP status becomes `yes` |
+| `increment_items_purchased` / `count_registry_purchase` | AFTER INSERT on `registry_purchases` | +1 to `items_purchased_count` |
+| `increment_photos_squished` / `count_photo_squish` | AFTER INSERT on `photo_squishes` | +1 to `photos_squished_count` |
+| `increment_comments_added` / `count_photo_comment` | AFTER INSERT on `photo_comments` | +1 to `comments_added_count` |
+
+#### RLS Helper Functions (SECURITY DEFINER)
+These break circular RLS dependencies and are used inside row-level security policies:
+
+| Function | Purpose |
+|---|---|
+| `is_baby_member(user_id, baby_profile_id)` | Returns true if user has an active (non-removed) membership |
+| `is_baby_owner(user_id, baby_profile_id)` | Returns true if user is an active owner |
+| `is_photo_member(user_id, photo_id)` | Returns true if user is a member of the baby profile the photo belongs to |
+| `is_photo_owner(user_id, photo_id)` | Returns true if user is an owner for the baby profile the photo belongs to |
+| `is_event_member(user_id, event_id)` | Returns true if user is a member of the baby profile the event belongs to |
+| `is_registry_item_member(user_id, registry_item_id)` | Returns true if user is a member of the baby profile the registry item belongs to |
+
+---
+
+### Edge Functions (Supabase/Deno)
+
+| Function | Status | Purpose |
+|---|---|---|
+| `tile-configs` | Implemented | Accepts `{babyProfileId, userRole, screenName}`. Returns role-filtered, screen-scoped tile configs from `tile_configs` table. Owners see all tiles; followers are restricted from `registry_highlights`, `registry_deals`, `storage_usage`. Response cached for 5 minutes. |
+| `notification-trigger` | Implemented | Accepts `{recipientUserId, notificationType, title, message, data, babyProfileId}`. Inserts into `notifications` table then delivers via OneSignal push (uses `ONESIGNAL_APP_ID` + `ONESIGNAL_API_KEY` env vars). |
+| `image-processing` | Implemented | Accepts `{imageUrl, bucketName, filePath, operations}`. Handles thumbnail generation, image optimization, and metadata extraction for Storage uploads. Uses `SUPABASE_SERVICE_ROLE_KEY`. |
+| `send-invitation-email` | Stub | Placeholder — not yet implemented. Intended to send invitation emails when an owner invites a follower. |
+| `send-push-notification` | Stub | Placeholder — not yet implemented. Intended as a direct push delivery endpoint separate from `notification-trigger`. |
+| `generate-thumbnail` | Stub | Placeholder — not yet implemented. Intended as a dedicated thumbnail generation pipeline. |
+
+---
+
+## Connecting to Supabase from Command Line
+
+**Setup:**
+```bash
+supabase login
+```
+
+**Query database:**
+```bash
+psql "postgresql://postgres.ubptybhhrgdiyfkcqgwu:LaNonnaApp24%21%21@aws-1-us-east-2.pooler.supabase.com:5432/postgres" \
+  -c "SELECT * FROM baby_profiles LIMIT 10;"
+```
+
+**Notes:**
+- Special chars in password: URL-encode (e.g., `!` → `%21`)
+- Use `-c` for single command, omit for interactive mode
+- Common commands: `\dt` (list tables), `\d table_name` (describe), `\q` (quit)

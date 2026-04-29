@@ -22,6 +22,8 @@ import '../../../../core/models/user_stats.dart';
 /// Dependencies: DatabaseService, CacheService, StorageService, User model
 
 /// Profile screen state model
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
+
 class ProfileState {
   final User? profile;
   final UserStats? stats;
@@ -218,6 +220,10 @@ class ProfileNotifier extends Notifier<ProfileState> {
         isEditMode: false,
         saveSuccess: true,
       );
+
+      // Force AuthProvider to refresh the global user profile so that elements like
+      // the Home screen app bar immediately reflect changes (such as the new avatar).
+      await ref.read(authProvider.notifier).refreshSession();
 
       debugPrint('✅ Profile updated successfully');
     } catch (e) {

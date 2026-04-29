@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
-import 'package:nonna_app/tiles/engagement_recap/providers/engagement_recap_provider.dart';
-import 'package:nonna_app/tiles/engagement_recap/widgets/engagement_recap_tile.dart';
+import 'package:nonna_app/tiles/activity_list/providers/activity_list_provider.dart';
+import 'package:nonna_app/tiles/activity_list/widgets/activity_list_tile.dart';
 
 EngagementMetrics _makeMetrics({
   int squishes = 10,
@@ -29,7 +29,7 @@ Widget _buildWidget({
 }) {
   return MaterialApp(
     home: Scaffold(
-      body: EngagementRecapTile(
+      body: ActivityListTile(
         metrics: metrics,
         isLoading: isLoading,
         error: error,
@@ -42,10 +42,10 @@ Widget _buildWidget({
 }
 
 void main() {
-  group('EngagementRecapTile', () {
+  group('ActivityListTile', () {
     testWidgets('renders with correct widget key', (tester) async {
       await tester.pumpWidget(_buildWidget());
-      expect(find.byKey(const Key('engagement_recap_tile')), findsOneWidget);
+      expect(find.byKey(const Key('activity_list_tile')), findsOneWidget);
     });
 
     testWidgets('shows shimmer when isLoading is true', (tester) async {

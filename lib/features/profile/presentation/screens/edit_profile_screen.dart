@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/profile/presentation/providers/profile_provider.dart';
 import 'package:nonna_app/features/profile/presentation/widgets/profile_widgets.dart';
 
@@ -25,7 +28,10 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late final TextEditingController _displayNameController;
+  final ImagePicker _picker = ImagePicker();
+  File? _selectedImage;
   bool _biometricEnabled = false;
+  bool _isUploadingPhoto = false;
   bool _initialized = false;
 
   @override
@@ -59,9 +65,34 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       return;
     }
 
+    String? avatarUrl = state.profile?.avatarUrl;
+
+    if (_selectedImage != null) {
+      setState(() => _isUploadingPhoto = true);
+      try {
+        final storagePath =
+            await ref.read(storageServiceProvider).uploadUserAvatar(
+                  imageFile: _selectedImage!,
+                  userId: widget.userId,
+                );
+        avatarUrl = ref
+            .read(storageServiceProvider)
+            .getPublicUrl('user-avatars', storagePath);
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error uploading photo: $e')),
+        );
+        setState(() => _isUploadingPhoto = false);
+        return;
+      }
+      if (mounted) setState(() => _isUploadingPhoto = false);
+    }
+
     await ref.read(profileProvider.notifier).updateProfile(
           userId: widget.userId,
           displayName: _displayNameController.text.trim(),
+          avatarUrl: avatarUrl,
         );
 
     if (!mounted) return;
@@ -71,8 +102,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
   }
 
-  void _onChangePhoto() {
-    // Photo change placeholder – not implemented in this version
+  Future<void> _onChangePhoto() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+    }
   }
 
   @override
@@ -92,11 +132,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               child: Stack(
                 alignment: Alignment.bottomRight,
                 children: [
-                  ProfileAvatar(
-                    avatarUrl: state.profile?.avatarUrl,
-                    displayName: state.profile?.displayName ?? '',
-                    radius: 48,
-                  ),
+                  _selectedImage != null
+                      ? CircleAvatar(
+                          radius: 48,
+                          backgroundImage: FileImage(_selectedImage!),
+                        )
+                      : ProfileAvatar(
+                          avatarUrl: state.profile?.avatarUrl,
+                          displayName: state.profile?.displayName ?? '',
+                          radius: 48,
+                        ),
                   FloatingActionButton.small(
                     onPressed: _onChangePhoto,
                     heroTag: 'change_photo',
@@ -130,8 +175,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ],
             AppSpacing.verticalGapL,
             ElevatedButton(
-              onPressed: state.isSaving ? null : () => _save(state),
-              child: state.isSaving
+              onPressed: (state.isSaving || _isUploadingPhoto)
+                  ? null
+                  : () => _save(state),
+              child: (state.isSaving || _isUploadingPhoto)
                   ? const SizedBox(
                       height: 20,
                       width: 20,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/photo.dart';
@@ -134,29 +135,40 @@ class _PhotoItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppSpacing.xs),
       child: Stack(
         children: [
-          // Photo thumbnail placeholder (coloured background)
+          // Photo thumbnail
           Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.primaryLight,
-                borderRadius: BorderRadius.circular(AppSpacing.xs),
-              ),
-              child: photo.caption != null
-                  ? Center(
-                      child: Padding(
-                        padding: AppSpacing.compactPadding,
-                        child: Text(
-                          photo.caption!,
-                          style: context.textTheme.bodySmall,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.xs),
+              child: CachedNetworkImage(
+                imageUrl: photo.storagePath,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  color: AppColors.primaryLight,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: AppColors.primaryLight,
+                  child: photo.caption != null
+                      ? Center(
+                          child: Padding(
+                            padding: AppSpacing.compactPadding,
+                            child: Text(
+                              photo.caption!,
+                              style: context.textTheme.bodySmall,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
+                      : const Center(
+                          child: Icon(Icons.broken_image,
+                              color: AppColors.primaryDark),
                         ),
-                      ),
-                    )
-                  : const Center(
-                      child: Icon(Icons.photo, color: AppColors.primaryDark),
-                    ),
+                ),
+              ),
             ),
           ),
           // Squish count overlay

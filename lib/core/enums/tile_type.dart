@@ -12,8 +12,8 @@
 /// - Photo tiles (recentPhotos, galleryFavorites)
 /// - Registry tiles (registryHighlights, recentPurchases, registryDeals)
 /// - Notification tiles (notifications, systemAnnouncements)
-/// - Status tiles (invitesStatus, dueDateCountdown, storageUsage)
-/// - Engagement tiles (engagementRecap, newFollowers)
+/// - Status tiles (invitesStatus, countdown, storageUsage)
+/// - Engagement tiles (activityList, newFollowers)
 /// - Utility tiles (checklist)
 ///
 /// Dependencies: None
@@ -37,7 +37,7 @@ enum TileType {
   rsvpTasks,
 
   /// Due date countdown tile - countdown to baby's due date
-  dueDateCountdown,
+  countdown,
 
   /// Recent purchases tile - recently purchased registry items
   recentPurchases,
@@ -46,7 +46,7 @@ enum TileType {
   registryDeals,
 
   /// Engagement recap tile - activity summary
-  engagementRecap,
+  activityList,
 
   /// Gallery favorites tile - favorited photos
   galleryFavorites,
@@ -89,13 +89,13 @@ enum TileType {
         return 'Invites Status';
       case TileType.rsvpTasks:
         return 'RSVP Tasks';
-      case TileType.dueDateCountdown:
+      case TileType.countdown:
         return 'Due Date Countdown';
       case TileType.recentPurchases:
         return 'Recent Purchases';
       case TileType.registryDeals:
         return 'Registry Deals';
-      case TileType.engagementRecap:
+      case TileType.activityList:
         return 'Engagement Recap';
       case TileType.galleryFavorites:
         return 'Gallery Favorites';
@@ -125,13 +125,13 @@ enum TileType {
         return 'Manage invitations';
       case TileType.rsvpTasks:
         return 'Events requiring RSVP';
-      case TileType.dueDateCountdown:
+      case TileType.countdown:
         return 'Countdown to baby\'s due date';
       case TileType.recentPurchases:
         return 'Recently purchased registry items';
       case TileType.registryDeals:
         return 'Special offers on registry items';
-      case TileType.engagementRecap:
+      case TileType.activityList:
         return 'Summary of recent activity';
       case TileType.galleryFavorites:
         return 'Your favorite photos';

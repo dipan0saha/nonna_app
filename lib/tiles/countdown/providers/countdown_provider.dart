@@ -37,23 +37,23 @@ class BabyCountdown {
 /// Dependencies: DatabaseService, CacheService, RealtimeService, BabyProfile model
 
 /// State class for due date countdown
-class DueDateCountdownState {
+class CountdownState {
   final List<BabyCountdown> countdowns;
   final bool isLoading;
   final String? error;
 
-  const DueDateCountdownState({
+  const CountdownState({
     this.countdowns = const [],
     this.isLoading = false,
     this.error,
   });
 
-  DueDateCountdownState copyWith({
+  CountdownState copyWith({
     List<BabyCountdown>? countdowns,
     bool? isLoading,
     String? error,
   }) {
-    return DueDateCountdownState(
+    return CountdownState(
       countdowns: countdowns ?? this.countdowns,
       isLoading: isLoading ?? this.isLoading,
       error: error,
@@ -64,9 +64,9 @@ class DueDateCountdownState {
 /// Due Date Countdown provider
 ///
 /// Manages due date countdowns with automatic calculations and formatting.
-class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
+class CountdownNotifier extends Notifier<CountdownState> {
   // Configuration
-  static const String _cacheKeyPrefix = 'due_date_countdown';
+  static const String _cacheKeyPrefix = 'countdown';
 
   String? _subscriptionId;
   late final _realtimeService = ref.read(realtimeServiceProvider);
@@ -74,11 +74,11 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
       ref.read(realtimeSubscriptionManagerProvider);
 
   @override
-  DueDateCountdownState build() {
+  CountdownState build() {
     ref.onDispose(() {
       _cancelRealtimeSubscription();
     });
-    return const DueDateCountdownState();
+    return const CountdownState();
   }
 
   // ==========================================
@@ -251,7 +251,9 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
       if (cachedData == null) return null;
 
       return (cachedData as List).map((json) {
-        final profileData = json['profile'] as Map<String, dynamic>;
+        final mapJson = json as Map;
+        final profileData =
+            Map<String, dynamic>.from(mapJson['profile'] as Map);
         final profile = BabyProfile.fromJson(profileData);
         // Recalculate countdown with current date
         return _calculateCountdown(profile);
@@ -348,11 +350,11 @@ class DueDateCountdownNotifier extends Notifier<DueDateCountdownState> {
 ///
 /// Usage:
 /// ```dart
-/// final countdownState = ref.watch(dueDateCountdownProvider);
-/// final notifier = ref.read(dueDateCountdownProvider.notifier);
+/// final countdownState = ref.watch(countdownProvider);
+/// final notifier = ref.read(countdownProvider.notifier);
 /// await notifier.fetchCountdowns(babyProfileIds: ['abc', 'def']);
 /// ```
-final dueDateCountdownProvider = NotifierProvider.autoDispose<
-    DueDateCountdownNotifier, DueDateCountdownState>(
-  DueDateCountdownNotifier.new,
+final countdownProvider =
+    NotifierProvider.autoDispose<CountdownNotifier, CountdownState>(
+  CountdownNotifier.new,
 );

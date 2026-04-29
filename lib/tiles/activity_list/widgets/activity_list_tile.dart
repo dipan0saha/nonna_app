@@ -5,11 +5,11 @@ import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
-import 'package:nonna_app/tiles/engagement_recap/providers/engagement_recap_provider.dart';
+import 'package:nonna_app/tiles/activity_list/providers/activity_list_provider.dart';
 
 /// Tile widget that shows an engagement recap (squishes, comments, RSVPs).
-class EngagementRecapTile extends StatelessWidget {
-  const EngagementRecapTile({
+class ActivityListTile extends StatelessWidget {
+  const ActivityListTile({
     super.key,
     this.metrics,
     this.isLoading = false,
@@ -35,7 +35,7 @@ class EngagementRecapTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      key: const Key('engagement_recap_tile'),
+      key: const Key('activity_list_tile'),
       child: Padding(
         padding: AppSpacing.cardPadding,
         child: Column(

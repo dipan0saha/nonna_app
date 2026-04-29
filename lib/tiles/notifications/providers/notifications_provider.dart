@@ -217,7 +217,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
     final response = await ref
         .read(databaseServiceProvider)
         .select(SupabaseTables.notifications)
-        .eq(SupabaseTables.userId, userId)
+        .eq('recipient_user_id', userId)
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxNotifications);
 
@@ -242,7 +242,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
 
       return (cachedData as List)
           .map((json) => app_notification.Notification.fromJson(
-              json as Map<String, dynamic>))
+              Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
@@ -283,7 +283,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
         table: SupabaseTables.notifications,
         channelName: channelName,
         filter: {
-          'column': SupabaseTables.userId,
+          'column': 'recipient_user_id',
           'value': userId,
         },
       );

@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nonna_app/core/models/baby_profile.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
-import 'package:nonna_app/tiles/due_date_countdown/providers/due_date_countdown_provider.dart';
-import 'package:nonna_app/tiles/due_date_countdown/widgets/due_date_countdown_tile.dart';
+import 'package:nonna_app/tiles/countdown/providers/countdown_provider.dart';
+import 'package:nonna_app/tiles/countdown/widgets/countdown_tile.dart';
 
 BabyCountdown _makeCountdown({
   String id = 'bp1',
@@ -38,7 +38,7 @@ Widget _buildWidget({
 }) {
   return MaterialApp(
     home: Scaffold(
-      body: DueDateCountdownTile(
+      body: CountdownTile(
         countdowns: countdowns,
         isLoading: isLoading,
         error: error,
@@ -49,10 +49,10 @@ Widget _buildWidget({
 }
 
 void main() {
-  group('DueDateCountdownTile', () {
+  group('CountdownTile', () {
     testWidgets('renders with correct widget key', (tester) async {
       await tester.pumpWidget(_buildWidget());
-      expect(find.byKey(const Key('due_date_countdown_tile')), findsOneWidget);
+      expect(find.byKey(const Key('countdown_tile')), findsOneWidget);
     });
 
     testWidgets('shows shimmer when isLoading is true', (tester) async {

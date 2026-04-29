@@ -56,23 +56,23 @@ class EngagementMetrics {
 /// Dependencies: DatabaseService, CacheService, PhotoSquish model, PhotoComment model, EventRSVP model
 
 /// State class for engagement recap
-class EngagementRecapState {
+class ActivityListState {
   final EngagementMetrics? metrics;
   final bool isLoading;
   final String? error;
 
-  const EngagementRecapState({
+  const ActivityListState({
     this.metrics,
     this.isLoading = false,
     this.error,
   });
 
-  EngagementRecapState copyWith({
+  ActivityListState copyWith({
     EngagementMetrics? metrics,
     bool? isLoading,
     String? error,
   }) {
-    return EngagementRecapState(
+    return ActivityListState(
       metrics: metrics ?? this.metrics,
       isLoading: isLoading ?? this.isLoading,
       error: error,
@@ -83,14 +83,14 @@ class EngagementRecapState {
 /// Engagement Recap provider
 ///
 /// Manages engagement metrics aggregation and activity summary.
-class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
+class ActivityListNotifier extends Notifier<ActivityListState> {
   // Configuration
-  static const String _cacheKeyPrefix = 'engagement_recap';
+  static const String _cacheKeyPrefix = 'activity_list';
   static const int _defaultDaysBack = 30; // Default to last 30 days
 
   @override
-  EngagementRecapState build() {
-    return const EngagementRecapState();
+  ActivityListState build() {
+    return const ActivityListState();
   }
 
   // ==========================================
@@ -251,7 +251,8 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
 
       if (cachedData == null) return null;
 
-      return EngagementMetrics.fromJson(cachedData as Map<String, dynamic>);
+      return EngagementMetrics.fromJson(
+          Map<String, dynamic>.from(cachedData as Map));
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
       return null;
@@ -287,11 +288,11 @@ class EngagementRecapNotifier extends Notifier<EngagementRecapState> {
 ///
 /// Usage:
 /// ```dart
-/// final engagementState = ref.watch(engagementRecapProvider);
-/// final notifier = ref.read(engagementRecapProvider.notifier);
+/// final engagementState = ref.watch(activityListProvider);
+/// final notifier = ref.read(activityListProvider.notifier);
 /// await notifier.fetchEngagement(babyProfileId: 'abc', daysBack: 30);
 /// ```
-final engagementRecapProvider =
-    NotifierProvider.autoDispose<EngagementRecapNotifier, EngagementRecapState>(
-  EngagementRecapNotifier.new,
+final activityListProvider =
+    NotifierProvider.autoDispose<ActivityListNotifier, ActivityListState>(
+  ActivityListNotifier.new,
 );

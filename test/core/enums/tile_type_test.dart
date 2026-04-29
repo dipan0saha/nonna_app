@@ -14,10 +14,10 @@ void main() {
       expect(TileType.values, contains(TileType.notifications));
       expect(TileType.values, contains(TileType.invitesStatus));
       expect(TileType.values, contains(TileType.rsvpTasks));
-      expect(TileType.values, contains(TileType.dueDateCountdown));
+      expect(TileType.values, contains(TileType.countdown));
       expect(TileType.values, contains(TileType.recentPurchases));
       expect(TileType.values, contains(TileType.registryDeals));
-      expect(TileType.values, contains(TileType.engagementRecap));
+      expect(TileType.values, contains(TileType.activityList));
       expect(TileType.values, contains(TileType.galleryFavorites));
       expect(TileType.values, contains(TileType.checklist));
       expect(TileType.values, contains(TileType.storageUsage));
@@ -46,7 +46,7 @@ void main() {
       test('returns user-friendly names', () {
         expect(TileType.upcomingEvents.displayName, 'Upcoming Events');
         expect(TileType.recentPhotos.displayName, 'Recent Photos');
-        expect(TileType.dueDateCountdown.displayName, 'Due Date Countdown');
+        expect(TileType.countdown.displayName, 'Due Date Countdown');
       });
 
       test('all tiles have non-empty display names', () {

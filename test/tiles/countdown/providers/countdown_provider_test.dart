@@ -5,13 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/baby_profile.dart';
-import 'package:nonna_app/tiles/due_date_countdown/providers/due_date_countdown_provider.dart';
+import 'package:nonna_app/tiles/countdown/providers/countdown_provider.dart';
 
 import '../../../helpers/fake_postgrest_builders.dart';
 import '../../../helpers/mock_factory.dart';
 
 void main() {
-  group('DueDateCountdownProvider Tests', () {
+  group('CountdownProvider Tests', () {
     late ProviderContainer container;
     late MockServiceContainer mocks;
 
@@ -59,7 +59,7 @@ void main() {
 
     group('Initial State', () {
       test('initial state has empty countdowns', () {
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state.countdowns, isEmpty);
         expect(state.isLoading, isFalse);
         expect(state.error, isNull);
@@ -73,7 +73,7 @@ void main() {
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
 
         // Start fetching
         final fetchFuture = notifier.fetchCountdowns(
@@ -81,7 +81,7 @@ void main() {
         );
 
         // Verify loading state
-        expect(container.read(dueDateCountdownProvider).isLoading, isTrue);
+        expect(container.read(countdownProvider).isLoading, isTrue);
 
         await fetchFuture;
       });
@@ -99,11 +99,11 @@ void main() {
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
         // Verify state updated
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state.countdowns, hasLength(1));
         expect(state.countdowns.first.profile.id, equals('profile_1'));
         expect(state.isLoading, isFalse);
@@ -113,10 +113,10 @@ void main() {
       });
 
       test('handles empty profile list', () async {
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: []);
 
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state.countdowns, isEmpty);
         expect(state.isLoading, isFalse);
       });
@@ -131,14 +131,14 @@ void main() {
         };
         when(mocks.cache.get(any)).thenAnswer((_) async => [cachedData]);
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
         // Verify database was not called
         verifyNever(mocks.database.select(any));
 
         // Verify state updated from cache
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state.countdowns, hasLength(1));
         expect(state.countdowns.first.profile.id, equals('profile_1'));
       });
@@ -148,11 +148,11 @@ void main() {
         when(mocks.cache.get(any)).thenAnswer((_) async => null);
         when(mocks.database.select(any)).thenThrow(Exception('Database error'));
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
         // Verify error state
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state.isLoading, isFalse);
         expect(state.error, contains('Database error'));
         expect(state.countdowns, isEmpty);
@@ -180,7 +180,7 @@ void main() {
         // Clear interactions before the operation we're testing
         clearInteractions(mocks.database);
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(
           babyProfileIds: ['profile_1'],
           forceRefresh: true,
@@ -208,10 +208,10 @@ void main() {
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([futureProfile.toJson()]));
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(
             state.countdowns.first.daysUntilDueDate, greaterThanOrEqualTo(44));
         expect(state.countdowns.first.isPastDue, isFalse);
@@ -235,10 +235,10 @@ void main() {
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([pastProfile.toJson()]));
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state.countdowns.first.isPastDue, isTrue);
 
         realtimeController.close();
@@ -262,12 +262,12 @@ void main() {
                   profile2.toJson(),
                 ]));
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(
           babyProfileIds: ['profile_1', 'profile_2'],
         );
 
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state.countdowns, hasLength(2));
 
         realtimeController.close();
@@ -296,7 +296,7 @@ void main() {
         // Clear interactions before the operation we're testing
         clearInteractions(mocks.database);
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.refresh(babyProfileIds: ['profile_1']);
 
         // Verify database was called (bypassing cache)
@@ -320,11 +320,11 @@ void main() {
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
         final initialDays = container
-            .read(dueDateCountdownProvider)
+            .read(countdownProvider)
             .countdowns
             .first
             .daysUntilDueDate;
@@ -348,7 +348,7 @@ void main() {
 
         expect(
             container
-                .read(dueDateCountdownProvider)
+                .read(countdownProvider)
                 .countdowns
                 .first
                 .daysUntilDueDate,
@@ -363,7 +363,7 @@ void main() {
         when(mocks.realtime.unsubscribe(any)).thenAnswer((_) async => {});
 
         // Notifier handles cleanup automatically, no manual dispose needed
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state, isNotNull);
       });
     });
@@ -381,10 +381,10 @@ void main() {
         when(mocks.database.select(any))
             .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
 
-        final notifier = container.read(dueDateCountdownProvider.notifier);
+        final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
-        final state = container.read(dueDateCountdownProvider);
+        final state = container.read(countdownProvider);
         expect(state.countdowns.first.formattedCountdown, isNotEmpty);
 
         realtimeController.close();

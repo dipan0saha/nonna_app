@@ -21,7 +21,8 @@ class AuthService {
 
   // Google Sign-In configuration
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    serverClientId: '905947106371-7locdmnoebo4fq8959bdbioh3nbib4ac.apps.googleusercontent.com',
+    serverClientId:
+        '905947106371-7locdmnoebo4fq8959bdbioh3nbib4ac.apps.googleusercontent.com',
     scopes: [
       'email',
       'profile',
@@ -242,7 +243,12 @@ class AuthService {
       }
 
       // Sign out from Facebook if signed in
-      await FacebookAuth.instance.logOut();
+      try {
+        await FacebookAuth.instance.logOut();
+      } catch (e) {
+        // Ignore errors if not signed in or plugin missing
+        debugPrint('Facebook sign out: $e');
+      }
 
       debugPrint('✅ User signed out successfully');
     } catch (e) {
