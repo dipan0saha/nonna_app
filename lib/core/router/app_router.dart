@@ -12,6 +12,7 @@ import 'package:nonna_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:nonna_app/features/auth/presentation/screens/signup_screen.dart';
 import 'package:nonna_app/features/auth/presentation/screens/role_selection_screen.dart';
 import 'package:nonna_app/features/home/presentation/screens/home_screen.dart';
+import 'package:nonna_app/features/home/presentation/screens/main_shell_screen.dart';
 import 'package:nonna_app/features/profile/presentation/screens/profile_screen.dart';
 import 'package:nonna_app/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'package:nonna_app/features/calendar/presentation/screens/calendar_screen.dart';
@@ -56,6 +57,22 @@ abstract class AppRoutes {
   static const registryItemCreate = '/registry/item/create';
 }
 
+// ---------------------------------------------------------------------------
+// Branch navigator keys
+//
+// Each StatefulShellBranch needs its own GlobalKey<NavigatorState> so that
+// GoRouter can maintain independent navigation stacks per tab.
+// These are top-level finals so they are never recreated across rebuilds.
+// The root key lives in NavigationService.navigatorKey and must NOT be reused.
+// ---------------------------------------------------------------------------
+final _shellHomeKey = GlobalKey<NavigatorState>(debugLabel: 'shellHome');
+final _shellGalleryKey = GlobalKey<NavigatorState>(debugLabel: 'shellGallery');
+final _shellCalendarKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellCalendar');
+final _shellRegistryKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellRegistry');
+final _shellFunKey = GlobalKey<NavigatorState>(debugLabel: 'shellFun');
+
 /// ChangeNotifier used as [GoRouter.refreshListenable].
 ///
 /// Call [notify] whenever auth state changes so the router re-evaluates its
@@ -85,27 +102,40 @@ String _extraString(GoRouterState state, String key, [String fallback = '']) {
 }
 
 List<RouteBase> get _routes => [
+      // -----------------------------------------------------------------------
+      // Root redirect
+      // -----------------------------------------------------------------------
       GoRoute(
         path: '/',
         redirect: (_, __) => AppRoutes.home,
       ),
+
+      // -----------------------------------------------------------------------
+      // Auth routes — OUTSIDE the shell so no nav bar is shown
+      // -----------------------------------------------------------------------
       GoRoute(
         path: AppRoutes.login,
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) => LoginScreen(
+          onSignUpTap: () => context.go(AppRoutes.signup),
+        ),
       ),
       GoRoute(
         path: AppRoutes.signup,
-        builder: (context, state) => const SignupScreen(),
+        builder: (context, state) => SignupScreen(
+          onLoginTap: () => context.go(AppRoutes.login),
+        ),
       ),
       GoRoute(
         path: AppRoutes.roleSelection,
         builder: (context, state) => const RoleSelectionScreen(),
       ),
+
+      // -----------------------------------------------------------------------
+      // Full-screen routes — OUTSIDE the shell (parentNavigatorKey = root).
+      // These cover the nav bar entirely.
+      // -----------------------------------------------------------------------
       GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
+        parentNavigatorKey: NavigationService.navigatorKey,
         path: AppRoutes.profile,
         builder: (context, state) =>
             ProfileScreen(userId: _extraString(state, 'userId')),
@@ -118,51 +148,12 @@ List<RouteBase> get _routes => [
         ],
       ),
       GoRoute(
-        path: AppRoutes.calendar,
-        builder: (context, state) => const CalendarScreen(),
-        routes: [
-          GoRoute(
-            path: 'event/create',
-            builder: (context, state) => EventCreationScreen(
-              babyProfileId: _extraString(state, 'babyProfileId'),
-              createdByUserId: _extraString(state, 'createdByUserId'),
-            ),
-          ),
-          GoRoute(
-            path: 'event/detail',
-            builder: (context, state) {
-              final event = state.extra as Event?;
-              if (event == null) return _missingData('Event');
-              return EventDetailScreen(event: event);
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        path: AppRoutes.gallery,
-        builder: (context, state) => const GalleryScreen(),
-        routes: [
-          GoRoute(
-            path: 'photo/detail',
-            builder: (context, state) {
-              final photo = state.extra as Photo?;
-              if (photo == null) return _missingData('Photo');
-              return PhotoDetailScreen(photo: photo);
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        path: AppRoutes.gamification,
-        builder: (context, state) => GamificationScreen(
-          babyProfileId: _extraString(state, 'babyProfileId'),
-        ),
-      ),
-      GoRoute(
+        parentNavigatorKey: NavigationService.navigatorKey,
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
+        parentNavigatorKey: NavigationService.navigatorKey,
         path: AppRoutes.babyProfile,
         builder: (context, state) => BabyProfileScreen(
           babyProfileId: _extraString(state, 'babyProfileId'),
@@ -184,24 +175,121 @@ List<RouteBase> get _routes => [
           ),
         ],
       ),
-      GoRoute(
-        path: AppRoutes.registry,
-        builder: (context, state) => const RegistryScreen(),
-        routes: [
-          GoRoute(
-            path: 'item/create',
-            builder: (context, state) => RegistryItemCreationScreen(
-              babyProfileId: _extraString(state, 'babyProfileId'),
-              createdByUserId: _extraString(state, 'createdByUserId'),
-            ),
+
+      // -----------------------------------------------------------------------
+      // Shell — 5 tab branches with independent navigation stacks.
+      // The shell body is MainShellScreen, which renders AppBottomNavBar on
+      // mobile and AppNavigationRail on tablet via ResponsiveScaffold.
+      // -----------------------------------------------------------------------
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            MainShellScreen(navigationShell: navigationShell),
+        branches: [
+          // Branch 0 — HOME
+          StatefulShellBranch(
+            navigatorKey: _shellHomeKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
           ),
-          GoRoute(
-            path: 'item/detail',
-            builder: (context, state) {
-              final item = state.extra as RegistryItem?;
-              if (item == null) return _missingData('Registry item');
-              return RegistryItemDetailScreen(item: item);
-            },
+
+          // Branch 1 — GALLERY
+          StatefulShellBranch(
+            navigatorKey: _shellGalleryKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.gallery,
+                builder: (context, state) => const GalleryScreen(),
+                routes: [
+                  // Detail escapes the shell → full-screen, nav bar hidden
+                  GoRoute(
+                    parentNavigatorKey: NavigationService.navigatorKey,
+                    path: 'photo/detail',
+                    builder: (context, state) {
+                      final photo = state.extra as Photo?;
+                      if (photo == null) return _missingData('Photo');
+                      return PhotoDetailScreen(photo: photo);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          // Branch 2 — CALENDAR
+          StatefulShellBranch(
+            navigatorKey: _shellCalendarKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.calendar,
+                builder: (context, state) => const CalendarScreen(),
+                routes: [
+                  // Detail stays nested → nav bar remains visible
+                  GoRoute(
+                    path: 'event/detail',
+                    builder: (context, state) {
+                      final event = state.extra as Event?;
+                      if (event == null) return _missingData('Event');
+                      return EventDetailScreen(event: event);
+                    },
+                  ),
+                  // Creation escapes the shell → covers the nav bar
+                  GoRoute(
+                    parentNavigatorKey: NavigationService.navigatorKey,
+                    path: 'event/create',
+                    builder: (context, state) => EventCreationScreen(
+                      babyProfileId: _extraString(state, 'babyProfileId'),
+                      createdByUserId: _extraString(state, 'createdByUserId'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          // Branch 3 — REGISTRY
+          StatefulShellBranch(
+            navigatorKey: _shellRegistryKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.registry,
+                builder: (context, state) => const RegistryScreen(),
+                routes: [
+                  // Detail stays nested → nav bar remains visible
+                  GoRoute(
+                    path: 'item/detail',
+                    builder: (context, state) {
+                      final item = state.extra as RegistryItem?;
+                      if (item == null) return _missingData('Registry item');
+                      return RegistryItemDetailScreen(item: item);
+                    },
+                  ),
+                  // Creation escapes the shell → covers the nav bar
+                  GoRoute(
+                    parentNavigatorKey: NavigationService.navigatorKey,
+                    path: 'item/create',
+                    builder: (context, state) => RegistryItemCreationScreen(
+                      babyProfileId: _extraString(state, 'babyProfileId'),
+                      createdByUserId: _extraString(state, 'createdByUserId'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          // Branch 4 — FUN (Gamification)
+          StatefulShellBranch(
+            navigatorKey: _shellFunKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.gamification,
+                builder: (context, state) => const GamificationScreen(),
+              ),
+            ],
           ),
         ],
       ),

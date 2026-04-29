@@ -3,8 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'core/di/providers.dart';
 import 'core/router/app_router.dart';
 import 'core/services/app_initialization_service.dart';
+import 'core/themes/app_theme.dart';
 import 'l10n/l10n.dart';
 
 void main() async {
@@ -30,22 +32,37 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
-    
-    return MaterialApp.router(
-      routerConfig: router,
-      title: 'Nonna App',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+    final init = ref.watch(appInitializationProvider);
 
-      // Localization configuration
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: L10n.all,
-      localeResolutionCallback: L10n.localeResolutionCallback,
+    return init.when(
+      data: (_) {
+        final router = ref.watch(routerProvider);
+        
+        return MaterialApp.router(
+          routerConfig: router,
+          title: 'Nonna App',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+
+          // Localization configuration
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: L10n.all,
+          localeResolutionCallback: L10n.localeResolutionCallback,
+        );
+      },
+      loading: () => const MaterialApp(
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+      ),
+      error: (err, stack) => MaterialApp(
+        home: Scaffold(
+          body: Center(child: Text('Initialization Error:\n$err')),
+        ),
+      ),
     );
   }
 }

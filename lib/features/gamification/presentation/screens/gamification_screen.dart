@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/name_suggestion.dart';
 import 'package:nonna_app/core/models/vote.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
@@ -12,10 +13,11 @@ import 'package:nonna_app/features/gamification/presentation/providers/gamificat
 class GamificationScreen extends ConsumerStatefulWidget {
   const GamificationScreen({
     super.key,
-    required this.babyProfileId,
+    this.babyProfileId,
   });
 
-  final String babyProfileId;
+  /// Optional baby profile ID. When null, falls back to [selectedBabyProfileProvider].
+  final String? babyProfileId;
 
   @override
   ConsumerState<GamificationScreen> createState() => _GamificationScreenState();
@@ -30,9 +32,9 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(gamificationProvider.notifier)
-          .load(babyProfileId: widget.babyProfileId);
+      final id =
+          widget.babyProfileId ?? ref.read(selectedBabyProfileProvider) ?? '';
+      ref.read(gamificationProvider.notifier).load(babyProfileId: id);
     });
   }
 
@@ -43,9 +45,9 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen>
   }
 
   Future<void> _onRefresh() async {
-    await ref
-        .read(gamificationProvider.notifier)
-        .load(babyProfileId: widget.babyProfileId);
+    final id =
+        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider) ?? '';
+    await ref.read(gamificationProvider.notifier).load(babyProfileId: id);
   }
 
   @override

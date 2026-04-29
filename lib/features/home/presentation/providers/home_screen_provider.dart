@@ -6,6 +6,8 @@ import '../../../../core/di/providers.dart';
 import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/tile_config.dart';
 import '../../../../core/utils/tile_loader.dart';
+import '../../../../core/network/supabase_client.dart';
+import '../../../../core/constants/supabase_tables.dart';
 
 /// Home Screen Provider for managing home screen state
 ///
@@ -126,6 +128,37 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
         isLoading: false,
         error: errorMessage,
       );
+    }
+  }
+
+  /// Automatically select the first available baby profile if none is selected
+  Future<void> autoSelectFirstProfile(String userId) async {
+    try {
+      final databaseService = ref.read(databaseServiceProvider);
+      final response = await databaseService
+          .select(SupabaseTables.babyMemberships)
+          .eq('user_id', userId)
+          .order('created_at', ascending: true)
+          .limit(1)
+          .maybeSingle();
+
+      if (!ref.mounted) return;
+
+      if (response != null) {
+        final profileId = response['baby_profile_id'] as String;
+        final roleStr = response['role'] as String;
+        final role = UserRole.values.firstWhere((r) => r.name == roleStr,
+            orElse: () => UserRole.follower);
+
+        ref.read(selectedBabyProfileProvider.notifier).select(profileId);
+
+        await loadTiles(
+          babyProfileId: profileId,
+          role: role,
+        );
+      }
+    } catch (e) {
+      debugPrint('⚠️  Failed to auto-select baby profile: $e');
     }
   }
 

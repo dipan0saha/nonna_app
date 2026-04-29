@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
@@ -81,12 +82,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _loadTilesIfReady() {
-    if (widget.babyProfileId != null && widget.userRole != null) {
+    // Prefer explicit constructor params, then fall back to global providers.
+    final babyProfileId =
+        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
+    final userRole =
+        widget.userRole ?? ref.read(homeScreenProvider).selectedRole;
+    if (babyProfileId != null && userRole != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(homeScreenProvider.notifier).loadTiles(
-              babyProfileId: widget.babyProfileId!,
-              role: widget.userRole!,
+              babyProfileId: babyProfileId,
+              role: userRole,
             );
+      });
+    } else if (babyProfileId == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final userId = ref.read(authProvider).user?.id;
+        if (userId != null) {
+          ref.read(homeScreenProvider.notifier).autoSelectFirstProfile(userId);
+        }
       });
     }
   }
@@ -102,6 +115,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(homeScreenProvider);
+    // Resolve role and dual-role flag from provider state then constructor fallback.
+    final userRole = state.selectedRole ?? widget.userRole;
+    final isDualRole = widget.isDualRole;
 
     return Scaffold(
       appBar: HomeAppBar(
@@ -114,9 +130,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Column(
         children: [
           // Role toggle for dual-role users
-          if (widget.isDualRole && widget.userRole != null)
+          if (isDualRole && userRole != null)
             _RoleToggle(
-              selectedRole: state.selectedRole ?? widget.userRole!,
+              selectedRole: state.selectedRole ?? userRole,
               onRoleChanged: _onToggleRole,
             ),
           // Main content
@@ -129,8 +145,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildBody(HomeScreenState state) {
+    // Resolve the effective IDs using provider state first, then constructor params.
+    final babyProfileId = state.selectedBabyProfileId ??
+        widget.babyProfileId ??
+        ref.read(selectedBabyProfileProvider);
+    final userRole = state.selectedRole ?? widget.userRole;
     // No profile or role configured yet
-    if (widget.babyProfileId == null || widget.userRole == null) {
+    if (babyProfileId == null || userRole == null) {
       return EmptyState(
         message: 'Select a baby profile to get started',
         icon: Icons.child_care,

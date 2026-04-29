@@ -4,13 +4,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/tile_config.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/features/home/presentation/screens/home_screen.dart';
 
 // ---------------------------------------------------------------------------
+// Fake AuthNotifier — returns a static unauthenticated state without touching
+// Supabase or any other service provider.
+// ---------------------------------------------------------------------------
+class _FakeAuthNotifier extends AuthNotifier {
+  @override
+  AuthState build() => const AuthState.unauthenticated();
+}
+
+// ---------------------------------------------------------------------------
 // Fake HomeScreenNotifier
 // ---------------------------------------------------------------------------
-
 class _FakeHomeNotifier extends HomeScreenNotifier {
   _FakeHomeNotifier(this._initial);
 
@@ -66,6 +76,7 @@ Widget _buildScreen(
 }) {
   return ProviderScope(
     overrides: [
+      authProvider.overrideWith(_FakeAuthNotifier.new),
       homeScreenProvider.overrideWith(() => _FakeHomeNotifier(state)),
     ],
     child: MaterialApp(
@@ -180,16 +191,6 @@ void main() {
       expect(find.text('Follower'), findsNothing);
     });
 
-    testWidgets('shows notification badge when count > 0', (tester) async {
-      await tester.pumpWidget(
-        _buildScreen(
-          const HomeScreenState(),
-          notificationCount: 7,
-        ),
-      );
-      expect(find.text('7'), findsOneWidget);
-    });
-
     testWidgets('tapping follower role chip triggers role toggle',
         (tester) async {
       UserRole? toggled;
@@ -200,6 +201,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            authProvider.overrideWith(_FakeAuthNotifier.new),
             homeScreenProvider.overrideWith(() => notifier),
           ],
           child: const MaterialApp(

@@ -5,6 +5,7 @@ import 'package:nonna_app/core/models/tile_config.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/core/utils/tile_factory.dart';
 
 /// Scrollable list of home screen tiles
 ///
@@ -67,7 +68,10 @@ class TileListView extends StatelessWidget {
       key: const Key('tile_list_view'),
       padding: AppSpacing.cardPadding,
       itemCount: tiles.length,
-      itemBuilder: (context, index) => _TileCard(tile: tiles[index]),
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.m),
+        child: TileFactory.buildTile(context, tiles[index]),
+      ),
     );
 
     if (onRefresh != null) {
@@ -94,44 +98,6 @@ class _ShimmerList extends StatelessWidget {
       itemBuilder: (context, _) => const Padding(
         padding: EdgeInsets.only(bottom: AppSpacing.m),
         child: ShimmerCard(height: 120),
-      ),
-    );
-  }
-}
-
-/// Simple card representing a single tile
-class _TileCard extends StatelessWidget {
-  const _TileCard({required this.tile});
-
-  final TileConfig tile;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.m),
-      child: Padding(
-        padding: AppSpacing.cardPadding,
-        child: Row(
-          children: [
-            const Icon(Icons.dashboard_outlined, size: 32),
-            AppSpacing.horizontalGapM,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    tile.tileDefinitionId,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Text(
-                    'Order: ${tile.displayOrder}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

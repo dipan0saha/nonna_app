@@ -14,6 +14,9 @@ class TileConfig {
   /// Associated tile definition ID
   final String tileDefinitionId;
 
+  /// The component name used to resolve the widget (e.g. 'recentPhotos')
+  final String? componentName;
+
   /// Role this configuration applies to (owner or follower)
   final UserRole role;
 
@@ -37,6 +40,7 @@ class TileConfig {
     required this.id,
     required this.screenId,
     required this.tileDefinitionId,
+    this.componentName,
     required this.role,
     required this.displayOrder,
     this.isVisible = true,
@@ -51,11 +55,15 @@ class TileConfig {
       id: json['id'] as String,
       screenId: json['screen_id'] as String,
       tileDefinitionId: json['tile_definition_id'] as String,
+      componentName: (json['tile_definitions']?['tile_type'] as String?) ??
+          (json['tile_type'] as String?),
       role: UserRole.fromJson(json['role'] as String),
       displayOrder: json['display_order'] as int,
       isVisible: json['is_visible'] as bool? ?? true,
       params: json['params'] as Map<String, dynamic>?,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      createdAt: json['created_at'] != null 
+          ? DateTime.parse(json['created_at'] as String)
+          : DateTime.parse(json['updated_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }
@@ -66,6 +74,7 @@ class TileConfig {
       'id': id,
       'screen_id': screenId,
       'tile_definition_id': tileDefinitionId,
+      'tile_type': componentName,
       'role': role.toJson(),
       'display_order': displayOrder,
       'is_visible': isVisible,
@@ -90,6 +99,7 @@ class TileConfig {
     String? id,
     String? screenId,
     String? tileDefinitionId,
+    String? componentName,
     UserRole? role,
     int? displayOrder,
     bool? isVisible,
@@ -101,6 +111,7 @@ class TileConfig {
       id: id ?? this.id,
       screenId: screenId ?? this.screenId,
       tileDefinitionId: tileDefinitionId ?? this.tileDefinitionId,
+      componentName: componentName ?? this.componentName,
       role: role ?? this.role,
       displayOrder: displayOrder ?? this.displayOrder,
       isVisible: isVisible ?? this.isVisible,
@@ -118,6 +129,7 @@ class TileConfig {
         other.id == id &&
         other.screenId == screenId &&
         other.tileDefinitionId == tileDefinitionId &&
+        other.componentName == componentName &&
         other.role == role &&
         other.displayOrder == displayOrder &&
         other.isVisible == isVisible &&
@@ -131,6 +143,7 @@ class TileConfig {
     return id.hashCode ^
         screenId.hashCode ^
         tileDefinitionId.hashCode ^
+        componentName.hashCode ^
         role.hashCode ^
         displayOrder.hashCode ^
         isVisible.hashCode ^

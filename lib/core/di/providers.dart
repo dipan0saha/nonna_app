@@ -233,6 +233,28 @@ final autoDisposeExampleProvider = Provider.autoDispose<String>((ref) {
 });
 
 // ==========================================
+// Navigation State Providers
+// ==========================================
+
+/// Tracks the currently selected baby profile ID across all shell tabs.
+///
+/// Set this whenever the user switches the active baby profile (e.g. from the
+/// home screen dropdown or the profile switcher) so every tab can react without
+/// requiring constructor params or route extras.
+class SelectedBabyProfileNotifier extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  /// Update the currently selected baby profile ID.
+  void select(String? id) => state = id;
+}
+
+final selectedBabyProfileProvider =
+    NotifierProvider<SelectedBabyProfileNotifier, String?>(
+  SelectedBabyProfileNotifier.new,
+);
+
+// ==========================================
 // Tile Providers (imported from tiles/core/providers)
 // ==========================================
 // Note: Tile providers are exported from this file for convenience

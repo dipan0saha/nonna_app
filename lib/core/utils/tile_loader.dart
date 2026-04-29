@@ -42,15 +42,15 @@ class TileLoader {
     final cacheService = ref.watch(cacheServiceProvider);
 
     // Try cache first
+    final cacheKey = _getCacheKey(screenId, role);
     if (!forceRefresh) {
-      final cacheKey = _getCacheKey(screenId, role);
-      final cached =
-          await cacheService.get<List<Map<String, dynamic>>>(cacheKey);
+      final cached = await cacheService.get(cacheKey);
 
       if (cached != null) {
         try {
-          final configs =
-              cached.map((json) => TileConfig.fromJson(json)).toList();
+          final configs = (cached as List)
+              .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))
+              .toList();
           return _filterAndSortConfigs(configs);
         } catch (e) {
           // Cache corrupted, continue to fetch from DB
@@ -58,10 +58,11 @@ class TileLoader {
       }
     }
 
-    // Fetch from database
+    // Fetch from database using inner join on screens table and tile_definitions table
+    // screenId is actually screen_name (e.g. 'home', 'calendar')
     final response = await databaseService
-        .select(SupabaseTables.tileConfigs)
-        .eq('screen_id', screenId)
+        .select(SupabaseTables.tileConfigs, columns: '*, screens!inner(screen_name), tile_definitions!inner(tile_type)')
+        .eq('screens.screen_name', screenId)
         .eq('role', role.name);
 
     final configs = (response as List)
@@ -69,7 +70,6 @@ class TileLoader {
         .toList();
 
     // Cache the results using standardized TTL from PerformanceLimits
-    final cacheKey = _getCacheKey(screenId, role);
     await cacheService.put(
       cacheKey,
       configs.map((c) => c.toJson()).toList(),

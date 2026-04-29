@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/gender.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 
 /// Screen for creating a new baby profile.
@@ -71,7 +73,15 @@ class _CreateBabyProfileScreenState
 
     if (!mounted) return;
     if (profile != null) {
-      widget.onCreated?.call(profile.id);
+      if (widget.onCreated != null) {
+        widget.onCreated!.call(profile.id);
+      } else {
+        ref.read(selectedBabyProfileProvider.notifier).select(profile.id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Baby profile created successfully!')),
+        );
+        context.pop();
+      }
     }
   }
 
@@ -150,7 +160,7 @@ class _CreateBabyProfileScreenState
             ),
             AppSpacing.verticalGapS,
             OutlinedButton(
-              onPressed: widget.onCancelled,
+              onPressed: widget.onCancelled ?? () => context.pop(),
               child: const Text('Cancel'),
             ),
           ],
