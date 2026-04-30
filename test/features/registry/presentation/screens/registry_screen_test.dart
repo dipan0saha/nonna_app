@@ -22,6 +22,7 @@ class _FakeRegistryNotifier extends RegistryScreenNotifier {
   @override
   Future<void> loadItems({
     required String babyProfileId,
+    UserRole role = UserRole.follower,
     bool forceRefresh = false,
   }) async {}
 
@@ -32,7 +33,7 @@ class _FakeRegistryNotifier extends RegistryScreenNotifier {
   void applySort(RegistrySort sort) {}
 
   @override
-  Future<void> refresh() async {}
+  Future<void> refresh({UserRole role = UserRole.follower}) async {}
 }
 
 // ---------------------------------------------------------------------------

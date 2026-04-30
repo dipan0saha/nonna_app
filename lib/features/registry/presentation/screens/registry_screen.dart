@@ -10,6 +10,7 @@ import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 import 'package:nonna_app/features/registry/presentation/widgets/registry_filter_bar.dart';
 
@@ -50,14 +51,22 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
     final babyProfileId =
         widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
     if (babyProfileId != null) {
+      final role = widget.userRole ??
+          ref.read(homeScreenProvider).selectedRole ??
+          UserRole.follower;
+
       ref.read(registryScreenProvider.notifier).loadItems(
             babyProfileId: babyProfileId,
+            role: role,
           );
     }
   }
 
   Future<void> _onRefresh() async {
-    await ref.read(registryScreenProvider.notifier).refresh();
+    final role = widget.userRole ??
+        ref.read(homeScreenProvider).selectedRole ??
+        UserRole.follower;
+    await ref.read(registryScreenProvider.notifier).refresh(role: role);
   }
 
   void _onAddItemTap() {
@@ -154,46 +163,70 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
     if (state.error != null) {
       return ErrorView(
         message: state.error!,
-        onRetry: () => ref.read(registryScreenProvider.notifier).refresh(),
+        onRetry: _onRefresh,
       );
     }
 
     final items = state.sortedItems;
 
-    if (items.isEmpty) {
-      return const EmptyState(
-        message: 'No registry items yet',
-        icon: Icons.card_giftcard_outlined,
-      );
-    }
-
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final itemWithStatus = items[index];
-        return ListTile(
-          key: Key('registry_item_$index'),
-          title: Text(itemWithStatus.item.name),
-          subtitle: Text('Priority: ${itemWithStatus.item.priority}'),
-          trailing: IconButton(
-            icon: itemWithStatus.isPurchased
-                ? const Icon(Icons.check_circle, color: Colors.green)
-                : const Icon(Icons.radio_button_unchecked),
-            onPressed: () {
-              ref
-                  .read(registryScreenProvider.notifier)
-                  .togglePurchase(itemWithStatus);
-            },
+    return CustomScrollView(
+      slivers: [
+        if (state.tiles.isNotEmpty)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: TileListView(
+                tiles: state.tiles,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+              ),
+            ),
           ),
-          onTap: () {
-            if (widget.onItemTap != null) {
-              widget.onItemTap!.call(itemWithStatus.item);
-            } else {
-              context.push(AppRoutes.registryItem, extra: itemWithStatus.item);
-            }
-          },
-        );
-      },
+        
+        if (state.tiles.isNotEmpty)
+          const SliverToBoxAdapter(
+            child: Divider(height: 1),
+          ),
+
+        if (items.isEmpty)
+          const SliverFillRemaining(
+            child: EmptyState(
+              message: 'No registry items yet',
+              icon: Icons.card_giftcard_outlined,
+            ),
+          )
+        else
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final itemWithStatus = items[index];
+                return ListTile(
+                  key: Key('registry_item_$index'),
+                  title: Text(itemWithStatus.item.name),
+                  subtitle: Text('Priority: ${itemWithStatus.item.priority}'),
+                  trailing: IconButton(
+                    icon: itemWithStatus.isPurchased
+                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        : const Icon(Icons.radio_button_unchecked),
+                    onPressed: () {
+                      ref
+                          .read(registryScreenProvider.notifier)
+                          .togglePurchase(itemWithStatus);
+                    },
+                  ),
+                  onTap: () {
+                    if (widget.onItemTap != null) {
+                      widget.onItemTap!.call(itemWithStatus.item);
+                    } else {
+                      context.push(AppRoutes.registryItem, extra: itemWithStatus.item);
+                    }
+                  },
+                );
+              },
+              childCount: items.length,
+            ),
+          ),
+      ],
     );
   }
 }

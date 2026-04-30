@@ -7,7 +7,11 @@ import '../../../../core/di/providers.dart';
 import '../../../../core/models/registry_item.dart';
 import '../../../../core/models/registry_purchase.dart';
 import '../../../../core/models/user.dart';
+import '../../../../core/enums/user_role.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../../../core/models/tile_config.dart';
+import '../../../../core/utils/tile_loader.dart';
 
 /// Registry Screen Provider for managing registry state
 ///
@@ -60,6 +64,7 @@ class RegistryItemWithStatus {
 
 /// Registry screen state model
 class RegistryScreenState {
+  final List<TileConfig> tiles;
   final List<RegistryItemWithStatus> items;
   final bool isLoading;
   final String? error;
@@ -68,6 +73,7 @@ class RegistryScreenState {
   final String? selectedBabyProfileId;
 
   const RegistryScreenState({
+    this.tiles = const [],
     this.items = const [],
     this.isLoading = false,
     this.error,
@@ -77,6 +83,7 @@ class RegistryScreenState {
   });
 
   RegistryScreenState copyWith({
+    List<TileConfig>? tiles,
     List<RegistryItemWithStatus>? items,
     bool? isLoading,
     String? error,
@@ -85,6 +92,7 @@ class RegistryScreenState {
     String? selectedBabyProfileId,
   }) {
     return RegistryScreenState(
+      tiles: tiles ?? this.tiles,
       items: items ?? this.items,
       isLoading: isLoading ?? this.isLoading,
       error: error,
@@ -171,6 +179,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
   /// Load registry items for a baby profile
   Future<void> loadItems({
     required String babyProfileId,
+    UserRole role = UserRole.follower,
     bool forceRefresh = false,
   }) async {
     try {
@@ -179,6 +188,16 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
         error: null,
         selectedBabyProfileId: babyProfileId,
       );
+
+      // We load tile configs first asynchronously so they populate fast
+      TileLoader.loadForScreen(
+        ref: ref,
+        screenId: 'registry',
+        role: role,
+        forceRefresh: false,
+      ).then((tiles) {
+        if (ref.mounted) state = state.copyWith(tiles: tiles);
+      });
 
       // Try to load from cache first
       if (!forceRefresh) {
@@ -273,7 +292,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
   }
 
   /// Refresh registry
-  Future<void> refresh() async {
+  Future<void> refresh({UserRole role = UserRole.follower}) async {
     if (state.selectedBabyProfileId == null) {
       debugPrint('⚠️  Cannot refresh: missing baby profile');
       return;
@@ -281,6 +300,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
     await loadItems(
       babyProfileId: state.selectedBabyProfileId!,
+      role: role,
       forceRefresh: true,
     );
   }
@@ -442,7 +462,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     try {
       _cancelRealtimeSubscriptions();
 
-      final realtimeService = ref.read(realtimeServiceProvider);
+      final realtimeService = _realtimeService;
 
       // Subscribe to registry items changes
       final itemsChannelName = 'registry-items-channel-$babyProfileId';
