@@ -52,6 +52,28 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Listen to changes in the globally selected baby profile
+    ref.listen<String?>(selectedBabyProfileProvider, (previous, next) {
+      if (next != previous && next != null) {
+        ref.read(gamificationProvider.notifier).load(babyProfileId: next);
+      }
+    });
+
+    final currentBabyProfileId =
+        widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
+
+    if (currentBabyProfileId == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Fun & Games')),
+        body: const Center(
+          child: EmptyState(
+            message: 'Select a baby profile to view games',
+            icon: Icons.child_care,
+          ),
+        ),
+      );
+    }
+
     final state = ref.watch(gamificationProvider);
 
     return Scaffold(

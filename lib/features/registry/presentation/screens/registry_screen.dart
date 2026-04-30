@@ -90,6 +90,21 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
       }
     });
 
+    final currentBabyProfileId =
+        widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
+
+    if (currentBabyProfileId == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Registry')),
+        body: const Center(
+          child: EmptyState(
+            message: 'Select a baby profile to view registry',
+            icon: Icons.child_care,
+          ),
+        ),
+      );
+    }
+
     final state = ref.watch(registryScreenProvider);
     // Use widget role or fall back to home provider role, defaulting to follower
     final role = widget.userRole ??

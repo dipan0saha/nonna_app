@@ -25,7 +25,7 @@ class PhotoWithSquishes {
 
   factory PhotoWithSquishes.fromJson(Map<String, dynamic> json) {
     return PhotoWithSquishes(
-      photo: Photo.fromJson(json['photo'] as Map<String, dynamic>),
+      photo: Photo.fromJson(Map<String, dynamic>.from(json['photo'] as Map)),
       squishCount: json['squishCount'] as int,
     );
   }
@@ -76,7 +76,7 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
   // Configuration
   static const String _cacheKeyPrefix = 'gallery_favorites';
   static const int _maxFavorites = 10;
-  static const int _minSquishes = 2; // Minimum squishes to be considered
+  static const int _minSquishes = 1; // Minimum squishes to be considered
 
   @override
   GalleryFavoritesState build() {

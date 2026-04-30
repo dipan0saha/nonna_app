@@ -238,8 +238,8 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
       if (cachedData == null) return null;
 
       return (cachedData as List).map((json) {
-        final eventData = json['event'] as Map<String, dynamic>;
-        final rsvpData = json['rsvp'] as Map<String, dynamic>?;
+        final eventData = Map<String, dynamic>.from(json['event'] as Map);
+        final rsvpData = json['rsvp'] != null ? Map<String, dynamic>.from(json['rsvp'] as Map) : null;
         final needsResponse = json['needsResponse'] as bool;
 
         return EventWithRSVP(

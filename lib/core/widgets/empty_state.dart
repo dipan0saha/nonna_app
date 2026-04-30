@@ -51,6 +51,7 @@ class EmptyState extends StatelessWidget {
         child: Padding(
           padding: AppSpacing.screenPadding,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(

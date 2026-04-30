@@ -26,6 +26,8 @@ class TileListView extends StatelessWidget {
     this.error,
     this.onRefresh,
     this.onRetry,
+    this.shrinkWrap = false,
+    this.physics,
   });
 
   /// List of tile configurations to display
@@ -42,6 +44,12 @@ class TileListView extends StatelessWidget {
 
   /// Called when the user taps retry after an error
   final VoidCallback? onRetry;
+
+  /// Whether the list view should shrink wrap its contents
+  final bool shrinkWrap;
+
+  /// Pass scrolling physics (useful when nested inside another View)
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +75,8 @@ class TileListView extends StatelessWidget {
     final content = ListView.builder(
       key: const Key('tile_list_view'),
       padding: AppSpacing.cardPadding,
+      shrinkWrap: shrinkWrap,
+      physics: physics,
       itemCount: tiles.length,
       itemBuilder: (context, index) => Padding(
         padding: const EdgeInsets.only(bottom: AppSpacing.m),
@@ -93,6 +103,7 @@ class _ShimmerList extends StatelessWidget {
     return ListView.builder(
       key: const Key('tile_list_view'),
       padding: AppSpacing.cardPadding,
+      shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 3,
       itemBuilder: (context, _) => const Padding(

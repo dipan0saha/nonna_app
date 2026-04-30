@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
-import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
-import 'package:nonna_app/core/widgets/error_view.dart';
-import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/gallery_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
 
-/// Gallery screen showing a photo grid for a baby profile.
-///
-/// **Functional Requirements**: Section 3.6.2 - Main App Screens Part II
+/// Gallery screen showing a photo gallery for a baby profile via tile configs.
 class GalleryScreen extends ConsumerStatefulWidget {
   const GalleryScreen({
     super.key,
     this.babyProfileId,
     this.userRole,
-    this.onPhotoTap,
   });
 
   /// ID of the baby profile whose photos to display
@@ -25,9 +20,6 @@ class GalleryScreen extends ConsumerStatefulWidget {
 
   /// Current user's role (owner sees upload FAB)
   final UserRole? userRole;
-
-  /// Called when a photo tile is tapped
-  final Function(Photo)? onPhotoTap;
 
   @override
   ConsumerState<GalleryScreen> createState() => _GalleryScreenState();
@@ -37,10 +29,27 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.babyProfileId != null) {
+    _loadTilesIfReady();
+  }
+
+  @override
+  void didUpdateWidget(GalleryScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.babyProfileId != oldWidget.babyProfileId) {
+      _loadTilesIfReady();
+    }
+  }
+
+  void _loadTilesIfReady() {
+    final babyProfileId = widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
+    // Determine the role or default to follower
+    final currentRole = widget.userRole ?? UserRole.follower;
+    
+    if (babyProfileId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(galleryScreenProvider.notifier).loadPhotos(
-              babyProfileId: widget.babyProfileId!,
+        ref.read(galleryScreenProvider.notifier).loadTiles(
+              babyProfileId: babyProfileId,
+              role: currentRole,
             );
       });
     }
@@ -58,32 +67,36 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen to changes in the globally selected baby profile
+    ref.listen<String?>(selectedBabyProfileProvider, (previous, next) {
+      if (next != previous && next != null) {
+        final currentRole = widget.userRole ?? UserRole.follower;
+        ref.read(galleryScreenProvider.notifier).loadTiles(
+              babyProfileId: next,
+              role: currentRole,
+            );
+      }
+    });
+
+    final currentBabyProfileId = widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
+
+    if (currentBabyProfileId == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Gallery')),
+        body: const Center(
+          child: EmptyState(
+            message: 'Select a baby profile to view gallery',
+            icon: Icons.child_care,
+          ),
+        ),
+      );
+    }
+
     final state = ref.watch(galleryScreenProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Gallery'),
-        actions: [
-          PopupMenuButton<GalleryFilter>(
-            onSelected: (filter) {
-              if (filter == GalleryFilter.all) {
-                ref.read(galleryScreenProvider.notifier).clearFilters();
-              }
-              // filterByTag requires a tag input; filtering by tag is handled
-              // via a separate tag-selection flow (coming soon)
-            },
-            itemBuilder: (_) => [
-              const PopupMenuItem(
-                value: GalleryFilter.all,
-                child: Text('All'),
-              ),
-              const PopupMenuItem(
-                value: GalleryFilter.byTag,
-                child: Text('By Tag'),
-              ),
-            ],
-          ),
-        ],
       ),
       floatingActionButton: widget.userRole == UserRole.owner
           ? FloatingActionButton(
@@ -92,66 +105,13 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
               child: const Icon(Icons.upload),
             )
           : null,
-      body: RefreshIndicator(
+      body: TileListView(
+        tiles: state.tiles,
+        isLoading: state.isLoading,
+        error: state.error,
         onRefresh: _onRefresh,
-        child: _buildBody(state),
+        onRetry: () => ref.read(galleryScreenProvider.notifier).retry(),
       ),
-    );
-  }
-
-  Widget _buildBody(GalleryScreenState state) {
-    if (state.isLoading) {
-      return GridView.builder(
-        padding: const EdgeInsets.all(AppSpacing.xs),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: AppSpacing.xs,
-          mainAxisSpacing: AppSpacing.xs,
-        ),
-        itemCount: 6,
-        itemBuilder: (_, __) => const ShimmerCard(),
-      );
-    }
-
-    if (state.error != null) {
-      return ErrorView(
-        message: state.error!,
-        onRetry: () => ref.read(galleryScreenProvider.notifier).refresh(),
-      );
-    }
-
-    if (state.photos.isEmpty) {
-      return const EmptyState(
-        message: 'No photos yet',
-        icon: Icons.photo_library_outlined,
-      );
-    }
-
-    return GridView.builder(
-      padding: const EdgeInsets.all(AppSpacing.xs),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: AppSpacing.xs,
-        mainAxisSpacing: AppSpacing.xs,
-      ),
-      itemCount: state.photos.length,
-      itemBuilder: (context, index) {
-        final photo = state.photos[index];
-        return GestureDetector(
-          key: Key('photo_tile_$index'),
-          onTap: () => widget.onPhotoTap?.call(photo),
-          child: Container(
-            color: Colors.grey[300],
-            child: Center(
-              child: Text(
-                photo.caption ?? 'No caption',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 11),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

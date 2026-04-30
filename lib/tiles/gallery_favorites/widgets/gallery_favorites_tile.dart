@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/photo.dart';
@@ -102,10 +103,32 @@ class _FavoriteRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
         child: Row(
           children: [
-            Icon(
-              Icons.photo_outlined,
-              color: AppColors.primary,
-              size: 20,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.xs),
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: CachedNetworkImage(
+                  imageUrl: photo.thumbnailPath ?? photo.storagePath,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: AppColors.background,
+                    child: Icon(
+                      Icons.photo_outlined,
+                      color: AppColors.primary,
+                      size: 20,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: AppColors.background,
+                    child: Icon(
+                      Icons.broken_image_outlined,
+                      color: context.colorScheme.error,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
             ),
             AppSpacing.horizontalGapS,
             Expanded(

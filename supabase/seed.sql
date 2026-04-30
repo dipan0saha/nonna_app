@@ -1645,3 +1645,237 @@ BEGIN
     END LOOP;
 
 END $$;
+
+-- ==========================================
+-- Appended: Base Tile Configs
+-- ==========================================
+-- 1. Ensure all known tile definitions exist
+INSERT INTO tile_definitions (id, tile_type, description, schema_params, is_active)
+VALUES 
+  (gen_random_uuid(), 'RecentPhotosTile', 'Shows recently uploaded photos', '{}'::jsonb, true),
+  (gen_random_uuid(), 'UpcomingEventsTile', 'Shows upcoming events in calendar', '{}'::jsonb, true),
+  (gen_random_uuid(), 'CountdownTile', 'Countdown to baby arrival', '{}'::jsonb, true),
+  (gen_random_uuid(), 'ChecklistTile', 'Tasks and checklist items', '{}'::jsonb, true),
+  (gen_random_uuid(), 'ActivityListTile', 'Recent activity feed across the app', '{}'::jsonb, true),
+  (gen_random_uuid(), 'GalleryFavoritesTile', 'Favorite photos highlighted', '{}'::jsonb, true),
+  (gen_random_uuid(), 'InvitesStatusTile', 'Status of sent invitations', '{}'::jsonb, true),
+  (gen_random_uuid(), 'NewFollowersTile', 'Recently added followers', '{}'::jsonb, true),
+  (gen_random_uuid(), 'NotificationsTile', 'Important system or app notifications', '{}'::jsonb, true),
+  (gen_random_uuid(), 'RsvpTasksTile', 'Pending RSVPs for events', '{}'::jsonb, true),
+  (gen_random_uuid(), 'StorageUsageTile', 'Current cloud storage usage stats', '{}'::jsonb, true),
+  (gen_random_uuid(), 'SystemAnnouncementsTile', 'Platform wide announcements', '{}'::jsonb, true)
+ON CONFLICT (tile_type) DO NOTHING;
+
+-- 2. Configure Home Screen
+WITH screen AS (SELECT id FROM screens WHERE screen_name = 'home' LIMIT 1)
+INSERT INTO tile_configs (screen_id, tile_definition_id, role, display_order, is_visible, params)
+SELECT screen.id, td.id, role_param, order_param, true, '{}'::jsonb
+FROM screen
+CROSS JOIN (
+  VALUES 
+    ('SystemAnnouncementsTile', 'owner', 10), ('SystemAnnouncementsTile', 'follower', 10),
+    ('CountdownTile', 'owner', 20), ('CountdownTile', 'follower', 20),
+    ('NotificationsTile', 'owner', 30),
+    ('RecentPhotosTile', 'owner', 50), ('RecentPhotosTile', 'follower', 50),
+    ('UpcomingEventsTile', 'owner', 60), ('UpcomingEventsTile', 'follower', 60),
+    ('ActivityListTile', 'owner', 70), ('ActivityListTile', 'follower', 70)
+) AS mappings(tile_type, role_param, order_param)
+JOIN tile_definitions td ON td.tile_type = mappings.tile_type
+ON CONFLICT DO NOTHING;
+
+-- 3. Configure Gallery Screen
+WITH screen AS (SELECT id FROM screens WHERE screen_name = 'gallery' LIMIT 1)
+INSERT INTO tile_configs (screen_id, tile_definition_id, role, display_order, is_visible, params)
+SELECT screen.id, td.id, role_param, order_param, true, '{}'::jsonb
+FROM screen
+CROSS JOIN (
+  VALUES 
+    ('RecentPhotosTile', 'owner', 10), ('RecentPhotosTile', 'follower', 10),
+    ('GalleryFavoritesTile', 'owner', 20), ('GalleryFavoritesTile', 'follower', 20)
+) AS mappings(tile_type, role_param, order_param)
+JOIN tile_definitions td ON td.tile_type = mappings.tile_type
+ON CONFLICT DO NOTHING;
+
+-- 4. Configure Calendar Screen
+WITH screen AS (SELECT id FROM screens WHERE screen_name = 'calendar' LIMIT 1)
+INSERT INTO tile_configs (screen_id, tile_definition_id, role, display_order, is_visible, params)
+SELECT screen.id, td.id, role_param, order_param, true, '{}'::jsonb
+FROM screen
+CROSS JOIN (
+  VALUES 
+    ('UpcomingEventsTile', 'owner', 10), ('UpcomingEventsTile', 'follower', 10),
+    ('RsvpTasksTile', 'owner', 20), ('RsvpTasksTile', 'follower', 20)
+) AS mappings(tile_type, role_param, order_param)
+JOIN tile_definitions td ON td.tile_type = mappings.tile_type
+ON CONFLICT DO NOTHING;
+
+-- 5. Configure Fun/Gamification Screen
+WITH screen AS (SELECT id FROM screens WHERE screen_name = 'fun' LIMIT 1)
+INSERT INTO tile_configs (screen_id, tile_definition_id, role, display_order, is_visible, params)
+SELECT screen.id, td.id, role_param, order_param, true, '{}'::jsonb
+FROM screen
+CROSS JOIN (
+  VALUES 
+    ('ActivityListTile', 'owner', 10), ('ActivityListTile', 'follower', 10)
+) AS mappings(tile_type, role_param, order_param)
+JOIN tile_definitions td ON td.tile_type = mappings.tile_type
+ON CONFLICT DO NOTHING;
+-- Upsert missing Tile Definitions
+INSERT INTO tile_definitions (id, tile_type, description, schema_params, is_active)
+VALUES 
+  (gen_random_uuid(), 'RecentPurchasesTile', 'Shows recent purchases in registry', '{}'::jsonb, true),
+  (gen_random_uuid(), 'RegistryDealsTile', 'Shows AI suggested deals for registry items', '{}'::jsonb, true)
+ON CONFLICT (tile_type) DO NOTHING;
+
+-- Insert configs for the Registry screen
+WITH registry_screen AS (
+  SELECT id FROM screens WHERE screen_name = 'registry' LIMIT 1
+)
+INSERT INTO tile_configs (screen_id, tile_definition_id, role, display_order, is_visible, params)
+SELECT 
+  rs.id,
+  td.id,
+  role_param,
+  order_param,
+  true,
+  '{}'::jsonb
+FROM registry_screen rs
+CROSS JOIN (
+  VALUES 
+    ('RegistryHighlightsTile', 'owner', 10),
+    ('RegistryDealsTile', 'owner', 20),
+    ('RecentPurchasesTile', 'owner', 30),
+    ('RecentPurchasesTile', 'follower', 10)
+) AS mappings(tile_type, role_param, order_param)
+JOIN tile_definitions td ON td.tile_type = mappings.tile_type
+ON CONFLICT DO NOTHING;
+
+-- Also add Registry tiles to the Home screen (as per documentation)
+WITH home_screen AS (
+  SELECT id FROM screens WHERE screen_name = 'home' LIMIT 1
+)
+INSERT INTO tile_configs (screen_id, tile_definition_id, role, display_order, is_visible, params)
+SELECT 
+  hs.id,
+  td.id,
+  role_param,
+  order_param,
+  true,
+  '{}'::jsonb
+FROM home_screen hs
+CROSS JOIN (
+  VALUES 
+    ('RegistryHighlightsTile', 'owner', 40),
+    ('RegistryDealsTile', 'owner', 41),
+    ('RecentPurchasesTile', 'owner', 42),
+    ('RecentPurchasesTile', 'follower', 40)
+) AS mappings(tile_type, role_param, order_param)
+JOIN tile_definitions td ON td.tile_type = mappings.tile_type
+ON CONFLICT DO NOTHING;
+
+-- ==========================================
+-- Appended: Developer Test Scenarios
+-- ==========================================
+DO $$ 
+DECLARE
+  v_user_id uuid;
+  v_baby1_id uuid;
+  v_baby2_id uuid;
+  v_follower_id uuid;
+  v_item1_id uuid := gen_random_uuid();
+  v_item2_id uuid := gen_random_uuid();
+  v_item3_id uuid := gen_random_uuid();
+  v_event1_id uuid := gen_random_uuid();
+  v_event2_id uuid := gen_random_uuid();
+  v_photo1_id uuid := gen_random_uuid();
+  v_photo2_id uuid := gen_random_uuid();
+BEGIN
+  -- Get active developer user
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'dipan.saha@gmail.com' LIMIT 1;
+  IF v_user_id IS NULL THEN
+     RAISE NOTICE 'Target user dipan.saha@gmail.com not found. Skipping seed.';
+     RETURN;
+  END IF;
+
+  -- Create a dummy follower user if not exists
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'aunt.mary@gmail.com') THEN
+      SELECT id INTO v_follower_id FROM auth.users WHERE email != 'dipan.saha@gmail.com' LIMIT 1;
+  ELSE
+      SELECT id INTO v_follower_id FROM auth.users WHERE email = 'aunt.mary@gmail.com' LIMIT 1;
+  END IF;
+
+  IF v_follower_id IS NULL THEN
+      v_follower_id := v_user_id;
+  END IF;
+
+  -- Get baby profiles via memberships
+  SELECT baby_profile_id INTO v_baby1_id FROM baby_memberships WHERE user_id = v_user_id LIMIT 1;
+  IF v_baby1_id IS NULL THEN
+     RAISE NOTICE 'No baby profiles found for the target user.';
+     RETURN;
+  END IF;
+
+  -- 1. REGISTRY ITEMS & PURCHASES (For Highlights, Deals, and Recent Purchases)
+  INSERT INTO registry_items (id, baby_profile_id, created_by_user_id, name, description, priority, link_url)
+  VALUES 
+    (v_item1_id, v_baby1_id, v_user_id, 'Premium Stroller System', 'The best stroller in the market with 4-wheel suspension.', 5, 'https://amazon.com/stroller'),
+    (v_item2_id, v_baby1_id, v_user_id, 'Organic Cotton Swaddles', 'Soft packs of 5.', 3, 'https://amazon.com/swaddle'),
+    (v_item3_id, v_baby1_id, v_user_id, 'High-Tech Baby Monitor', 'Wi-Fi enabled 1080p camera monitor.', 4, 'https://amazon.com/monitor')
+  ON CONFLICT DO NOTHING;
+
+  INSERT INTO registry_purchases (id, registry_item_id, purchased_by_user_id, note)
+  VALUES (gen_random_uuid(), v_item2_id, v_follower_id, 'So excited for the baby!')
+  ON CONFLICT DO NOTHING;
+
+  -- 2. EVENTS & RSVPs (For UpcomingEvents, RsvpTasks)
+  INSERT INTO events (id, baby_profile_id, created_by_user_id, title, description, starts_at, ends_at, location)
+  VALUES 
+    (v_event1_id, v_baby1_id, v_user_id, 'Virtual Baby Shower', 'Join us on Zoom!', NOW() + INTERVAL '7 days', NOW() + INTERVAL '7 days 2 hours', 'Zoom Link: xyz'),
+    (v_event2_id, v_baby1_id, v_user_id, 'Gender Reveal Party', 'Come over to our backyard', NOW() + INTERVAL '3 days', NOW() + INTERVAL '3 days 4 hours', 'Our House')
+  ON CONFLICT DO NOTHING;
+
+  INSERT INTO event_rsvps (id, event_id, user_id, status)
+  VALUES 
+    (gen_random_uuid(), v_event1_id, v_user_id, 'yes'),
+    (gen_random_uuid(), v_event2_id, v_follower_id, 'maybe')
+  ON CONFLICT DO NOTHING;
+
+  -- 3. PHOTOS & SQUISHES (For RecentPhotos, GalleryFavorites)
+  INSERT INTO photos (id, baby_profile_id, uploaded_by_user_id, storage_path, caption)
+  VALUES 
+    (v_photo1_id, v_baby1_id, v_user_id, 'https://images.unsplash.com/photo-1519689680058-324335c77eba', 'Morning smiles! 😊'),
+    (v_photo2_id, v_baby1_id, v_user_id, 'https://images.unsplash.com/photo-1522771731478-44bf1051126a', 'First time sitting up!')
+  ON CONFLICT DO NOTHING;
+
+  INSERT INTO photo_squishes (id, photo_id, user_id) 
+  VALUES 
+    (gen_random_uuid(), v_photo1_id, v_follower_id), 
+    (gen_random_uuid(), v_photo2_id, v_user_id)
+  ON CONFLICT DO NOTHING;
+
+  -- 4. INVITATIONS (For InvitesStatusTile)
+  INSERT INTO invitations (id, baby_profile_id, invited_by_user_id, invitee_email, token_hash, expires_at, status)
+  VALUES 
+    (gen_random_uuid(), v_baby1_id, v_user_id, 'grandma@gmail.com', gen_random_uuid()::text, NOW() + INTERVAL '5 days', 'pending'),
+    (gen_random_uuid(), v_baby1_id, v_user_id, 'uncle@gmail.com', gen_random_uuid()::text, NOW() - INTERVAL '1 days', 'expired'),
+    (gen_random_uuid(), v_baby1_id, v_user_id, 'cousin@gmail.com', gen_random_uuid()::text, NOW() + INTERVAL '5 days', 'accepted')
+  ON CONFLICT DO NOTHING;
+
+  -- 5. NOTIFICATIONS
+  INSERT INTO notifications (id, recipient_user_id, baby_profile_id, type, payload)
+  VALUES 
+    (gen_random_uuid(), v_user_id, v_baby1_id, 'system', '{"title": "Welcome to Nonna App!", "body": "Start capturing memories today."}'),
+    (gen_random_uuid(), v_user_id, v_baby1_id, 'photo_comment', '{"title": "New Comment", "body": "Aunt Mary commented on your photo."}'),
+    (gen_random_uuid(), v_user_id, v_baby1_id, 'registry_purchase', '{"title": "Registry Updated", "body": "Someone just purchased the Organic Cotton Swaddles!"}')
+  ON CONFLICT DO NOTHING;
+
+  -- 6. ACTIVITY EVENTS (For ActivityListTile)
+  INSERT INTO activity_events (id, baby_profile_id, actor_user_id, type, payload)
+  VALUES 
+    (gen_random_uuid(), v_baby1_id, v_follower_id, 'squish', ('{"entity_id": "' || v_photo1_id || '", "entity_type": "photo", "title": "Liked a photo"}')::jsonb),
+    (gen_random_uuid(), v_baby1_id, v_user_id, 'photo_upload', ('{"entity_id": "' || v_photo2_id || '", "entity_type": "photo", "title": "Uploaded a new photo"}')::jsonb),
+    (gen_random_uuid(), v_baby1_id, v_user_id, 'create_event', ('{"entity_id": "' || v_event1_id || '", "entity_type": "event", "title": "Created Virtual Baby Shower"}')::jsonb)
+  ON CONFLICT DO NOTHING;
+
+  RAISE NOTICE 'Successfully seeded comprehensively for all UI Tiles.';
+END $$;

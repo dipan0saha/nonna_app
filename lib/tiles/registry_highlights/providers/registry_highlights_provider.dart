@@ -218,7 +218,7 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
       if (cachedData == null) return null;
 
       return (cachedData as List).map((json) {
-        final itemData = json['item'] as Map<String, dynamic>;
+        final itemData = Map<String, dynamic>.from(json['item'] as Map);
         final isPurchased = json['isPurchased'] as bool;
         final purchasesData = json['purchases'] as List;
 
@@ -226,7 +226,7 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
           item: RegistryItem.fromJson(itemData),
           isPurchased: isPurchased,
           purchases: purchasesData
-              .map((p) => RegistryPurchase.fromJson(p as Map<String, dynamic>))
+              .map((p) => RegistryPurchase.fromJson(Map<String, dynamic>.from(p as Map)))
               .toList(),
         );
       }).toList();

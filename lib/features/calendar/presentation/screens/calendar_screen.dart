@@ -7,6 +7,8 @@ import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart'; // Ensure TileListView gets imported
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/calendar/presentation/providers/calendar_screen_provider.dart';
 import 'package:nonna_app/features/calendar/presentation/widgets/calendar_widget.dart';
 
@@ -54,10 +56,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   void _loadEventsIfReady() {
-    if (widget.babyProfileId != null) {
+    final babyProfileId =
+        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
+    final userRole = widget.userRole ?? UserRole.follower;
+    if (babyProfileId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(calendarScreenProvider.notifier).loadEvents(
-              babyProfileId: widget.babyProfileId!,
+              babyProfileId: babyProfileId,
+              role: userRole,
             );
       });
     }
@@ -84,6 +90,30 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen to changes in the globally selected baby profile
+    ref.listen<String?>(selectedBabyProfileProvider, (previous, next) {
+      if (next != previous && next != null) {
+        ref.read(calendarScreenProvider.notifier).loadEvents(
+              babyProfileId: next,
+            );
+      }
+    });
+
+    final currentBabyProfileId =
+        widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
+
+    if (currentBabyProfileId == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Calendar')),
+        body: const Center(
+          child: EmptyState(
+            message: 'Select a baby profile to view calendar',
+            icon: Icons.child_care,
+          ),
+        ),
+      );
+    }
+
     final state = ref.watch(calendarScreenProvider);
 
     return Scaffold(
@@ -131,6 +161,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               ),
               // Event list area
               _buildEventList(state),
+              // Separator and Tiles
+              if (state.tiles.isNotEmpty == true) ...[
+                const Divider(height: 32),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m),
+                  child: Text(
+                    'Upcoming Activities',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s),
+                TileListView(
+                  tiles: state.tiles,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                ),
+              ]
             ],
           ),
         ),
@@ -155,8 +202,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     }
 
     if (state.error != null) {
-      return Container(
-        constraints: const BoxConstraints(minHeight: 300),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
         child: ErrorView(
           message: state.error!,
           onRetry: () => ref.read(calendarScreenProvider.notifier).retry(),
@@ -167,9 +214,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final events = state.eventsForSelectedDate;
 
     if (events.isEmpty) {
-      return Container(
-        constraints: const BoxConstraints(minHeight: 300),
-        child: const EmptyState(
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
+        child: EmptyState(
           message: 'No events for this day',
           icon: Icons.event_available_outlined,
         ),

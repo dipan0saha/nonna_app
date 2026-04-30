@@ -229,7 +229,7 @@ class StorageUsageNotifier extends Notifier<StorageUsageState> {
 
       if (cachedData == null) return null;
 
-      return StorageUsageInfo.fromJson(cachedData as Map<String, dynamic>);
+      return StorageUsageInfo.fromJson(Map<String, dynamic>.from(cachedData as Map));
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
       return null;

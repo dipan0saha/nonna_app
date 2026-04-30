@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:nonna_app/core/models/tile_config.dart';
@@ -14,6 +15,7 @@ import 'package:nonna_app/tiles/countdown/widgets/countdown_tile.dart';
 import 'package:nonna_app/tiles/activity_list/providers/activity_list_provider.dart';
 import 'package:nonna_app/tiles/activity_list/widgets/activity_list_tile.dart';
 import 'package:nonna_app/tiles/gallery_favorites/widgets/gallery_favorites_tile.dart';
+import 'package:nonna_app/tiles/gallery_favorites/providers/gallery_favorites_provider.dart';
 import 'package:nonna_app/tiles/invites_status/widgets/invites_status_tile.dart';
 import 'package:nonna_app/tiles/new_followers/widgets/new_followers_tile.dart';
 import 'package:nonna_app/tiles/notifications/providers/notifications_provider.dart';
@@ -29,6 +31,12 @@ import 'package:nonna_app/tiles/rsvp_tasks/widgets/rsvp_tasks_tile.dart';
 import 'package:nonna_app/tiles/storage_usage/widgets/storage_usage_tile.dart';
 import 'package:nonna_app/tiles/system_announcements/widgets/system_announcements_tile.dart';
 import 'package:nonna_app/tiles/upcoming_events/widgets/upcoming_events_tile.dart';
+import 'package:nonna_app/tiles/upcoming_events/providers/upcoming_events_provider.dart';
+import 'package:nonna_app/tiles/upcoming_events/models/event_with_rsvp.dart';
+import 'package:nonna_app/tiles/rsvp_tasks/providers/rsvp_tasks_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/core/enums/user_role.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 
 /// Factory for instantiating dynamic tiles based on their configuration.
 class TileFactory {
@@ -42,8 +50,7 @@ class TileFactory {
       case 'RecentPhotosTile':
         return const _RecentPhotosSmartTile();
       case 'UpcomingEventsTile':
-        // TODO: Implement _UpcomingEventsSmartTile wrapper
-        return const UpcomingEventsTile(events: [], isLoading: false);
+        return const _UpcomingEventsSmartTile();
       case 'RegistryHighlightsTile':
         return const _RegistryHighlightsSmartTile();
       case 'CountdownTile':
@@ -54,8 +61,7 @@ class TileFactory {
       case 'ActivityListTile':
         return const _ActivityListSmartTile();
       case 'GalleryFavoritesTile':
-        // TODO: Implement _GalleryFavoritesSmartTile wrapper
-        return const GalleryFavoritesTile(favorites: [], isLoading: false);
+        return const _GalleryFavoritesSmartTile();
       case 'InvitesStatusTile':
         // TODO: Implement _InvitesStatusSmartTile wrapper
         return const InvitesStatusTile(invitations: [], isLoading: false);
@@ -70,8 +76,7 @@ class TileFactory {
       case 'RegistryDealsTile':
         return const _RegistryDealsSmartTile();
       case 'RsvpTasksTile':
-        // TODO: Implement _RsvpTasksSmartTile wrapper
-        return const RsvpTasksTile(events: [], isLoading: false);
+        return const _RsvpTasksSmartTile();
       case 'StorageUsageTile':
         // TODO: Implement _StorageUsageSmartTile wrapper
         return const StorageUsageTile(info: null, isLoading: false);
@@ -161,6 +166,7 @@ class _RecentPhotosSmartTileState
           .toList(),
       isLoading: state.isLoading && state.photos.isEmpty,
       error: state.error,
+      onPhotoTap: (photo) => context.push('/gallery/photo/detail', extra: photo),
       onRefresh: babyProfileId != null
           ? () => ref
               .read(recentPhotosProvider.notifier)
@@ -410,6 +416,157 @@ class _RegistryDealsSmartTileState extends ConsumerState<_RegistryDealsSmartTile
               .read(registryDealsProvider.notifier)
               .fetchDeals(babyProfileId: babyProfileId, forceRefresh: true)
           : null,
+    );
+  }
+}
+
+
+class _GalleryFavoritesSmartTile extends ConsumerStatefulWidget {
+  const _GalleryFavoritesSmartTile();
+
+  @override
+  ConsumerState<_GalleryFavoritesSmartTile> createState() =>
+      _GalleryFavoritesSmartTileState();
+}
+
+class _GalleryFavoritesSmartTileState
+    extends ConsumerState<_GalleryFavoritesSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        ref
+            .read(galleryFavoritesProvider.notifier)
+            .fetchFavorites(babyProfileId: babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(galleryFavoritesProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    // Watch for baby profile changes and re-fetch if needed
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(galleryFavoritesProvider.notifier)
+            .fetchFavorites(babyProfileId: current);
+      }
+    });
+
+    return GalleryFavoritesTile(
+      favorites: state.favorites,
+      isLoading: state.isLoading && state.favorites.isEmpty,
+      error: state.error,
+      onPhotoTap: (photo) => context.push('/gallery/photo/detail', extra: photo),
+      onRefresh: babyProfileId != null
+          ? () => ref
+              .read(galleryFavoritesProvider.notifier)
+              .refresh(babyProfileId: babyProfileId)
+          : null,
+      onViewAll: () {},
+    );
+  }
+}
+class _UpcomingEventsSmartTile extends ConsumerStatefulWidget {
+  const _UpcomingEventsSmartTile();
+
+  @override
+  ConsumerState<_UpcomingEventsSmartTile> createState() => _UpcomingEventsSmartTileState();
+}
+
+class _UpcomingEventsSmartTileState extends ConsumerState<_UpcomingEventsSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      final role = ref.read(homeScreenProvider).selectedRole ?? UserRole.follower;
+      if (babyProfileId != null) {
+        ref.read(upcomingEventsProvider.notifier).fetchEvents(babyProfileId: babyProfileId, role: role);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(upcomingEventsProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+    final role = ref.watch(homeScreenProvider).selectedRole ?? UserRole.follower;
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref.read(upcomingEventsProvider.notifier).fetchEvents(babyProfileId: current, role: role);
+      }
+    });
+
+    return UpcomingEventsTile(
+      events: state.events.map((e) => EventWithRsvp(event: e)).toList(),
+      isLoading: state.isLoading && state.events.isEmpty,
+      error: state.error,
+      onEventTap: (event) {
+        // TODO: Navigate to event details
+      },
+      onRefresh: () {
+        if (babyProfileId != null) {
+          ref.read(upcomingEventsProvider.notifier).refresh(babyProfileId: babyProfileId, role: role);
+        }
+      },
+      onViewAll: () {
+        // Navigate to full calendar if needed or let the main tab handle it
+      },
+    );
+  }
+}
+
+class _RsvpTasksSmartTile extends ConsumerStatefulWidget {
+  const _RsvpTasksSmartTile();
+
+  @override
+  ConsumerState<_RsvpTasksSmartTile> createState() => _RsvpTasksSmartTileState();
+}
+
+class _RsvpTasksSmartTileState extends ConsumerState<_RsvpTasksSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      final userId = ref.read(authProvider).user?.id ?? '';
+      if (babyProfileId != null && userId.isNotEmpty) {
+        ref.read(rsvpTasksProvider.notifier).fetchRSVPTasks(babyProfileId: babyProfileId, userId: userId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(rsvpTasksProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+    final userId = ref.watch(authProvider).user?.id ?? '';
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous && userId.isNotEmpty) {
+        ref.read(rsvpTasksProvider.notifier).fetchRSVPTasks(babyProfileId: current, userId: userId);
+      }
+    });
+
+    return RsvpTasksTile(
+      events: state.events,
+      isLoading: state.isLoading && state.events.isEmpty,
+      error: state.error,
+      onEventTap: (eventWithRsvp) {
+        // TODO: Navigate to event details
+      },
+      onRefresh: () {
+        if (babyProfileId != null && userId.isNotEmpty) {
+          ref.read(rsvpTasksProvider.notifier).refresh(babyProfileId: babyProfileId, userId: userId);
+        }
+      },
     );
   }
 }

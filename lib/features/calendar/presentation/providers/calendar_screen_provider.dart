@@ -5,6 +5,9 @@ import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/models/event.dart';
+import '../../../../core/models/tile_config.dart';
+import '../../../../core/enums/user_role.dart';
+import '../../../../core/utils/tile_loader.dart';
 import '../../../../core/services/realtime_service.dart';
 
 /// Calendar Screen Provider for managing calendar view state
@@ -25,6 +28,7 @@ import '../../../../core/services/realtime_service.dart';
 /// Calendar screen state model
 class CalendarScreenState {
   final List<Event> events;
+  final List<TileConfig> tiles;
   final DateTime selectedDate;
   final DateTime focusedMonth;
   final bool isLoading;
@@ -34,6 +38,7 @@ class CalendarScreenState {
 
   CalendarScreenState({
     this.events = const [],
+    this.tiles = const [],
     DateTime? selectedDate,
     DateTime? focusedMonth,
     this.isLoading = false,
@@ -50,6 +55,7 @@ class CalendarScreenState {
 
   CalendarScreenState copyWith({
     List<Event>? events,
+    List<TileConfig>? tiles,
     DateTime? selectedDate,
     DateTime? focusedMonth,
     bool? isLoading,
@@ -59,6 +65,7 @@ class CalendarScreenState {
   }) {
     return CalendarScreenState(
       events: events ?? this.events,
+      tiles: tiles ?? this.tiles,
       selectedDate: selectedDate ?? this.selectedDate,
       focusedMonth: focusedMonth ?? this.focusedMonth,
       isLoading: isLoading ?? this.isLoading,
@@ -95,7 +102,8 @@ class CalendarScreenState {
 /// Calendar Screen Provider Notifier
 class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
   String? _subscriptionId;
-  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
   late final RealtimeService _realtimeService;
 
   @override
@@ -126,6 +134,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
   /// [endDate] End date for event range (default: 6 months from now)
   Future<void> loadEvents({
     required String babyProfileId,
+    UserRole role = UserRole.follower,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
@@ -135,6 +144,16 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
         error: null,
         selectedBabyProfileId: babyProfileId,
       );
+
+      // We load tile configs first asynchronously so they populate fast
+      TileLoader.loadForScreen(
+        ref: ref,
+        screenId: 'calendar',
+        role: role,
+        forceRefresh: false,
+      ).then((tiles) {
+        if (ref.mounted) state = state.copyWith(tiles: tiles);
+      });
 
       // Default date range: 3 months ago to 6 months from now
       final start =
