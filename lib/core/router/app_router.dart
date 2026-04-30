@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/models/photo.dart';
+import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/navigation/navigation_service.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';

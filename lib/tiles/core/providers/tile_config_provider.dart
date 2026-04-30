@@ -137,7 +137,7 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
           .order('display_order');
 
       final configs = (response as List)
-          .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))
+          .map((json) => TileConfig.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
 
       // Save to cache
@@ -247,7 +247,7 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
         .order('display_order');
 
     return (response as List)
-        .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))
+        .map((json) => TileConfig.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
   }
 
@@ -265,7 +265,7 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))
+          .map((json) => TileConfig.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
@@ -305,7 +305,7 @@ class TileConfigNotifier extends Notifier<TileConfigState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) => TileConfig.fromJson(json as Map<String, dynamic>))
+          .map((json) => TileConfig.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load all from cache: $e');

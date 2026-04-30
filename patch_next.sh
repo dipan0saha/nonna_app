@@ -1,0 +1,2 @@
+sed -i '' -e 's/## 2. Purchaser Tracking (Visibility) — Status: \*\*Partially Completed\*\*/## 2. Purchaser Tracking (Visibility) — Status: \*\*Completed\*\*/' docs/96_next_steps/Next_Steps.md
+sed -i '' -e 's/## 4. Dashboard Tiles (Registry Highlights\/Deals) — Status: Pending \`TileFactory\` Wrappers/## 4. Dashboard Tiles (Registry Highlights\/Deals) — Status: **Completed**/' docs/96_next_steps/Next_Steps.md

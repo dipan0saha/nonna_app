@@ -51,19 +51,26 @@ class Notification {
 
   /// Creates a Notification from a JSON map
   factory Notification.fromJson(Map<String, dynamic> json) {
+    final parsedPayload = json['payload'] != null
+        ? (json['payload'] is String
+            ? Map<String, dynamic>.from(
+                jsonDecode(json['payload'] as String) as Map)
+            : Map<String, dynamic>.from(json['payload'] as Map))
+        : null;
+
     return Notification(
       id: json['id'] as String,
       recipientUserId: json['recipient_user_id'] as String,
       babyProfileId: json['baby_profile_id'] as String?,
       type: NotificationType.fromJson(json['type'] as String),
-      title: json['title'] as String,
-      body: json['body'] as String,
-      payload: json['payload'] != null
-          ? (json['payload'] is String
-              ? Map<String, dynamic>.from(
-                  jsonDecode(json['payload'] as String) as Map)
-              : Map<String, dynamic>.from(json['payload'] as Map))
-          : null,
+      title:
+          (parsedPayload != null ? parsedPayload['title'] as String? : null) ??
+              json['title'] as String? ??
+              'Notification',
+      body: (parsedPayload != null ? parsedPayload['body'] as String? : null) ??
+          json['body'] as String? ??
+          '',
+      payload: parsedPayload,
       readAt: json['read_at'] != null
           ? DateTime.parse(json['read_at'] as String)
           : null,

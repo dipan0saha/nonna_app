@@ -17,7 +17,6 @@ RegistryPurchase _makePurchase({
     purchasedByUserId: 'u1',
     purchasedAt: now.subtract(const Duration(hours: 2)),
     note: note,
-    createdAt: now,
   );
 }
 

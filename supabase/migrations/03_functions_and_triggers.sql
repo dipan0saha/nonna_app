@@ -1,3 +1,4 @@
+-- Functions, Helpers and Triggers
 -- ========================================
 -- Auto-update updated_at timestamp
 -- ========================================
@@ -188,3 +189,197 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER count_photo_comment
 AFTER INSERT ON public.photo_comments
 FOR EACH ROW EXECUTE FUNCTION increment_comments_added();
+-- ========================================
+-- Profile Creation Trigger
+-- ========================================
+-- This migration creates a database trigger that automatically
+-- creates profiles and user_stats records when a new user
+-- signs up via Supabase Auth.
+
+-- ========================================
+-- Function: handle_new_user
+-- ========================================
+-- Creates user profile and stats when auth.users record is created
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insert new user profile when auth.users record is created
+  INSERT INTO public.profiles (
+    user_id,
+    display_name,
+    created_at,
+    updated_at
+  )
+  VALUES (
+    NEW.id,
+    COALESCE(
+      NEW.raw_user_meta_data->>'display_name',
+      split_part(NEW.email, '@', 1)
+    ),
+    NOW(),
+    NOW()
+  );
+
+  -- Also create user_stats record
+  INSERT INTO public.user_stats (
+    user_id,
+    events_attended_count,
+    items_purchased_count,
+    photos_squished_count,
+    comments_added_count,
+    updated_at
+  )
+  VALUES (
+    NEW.id,
+    0,
+    0,
+    0,
+    0,
+    NOW()
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ========================================
+-- Trigger: on_auth_user_created
+-- ========================================
+-- Trigger the handle_new_user function after each new user signup
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
+
+-- ========================================
+-- Grant necessary permissions
+-- ========================================
+-- Allow the trigger to insert into user tables
+GRANT USAGE ON SCHEMA public TO postgres, authenticated;
+GRANT INSERT ON public.profiles TO postgres;
+GRANT INSERT ON public.user_stats TO postgres;
+
+-- ========================================
+-- Comments
+-- ========================================
+COMMENT ON FUNCTION public.handle_new_user() IS
+  'Automatically creates profiles and user_stats records when a new user signs up. '
+  'Ensures data consistency between auth.users and application tables.';
+
+-- Test Helper Functions for RLS Validation
+-- This migration ensures pgTAP is installed and creates additional wrapper functions for testing
+
+-- Ensure pgTAP is installed (provides has_table, has_column, plan, etc.)
+CREATE EXTENSION IF NOT EXISTS pgtap;
+
+-- Create a test schema if it doesn't exist
+CREATE SCHEMA IF NOT EXISTS testing;
+
+-- Custom helper: rls_enabled - checks if RLS is enabled on a table
+-- This wraps pgTAP's similar function to ensure compatibility
+CREATE OR REPLACE FUNCTION rls_enabled(p_schema name, p_table name, p_description text)
+RETURNS text AS $$
+DECLARE
+  v_rls_status boolean;
+BEGIN
+  -- Check if RLS is enabled on the table
+  SELECT relrowsecurity INTO v_rls_status
+  FROM pg_class
+  WHERE relname = p_table
+    AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = p_schema);
+
+  IF v_rls_status IS NULL THEN
+    RETURN 'not ok - ' || p_description || ' (table not found)';
+  ELSIF v_rls_status THEN
+    RETURN 'ok - ' || p_description;
+  ELSE
+    RETURN 'not ok - ' || p_description;
+  END IF;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+-- Custom helper: has_policy - checks if a policy exists on a table
+-- pgTAP provides many functions but not specifically for RLS policies
+CREATE OR REPLACE FUNCTION has_policy(p_schema text, p_table text, p_policy text, p_description text)
+RETURNS text AS $$
+DECLARE
+  v_exists boolean;
+BEGIN
+  SELECT EXISTS(
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = p_schema
+      AND tablename = p_table
+      AND policyname = p_policy
+  ) INTO v_exists;
+
+  IF v_exists THEN
+    RETURN 'ok - ' || p_description;
+  ELSE
+    RETURN 'not ok - ' || p_description;
+  END IF;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+
+
+-- Migration: Make trigger functions SECURITY DEFINER
+-- Updated from: 20260302000008_make_trigger_functions_security_definer.sql
+--
+-- Trigger functions need to bypass RLS when updating system tables like user_stats.
+-- SECURITY DEFINER allows them to execute with owner privileges rather than the
+-- calling user's privileges (authenticated role).
+
+-- ========================================
+-- Update Trigger Functions to SECURITY DEFINER
+-- ========================================
+
+-- Update increment_events_attended to execute with owner privileges
+CREATE OR REPLACE FUNCTION public.increment_events_attended()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.status = 'yes' AND (TG_OP = 'INSERT' OR OLD.status != 'yes') THEN
+    UPDATE public.user_stats
+    SET events_attended_count = events_attended_count + 1,
+        updated_at = NOW()
+    WHERE user_id = NEW.user_id;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+-- Update increment_items_purchased to execute with owner privileges
+CREATE OR REPLACE FUNCTION public.increment_items_purchased()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE public.user_stats
+  SET items_purchased_count = items_purchased_count + 1,
+      updated_at = NOW()
+  WHERE user_id = NEW.purchased_by_user_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+-- Update increment_photos_squished to execute with owner privileges
+CREATE OR REPLACE FUNCTION public.increment_photos_squished()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE public.user_stats
+  SET photos_squished_count = photos_squished_count + 1,
+      updated_at = NOW()
+  WHERE user_id = NEW.user_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+-- Update increment_comments_added to execute with owner privileges
+CREATE OR REPLACE FUNCTION public.increment_comments_added()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE public.user_stats
+  SET comments_added_count = comments_added_count + 1,
+      updated_at = NOW()
+  WHERE user_id = NEW.user_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;

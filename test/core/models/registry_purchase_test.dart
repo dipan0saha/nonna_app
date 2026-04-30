@@ -11,7 +11,6 @@ void main() {
       purchasedByUserId: 'user-789',
       purchasedAt: purchasedAt,
       note: 'Bought at the baby shower',
-      createdAt: now,
     );
 
     group('fromJson', () {
@@ -22,7 +21,6 @@ void main() {
           'purchased_by_user_id': 'user-789',
           'purchased_at': purchasedAt.toIso8601String(),
           'note': 'Bought at the baby shower',
-          'created_at': now.toIso8601String(),
         };
 
         final result = RegistryPurchase.fromJson(json);
@@ -32,7 +30,6 @@ void main() {
         expect(result.purchasedByUserId, 'user-789');
         expect(result.purchasedAt, purchasedAt);
         expect(result.note, 'Bought at the baby shower');
-        expect(result.createdAt, now);
       });
 
       test('handles null note', () {
@@ -42,7 +39,6 @@ void main() {
           'purchased_by_user_id': 'user-789',
           'purchased_at': purchasedAt.toIso8601String(),
           'note': null,
-          'created_at': now.toIso8601String(),
         };
 
         final result = RegistryPurchase.fromJson(json);
@@ -60,7 +56,6 @@ void main() {
         expect(json['purchased_by_user_id'], 'user-789');
         expect(json['purchased_at'], purchasedAt.toIso8601String());
         expect(json['note'], 'Bought at the baby shower');
-        expect(json['created_at'], now.toIso8601String());
       });
     });
 
@@ -99,7 +94,6 @@ void main() {
         expect(updated.purchasedByUserId, purchase.purchasedByUserId);
         expect(updated.purchasedAt, purchase.purchasedAt);
         expect(updated.note, 'Updated note');
-        expect(updated.createdAt, purchase.createdAt);
       });
 
       test('maintains original values when no updates provided', () {
@@ -116,7 +110,6 @@ void main() {
           purchasedByUserId: 'user-789',
           purchasedAt: purchasedAt,
           note: 'Bought at the baby shower',
-          createdAt: now,
         );
         final purchase2 = RegistryPurchase(
           id: 'purchase-123',
@@ -124,7 +117,6 @@ void main() {
           purchasedByUserId: 'user-789',
           purchasedAt: purchasedAt,
           note: 'Bought at the baby shower',
-          createdAt: now,
         );
 
         expect(purchase1, purchase2);
@@ -137,14 +129,12 @@ void main() {
           registryItemId: 'item-456',
           purchasedByUserId: 'user-789',
           purchasedAt: purchasedAt,
-          createdAt: now,
         );
         final purchase2 = RegistryPurchase(
           id: 'purchase-456',
           registryItemId: 'item-789',
           purchasedByUserId: 'user-123',
           purchasedAt: now,
-          createdAt: now,
         );
 
         expect(purchase1, isNot(purchase2));

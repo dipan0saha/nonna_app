@@ -59,6 +59,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
 
   late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _subscriptionId;
+  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   NotificationsState build() {
@@ -223,7 +224,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
 
     return (response as List)
         .map((json) => app_notification.Notification.fromJson(
-            json as Map<String, dynamic>))
+            Map<String, dynamic>.from(json as Map)))
         .toList();
   }
 
@@ -343,6 +344,7 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
       _realtimeService.unsubscribe(_subscriptionId!);
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

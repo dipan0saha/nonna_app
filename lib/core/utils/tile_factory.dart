@@ -20,7 +20,11 @@ import 'package:nonna_app/tiles/notifications/providers/notifications_provider.d
 import 'package:nonna_app/tiles/notifications/widgets/notifications_tile.dart';
 import 'package:nonna_app/tiles/recent_purchases/widgets/recent_purchases_tile.dart';
 import 'package:nonna_app/tiles/registry_deals/widgets/registry_deals_tile.dart';
+import 'package:nonna_app/tiles/registry_deals/providers/registry_deals_provider.dart';
+
 import 'package:nonna_app/tiles/registry_highlights/widgets/registry_highlights_tile.dart';
+import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
+
 import 'package:nonna_app/tiles/rsvp_tasks/widgets/rsvp_tasks_tile.dart';
 import 'package:nonna_app/tiles/storage_usage/widgets/storage_usage_tile.dart';
 import 'package:nonna_app/tiles/system_announcements/widgets/system_announcements_tile.dart';
@@ -41,8 +45,7 @@ class TileFactory {
         // TODO: Implement _UpcomingEventsSmartTile wrapper
         return const UpcomingEventsTile(events: [], isLoading: false);
       case 'RegistryHighlightsTile':
-        // TODO: Implement _RegistryHighlightsSmartTile wrapper
-        return const RegistryHighlightsTile(items: [], isLoading: false);
+        return const _RegistryHighlightsSmartTile();
       case 'CountdownTile':
         return const _CountdownSmartTile();
       case 'ChecklistTile':
@@ -65,8 +68,7 @@ class TileFactory {
         // TODO: Implement _RecentPurchasesSmartTile wrapper
         return const RecentPurchasesTile(purchases: [], isLoading: false);
       case 'RegistryDealsTile':
-        // TODO: Implement _RegistryDealsSmartTile wrapper
-        return const RegistryDealsTile(deals: [], isLoading: false);
+        return const _RegistryDealsSmartTile();
       case 'RsvpTasksTile':
         // TODO: Implement _RsvpTasksSmartTile wrapper
         return const RsvpTasksTile(events: [], isLoading: false);
@@ -310,6 +312,103 @@ class _ActivityListSmartTileState
           ? () => ref
               .read(activityListProvider.notifier)
               .fetchEngagement(babyProfileId: babyProfileId, forceRefresh: true)
+          : null,
+    );
+  }
+}
+
+class _RegistryHighlightsSmartTile extends ConsumerStatefulWidget {
+  const _RegistryHighlightsSmartTile();
+
+  @override
+  ConsumerState<_RegistryHighlightsSmartTile> createState() =>
+      _RegistryHighlightsSmartTileState();
+}
+
+class _RegistryHighlightsSmartTileState
+    extends ConsumerState<_RegistryHighlightsSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        ref
+            .read(registryHighlightsProvider.notifier)
+            .fetchHighlights(babyProfileId: babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(registryHighlightsProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(registryHighlightsProvider.notifier)
+            .fetchHighlights(babyProfileId: current);
+      }
+    });
+
+    return RegistryHighlightsTile(
+      items: state.items,
+      isLoading: state.isLoading && state.items.isEmpty,
+      error: state.error,
+      onRefresh: babyProfileId != null
+          ? () => ref
+              .read(registryHighlightsProvider.notifier)
+              .fetchHighlights(babyProfileId: babyProfileId, forceRefresh: true)
+          : null,
+    );
+  }
+}
+
+class _RegistryDealsSmartTile extends ConsumerStatefulWidget {
+  const _RegistryDealsSmartTile();
+
+  @override
+  ConsumerState<_RegistryDealsSmartTile> createState() =>
+      _RegistryDealsSmartTileState();
+}
+
+class _RegistryDealsSmartTileState extends ConsumerState<_RegistryDealsSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        ref
+            .read(registryDealsProvider.notifier)
+            .fetchDeals(babyProfileId: babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(registryDealsProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(registryDealsProvider.notifier)
+            .fetchDeals(babyProfileId: current);
+      }
+    });
+
+    return RegistryDealsTile(
+      deals: state.deals,
+      isLoading: state.isLoading && state.deals.isEmpty,
+      error: state.error,
+      onRefresh: babyProfileId != null
+          ? () => ref
+              .read(registryDealsProvider.notifier)
+              .fetchDeals(babyProfileId: babyProfileId, forceRefresh: true)
           : null,
     );
   }

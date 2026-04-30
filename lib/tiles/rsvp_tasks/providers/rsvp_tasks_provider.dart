@@ -80,6 +80,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
 
   late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _eventsSubscriptionId;
+  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
   String? _rsvpsSubscriptionId;
 
   // ==========================================
@@ -191,7 +192,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
         .order('starts_at', ascending: true);
 
     final events = (eventsResponse as List)
-        .map((json) => Event.fromJson(json as Map<String, dynamic>))
+        .map((json) => Event.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
 
     // Fetch RSVPs for these events by this user
@@ -205,7 +206,7 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
         .inFilter('event_id', eventIds);
 
     final rsvps = (rsvpsResponse as List)
-        .map((json) => EventRsvp.fromJson(json as Map<String, dynamic>))
+        .map((json) => EventRsvp.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
 
     // Create RSVP map for quick lookup
@@ -355,10 +356,12 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
   void _cancelRealtimeSubscriptions() {
     if (_eventsSubscriptionId != null) {
       _realtimeService.unsubscribe(_eventsSubscriptionId!);
+      _subscriptionManager.unsubscribe(_eventsSubscriptionId!);
       _eventsSubscriptionId = null;
     }
     if (_rsvpsSubscriptionId != null) {
       _realtimeService.unsubscribe(_rsvpsSubscriptionId!);
+      _subscriptionManager.unsubscribe(_rsvpsSubscriptionId!);
       _rsvpsSubscriptionId = null;
     }
     debugPrint('✅ Real-time subscriptions cancelled');

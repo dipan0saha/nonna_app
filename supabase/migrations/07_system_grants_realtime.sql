@@ -1,3 +1,4 @@
+-- System Permissions, Grants & Realtime
 -- Migration: Grant all RLS-related permissions
 -- Consolidates: 20260302000003 + 20260302000004 + 20260302000005 + 20260302000006 + 20260302000012
 --
@@ -112,3 +113,43 @@ GRANT SELECT ON public.tile_configs TO anon;
 -- ========================================
 
 GRANT SELECT ON public.tile_configs TO anon;
+-- Migration: Grant write permissions on core tables
+-- Ensures authenticated users can create and manage baby profiles and memberships
+
+-- Baby Profiles
+GRANT INSERT, UPDATE, DELETE ON public.baby_profiles TO authenticated;
+
+-- Baby Memberships
+GRANT INSERT, UPDATE, DELETE ON public.baby_memberships TO authenticated;
+-- Enable real-time for all required tables to prevent RealtimeCloseEvent (code: 1002) channel drop errors
+
+BEGIN;
+  -- Add tables that the app subscribes to for Real-time events
+  -- Do not DROP the publication, as the Supabase Realtime server relies on its persistent OID
+  ALTER PUBLICATION supabase_realtime ADD TABLE 
+    user_stats,
+    photos,
+    photo_squishes,
+    events,
+    votes,
+    name_suggestions,
+    name_suggestion_likes,
+    activity_events,
+    app_versions,
+    event_comments,
+    event_rsvps,
+    photo_comments,
+    photo_tags,
+    notification_preferences,
+    invitations,
+    owner_update_markers,
+    registry_items,
+    registry_purchases,
+    profiles,
+    screens,
+    tile_definitions,
+    notifications,
+    tile_configs,
+    baby_memberships,
+    baby_profiles;
+COMMIT;

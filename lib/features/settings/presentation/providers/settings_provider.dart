@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:nonna_app/core/di/providers.dart';
+
 /// Settings state
 ///
 /// **Functional Requirements**: Section 3.6.4 - Additional Feature Screens
@@ -43,47 +45,51 @@ class SettingsState {
 /// Settings Notifier
 class SettingsNotifier extends Notifier<SettingsState> {
   @override
-  SettingsState build() => const SettingsState();
+  SettingsState build() {
+    final storage = ref.watch(localStorageServiceProvider);
+    final theme = storage.themeMode;
+    return SettingsState(
+      notificationsEnabled: storage.isNotificationsEnabled,
+      darkModeEnabled: theme == 'dark' ||
+          theme == 'system' &&
+              PlatformDispatcher.instance.platformBrightness == Brightness.dark,
+      language: storage.languageCode ?? 'en',
+    );
+  }
 
   /// Toggle notifications
-  void toggleNotifications({required bool enabled}) {
+  void toggleNotifications({required bool enabled}) async {
     state = state.copyWith(notificationsEnabled: enabled, saveSuccess: false);
+    await ref
+        .read(localStorageServiceProvider)
+        .setNotificationsEnabled(enabled);
     debugPrint('✅ Notifications toggled: $enabled');
   }
 
   /// Toggle dark mode
-  void toggleDarkMode({required bool enabled}) {
+  void toggleDarkMode({required bool enabled}) async {
     state = state.copyWith(darkModeEnabled: enabled, saveSuccess: false);
+    await ref
+        .read(localStorageServiceProvider)
+        .setThemeMode(enabled ? 'dark' : 'light');
     debugPrint('✅ Dark mode toggled: $enabled');
   }
 
   /// Change language
-  void changeLanguage(String language) {
+  void changeLanguage(String language) async {
     state = state.copyWith(language: language, saveSuccess: false);
+    await ref.read(localStorageServiceProvider).setLanguageCode(language);
     debugPrint('✅ Language changed: $language');
   }
 
   /// Save settings
   Future<void> saveSettings() async {
-    try {
-      state =
-          state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
-      // TODO: persist to storage/database
-      await Future<void>.delayed(const Duration(milliseconds: 200));
-      if (!ref.mounted) return;
-      state = state.copyWith(isSaving: false, saveSuccess: true);
-      debugPrint('✅ Settings saved');
-    } catch (e) {
-      if (!ref.mounted) return;
-      final msg = 'Failed to save settings: $e';
-      debugPrint('❌ $msg');
-      state = state.copyWith(isSaving: false, saveError: msg);
-    }
+    // Left for explicit save buttons if necessary, though now auto-saved
+    state = state.copyWith(saveSuccess: true);
   }
 }
 
 /// Settings provider
-final settingsProvider =
-    NotifierProvider.autoDispose<SettingsNotifier, SettingsState>(
+final settingsProvider = NotifierProvider<SettingsNotifier, SettingsState>(
   SettingsNotifier.new,
 );

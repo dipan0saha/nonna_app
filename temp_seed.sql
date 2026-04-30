@@ -1,3 +1,168 @@
+DO $$ 
+DECLARE
+    v_user_id uuid;
+    v_oliver_id uuid;
+    v_amelia_id uuid;
+BEGIN
+    -- Find the primary user to own the records
+    SELECT id INTO v_user_id FROM auth.users WHERE email = 'dipan.saha@gmail.com' LIMIT 1;
+    
+    IF v_user_id IS NULL THEN
+        SELECT id INTO v_user_id FROM auth.users ORDER BY created_at LIMIT 1;
+    END IF;
+
+    IF v_user_id IS NULL THEN
+        RAISE NOTICE 'No auth user found. Skipping sample data creation.';
+        RETURN;
+    END IF;
+
+    -- Resolve Oliver
+    SELECT id INTO v_oliver_id FROM baby_profiles WHERE name = 'Oliver' LIMIT 1;
+    IF v_oliver_id IS NULL THEN
+        INSERT INTO baby_profiles (name, expected_birth_date, gender, created_by)
+        VALUES ('Oliver', CURRENT_DATE - INTERVAL '3 months', 'male', v_user_id)
+        RETURNING id INTO v_oliver_id;
+        
+        INSERT INTO baby_memberships (baby_profile_id, user_id, role, relationship_label)
+        VALUES (v_oliver_id, v_user_id, 'owner', 'Parent');
+    END IF;
+
+    -- Resolve Amelia
+    SELECT id INTO v_amelia_id FROM baby_profiles WHERE name = 'Amelia' LIMIT 1;
+    IF v_amelia_id IS NULL THEN
+        INSERT INTO baby_profiles (name, expected_birth_date, gender, created_by)
+        VALUES ('Amelia', CURRENT_DATE + INTERVAL '1 month', 'female', v_user_id)
+        RETURNING id INTO v_amelia_id;
+
+        INSERT INTO baby_memberships (baby_profile_id, user_id, role, relationship_label)
+        VALUES (v_amelia_id, v_user_id, 'owner', 'Parent');
+    END IF;
+
+    -- --- Insert Sample Photos ---
+    INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
+    SELECT v_oliver_id, v_user_id, 'https://picsum.photos/seed/oliver_new1/400/400', 'Oliver playing with blocks'
+    WHERE NOT EXISTS (SELECT 1 FROM photos WHERE storage_path = 'https://picsum.photos/seed/oliver_new1/400/400');
+
+    INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
+    SELECT v_oliver_id, v_user_id, 'https://picsum.photos/seed/oliver_new2/400/400', 'First steps!'
+    WHERE NOT EXISTS (SELECT 1 FROM photos WHERE storage_path = 'https://picsum.photos/seed/oliver_new2/400/400');
+
+    INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
+    SELECT v_amelia_id, v_user_id, 'https://picsum.photos/seed/amelia_new1/400/400', 'Amelia at the park'
+    WHERE NOT EXISTS (SELECT 1 FROM photos WHERE storage_path = 'https://picsum.photos/seed/amelia_new1/400/400');
+    
+    INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
+    SELECT v_amelia_id, v_user_id, 'https://picsum.photos/seed/amelia_new2/400/400', 'Smiling Amelia'
+    WHERE NOT EXISTS (SELECT 1 FROM photos WHERE storage_path = 'https://picsum.photos/seed/amelia_new2/400/400');
+
+    -- --- Insert Sample Events ---
+    INSERT INTO events (baby_profile_id, created_by_user_id, title, starts_at, ends_at, description, location)
+    SELECT v_oliver_id, v_user_id, 'Oliver 100 Days Celebration', NOW() + INTERVAL '7 days', NOW() + INTERVAL '7 days 4 hours', 'A small gathering to celebrate 100 days of Oliver.', 'Local Park'
+    WHERE NOT EXISTS (SELECT 1 FROM events WHERE title = 'Oliver 100 Days Celebration');
+
+    INSERT INTO events (baby_profile_id, created_by_user_id, title, starts_at, ends_at, description, location)
+    SELECT v_amelia_id, v_user_id, 'Amelia Baby Shower', NOW() + INTERVAL '14 days', NOW() + INTERVAL '14 days 3 hours', 'Celebrating the upcoming arrival of Amelia!', 'Grandma''s House'
+    WHERE NOT EXISTS (SELECT 1 FROM events WHERE title = 'Amelia Baby Shower');
+
+    -- --- Insert Registry Items ---
+    INSERT INTO registry_items (baby_profile_id, created_by_user_id, name, description, link_url, priority)
+    SELECT v_oliver_id, v_user_id, 'Baby Stroller', 'A nice compact baby stroller.', 'https://amazon.com/sample', 5
+    WHERE NOT EXISTS (SELECT 1 FROM registry_items WHERE name = 'Baby Stroller');
+
+    INSERT INTO registry_items (baby_profile_id, created_by_user_id, name, description, link_url, priority)
+    SELECT v_amelia_id, v_user_id, 'Crib Mattress', 'Firm and safe crib mattress.', 'https://amazon.com/sample2', 4
+    WHERE NOT EXISTS (SELECT 1 FROM registry_items WHERE name = 'Crib Mattress');
+
+    -- --- Insert Sample Notifications ---
+    INSERT INTO notifications (recipient_user_id, baby_profile_id, type, payload)
+    SELECT v_user_id, v_oliver_id, 'event_invite', '{"message": "You have been invited to Oliver 100 Days Celebration!"}'::jsonb
+    WHERE NOT EXISTS (SELECT 1 FROM notifications WHERE type = 'event_invite' AND baby_profile_id = v_oliver_id);
+
+    INSERT INTO notifications (recipient_user_id, baby_profile_id, type, payload)
+    SELECT v_user_id, v_amelia_id, 'registry_update', '{"message": "A new item was added to Amelia''s registry."}'::jsonb
+    WHERE NOT EXISTS (SELECT 1 FROM notifications WHERE type = 'registry_update' AND baby_profile_id = v_amelia_id);
+
+END $$;
+DO $$ 
+DECLARE
+    v_user_id uuid;
+    r_baby RECORD;
+BEGIN
+    -- Find the primary user (or fallback to any user)
+    SELECT id INTO v_user_id FROM auth.users WHERE email = 'dipan.saha@gmail.com' LIMIT 1;
+    IF v_user_id IS NULL THEN
+        SELECT id INTO v_user_id FROM auth.users ORDER BY created_at LIMIT 1;
+    END IF;
+
+    IF v_user_id IS NULL THEN
+        RAISE NOTICE 'No auth user found. Skipping general tab seed data creation.';
+        RETURN;
+    END IF;
+
+    -- Iterate over ALL baby profiles for this user
+    FOR r_baby IN 
+        SELECT bp.id as baby_profile_id, bp.name 
+        FROM baby_profiles bp
+        JOIN baby_memberships bm ON bp.id = bm.baby_profile_id
+        WHERE bm.user_id = v_user_id
+    LOOP
+
+        -- REGISTRY items
+        IF NOT EXISTS (SELECT 1 FROM registry_items WHERE baby_profile_id = r_baby.baby_profile_id AND name = 'Diaper Genie') THEN
+            INSERT INTO registry_items (baby_profile_id, created_by_user_id, name, description, link_url, priority)
+            VALUES 
+                (r_baby.baby_profile_id, v_user_id, 'Diaper Genie', 'Odorless diaper disposal system.', 'https://amazon.com/diapergenie', 5),
+                (r_baby.baby_profile_id, v_user_id, 'Baby Monitor', 'Video and audio monitor with night vision.', 'https://amazon.com/monitor', 4),
+                (r_baby.baby_profile_id, v_user_id, 'Onesies (0-3M)', 'Pack of 5 cotton onesies.', 'https://amazon.com/onesies', 3),
+                (r_baby.baby_profile_id, v_user_id, 'Bottle Warmer', 'Quick bottle warming system.', 'https://amazon.com/warmer', 2),
+                (r_baby.baby_profile_id, v_user_id, 'Car Seat', 'Safe convertible car seat.', 'https://amazon.com/carseat', 5);
+                
+            -- Add a purchase for one of them
+            INSERT INTO registry_purchases (registry_item_id, purchased_by_user_id, note)
+            SELECT id, v_user_id, 'Got this for you!' FROM registry_items 
+            WHERE baby_profile_id = r_baby.baby_profile_id AND name = 'Onesies (0-3M)'
+            LIMIT 1;
+        END IF;
+
+        -- PHOTOS (Gallery Tab)
+        IF NOT EXISTS (SELECT 1 FROM photos WHERE baby_profile_id = r_baby.baby_profile_id AND caption = r_baby.name || ' sleeping peacefully') THEN
+            INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
+            VALUES 
+                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new1/400/400', r_baby.name || ' sleeping peacefully'),
+                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new2/600/400', r_baby.name || ' first smile!'),
+                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new3/400/600', 'Tummy time for ' || r_baby.name),
+                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new4/400/400', 'Bath time fun'),
+                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new5/400/400', 'Cute outfit');
+        END IF;
+
+        -- EVENTS (Calendar Tab)
+        IF NOT EXISTS (SELECT 1 FROM events WHERE baby_profile_id = r_baby.baby_profile_id AND title = 'Doctor Appointment') THEN
+            INSERT INTO events (baby_profile_id, created_by_user_id, title, starts_at, ends_at, description, location)
+            VALUES 
+                (r_baby.baby_profile_id, v_user_id, 'Doctor Appointment', NOW() + INTERVAL '2 days', NOW() + INTERVAL '2 days 1 hour', 'Regular checkup.', 'Pediatrician Clinic'),
+                (r_baby.baby_profile_id, v_user_id, 'Playdate with cousins', NOW() + INTERVAL '5 days', NOW() + INTERVAL '5 days 3 hours', 'Fun at the park.', 'City Park'),
+                (r_baby.baby_profile_id, v_user_id, 'First Birthday Party', NOW() + INTERVAL '30 days', NOW() + INTERVAL '30 days 4 hours', 'Celebrating 1 year!', 'Home');
+        END IF;
+
+        -- FUN TAB (Name Suggestions)
+        IF NOT EXISTS (SELECT 1 FROM name_suggestions WHERE baby_profile_id = r_baby.baby_profile_id AND suggested_name = 'Leo') THEN
+            INSERT INTO name_suggestions (baby_profile_id, user_id, suggested_name)
+            VALUES 
+                (r_baby.baby_profile_id, v_user_id, 'Leo'),
+                (r_baby.baby_profile_id, v_user_id, 'Mia'),
+                (r_baby.baby_profile_id, v_user_id, 'Arthur');
+        END IF;
+
+        -- FUN TAB (Votes)
+        IF NOT EXISTS (SELECT 1 FROM votes WHERE baby_profile_id = r_baby.baby_profile_id AND vote_type = 'gender' AND user_id = v_user_id) THEN
+            INSERT INTO votes (baby_profile_id, user_id, vote_type, value_text)
+            VALUES
+                (r_baby.baby_profile_id, v_user_id, 'gender', 'boy');
+        END IF;
+
+    END LOOP;
+
+END $$;
 -- ============================================================================
 -- Nonna App - Comprehensive Seed Data Script
 -- Version: 2.1.0
@@ -1476,172 +1641,3 @@ COMMIT;
 
 -- Reset replication role to origin
 SET session_replication_role = 'origin';
-
--- Migration 20260429000001_seed_sample_tile_data.sql
-DO $$ 
-DECLARE
-    v_user_id uuid;
-    v_oliver_id uuid;
-    v_amelia_id uuid;
-BEGIN
-    -- Find the primary user to own the records
-    SELECT id INTO v_user_id FROM auth.users WHERE email = 'dipan.saha@gmail.com' LIMIT 1;
-    
-    IF v_user_id IS NULL THEN
-        SELECT id INTO v_user_id FROM auth.users ORDER BY created_at LIMIT 1;
-    END IF;
-
-    IF v_user_id IS NULL THEN
-        RAISE NOTICE 'No auth user found. Skipping sample data creation.';
-        RETURN;
-    END IF;
-
-    -- Resolve Oliver
-    SELECT id INTO v_oliver_id FROM baby_profiles WHERE name = 'Oliver' LIMIT 1;
-    IF v_oliver_id IS NULL THEN
-        INSERT INTO baby_profiles (name, expected_birth_date, gender, created_by)
-        VALUES ('Oliver', CURRENT_DATE - INTERVAL '3 months', 'male', v_user_id)
-        RETURNING id INTO v_oliver_id;
-        
-        INSERT INTO baby_memberships (baby_profile_id, user_id, role, relationship_label)
-        VALUES (v_oliver_id, v_user_id, 'owner', 'Parent');
-    END IF;
-
-    -- Resolve Amelia
-    SELECT id INTO v_amelia_id FROM baby_profiles WHERE name = 'Amelia' LIMIT 1;
-    IF v_amelia_id IS NULL THEN
-        INSERT INTO baby_profiles (name, expected_birth_date, gender, created_by)
-        VALUES ('Amelia', CURRENT_DATE + INTERVAL '1 month', 'female', v_user_id)
-        RETURNING id INTO v_amelia_id;
-
-        INSERT INTO baby_memberships (baby_profile_id, user_id, role, relationship_label)
-        VALUES (v_amelia_id, v_user_id, 'owner', 'Parent');
-    END IF;
-
-    -- --- Insert Sample Photos ---
-    INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
-    SELECT v_oliver_id, v_user_id, 'https://picsum.photos/seed/oliver_new1/400/400', 'Oliver playing with blocks'
-    WHERE NOT EXISTS (SELECT 1 FROM photos WHERE storage_path = 'https://picsum.photos/seed/oliver_new1/400/400');
-
-    INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
-    SELECT v_oliver_id, v_user_id, 'https://picsum.photos/seed/oliver_new2/400/400', 'First steps!'
-    WHERE NOT EXISTS (SELECT 1 FROM photos WHERE storage_path = 'https://picsum.photos/seed/oliver_new2/400/400');
-
-    INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
-    SELECT v_amelia_id, v_user_id, 'https://picsum.photos/seed/amelia_new1/400/400', 'Amelia at the park'
-    WHERE NOT EXISTS (SELECT 1 FROM photos WHERE storage_path = 'https://picsum.photos/seed/amelia_new1/400/400');
-    
-    INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
-    SELECT v_amelia_id, v_user_id, 'https://picsum.photos/seed/amelia_new2/400/400', 'Smiling Amelia'
-    WHERE NOT EXISTS (SELECT 1 FROM photos WHERE storage_path = 'https://picsum.photos/seed/amelia_new2/400/400');
-
-    -- --- Insert Sample Events ---
-    INSERT INTO events (baby_profile_id, created_by_user_id, title, starts_at, ends_at, description, location)
-    SELECT v_oliver_id, v_user_id, 'Oliver 100 Days Celebration', NOW() + INTERVAL '7 days', NOW() + INTERVAL '7 days 4 hours', 'A small gathering to celebrate 100 days of Oliver.', 'Local Park'
-    WHERE NOT EXISTS (SELECT 1 FROM events WHERE title = 'Oliver 100 Days Celebration');
-
-    INSERT INTO events (baby_profile_id, created_by_user_id, title, starts_at, ends_at, description, location)
-    SELECT v_amelia_id, v_user_id, 'Amelia Baby Shower', NOW() + INTERVAL '14 days', NOW() + INTERVAL '14 days 3 hours', 'Celebrating the upcoming arrival of Amelia!', 'Grandma''s House'
-    WHERE NOT EXISTS (SELECT 1 FROM events WHERE title = 'Amelia Baby Shower');
-
-    -- --- Insert Registry Items ---
-    INSERT INTO registry_items (baby_profile_id, created_by_user_id, name, description, link_url, priority)
-    SELECT v_oliver_id, v_user_id, 'Baby Stroller', 'A nice compact baby stroller.', 'https://amazon.com/sample', 5
-    WHERE NOT EXISTS (SELECT 1 FROM registry_items WHERE name = 'Baby Stroller');
-
-    INSERT INTO registry_items (baby_profile_id, created_by_user_id, name, description, link_url, priority)
-    SELECT v_amelia_id, v_user_id, 'Crib Mattress', 'Firm and safe crib mattress.', 'https://amazon.com/sample2', 4
-    WHERE NOT EXISTS (SELECT 1 FROM registry_items WHERE name = 'Crib Mattress');
-
-    -- --- Insert Sample Notifications ---
-    INSERT INTO notifications (recipient_user_id, baby_profile_id, type, payload)
-    SELECT v_user_id, v_oliver_id, 'event_invite', '{"message": "You have been invited to Oliver 100 Days Celebration!"}'::jsonb
-    WHERE NOT EXISTS (SELECT 1 FROM notifications WHERE type = 'event_invite' AND baby_profile_id = v_oliver_id);
-
-    INSERT INTO notifications (recipient_user_id, baby_profile_id, type, payload)
-    SELECT v_user_id, v_amelia_id, 'registry_update', '{"message": "A new item was added to Amelia''s registry."}'::jsonb
-    WHERE NOT EXISTS (SELECT 1 FROM notifications WHERE type = 'registry_update' AND baby_profile_id = v_amelia_id);
-
-END $$;
-
--- Migration 20260429000003_seed_tab_data.sql
-DO $$ 
-DECLARE
-    v_user_id uuid;
-    r_baby RECORD;
-BEGIN
-    -- Find the primary user (or fallback to any user)
-    SELECT id INTO v_user_id FROM auth.users WHERE email = 'dipan.saha@gmail.com' LIMIT 1;
-    IF v_user_id IS NULL THEN
-        SELECT id INTO v_user_id FROM auth.users ORDER BY created_at LIMIT 1;
-    END IF;
-
-    IF v_user_id IS NULL THEN
-        RAISE NOTICE 'No auth user found. Skipping general tab seed data creation.';
-        RETURN;
-    END IF;
-
-    -- Iterate over ALL baby profiles for this user
-    FOR r_baby IN 
-        SELECT bp.id as baby_profile_id, bp.name 
-        FROM baby_profiles bp
-        JOIN baby_memberships bm ON bp.id = bm.baby_profile_id
-        WHERE bm.user_id = v_user_id
-    LOOP
-
-        -- REGISTRY items
-        IF NOT EXISTS (SELECT 1 FROM registry_items WHERE baby_profile_id = r_baby.baby_profile_id AND name = 'Diaper Genie') THEN
-            INSERT INTO registry_items (baby_profile_id, created_by_user_id, name, description, link_url, priority)
-            VALUES 
-                (r_baby.baby_profile_id, v_user_id, 'Diaper Genie', 'Odorless diaper disposal system.', 'https://amazon.com/diapergenie', 5),
-                (r_baby.baby_profile_id, v_user_id, 'Baby Monitor', 'Video and audio monitor with night vision.', 'https://amazon.com/monitor', 4),
-                (r_baby.baby_profile_id, v_user_id, 'Onesies (0-3M)', 'Pack of 5 cotton onesies.', 'https://amazon.com/onesies', 3),
-                (r_baby.baby_profile_id, v_user_id, 'Bottle Warmer', 'Quick bottle warming system.', 'https://amazon.com/warmer', 2),
-                (r_baby.baby_profile_id, v_user_id, 'Car Seat', 'Safe convertible car seat.', 'https://amazon.com/carseat', 5);
-                
-            -- Add a purchase for one of them
-            INSERT INTO registry_purchases (registry_item_id, purchased_by_user_id, note)
-            SELECT id, v_user_id, 'Got this for you!' FROM registry_items 
-            WHERE baby_profile_id = r_baby.baby_profile_id AND name = 'Onesies (0-3M)'
-            LIMIT 1;
-        END IF;
-
-        -- PHOTOS (Gallery Tab)
-        IF NOT EXISTS (SELECT 1 FROM photos WHERE baby_profile_id = r_baby.baby_profile_id AND caption = r_baby.name || ' sleeping peacefully') THEN
-            INSERT INTO photos (baby_profile_id, uploaded_by_user_id, storage_path, caption)
-            VALUES 
-                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new1/400/400', r_baby.name || ' sleeping peacefully'),
-                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new2/600/400', r_baby.name || ' first smile!'),
-                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new3/400/600', 'Tummy time for ' || r_baby.name),
-                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new4/400/400', 'Bath time fun'),
-                (r_baby.baby_profile_id, v_user_id, 'https://picsum.photos/seed/' || r_baby.name || 'new5/400/400', 'Cute outfit');
-        END IF;
-
-        -- EVENTS (Calendar Tab)
-        IF NOT EXISTS (SELECT 1 FROM events WHERE baby_profile_id = r_baby.baby_profile_id AND title = 'Doctor Appointment') THEN
-            INSERT INTO events (baby_profile_id, created_by_user_id, title, starts_at, ends_at, description, location)
-            VALUES 
-                (r_baby.baby_profile_id, v_user_id, 'Doctor Appointment', NOW() + INTERVAL '2 days', NOW() + INTERVAL '2 days 1 hour', 'Regular checkup.', 'Pediatrician Clinic'),
-                (r_baby.baby_profile_id, v_user_id, 'Playdate with cousins', NOW() + INTERVAL '5 days', NOW() + INTERVAL '5 days 3 hours', 'Fun at the park.', 'City Park'),
-                (r_baby.baby_profile_id, v_user_id, 'First Birthday Party', NOW() + INTERVAL '30 days', NOW() + INTERVAL '30 days 4 hours', 'Celebrating 1 year!', 'Home');
-        END IF;
-
-        -- FUN TAB (Name Suggestions)
-        IF NOT EXISTS (SELECT 1 FROM name_suggestions WHERE baby_profile_id = r_baby.baby_profile_id AND suggested_name = 'Leo') THEN
-            INSERT INTO name_suggestions (baby_profile_id, user_id, suggested_name)
-            VALUES 
-                (r_baby.baby_profile_id, v_user_id, 'Leo'),
-                (r_baby.baby_profile_id, v_user_id, 'Mia'),
-                (r_baby.baby_profile_id, v_user_id, 'Arthur');
-        END IF;
-
-        -- FUN TAB (Votes)
-        IF NOT EXISTS (SELECT 1 FROM votes WHERE baby_profile_id = r_baby.baby_profile_id AND vote_type = 'gender' AND user_id = v_user_id) THEN
-            INSERT INTO votes (baby_profile_id, user_id, vote_type, value_text)
-            VALUES
-                (r_baby.baby_profile_id, v_user_id, 'gender', 'boy');
-        END IF;
-
-    END LOOP;
-
-END $$;

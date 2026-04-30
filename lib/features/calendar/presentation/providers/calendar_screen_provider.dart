@@ -95,6 +95,7 @@ class CalendarScreenState {
 /// Calendar Screen Provider Notifier
 class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
   String? _subscriptionId;
+  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
   late final RealtimeService _realtimeService;
 
   @override
@@ -413,6 +414,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
       _realtimeService.unsubscribe(_subscriptionId!);
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

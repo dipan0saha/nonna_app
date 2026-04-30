@@ -6,6 +6,8 @@ import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/models/registry_item.dart';
 import '../../../../core/models/registry_purchase.dart';
+import '../../../../core/models/user.dart';
+import 'package:uuid/uuid.dart';
 
 /// Registry Screen Provider for managing registry state
 ///
@@ -44,11 +46,15 @@ class RegistryItemWithStatus {
   final RegistryItem item;
   final bool isPurchased;
   final int purchaseCount;
+  final List<User> purchasers;
+  final bool isPurchasedByCurrentUser;
 
   const RegistryItemWithStatus({
     required this.item,
     required this.isPurchased,
     this.purchaseCount = 0,
+    this.purchasers = const [],
+    this.isPurchasedByCurrentUser = false,
   });
 }
 
@@ -144,6 +150,7 @@ class RegistryScreenState {
 /// Registry Screen Provider Notifier
 class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
   String? _itemsSubscriptionId;
+  late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _purchasesSubscriptionId;
 
   @override
@@ -227,6 +234,44 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     debugPrint('✅ Applied sort: $sort');
   }
 
+  /// Toggle purchase status
+  Future<void> togglePurchase(RegistryItemWithStatus itemWithStatus) async {
+    final user = ref.read(currentUserProvider);
+    if (user == null) {
+      debugPrint('⚠️  User not logged in, cannot toggle purchase');
+      return;
+    }
+
+    final databaseService = ref.read(databaseServiceProvider);
+
+    try {
+      if (itemWithStatus.isPurchased) {
+        // Remove purchase
+        await databaseService.delete(SupabaseTables.registryPurchases).match({
+          'registry_item_id': itemWithStatus.item.id,
+          'purchased_by_user_id': user.id,
+        });
+      } else {
+        // Create new purchase
+        final purchase = RegistryPurchase(
+          id: const Uuid().v4(),
+          registryItemId: itemWithStatus.item.id,
+          purchasedByUserId: user.id,
+          purchasedAt: DateTime.now(),
+        );
+
+        await databaseService.insert(
+          SupabaseTables.registryPurchases,
+          purchase.toJson(),
+        );
+      }
+
+      await refresh();
+    } catch (e) {
+      debugPrint('❌ Failed to toggle purchase: $e');
+    }
+  }
+
   /// Refresh registry
   Future<void> refresh() async {
     if (state.selectedBabyProfileId == null) {
@@ -249,6 +294,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     String babyProfileId,
   ) async {
     final databaseService = ref.read(databaseServiceProvider);
+    final currentUser = ref.read(currentUserProvider);
 
     // Fetch registry items
     final itemsResponse = await databaseService
@@ -264,20 +310,54 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     // Fetch purchases
     final purchasesResponse = await databaseService
         .select(SupabaseTables.registryPurchases)
-        .order(SupabaseTables.createdAt, ascending: false);
+        .order('purchased_at', ascending: false);
 
     final purchases = (purchasesResponse as List)
         .map((json) => RegistryPurchase.fromJson(json as Map<String, dynamic>))
         .toList();
 
+    // Fetch profiles for users who purchased items
+    final purchasedUserIds =
+        purchases.map((p) => p.purchasedByUserId).toSet().toList();
+    final List<User> purchaserProfiles = [];
+
+    if (purchasedUserIds.isNotEmpty) {
+      try {
+        final profilesResponse = await databaseService
+            .select(SupabaseTables.userProfiles)
+            .inFilter('user_id', purchasedUserIds);
+
+        purchaserProfiles.addAll((profilesResponse as List)
+            .map((json) => User.fromJson(json as Map<String, dynamic>)));
+      } catch (e) {
+        debugPrint('⚠️ Failed to fetch purchaser profiles: $e');
+      }
+    }
+
     // Create items with purchase status
     final itemsWithStatus = items.map((item) {
       final itemPurchases =
           purchases.where((p) => p.registryItemId == item.id).toList();
+
+      final purchasers = itemPurchases
+          .map((purchase) {
+            return purchaserProfiles.cast<User?>().firstWhere(
+                  (profile) => profile?.userId == purchase.purchasedByUserId,
+                  orElse: () => null,
+                );
+          })
+          .whereType<User>()
+          .toList();
+
+      final isPurchasedByCurrentUser = currentUser != null &&
+          itemPurchases.any((p) => p.purchasedByUserId == currentUser.id);
+
       return RegistryItemWithStatus(
         item: item,
         isPurchased: itemPurchases.isNotEmpty,
         purchaseCount: itemPurchases.length,
+        purchasers: purchasers,
+        isPurchasedByCurrentUser: isPurchasedByCurrentUser,
       );
     }).toList();
 
@@ -297,12 +377,22 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
       if (cachedData == null) return null;
 
-      return (cachedData as List).map((json) {
-        final itemJson = json['item'] as Map<String, dynamic>;
+      return (cachedData as List).map((dynamic json) {
+        final map = Map<String, dynamic>.from(json as Map);
+        final itemJson = Map<String, dynamic>.from(map['item'] as Map);
+        final purchasersJson = map['purchasers'] as List?;
+
         return RegistryItemWithStatus(
           item: RegistryItem.fromJson(itemJson),
-          isPurchased: json['isPurchased'] as bool,
-          purchaseCount: json['purchaseCount'] as int,
+          isPurchased: map['isPurchased'] as bool,
+          purchaseCount: map['purchaseCount'] as int,
+          purchasers: purchasersJson != null
+              ? purchasersJson
+                  .map((u) => User.fromJson(u as Map<String, dynamic>))
+                  .toList()
+              : const [],
+          isPurchasedByCurrentUser:
+              map['isPurchasedByCurrentUser'] as bool? ?? false,
         );
       }).toList();
     } catch (e) {
@@ -326,6 +416,10 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
                 'item': itemWithStatus.item.toJson(),
                 'isPurchased': itemWithStatus.isPurchased,
                 'purchaseCount': itemWithStatus.purchaseCount,
+                'purchasers':
+                    itemWithStatus.purchasers.map((u) => u.toJson()).toList(),
+                'isPurchasedByCurrentUser':
+                    itemWithStatus.isPurchasedByCurrentUser,
               })
           .toList();
       await cacheService.put(
@@ -416,13 +510,12 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
   /// Cancel real-time subscriptions
   void _cancelRealtimeSubscriptions() {
-    // Note: We don't cancel subscriptions in dispose because it would
-    // require calling ref.read() which is not allowed in lifecycle callbacks.
-    // The subscriptions will be automatically cleaned up when the provider is disposed.
     if (_itemsSubscriptionId != null) {
+      _realtimeService.unsubscribe(_itemsSubscriptionId!);
       _itemsSubscriptionId = null;
     }
     if (_purchasesSubscriptionId != null) {
+      _realtimeService.unsubscribe(_purchasesSubscriptionId!);
       _purchasesSubscriptionId = null;
     }
     debugPrint('✅ Real-time subscriptions marked for cancellation');

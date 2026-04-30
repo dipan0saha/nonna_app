@@ -1,3 +1,29 @@
+-- Row Level Security (RLS) & Policies
+-- Enable RLS on all public tables
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_stats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.baby_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.baby_memberships ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.invitations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.owner_update_markers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.photos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.photo_comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.photo_squishes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.photo_tags ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.event_comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.event_rsvps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.registry_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.registry_purchases ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.name_suggestions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.name_suggestion_likes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.votes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notification_preferences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.activity_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.screens ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tile_definitions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tile_configs ENABLE ROW LEVEL SECURITY;
 -- ========================================
 -- Profiles RLS Policies
 -- ========================================
@@ -766,3 +792,354 @@ GRANT SELECT, INSERT, UPDATE ON public.activity_events TO authenticated;
 GRANT INSERT ON public.activity_events TO postgres;
 GRANT INSERT ON public.notifications TO postgres, authenticated;
 
+-- Migration: Fix all RLS policy recursion issues
+-- Combines: 20260302000002_fix_rls_recursion.sql + 20260302000007_fix_remaining_rls_recursion.sql
+--
+-- This migration resolves infinite recursion in RLS policies by creating SECURITY DEFINER
+-- helper functions that break circular dependencies across all affected tables
+
+-- ========================================
+-- Baby Membership Helper Functions
+-- ========================================
+
+CREATE OR REPLACE FUNCTION public.is_baby_member(
+  p_user_id uuid,
+  p_baby_profile_id uuid
+)
+RETURNS boolean AS $$
+  SELECT EXISTS(
+    SELECT 1 FROM public.baby_memberships
+    WHERE baby_memberships.baby_profile_id = p_baby_profile_id
+      AND baby_memberships.user_id = p_user_id
+      AND baby_memberships.removed_at IS NULL
+  );
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
+CREATE OR REPLACE FUNCTION public.is_baby_owner(
+  p_user_id uuid,
+  p_baby_profile_id uuid
+)
+RETURNS boolean AS $$
+  SELECT EXISTS(
+    SELECT 1 FROM public.baby_memberships
+    WHERE baby_memberships.baby_profile_id = p_baby_profile_id
+      AND baby_memberships.user_id = p_user_id
+      AND baby_memberships.role = 'owner'
+      AND baby_memberships.removed_at IS NULL
+  );
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
+GRANT EXECUTE ON FUNCTION public.is_baby_member(uuid, uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_baby_owner(uuid, uuid) TO authenticated;
+
+-- ========================================
+-- Photo/Event/Registry Helper Functions
+-- ========================================
+
+DROP FUNCTION IF EXISTS is_photo_member(uuid, uuid) CASCADE;
+CREATE OR REPLACE FUNCTION is_photo_member(user_id uuid, photo_id uuid)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.photos p
+    INNER JOIN public.baby_memberships bm ON bm.baby_profile_id = p.baby_profile_id
+    WHERE p.id = $2
+      AND bm.user_id = $1
+      AND bm.removed_at IS NULL
+  );
+$$;
+
+DROP FUNCTION IF EXISTS is_photo_owner(uuid, uuid) CASCADE;
+CREATE OR REPLACE FUNCTION is_photo_owner(user_id uuid, photo_id uuid)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.photos p
+    INNER JOIN public.baby_memberships bm ON bm.baby_profile_id = p.baby_profile_id
+    WHERE p.id = $2
+      AND bm.user_id = $1
+      AND bm.role = 'owner'
+      AND bm.removed_at IS NULL
+  );
+$$;
+
+DROP FUNCTION IF EXISTS is_event_member(uuid, uuid) CASCADE;
+CREATE OR REPLACE FUNCTION is_event_member(user_id uuid, event_id uuid)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.events e
+    INNER JOIN public.baby_memberships bm ON bm.baby_profile_id = e.baby_profile_id
+    WHERE e.id = $2
+      AND bm.user_id = $1
+      AND bm.removed_at IS NULL
+  );
+$$;
+
+DROP FUNCTION IF EXISTS is_registry_item_member(uuid, uuid) CASCADE;
+CREATE OR REPLACE FUNCTION is_registry_item_member(user_id uuid, registry_item_id uuid)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.registry_items ri
+    INNER JOIN public.baby_memberships bm ON bm.baby_profile_id = ri.baby_profile_id
+    WHERE ri.id = $2
+      AND bm.user_id = $1
+      AND bm.removed_at IS NULL
+  );
+$$;
+
+GRANT EXECUTE ON FUNCTION is_photo_member(uuid, uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION is_photo_owner(uuid, uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION is_event_member(uuid, uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION is_registry_item_member(uuid, uuid) TO authenticated;
+
+-- ========================================
+-- Update Baby Memberships Policies
+-- ========================================
+
+DROP POLICY IF EXISTS "Members can view memberships for their babies" ON public.baby_memberships;
+DROP POLICY IF EXISTS "Owners can manage memberships" ON public.baby_memberships;
+
+CREATE POLICY "Members can view memberships for their babies"
+  ON public.baby_memberships FOR SELECT
+  USING (public.is_baby_member(auth.uid(), baby_profile_id));
+
+CREATE POLICY "Owners can manage memberships"
+  ON public.baby_memberships FOR ALL
+  USING (public.is_baby_owner(auth.uid(), baby_profile_id));
+
+-- ========================================
+-- Update Baby Profiles Policies
+-- ========================================
+
+DROP POLICY IF EXISTS "Members can view baby profiles" ON public.baby_profiles;
+
+CREATE POLICY "Members can view baby profiles"
+  ON public.baby_profiles FOR SELECT
+  USING (
+    public.is_baby_member(auth.uid(), id)
+    AND deleted_at IS NULL
+  );
+
+-- ========================================
+-- Update Photo Squishes Policies
+-- ========================================
+
+DROP POLICY IF EXISTS "Members can view photo squishes" ON public.photo_squishes;
+DROP POLICY IF EXISTS "Members can squish photos" ON public.photo_squishes;
+DROP POLICY IF EXISTS "Users can unsquish (delete own squish)" ON public.photo_squishes;
+
+CREATE POLICY "Members can view photo squishes"
+  ON public.photo_squishes FOR SELECT
+  USING (is_photo_member(auth.uid(), photo_id));
+
+CREATE POLICY "Members can squish photos"
+  ON public.photo_squishes FOR INSERT
+  WITH CHECK (
+    auth.uid() = user_id
+    AND is_photo_member(auth.uid(), photo_id)
+  );
+
+CREATE POLICY "Users can unsquish (delete own squish)"
+  ON public.photo_squishes FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- ========================================
+-- Update Photo Comments Policies
+-- ========================================
+
+DROP POLICY IF EXISTS "Members can view photo comments" ON public.photo_comments;
+DROP POLICY IF EXISTS "Members can add photo comments" ON public.photo_comments;
+DROP POLICY IF EXISTS "Users can update own photo comments" ON public.photo_comments;
+DROP POLICY IF EXISTS "Users and owners can delete photo comments" ON public.photo_comments;
+
+CREATE POLICY "Members can view photo comments"
+  ON public.photo_comments FOR SELECT
+  USING (
+    is_photo_member(auth.uid(), photo_id)
+    AND deleted_at IS NULL
+  );
+
+CREATE POLICY "Members can add photo comments"
+  ON public.photo_comments FOR INSERT
+  WITH CHECK (
+    auth.uid() = user_id
+    AND is_photo_member(auth.uid(), photo_id)
+  );
+
+CREATE POLICY "Users can update own photo comments"
+  ON public.photo_comments FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users and owners can delete photo comments"
+  ON public.photo_comments FOR DELETE
+  USING (
+    auth.uid() = user_id
+    OR is_photo_owner(auth.uid(), photo_id)
+  );
+
+-- ========================================
+-- Update Event RSVPs Policies
+-- ========================================
+
+DROP POLICY IF EXISTS "Members can view event RSVPs" ON public.event_rsvps;
+DROP POLICY IF EXISTS "Members can create RSVPs" ON public.event_rsvps;
+DROP POLICY IF EXISTS "Users can update own RSVPs" ON public.event_rsvps;
+DROP POLICY IF EXISTS "Users can delete own RSVPs" ON public.event_rsvps;
+
+CREATE POLICY "Members can view event RSVPs"
+  ON public.event_rsvps FOR SELECT
+  USING (is_event_member(auth.uid(), event_id));
+
+CREATE POLICY "Members can create RSVPs"
+  ON public.event_rsvps FOR INSERT
+  WITH CHECK (
+    auth.uid() = user_id
+    AND is_event_member(auth.uid(), event_id)
+  );
+
+CREATE POLICY "Users can update own RSVPs"
+  ON public.event_rsvps FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own RSVPs"
+  ON public.event_rsvps FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- ========================================
+-- Update Registry Purchases Policies
+-- ========================================
+
+DROP POLICY IF EXISTS "Members can view registry purchases" ON public.registry_purchases;
+DROP POLICY IF EXISTS "Members can mark items as purchased" ON public.registry_purchases;
+
+CREATE POLICY "Members can view registry purchases"
+  ON public.registry_purchases FOR SELECT
+  USING (is_registry_item_member(auth.uid(), registry_item_id));
+
+CREATE POLICY "Members can mark items as purchased"
+  ON public.registry_purchases FOR INSERT
+  WITH CHECK (
+    auth.uid() = purchased_by_user_id
+    AND is_registry_item_member(auth.uid(), registry_item_id)
+  );
+
+-- ========================================
+-- Update User Stats Policies
+-- ========================================
+
+DROP POLICY IF EXISTS "Users in same baby profile can view stats" ON public.user_stats;
+
+CREATE POLICY "Users in same baby profile can view stats"
+  ON public.user_stats FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.baby_memberships bm1
+      INNER JOIN public.baby_memberships bm2
+        ON bm1.baby_profile_id = bm2.baby_profile_id
+      WHERE bm1.user_id = auth.uid()
+        AND bm2.user_id = user_stats.user_id
+        AND bm1.removed_at IS NULL
+        AND bm2.removed_at IS NULL
+    )
+  );
+-- Migration: Fix all tile_configs RLS policies and permissions
+-- Consolidates: 20260302000009 + 20260302000010 + 20260302000011 + 20260302000012
+--
+-- Tile_configs table requires special RLS handling to support test execution
+-- and allow different user roles (authenticated, anon, postgres) appropriate access
+
+-- ========================================
+-- Drop Old Policies (if any exist)
+-- ========================================
+
+DROP POLICY IF EXISTS "Authenticated users can view tile configs for their role" ON public.tile_configs;
+DROP POLICY IF EXISTS "Postgres superuser can access all tile configs" ON public.tile_configs;
+DROP POLICY IF EXISTS "Authenticated users can view visible tile configs" ON public.tile_configs;
+DROP POLICY IF EXISTS "Anonymous users cannot see tile configs" ON public.tile_configs;
+DROP POLICY IF EXISTS "Postgres can access all tile configs" ON public.tile_configs;
+DROP POLICY IF EXISTS "Postgres can insert tile configs" ON public.tile_configs;
+DROP POLICY IF EXISTS "Postgres can update tile configs" ON public.tile_configs;
+DROP POLICY IF EXISTS "Postgres can delete tile configs" ON public.tile_configs;
+
+-- ========================================
+-- RLS Policies for tile_configs
+-- ========================================
+
+-- Authenticated users can view visible tile configs only
+CREATE POLICY "Authenticated users can view visible tile configs"
+  ON public.tile_configs FOR SELECT
+  TO authenticated
+  USING (is_visible = TRUE);
+
+-- Anonymous users cannot see any tile configs (returns empty result set)
+CREATE POLICY "Anonymous users cannot see tile configs"
+  ON public.tile_configs FOR SELECT
+  TO anon
+  USING (FALSE);
+
+-- Postgres role (test runner and admin) has full access for testing and administration
+CREATE POLICY "Postgres can access all tile configs"
+  ON public.tile_configs FOR SELECT
+  TO postgres
+  USING (TRUE);
+
+CREATE POLICY "Postgres can insert tile configs"
+  ON public.tile_configs FOR INSERT
+  TO postgres
+  WITH CHECK (TRUE);
+
+CREATE POLICY "Postgres can update tile configs"
+  ON public.tile_configs FOR UPDATE
+  TO postgres
+  USING (TRUE)
+  WITH CHECK (TRUE);
+
+CREATE POLICY "Postgres can delete tile configs"
+  ON public.tile_configs FOR DELETE
+  TO postgres
+  USING (TRUE);
+
+-- ========================================
+-- Table-Level Permissions
+-- ========================================
+
+-- Ensure anon role has SELECT permission (required even with restrictive RLS policy)
+GRANT SELECT ON public.tile_configs TO anon;
+-- Migration: Fix baby_profiles RLS SELECT policy paradox
+-- Adds a created_by column to baby_profiles and updates the SELECT policy 
+-- to allow creators to read their newly inserted rows before the membership is created.
+
+-- 1. Add created_by column defaulting to the inserting user's ID
+ALTER TABLE public.baby_profiles 
+ADD COLUMN IF NOT EXISTS created_by uuid DEFAULT auth.uid();
+
+-- 2. Drop the old SELECT policy
+DROP POLICY IF EXISTS "Members can view baby profiles" ON public.baby_profiles;
+
+-- 3. Create the new SELECT policy that includes the created_by check
+CREATE POLICY "Members can view baby profiles" ON public.baby_profiles FOR SELECT
+USING (is_baby_member(auth.uid(), id) OR created_by = auth.uid());
+
+-- 4. Fix baby_memberships SELECT policy paradox
+DROP POLICY IF EXISTS "Members can view memberships for their babies" ON public.baby_memberships;
+
+CREATE POLICY "Members can view memberships for their babies" ON public.baby_memberships FOR SELECT
+USING (user_id = auth.uid() OR is_baby_member(auth.uid(), baby_profile_id));

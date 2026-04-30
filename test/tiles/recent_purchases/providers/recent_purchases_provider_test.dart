@@ -25,7 +25,6 @@ void main() {
       registryItemId: 'item_1',
       purchasedByUserId: 'user_1',
       purchasedAt: DateTime.now(),
-      createdAt: DateTime.now(),
     );
 
     setUp(() {
@@ -204,7 +203,6 @@ void main() {
           25,
           (i) => samplePurchase.copyWith(
             id: 'purchase_$i',
-            createdAt: DateTime.now().subtract(Duration(days: i)),
           ),
         );
 
@@ -327,15 +325,12 @@ void main() {
 
         final purchase1 = samplePurchase.copyWith(
           id: 'purchase_1',
-          createdAt: DateTime.now().subtract(const Duration(days: 2)),
         );
         final purchase2 = samplePurchase.copyWith(
           id: 'purchase_2',
-          createdAt: DateTime.now().subtract(const Duration(days: 1)),
         );
         final purchase3 = samplePurchase.copyWith(
           id: 'purchase_3',
-          createdAt: DateTime.now(),
         );
 
         when(mockCacheService.put(any, any, ttlMinutes: anyNamed('ttlMinutes')))

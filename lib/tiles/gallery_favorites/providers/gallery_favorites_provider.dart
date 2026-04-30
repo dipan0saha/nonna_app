@@ -163,7 +163,7 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
         .order(SupabaseTables.createdAt, ascending: false);
 
     final photos = (photosResponse as List)
-        .map((json) => Photo.fromJson(json as Map<String, dynamic>))
+        .map((json) => Photo.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
 
     if (photos.isEmpty) return [];
@@ -213,7 +213,7 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
 
       return (cachedData as List)
           .map((json) =>
-              PhotoWithSquishes.fromJson(json as Map<String, dynamic>))
+              PhotoWithSquishes.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');

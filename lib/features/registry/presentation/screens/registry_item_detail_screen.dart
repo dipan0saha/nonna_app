@@ -1,48 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/core/enums/user_role.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Registry item detail screen showing full info, purchase status, and actions.
 ///
 /// **Functional Requirements**: Section 3.6.2 - Main App Screens Part II
-class RegistryItemDetailScreen extends StatelessWidget {
+class RegistryItemDetailScreen extends ConsumerWidget {
   const RegistryItemDetailScreen({
     super.key,
     required this.item,
-    this.isPurchased = false,
-    this.purchaseCount = 0,
-    this.isOwner = false,
-    this.onPurchase,
-    this.onEdit,
-    this.onLinkTap,
   });
 
   /// The registry item to display
   final RegistryItem item;
 
-  /// Whether this item has been purchased
-  final bool isPurchased;
-
-  /// Number of people who purchased this item
-  final int purchaseCount;
-
-  /// Whether the current user is the owner
-  final bool isOwner;
-
-  /// Called when the purchase button is tapped
-  final VoidCallback? onPurchase;
-
-  /// Called when the edit button is tapped
-  final VoidCallback? onEdit;
-
-  /// Called when the item link is tapped
-  final VoidCallback? onLinkTap;
+  Future<void> _launchUrl(String? urlString) async {
+    if (urlString == null || urlString.isEmpty) return;
+    final url = Uri.parse(urlString);
+    if (!await launchUrl(url)) {
+      debugPrint('Could not launch $urlString');
+    }
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(registryScreenProvider);
+    final itemWithStatus =
+        state.items.cast<RegistryItemWithStatus?>().firstWhere(
+              (element) => element?.item.id == item.id,
+              orElse: () => null,
+            );
+
+    final isPurchased = itemWithStatus?.isPurchased ?? false;
+    final purchaseCount = itemWithStatus?.purchaseCount ?? 0;
+
+    final role =
+        ref.watch(homeScreenProvider).selectedRole ?? UserRole.follower;
+    final isOwner = role == UserRole.owner;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(item.name),
@@ -51,7 +54,12 @@ class RegistryItemDetailScreen extends StatelessWidget {
             IconButton(
               key: const Key('edit_item_button'),
               icon: const Icon(Icons.edit),
-              onPressed: onEdit,
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Edit registry item – coming soon!')),
+                );
+              },
             ),
         ],
       ),
@@ -98,7 +106,7 @@ class RegistryItemDetailScreen extends StatelessWidget {
               ),
               AppSpacing.verticalGapXS,
               InkWell(
-                onTap: onLinkTap,
+                onTap: () => _launchUrl(item.linkUrl),
                 child: Text(
                   item.linkUrl!,
                   style:
@@ -114,7 +122,9 @@ class RegistryItemDetailScreen extends StatelessWidget {
                 if (isPurchased) ...[
                   const Icon(Icons.check_circle, color: Colors.green),
                   AppSpacing.horizontalGapXS,
-                  const Text('Purchased'),
+                  const Text('Purchased',
+                      style: TextStyle(
+                          color: Colors.green, fontWeight: FontWeight.bold)),
                 ] else ...[
                   const Icon(Icons.radio_button_unchecked),
                   AppSpacing.horizontalGapXS,
@@ -123,12 +133,69 @@ class RegistryItemDetailScreen extends StatelessWidget {
               ],
             ),
             AppSpacing.verticalGapM,
-            // Purchase button (non-owner, not yet purchased)
-            if (!isOwner && !isPurchased)
+
+            // Show purchasers list if it's purchased
+            if (isPurchased &&
+                itemWithStatus != null &&
+                itemWithStatus.purchasers.isNotEmpty) ...[
+              Text(
+                'Purchased by:',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              AppSpacing.verticalGapS,
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: itemWithStatus.purchasers.map((user) {
+                  return Chip(
+                    avatar: CircleAvatar(
+                      backgroundImage:
+                          user.avatarUrl != null && user.avatarUrl!.isNotEmpty
+                              ? NetworkImage(user.avatarUrl!)
+                              : null,
+                      child: user.avatarUrl == null || user.avatarUrl!.isEmpty
+                          ? Text(user.displayName.isNotEmpty
+                              ? user.displayName[0].toUpperCase()
+                              : '?')
+                          : null,
+                    ),
+                    label: Text(user.displayName),
+                  );
+                }).toList(),
+              ),
+              AppSpacing.verticalGapM,
+            ],
+
+            // Purchase button (non-owner, wait: if it's already purchased, but NOT by the current user, maybe they want to buy another one? Or buy it too?)
+            // If they haven't purchased it, but someone else has? The current logic is simple: Mark as purchased / Unmark. If they haven't purchased it:
+            if (!isOwner &&
+                (itemWithStatus == null ||
+                    !itemWithStatus.isPurchasedByCurrentUser))
               ElevatedButton(
                 key: const Key('purchase_button'),
-                onPressed: onPurchase,
+                onPressed: () {
+                  if (itemWithStatus != null) {
+                    ref
+                        .read(registryScreenProvider.notifier)
+                        .togglePurchase(itemWithStatus);
+                  }
+                },
                 child: const Text('Mark as Purchased'),
+              ),
+
+            // Un-Purchase button (non-owner, previously purchased by currentUser)
+            if (!isOwner &&
+                itemWithStatus != null &&
+                itemWithStatus.isPurchasedByCurrentUser)
+              OutlinedButton(
+                onPressed: () {
+                  if (itemWithStatus != null) {
+                    ref
+                        .read(registryScreenProvider.notifier)
+                        .togglePurchase(itemWithStatus);
+                  }
+                },
+                child: const Text('Unmark as Purchased'),
               ),
             // Purchase count
             if (purchaseCount > 0) ...[

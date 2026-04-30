@@ -37,7 +37,6 @@ void main() {
       registryItemId: 'item_1',
       purchasedByUserId: 'user_2',
       purchasedAt: DateTime.now(),
-      createdAt: DateTime.now(),
     );
 
     setUp(() {
@@ -379,15 +378,29 @@ void main() {
         )).thenAnswer((_) => Stream.empty());
 
         // Mock both queries with call counter
-        when(mockDatabaseService.select(any, columns: anyNamed('columns')))
+        when(mockDatabaseService.select(SupabaseTables.registryItems,
+                columns: anyNamed('columns')))
             .thenAnswer((_) {
           callCount++;
-          if (callCount.isOdd) {
-            return FakePostgrestBuilder([sampleItem.toJson()]);
-          } else {
-            return FakePostgrestBuilder([samplePurchase.toJson()]);
-          }
+          return FakePostgrestBuilder([sampleItem.toJson()]);
         });
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) {
+          callCount++;
+          return FakePostgrestBuilder([sampleItem.toJson()]);
+        });
+
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases,
+                columns: anyNamed('columns')))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
+        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
+            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
+
+        when(mockDatabaseService.select(SupabaseTables.userProfiles,
+                columns: anyNamed('columns')))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(SupabaseTables.userProfiles))
+            .thenAnswer((_) => FakePostgrestBuilder([]));
 
         await notifier.loadItems(babyProfileId: 'profile_1');
 

@@ -1,3 +1,4 @@
+-- Indexes and Constraints
 -- Foreign key indexes (critical for joins)
 CREATE INDEX idx_baby_memberships_baby_profile_id ON public.baby_memberships(baby_profile_id);
 CREATE INDEX idx_baby_memberships_user_id ON public.baby_memberships(user_id);
@@ -44,3 +45,5 @@ CREATE INDEX idx_photo_tags_tag ON public.photo_tags(tag);
 CREATE INDEX idx_tile_configs_screen_role ON public.tile_configs(screen_id, role);
 CREATE INDEX idx_name_suggestion_likes_user_id ON public.name_suggestion_likes(user_id);
 CREATE INDEX idx_registry_items_priority ON public.registry_items(priority);
+-- Add unique constraint to prevent duplicate tile configurations
+ALTER TABLE tile_configs ADD CONSTRAINT unique_tile_per_screen_role UNIQUE (screen_id, tile_definition_id, role);

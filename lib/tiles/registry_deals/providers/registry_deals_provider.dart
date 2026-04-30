@@ -64,6 +64,8 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
 
   late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _subscriptionId;
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
 
   // ==========================================
   // Public Methods
@@ -153,7 +155,8 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
         .order(SupabaseTables.createdAt, ascending: false);
 
     final items = (itemsResponse as List)
-        .map((json) => RegistryItem.fromJson(json as Map<String, dynamic>))
+        .map((json) =>
+            RegistryItem.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
 
     if (items.isEmpty) return [];
@@ -163,8 +166,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
     final purchasesResponse = await ref
         .read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
-        .inFilter('registry_item_id', itemIds)
-        .isFilter(SupabaseTables.deletedAt, null);
+        .inFilter('registry_item_id', itemIds);
 
     final purchasedItemIds = (purchasesResponse as List)
         .map((json) => json['registry_item_id'] as String)
@@ -190,7 +192,8 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) => RegistryItem.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              RegistryItem.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
@@ -270,6 +273,7 @@ class RegistryDealsNotifier extends Notifier<RegistryDealsState> {
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
       _realtimeService.unsubscribe(_subscriptionId!);
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

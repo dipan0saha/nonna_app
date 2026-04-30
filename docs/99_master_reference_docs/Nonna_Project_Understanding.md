@@ -1,7 +1,8 @@
 # Nonna App — Project Understanding
 
-**Document Version**: 1.0
+**Document Version**: 1.1
 **Created**: April 28, 2026
+**Last Updated**: April 29, 2026
 **Status**: Living Document
 
 ---
@@ -30,30 +31,42 @@ Nonna is a **Flutter mobile app** (v1.0.0) for **baby milestone tracking and fam
 
 ## Architecture: Dynamic Tile-Based System
 
-The core architectural idea is **self-contained, reusable tile widgets** rendered dynamically based on Supabase-driven configuration tables (`tile_configs`, `screen_configs`).
+The core architectural idea is **self-contained, reusable tile widgets** rendered dynamically based on Supabase-driven configuration tables. This "Tile Engine" decouples the frontend layout from hardcoded screens, allowing the product team to reorder, enable, or disable features purely via database updates.
 
-```
+### How the Tile Engine Works
+
+1. **`screens` Table**: Registers the logical app screens capable of hosting tiles (e.g., `home`, `registry`, `calendar`).
+2. **`tile_definitions` Table**: A catalog of every available tile component (e.g., `RegistryHighlightsTile`, `RecentPhotosTile`). It dictates the unique string identifier (`tile_type`) that the Flutter app uses to map a database row to a Dart class.
+3. **`tile_configs` Table**: The master control table. It maps a `tile_definition` to a `screen` with specific deployment logic:
+   - `role`: (`owner` or `follower`) Defines which user role will see this tile.
+   - `display_order`: An integer defining the vertical sort order of the tile on the screen.
+   - `is_visible`: A boolean kill-switch to quickly disable a tile without deleting the row.
+   - `params`: An optional JSONB payload for passing dynamic settings (e.g., max items to fetch) directly to the tile widget.
+4. **Supabase Edge Function (`tile-configs`)**: Instead of the app querying these tables directly, it calls the `tile-configs` Edge Function passing the `screenName` and the user's `role`. The Edge Function resolves the visibility, filters out restricted tiles (e.g., followers are hard-restricted from `registry_deals`), and returns the sorted configuration array.
+5. **`TileFactory` (Flutter)**: The frontend reads the JSON array returned by the Edge Function. The `TileFactory.buildTile()` method contains a giant `switch` statement matching the `tile_type` string to the corresponding `ConsumerStatefulWidget` wrapper (e.g., `_RegistryHighlightsSmartTile`).
+
+```text
 lib/
 ├── core/          # Cross-cutting: models, services, DI, router, themes, utils
 ├── tiles/         # 15 reusable tile widgets (first-class citizens)
-│   ├── core/      # TileFactory [IN PROGRESS], BaseTile, TileContainer
+│   ├── core/      # TileFactory, BaseTile, TileContainer
 │   ├── upcoming_events/
 │   ├── recent_photos/
 │   ├── registry_highlights/
 │   └── ... (15 total)
 └── features/      # Screen composition (Home, Calendar, Gallery, etc.)
     ├── auth/
-    ├── home/       # Composes tiles into a scrollable list view
+    ├── home/       # Composes tiles into a scrollable list view via TileFactory
     ├── calendar/
     ├── gallery/
     ├── registry/
     ├── baby_profile/
-    ├── gamification/  # Name suggestions + voting (the "Fun" tab)
+    ├── gamification/
     ├── profile/
     └── settings/
 ```
 
-**Key design decision**: Tiles live at `lib/tiles/` (not inside features) so they can be reused across any screen. Each tile is self-contained with its own model, provider, datasource, and widget.
+**Key design decision**: Tiles live at `lib/tiles/` (not inside features) so they can be reused across any screen. Each tile is completely self-contained with its own model, Riverpod provider, offline cache, and widget.
 
 ---
 
@@ -150,9 +163,14 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 
 ---
 
-## Current State (as of April 28, 2026)
+## Current State (as of April 29, 2026)
 
 ### Completed
+- Seed data migration injected globally across tabs via atomic PG transactions.
+- Fixed Hive Cache dynamic type mappings for maps and `RegistryPurchase` timestamps (`purchased_at`).
+- Configured Realtime replication for all dynamic tables without socket disconnects.
+- Synced Hive SettingsNotifier completely with ThemeMode to persist dark mode.
+- Fixed Riverpod `selectedBabyProfileProvider` listeners across Registry and main tabs.
 - All 23 domain models with serialization, validation, and unit tests
 - All 22 services with middleware integration
 - All 15 tile widgets with providers and widget tests

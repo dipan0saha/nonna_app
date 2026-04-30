@@ -58,6 +58,8 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
   late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _subscriptionId;
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   RecentPurchasesState build() {
@@ -167,12 +169,12 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.registryPurchases)
         .inFilter('registry_item_id', itemIds)
-        .isFilter(SupabaseTables.deletedAt, null)
-        .order(SupabaseTables.createdAt, ascending: false)
+        .order('purchased_at', ascending: false)
         .limit(_maxPurchases);
 
     return (response as List)
-        .map((json) => RegistryPurchase.fromJson(json as Map<String, dynamic>))
+        .map((json) =>
+            RegistryPurchase.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
   }
 
@@ -188,8 +190,8 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map(
-              (json) => RegistryPurchase.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              RegistryPurchase.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
@@ -295,6 +297,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
       _realtimeService.unsubscribe(_subscriptionId!);
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
+
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
+import 'package:nonna_app/core/di/providers.dart';
+import 'package:nonna_app/core/models/registry_item.dart';
 
 /// Screen for creating a new registry item.
 ///
@@ -60,12 +66,54 @@ class _RegistryItemCreationScreenState
       _saveError = null;
     });
 
-    // In production this would call a service to persist the item.
-    await Future<void>.delayed(const Duration(milliseconds: 200));
+    try {
+      final dbService = ref.read(databaseServiceProvider);
 
-    if (!mounted) return;
-    setState(() => _isSaving = false);
-    widget.onCreated?.call();
+      final newItem = RegistryItem(
+        id: const Uuid().v4(),
+        babyProfileId: widget.babyProfileId,
+        createdByUserId: widget.createdByUserId,
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim().isNotEmpty
+            ? _descriptionController.text.trim()
+            : null,
+        linkUrl: _linkController.text.trim().isNotEmpty
+            ? _linkController.text.trim()
+            : null,
+        priority: _priority,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      final error = newItem.validate();
+      if (error != null) {
+        setState(() {
+          _saveError = error;
+          _isSaving = false;
+        });
+        return;
+      }
+
+      await dbService.insert(
+        SupabaseTables.registryItems,
+        newItem.toJson(),
+      );
+
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+
+      if (widget.onCreated != null) {
+        widget.onCreated!.call();
+      } else {
+        context.pop(); // Go back if no explicit callback is provided
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isSaving = false;
+        _saveError = e.toString();
+      });
+    }
   }
 
   @override

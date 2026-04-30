@@ -207,7 +207,7 @@ class SystemAnnouncementsNotifier extends Notifier<SystemAnnouncementsState> {
 
       return (cachedData as List)
           .map((json) =>
-              SystemAnnouncement.fromJson(json as Map<String, dynamic>))
+              SystemAnnouncement.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load announcements from cache: $e');

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:nonna_app/core/di/providers.dart';
+import 'package:nonna_app/core/router/app_router.dart';
+import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
@@ -37,12 +41,18 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.babyProfileId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(registryScreenProvider.notifier).loadItems(
-              babyProfileId: widget.babyProfileId!,
-            );
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadRegistryIfReady();
+    });
+  }
+
+  void _loadRegistryIfReady() {
+    final babyProfileId =
+        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
+    if (babyProfileId != null) {
+      ref.read(registryScreenProvider.notifier).loadItems(
+            babyProfileId: babyProfileId,
+          );
     }
   }
 
@@ -51,20 +61,46 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
   }
 
   void _onAddItemTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Add registry item – coming soon!')),
-    );
+    final state = ref.read(registryScreenProvider);
+    final currentUser = ref.read(currentUserProvider);
+
+    if (state.selectedBabyProfileId != null && currentUser != null) {
+      context.push(
+        AppRoutes.registryItemCreate,
+        extra: {
+          'babyProfileId': state.selectedBabyProfileId,
+          'createdByUserId': currentUser.id,
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('Cannot create item: missing profile or user context.')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Listen for baby profile changes to reload registry items
+    ref.listen<String?>(selectedBabyProfileProvider, (previous, next) {
+      if (next != null && next != previous && widget.babyProfileId == null) {
+        _loadRegistryIfReady();
+      }
+    });
+
     final state = ref.watch(registryScreenProvider);
+    // Use widget role or fall back to home provider role, defaulting to follower
+    final role = widget.userRole ??
+        ref.watch(homeScreenProvider).selectedRole ??
+        UserRole.follower;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registry'),
       ),
-      floatingActionButton: widget.userRole == UserRole.owner
+      floatingActionButton: role == UserRole.owner
           ? FloatingActionButton(
               key: const Key('add_registry_item_fab'),
               onPressed: _onAddItemTap,
@@ -124,10 +160,23 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
           key: Key('registry_item_$index'),
           title: Text(itemWithStatus.item.name),
           subtitle: Text('Priority: ${itemWithStatus.item.priority}'),
-          trailing: itemWithStatus.isPurchased
-              ? const Icon(Icons.check_circle, color: Colors.green)
-              : const Icon(Icons.radio_button_unchecked),
-          onTap: () => widget.onItemTap?.call(itemWithStatus.item),
+          trailing: IconButton(
+            icon: itemWithStatus.isPurchased
+                ? const Icon(Icons.check_circle, color: Colors.green)
+                : const Icon(Icons.radio_button_unchecked),
+            onPressed: () {
+              ref
+                  .read(registryScreenProvider.notifier)
+                  .togglePurchase(itemWithStatus);
+            },
+          ),
+          onTap: () {
+            if (widget.onItemTap != null) {
+              widget.onItemTap!.call(itemWithStatus.item);
+            } else {
+              context.push(AppRoutes.registryItem, extra: itemWithStatus.item);
+            }
+          },
         );
       },
     );

@@ -7,6 +7,7 @@ import 'core/di/providers.dart';
 import 'core/router/app_router.dart';
 import 'core/services/app_initialization_service.dart';
 import 'core/themes/app_theme.dart';
+import 'features/settings/presentation/providers/settings_provider.dart';
 import 'l10n/l10n.dart';
 
 void main() async {
@@ -37,12 +38,15 @@ class MyApp extends ConsumerWidget {
     return init.when(
       data: (_) {
         final router = ref.watch(routerProvider);
-        
+        final settings = ref.watch(settingsProvider);
+
         return MaterialApp.router(
           routerConfig: router,
           title: 'Nonna App',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
+          themeMode:
+              settings.darkModeEnabled ? ThemeMode.dark : ThemeMode.light,
 
           // Localization configuration
           localizationsDelegates: const [

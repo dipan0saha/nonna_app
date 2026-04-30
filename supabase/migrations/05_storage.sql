@@ -1,3 +1,4 @@
+-- Storage Buckets & Storage Policies
 -- ============================================================================
 -- Migration: 20260105084209_create_storage_buckets.sql
 -- Description: Create storage buckets and RLS policies for Nonna App

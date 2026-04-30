@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
+import 'package:nonna_app/core/models/user.dart';
+import 'package:nonna_app/core/enums/user_role.dart';
+import 'package:nonna_app/core/models/baby_profile.dart';
+import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_detail_screen.dart';
-
-// ---------------------------------------------------------------------------
-// Helper factory for RegistryItem
-// ---------------------------------------------------------------------------
 
 RegistryItem _makeItem({
   String id = 'i1',
@@ -29,31 +31,66 @@ RegistryItem _makeItem({
   );
 }
 
+class _MockHomeScreenNotifier extends HomeScreenNotifier {
+  final UserRole initialRole;
+  _MockHomeScreenNotifier(this.initialRole);
+
+  @override
+  HomeScreenState build() {
+    return HomeScreenState(selectedRole: initialRole);
+  }
+}
+
 Widget _buildScreen(
   RegistryItem item, {
   bool isPurchased = false,
   int purchaseCount = 0,
   bool isOwner = false,
-  VoidCallback? onPurchase,
-  VoidCallback? onEdit,
-  VoidCallback? onLinkTap,
 }) {
-  return MaterialApp(
-    home: RegistryItemDetailScreen(
-      item: item,
-      isPurchased: isPurchased,
-      purchaseCount: purchaseCount,
-      isOwner: isOwner,
-      onPurchase: onPurchase,
-      onEdit: onEdit,
-      onLinkTap: onLinkTap,
+  final itemWithStatus = RegistryItemWithStatus(
+    item: item,
+    isPurchased: isPurchased,
+    purchaseCount: purchaseCount,
+    purchasers: isPurchased
+        ? [
+            User(
+              userId: 'u1',
+              displayName: 'John Doe',
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            )
+          ]
+        : [],
+    isPurchasedByCurrentUser: false,
+  );
+
+  return ProviderScope(
+    overrides: [
+      homeScreenProvider.overrideWith(() => _MockHomeScreenNotifier(
+            isOwner ? UserRole.owner : UserRole.follower,
+          )),
+      registryScreenProvider.overrideWith(() => _MockRegistryScreenNotifier(
+            RegistryScreenState(items: [itemWithStatus]),
+          )),
+    ],
+    child: MaterialApp(
+      home: RegistryItemDetailScreen(
+        item: item,
+      ),
     ),
   );
 }
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
+class _MockRegistryScreenNotifier extends RegistryScreenNotifier {
+  final RegistryScreenState _initialState;
+
+  _MockRegistryScreenNotifier(this._initialState);
+
+  @override
+  RegistryScreenState build() {
+    return _initialState;
+  }
+}
 
 void main() {
   group('RegistryItemDetailScreen', () {

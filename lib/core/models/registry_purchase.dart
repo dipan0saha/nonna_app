@@ -18,9 +18,6 @@ class RegistryPurchase {
   /// Optional note about the purchase
   final String? note;
 
-  /// Timestamp when the record was created
-  final DateTime createdAt;
-
   /// Creates a new RegistryPurchase instance
   const RegistryPurchase({
     required this.id,
@@ -28,7 +25,6 @@ class RegistryPurchase {
     required this.purchasedByUserId,
     required this.purchasedAt,
     this.note,
-    required this.createdAt,
   });
 
   /// Creates a RegistryPurchase from a JSON map
@@ -39,7 +35,6 @@ class RegistryPurchase {
       purchasedByUserId: json['purchased_by_user_id'] as String,
       purchasedAt: DateTime.parse(json['purchased_at'] as String),
       note: json['note'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
 
@@ -51,7 +46,6 @@ class RegistryPurchase {
       'purchased_by_user_id': purchasedByUserId,
       'purchased_at': purchasedAt.toIso8601String(),
       'note': note,
-      'created_at': createdAt.toIso8601String(),
     };
   }
 
@@ -75,7 +69,6 @@ class RegistryPurchase {
     String? purchasedByUserId,
     DateTime? purchasedAt,
     String? note,
-    DateTime? createdAt,
   }) {
     return RegistryPurchase(
       id: id ?? this.id,
@@ -83,7 +76,6 @@ class RegistryPurchase {
       purchasedByUserId: purchasedByUserId ?? this.purchasedByUserId,
       purchasedAt: purchasedAt ?? this.purchasedAt,
       note: note ?? this.note,
-      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -96,8 +88,7 @@ class RegistryPurchase {
         other.registryItemId == registryItemId &&
         other.purchasedByUserId == purchasedByUserId &&
         other.purchasedAt == purchasedAt &&
-        other.note == note &&
-        other.createdAt == createdAt;
+        other.note == note;
   }
 
   @override
@@ -106,8 +97,7 @@ class RegistryPurchase {
         registryItemId.hashCode ^
         purchasedByUserId.hashCode ^
         purchasedAt.hashCode ^
-        note.hashCode ^
-        createdAt.hashCode;
+        note.hashCode;
   }
 
   @override

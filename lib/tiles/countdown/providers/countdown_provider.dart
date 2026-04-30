@@ -170,7 +170,7 @@ class CountdownNotifier extends Notifier<CountdownState> {
         .isFilter(SupabaseTables.deletedAt, null);
 
     final profiles = (response as List)
-        .map((json) => BabyProfile.fromJson(json as Map<String, dynamic>))
+        .map((json) => BabyProfile.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
 
     return profiles.map((profile) => _calculateCountdown(profile)).toList();
@@ -340,6 +340,7 @@ class CountdownNotifier extends Notifier<CountdownState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
     }

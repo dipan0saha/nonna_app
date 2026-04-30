@@ -155,7 +155,8 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
 
     return (response as List)
         .take(_maxItems)
-        .map((json) => RegistryItem.fromJson(json as Map<String, dynamic>))
+        .map((json) =>
+            RegistryItem.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
   }
 
@@ -173,12 +174,11 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
         final response = await ref
             .read(databaseServiceProvider)
             .select(SupabaseTables.registryPurchases)
-            .eq('registry_item_id', item.id)
-            .isFilter(SupabaseTables.deletedAt, null);
+            .eq('registry_item_id', item.id);
 
         final purchases = (response as List)
-            .map((json) =>
-                RegistryPurchase.fromJson(json as Map<String, dynamic>))
+            .map((json) => RegistryPurchase.fromJson(
+                Map<String, dynamic>.from(json as Map)))
             .toList();
 
         itemsWithStatus.add(

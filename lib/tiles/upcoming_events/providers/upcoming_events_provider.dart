@@ -212,7 +212,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
         .range(offset, offset + limit - 1);
 
     return (response as List)
-        .map((json) => Event.fromJson(json as Map<String, dynamic>))
+        .map((json) => Event.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
   }
 
@@ -228,7 +228,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) => Event.fromJson(json as Map<String, dynamic>))
+          .map((json) => Event.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
@@ -326,6 +326,7 @@ class UpcomingEventsNotifier extends Notifier<UpcomingEventsState> {
   /// Cancel real-time subscription
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
+      _realtimeService.unsubscribe(_subscriptionId!);
       _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
     }

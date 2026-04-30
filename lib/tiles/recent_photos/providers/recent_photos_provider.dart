@@ -64,6 +64,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
 
   late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _subscriptionId;
+  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   RecentPhotosState build() {
@@ -201,7 +202,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
         .range(offset, offset + limit - 1);
 
     return (response as List)
-        .map((json) => Photo.fromJson(json as Map<String, dynamic>))
+        .map((json) => Photo.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
   }
 
@@ -217,7 +218,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) => Photo.fromJson(json as Map<String, dynamic>))
+          .map((json) => Photo.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
@@ -314,6 +315,7 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
   void _cancelRealtimeSubscription() {
     if (_subscriptionId != null) {
       _realtimeService.unsubscribe(_subscriptionId!);
+      _subscriptionManager.unsubscribe(_subscriptionId!);
       _subscriptionId = null;
       debugPrint('✅ Real-time subscription cancelled');
     }

@@ -1,0 +1,15 @@
+  baby_name   |       item_name        | priority 
+--------------+------------------------+----------
+ Baby Johnson | Crib                   |        1
+ Baby Johnson | Stroller               |        1
+ Baby Johnson | Car Seat               |        1
+ Baby Johnson | Baby Monitor           |        2
+ Baby Johnson | Diaper Bag             |        2
+ Liam Davis   | Baby Clothes Set       |        1
+ Liam Davis   | Nursing Pillow         |        2
+ Emma Smith   | Bottles and Sterilizer |        1
+ Emma Smith   | Baby Swing             |        2
+ Oliver       | Baby Stroller          |        5
+ Amelia       | Crib Mattress          |        4
+(11 rows)
+
