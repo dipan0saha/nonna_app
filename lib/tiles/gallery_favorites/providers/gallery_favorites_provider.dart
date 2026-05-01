@@ -212,8 +212,8 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) =>
-              PhotoWithSquishes.fromJson(Map<String, dynamic>.from(json as Map)))
+          .map((json) => PhotoWithSquishes.fromJson(
+              Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');

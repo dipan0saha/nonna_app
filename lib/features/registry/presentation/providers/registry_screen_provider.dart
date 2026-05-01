@@ -408,7 +408,8 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
           purchaseCount: map['purchaseCount'] as int,
           purchasers: purchasersJson != null
               ? purchasersJson
-                  .map((u) => User.fromJson(u as Map<String, dynamic>))
+                  .map(
+                      (u) => User.fromJson(Map<String, dynamic>.from(u as Map)))
                   .toList()
               : const [],
           isPurchasedByCurrentUser:

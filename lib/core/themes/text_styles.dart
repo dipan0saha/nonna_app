@@ -218,6 +218,7 @@ class AppTextStyles {
   /// Large button text
   /// Use for: Primary action buttons
   static const TextStyle buttonLarge = TextStyle(
+    inherit: false,
     fontSize: 16,
     fontWeight: FontWeight.w600,
     height: 1.25,
@@ -227,6 +228,7 @@ class AppTextStyles {
   /// Medium button text (default)
   /// Use for: Standard buttons
   static const TextStyle buttonMedium = TextStyle(
+    inherit: false,
     fontSize: 14,
     fontWeight: FontWeight.w600,
     height: 1.25,
@@ -236,6 +238,7 @@ class AppTextStyles {
   /// Small button text
   /// Use for: Compact buttons, inline actions
   static const TextStyle buttonSmall = TextStyle(
+    inherit: false,
     fontSize: 12,
     fontWeight: FontWeight.w600,
     height: 1.25,

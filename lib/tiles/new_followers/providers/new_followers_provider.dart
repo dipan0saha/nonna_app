@@ -60,7 +60,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       30; // Show followers from last 30 days
 
   String? _subscriptionId;
-  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
   // Store realtime service reference to avoid ref.read() in onDispose
   late final _realtimeService = ref.read(realtimeServiceProvider);
 
@@ -175,7 +176,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
         .limit(_maxFollowers);
 
     return (response as List)
-        .map((json) => BabyMembership.fromJson(Map<String, dynamic>.from(json as Map)))
+        .map((json) =>
+            BabyMembership.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
   }
 
@@ -191,7 +193,8 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) => BabyMembership.fromJson(Map<String, dynamic>.from(json as Map)))
+          .map((json) =>
+              BabyMembership.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');

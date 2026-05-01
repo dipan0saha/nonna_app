@@ -291,7 +291,8 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       }
 
       return (cachedData as List)
-          .map((json) => ChecklistItem.fromJson(Map<String, dynamic>.from(json as Map)))
+          .map((json) =>
+              ChecklistItem.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');

@@ -18,6 +18,9 @@ class RegistryPurchase {
   /// Optional note about the purchase
   final String? note;
 
+  /// The resolved name of the registry item (joined from registry_items table)
+  final String? itemName;
+
   /// Creates a new RegistryPurchase instance
   const RegistryPurchase({
     required this.id,
@@ -25,28 +28,47 @@ class RegistryPurchase {
     required this.purchasedByUserId,
     required this.purchasedAt,
     this.note,
+    this.itemName,
   });
 
   /// Creates a RegistryPurchase from a JSON map
   factory RegistryPurchase.fromJson(Map<String, dynamic> json) {
+    // Check for nested registry_items join from Supabase
+    String? resolvedItemName;
+    if (json.containsKey('registry_items') && json['registry_items'] != null) {
+      if (json['registry_items'] is Map) {
+        resolvedItemName = json['registry_items']['name'] as String?;
+      }
+    }
+
+    // Also support direct caching
+    if (resolvedItemName == null && json.containsKey('item_name')) {
+      resolvedItemName = json['item_name'] as String?;
+    }
+
     return RegistryPurchase(
       id: json['id'] as String,
       registryItemId: json['registry_item_id'] as String,
       purchasedByUserId: json['purchased_by_user_id'] as String,
       purchasedAt: DateTime.parse(json['purchased_at'] as String),
       note: json['note'] as String?,
+      itemName: resolvedItemName,
     );
   }
 
   /// Converts this RegistryPurchase to a JSON map
   Map<String, dynamic> toJson() {
-    return {
+    final map = {
       'id': id,
       'registry_item_id': registryItemId,
       'purchased_by_user_id': purchasedByUserId,
       'purchased_at': purchasedAt.toIso8601String(),
       'note': note,
     };
+    if (itemName != null) {
+      map['item_name'] = itemName;
+    }
+    return map;
   }
 
   /// Validates the purchase data
@@ -69,6 +91,7 @@ class RegistryPurchase {
     String? purchasedByUserId,
     DateTime? purchasedAt,
     String? note,
+    String? itemName,
   }) {
     return RegistryPurchase(
       id: id ?? this.id,
@@ -76,6 +99,7 @@ class RegistryPurchase {
       purchasedByUserId: purchasedByUserId ?? this.purchasedByUserId,
       purchasedAt: purchasedAt ?? this.purchasedAt,
       note: note ?? this.note,
+      itemName: itemName ?? this.itemName,
     );
   }
 
@@ -88,7 +112,8 @@ class RegistryPurchase {
         other.registryItemId == registryItemId &&
         other.purchasedByUserId == purchasedByUserId &&
         other.purchasedAt == purchasedAt &&
-        other.note == note;
+        other.note == note &&
+        other.itemName == itemName;
   }
 
   @override
@@ -97,7 +122,8 @@ class RegistryPurchase {
         registryItemId.hashCode ^
         purchasedByUserId.hashCode ^
         purchasedAt.hashCode ^
-        note.hashCode;
+        note.hashCode ^
+        itemName.hashCode;
   }
 
   @override

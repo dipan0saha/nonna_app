@@ -52,49 +52,52 @@ class RegistryFilterBar extends StatelessWidget {
         horizontal: AppSpacing.m,
         vertical: AppSpacing.xs,
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: RegistryFilter.values.map((filter) {
-                  final isSelected = filter == currentFilter;
-                  final label = _filterLabels[filter]!;
-                  final filterName = filter.name;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: AppSpacing.xs),
-                    child: ChoiceChip(
-                      key: Key('filter_chip_$filterName'),
-                      label: Text(label),
-                      selected: isSelected,
-                      selectedColor: AppColors.primaryDark,
-                      labelStyle: TextStyle(
-                        color: isSelected ? Colors.white : null,
-                      ),
-                      onSelected: (_) => onFilterChanged?.call(filter),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: RegistryFilter.values.map((filter) {
+                final isSelected = filter == currentFilter;
+                final label = _filterLabels[filter]!;
+                final filterName = filter.name;
+                return Padding(
+                  padding: const EdgeInsets.only(right: AppSpacing.xs),
+                  child: ChoiceChip(
+                    key: Key('filter_chip_$filterName'),
+                    label: Text(label),
+                    selected: isSelected,
+                    selectedColor: AppColors.primaryDark,
+                    labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : null,
                     ),
-                  );
-                }).toList(),
-              ),
+                    onSelected: (_) => onFilterChanged?.call(filter),
+                  ),
+                );
+              }).toList(),
             ),
           ),
-          AppSpacing.horizontalGapXS,
-          DropdownButton<RegistrySort>(
-            key: const Key('sort_dropdown'),
-            value: currentSort,
-            underline: const SizedBox.shrink(),
-            items: RegistrySort.values
-                .map(
-                  (sort) => DropdownMenuItem(
-                    value: sort,
-                    child: Text(_sortLabels[sort]!),
-                  ),
-                )
-                .toList(),
-            onChanged: (sort) {
-              if (sort != null) onSortChanged?.call(sort);
-            },
+          AppSpacing.verticalGapXS,
+          Align(
+            alignment: Alignment.centerRight,
+            child: DropdownButton<RegistrySort>(
+              key: const Key('sort_dropdown'),
+              value: currentSort,
+              underline: const SizedBox.shrink(),
+              isDense: true,
+              items: RegistrySort.values
+                  .map(
+                    (sort) => DropdownMenuItem(
+                      value: sort,
+                      child: Text(_sortLabels[sort]!),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (sort) {
+                if (sort != null) onSortChanged?.call(sort);
+              },
+            ),
           ),
         ],
       ),

@@ -153,46 +153,45 @@ class StorageService {
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
       final file = File(filePath);
-        if (!await file.exists()) {
-          throw Exception('File not found: $filePath');
-        }
+      if (!await file.exists()) {
+        throw Exception('File not found: $filePath');
+      }
 
-        // Read file bytes
-        final fileBytes = await file.readAsBytes();
-        final fileSizeKb = (fileBytes.length / 1024).round();
+      // Read file bytes
+      final fileBytes = await file.readAsBytes();
+      final fileSizeKb = (fileBytes.length / 1024).round();
 
-        debugPrint('📤 Uploading file: $storageKey (${fileSizeKb}KB)');
+      debugPrint('📤 Uploading file: $storageKey (${fileSizeKb}KB)');
 
-        // Determine content type from file extension
-        final extension = path.extension(filePath).toLowerCase();
-        String contentType = 'application/octet-stream';
-        if (extension == '.jpg' || extension == '.jpeg') {
-          contentType = 'image/jpeg';
-        } else if (extension == '.png') {
-          contentType = 'image/png';
-        } else if (extension == '.gif') {
-          contentType = 'image/gif';
-        } else if (extension == '.webp') {
-          contentType = 'image/webp';
-        }
+      // Determine content type from file extension
+      final extension = path.extension(filePath).toLowerCase();
+      String contentType = 'application/octet-stream';
+      if (extension == '.jpg' || extension == '.jpeg') {
+        contentType = 'image/jpeg';
+      } else if (extension == '.png') {
+        contentType = 'image/png';
+      } else if (extension == '.gif') {
+        contentType = 'image/gif';
+      } else if (extension == '.webp') {
+        contentType = 'image/webp';
+      }
 
-        // Upload to Supabase Storage
-        await _supabase.storage.from(bucket).uploadBinary(
-              storageKey,
-              fileBytes,
-              fileOptions: FileOptions(
-                contentType: contentType,
-                upsert: false,
-              ),
-            );
+      // Upload to Supabase Storage
+      await _supabase.storage.from(bucket).uploadBinary(
+            storageKey,
+            fileBytes,
+            fileOptions: FileOptions(
+              contentType: contentType,
+              upsert: false,
+            ),
+          );
 
-        // Get public URL
-        final publicUrl =
-            _supabase.storage.from(bucket).getPublicUrl(storageKey);
+      // Get public URL
+      final publicUrl = _supabase.storage.from(bucket).getPublicUrl(storageKey);
 
-        debugPrint('✅ File uploaded successfully: $publicUrl');
+      debugPrint('✅ File uploaded successfully: $publicUrl');
 
-        return publicUrl;
+      return publicUrl;
     }, operationName: 'uploading file');
   }
 
@@ -205,35 +204,35 @@ class StorageService {
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
       // Validate file
-        _validateImageFile(imageFile);
+      _validateImageFile(imageFile);
 
-        // Read image bytes
-        final imageBytes = await imageFile.readAsBytes();
-        final fileSizeKb = (imageBytes.length / 1024).round();
+      // Read image bytes
+      final imageBytes = await imageFile.readAsBytes();
+      final fileSizeKb = (imageBytes.length / 1024).round();
 
-        // Generate unique file name
-        final fileName = '${const Uuid().v4()}.jpg';
-        final storagePath = 'baby_$babyProfileId/$fileName';
+      // Generate unique file name
+      final fileName = '${const Uuid().v4()}.jpg';
+      final storagePath = 'baby_$babyProfileId/$fileName';
 
-        // Upload to Supabase Storage
-        await _supabase.storage.from('gallery-photos').uploadBinary(
-              storagePath,
-              imageBytes,
-              fileOptions: const FileOptions(
-                contentType: 'image/jpeg',
-                upsert: false,
-              ),
-            );
+      // Upload to Supabase Storage
+      await _supabase.storage.from('gallery-photos').uploadBinary(
+            storagePath,
+            imageBytes,
+            fileOptions: const FileOptions(
+              contentType: 'image/jpeg',
+              upsert: false,
+            ),
+          );
 
-        // Log analytics event
-        await _analytics.logPhotoUploaded(
-          babyProfileId: babyProfileId,
-          hasCaption: caption != null && caption.isNotEmpty,
-          hasTags: tags != null && tags.isNotEmpty,
-          fileSizeKb: fileSizeKb,
-        );
+      // Log analytics event
+      await _analytics.logPhotoUploaded(
+        babyProfileId: babyProfileId,
+        hasCaption: caption != null && caption.isNotEmpty,
+        hasTags: tags != null && tags.isNotEmpty,
+        fileSizeKb: fileSizeKb,
+      );
 
-        return storagePath;
+      return storagePath;
     }, operationName: 'uploading gallery photo');
   }
 
@@ -245,20 +244,20 @@ class StorageService {
     return await _authInterceptor.executeWithRetry(() async {
       _validateImageFile(imageFile);
 
-        final imageBytes = await imageFile.readAsBytes();
-        final fileName = '${const Uuid().v4()}.jpg';
-        final storagePath = 'user_$userId/$fileName';
+      final imageBytes = await imageFile.readAsBytes();
+      final fileName = '${const Uuid().v4()}.jpg';
+      final storagePath = 'user_$userId/$fileName';
 
-        await _supabase.storage.from('user-avatars').uploadBinary(
-              storagePath,
-              imageBytes,
-              fileOptions: const FileOptions(
-                contentType: 'image/jpeg',
-                upsert: false,
-              ),
-            );
+      await _supabase.storage.from('user-avatars').uploadBinary(
+            storagePath,
+            imageBytes,
+            fileOptions: const FileOptions(
+              contentType: 'image/jpeg',
+              upsert: false,
+            ),
+          );
 
-        return storagePath;
+      return storagePath;
     }, operationName: 'uploading user avatar');
   }
 
@@ -270,20 +269,20 @@ class StorageService {
     return await _authInterceptor.executeWithRetry(() async {
       _validateImageFile(imageFile);
 
-        final imageBytes = await imageFile.readAsBytes();
-        final fileName = '${const Uuid().v4()}.jpg';
-        final storagePath = 'baby_$babyProfileId/$fileName';
+      final imageBytes = await imageFile.readAsBytes();
+      final fileName = '${const Uuid().v4()}.jpg';
+      final storagePath = 'baby_$babyProfileId/$fileName';
 
-        await _supabase.storage.from('baby-profile-photos').uploadBinary(
-              storagePath,
-              imageBytes,
-              fileOptions: const FileOptions(
-                contentType: 'image/jpeg',
-                upsert: false,
-              ),
-            );
+      await _supabase.storage.from('baby-profile-photos').uploadBinary(
+            storagePath,
+            imageBytes,
+            fileOptions: const FileOptions(
+              contentType: 'image/jpeg',
+              upsert: false,
+            ),
+          );
 
-        return storagePath;
+      return storagePath;
     }, operationName: 'uploading baby profile photo');
   }
 
@@ -295,20 +294,20 @@ class StorageService {
     return await _authInterceptor.executeWithRetry(() async {
       _validateImageFile(imageFile);
 
-        final imageBytes = await imageFile.readAsBytes();
-        final fileName = '${const Uuid().v4()}.jpg';
-        final storagePath = 'baby_$babyProfileId/$fileName';
+      final imageBytes = await imageFile.readAsBytes();
+      final fileName = '${const Uuid().v4()}.jpg';
+      final storagePath = 'baby_$babyProfileId/$fileName';
 
-        await _supabase.storage.from('event-photos').uploadBinary(
-              storagePath,
-              imageBytes,
-              fileOptions: const FileOptions(
-                contentType: 'image/jpeg',
-                upsert: false,
-              ),
-            );
+      await _supabase.storage.from('event-photos').uploadBinary(
+            storagePath,
+            imageBytes,
+            fileOptions: const FileOptions(
+              contentType: 'image/jpeg',
+              upsert: false,
+            ),
+          );
 
-        return storagePath;
+      return storagePath;
     }, operationName: 'uploading event photo');
   }
 

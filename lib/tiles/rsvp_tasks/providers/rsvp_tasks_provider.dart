@@ -80,7 +80,8 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
 
   late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _eventsSubscriptionId;
-  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
   String? _rsvpsSubscriptionId;
 
   // ==========================================
@@ -206,7 +207,8 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
         .inFilter('event_id', eventIds);
 
     final rsvps = (rsvpsResponse as List)
-        .map((json) => EventRsvp.fromJson(Map<String, dynamic>.from(json as Map)))
+        .map((json) =>
+            EventRsvp.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
 
     // Create RSVP map for quick lookup
@@ -239,7 +241,9 @@ class RSVPTasksNotifier extends Notifier<RSVPTasksState> {
 
       return (cachedData as List).map((json) {
         final eventData = Map<String, dynamic>.from(json['event'] as Map);
-        final rsvpData = json['rsvp'] != null ? Map<String, dynamic>.from(json['rsvp'] as Map) : null;
+        final rsvpData = json['rsvp'] != null
+            ? Map<String, dynamic>.from(json['rsvp'] as Map)
+            : null;
         final needsResponse = json['needsResponse'] as bool;
 
         return EventWithRSVP(

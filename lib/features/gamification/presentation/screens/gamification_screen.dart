@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/di/providers.dart';
-import 'package:nonna_app/core/models/name_suggestion.dart';
-import 'package:nonna_app/core/models/vote.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
+import 'package:nonna_app/core/enums/user_role.dart';
+import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
 import 'package:nonna_app/features/gamification/presentation/providers/gamification_provider.dart';
 
 /// Screen displaying gamification features: name suggestions and prediction votes.
@@ -14,40 +15,46 @@ class GamificationScreen extends ConsumerStatefulWidget {
   const GamificationScreen({
     super.key,
     this.babyProfileId,
+    this.userRole,
   });
 
   /// Optional baby profile ID. When null, falls back to [selectedBabyProfileProvider].
   final String? babyProfileId;
 
+  /// Current user's role
+  final UserRole? userRole;
+
   @override
   ConsumerState<GamificationScreen> createState() => _GamificationScreenState();
 }
 
-class _GamificationScreenState extends ConsumerState<GamificationScreen>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
-
+class _GamificationScreenState extends ConsumerState<GamificationScreen> {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final id =
-          widget.babyProfileId ?? ref.read(selectedBabyProfileProvider) ?? '';
-      ref.read(gamificationProvider.notifier).load(babyProfileId: id);
+      _loadData();
     });
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+  void _loadData({bool forceRefresh = false}) {
+    final id =
+        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider) ?? '';
+    final role = widget.userRole ??
+        ref.read(homeScreenProvider).selectedRole ??
+        UserRole.follower;
+
+    if (id.isNotEmpty) {
+      ref.read(gamificationProvider.notifier).load(
+            babyProfileId: id,
+            role: role,
+            forceRefresh: forceRefresh,
+          );
+    }
   }
 
   Future<void> _onRefresh() async {
-    final id =
-        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider) ?? '';
-    await ref.read(gamificationProvider.notifier).load(babyProfileId: id);
+    _loadData(forceRefresh: true);
   }
 
   @override
@@ -55,7 +62,7 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen>
     // Listen to changes in the globally selected baby profile
     ref.listen<String?>(selectedBabyProfileProvider, (previous, next) {
       if (next != previous && next != null) {
-        ref.read(gamificationProvider.notifier).load(babyProfileId: next);
+        _loadData();
       }
     });
 
@@ -80,13 +87,6 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen>
       key: const Key('gamification_screen'),
       appBar: AppBar(
         title: const Text('Fun & Games'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(key: Key('name_suggestions_tab'), text: 'Name Suggestions'),
-            Tab(key: Key('votes_tab'), text: 'Votes'),
-          ],
-        ),
       ),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -113,70 +113,14 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen>
                 )
               : RefreshIndicator(
                   onRefresh: _onRefresh,
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      _NameSuggestionsTab(suggestions: state.nameSuggestions),
-                      _VotesTab(votes: state.votes),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TileListView(
+                      tiles: state.tiles,
+                      onRefresh: _onRefresh,
+                    ),
                   ),
                 ),
-    );
-  }
-}
-
-class _NameSuggestionsTab extends StatelessWidget {
-  const _NameSuggestionsTab({required this.suggestions});
-
-  final List<NameSuggestion> suggestions;
-
-  @override
-  Widget build(BuildContext context) {
-    if (suggestions.isEmpty) {
-      return const EmptyState(
-        key: Key('no_name_suggestions_empty_state'),
-        icon: Icons.child_care,
-        message: 'No name suggestions yet',
-      );
-    }
-    return ListView.builder(
-      padding: AppSpacing.screenPadding,
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          key: Key('name_suggestion_$index'),
-          leading: const Icon(Icons.child_care),
-          title: Text(suggestions[index].suggestedName),
-        );
-      },
-    );
-  }
-}
-
-class _VotesTab extends StatelessWidget {
-  const _VotesTab({required this.votes});
-
-  final List<Vote> votes;
-
-  @override
-  Widget build(BuildContext context) {
-    if (votes.isEmpty) {
-      return const EmptyState(
-        key: Key('no_votes_empty_state'),
-        icon: Icons.how_to_vote_outlined,
-        message: 'No votes yet',
-      );
-    }
-    return ListView.builder(
-      padding: AppSpacing.screenPadding,
-      itemCount: votes.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          key: Key('vote_$index'),
-          leading: const Icon(Icons.how_to_vote_outlined),
-          title: Text(votes[index].voteType.toString()),
-        );
-      },
     );
   }
 }

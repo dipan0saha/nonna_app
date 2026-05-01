@@ -65,7 +65,6 @@ Widget _buildScreen(
   RegistryScreenState state, {
   String? babyProfileId,
   UserRole? userRole,
-  Function(RegistryItem)? onItemTap,
 }) {
   return ProviderScope(
     overrides: [
@@ -75,7 +74,6 @@ Widget _buildScreen(
       home: RegistryScreen(
         babyProfileId: babyProfileId,
         userRole: userRole,
-        onItemTap: onItemTap,
       ),
     ),
   );

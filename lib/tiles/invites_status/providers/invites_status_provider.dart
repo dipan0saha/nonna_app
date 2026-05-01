@@ -177,7 +177,8 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
         .order(SupabaseTables.createdAt, ascending: false);
 
     return (response as List)
-        .map((json) => Invitation.fromJson(Map<String, dynamic>.from(json as Map)))
+        .map((json) =>
+            Invitation.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
   }
 
@@ -193,7 +194,8 @@ class InvitesStatusNotifier extends Notifier<InvitesStatusState> {
       if (cachedData == null) return null;
 
       return (cachedData as List)
-          .map((json) => Invitation.fromJson(Map<String, dynamic>.from(json as Map)))
+          .map((json) =>
+              Invitation.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');

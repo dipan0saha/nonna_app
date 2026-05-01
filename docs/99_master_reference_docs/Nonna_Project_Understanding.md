@@ -48,12 +48,12 @@ The core architectural idea is **self-contained, reusable tile widgets** rendere
 ```text
 lib/
 ├── core/          # Cross-cutting: models, services, DI, router, themes, utils
-├── tiles/         # 15 reusable tile widgets (first-class citizens)
+├── tiles/         # 18 reusable tile widgets (first-class citizens)
 │   ├── core/      # TileFactory, BaseTile, TileContainer
 │   ├── upcoming_events/
 │   ├── recent_photos/
 │   ├── registry_highlights/
-│   └── ... (15 total)
+│   └── ... (18 total)
 └── features/      # Screen composition (Home, Calendar, Gallery, etc.)
     ├── auth/
     ├── home/       # Composes tiles into a scrollable list view via TileFactory
@@ -113,7 +113,7 @@ The `HomeScreen` accepts `babyProfileId`, `userRole`, and `isDualRole` props and
 
 ---
 
-## Tile Widgets (15 total)
+## Tile Widgets (18 total)
 
 | Tile | Screens Used |
 |---|---|
@@ -122,13 +122,16 @@ The `HomeScreen` accepts `babyProfileId`, `userRole`, and `isDualRole` props and
 | `RegistryHighlightsTile` | Home, Registry |
 | `CountdownTile` | Home |
 | `ChecklistTile` | Home |
-| `ActivityListTile` | Home |
+| `ActivityListTile` | Home, Gamification / Fun & Games |
 | `GalleryFavoritesTile` | Home, Gallery |
 | `InvitesStatusTile` | Home |
 | `NewFollowersTile` | Home |
 | `NotificationsTile` | Home |
 | `RecentPurchasesTile` | Home, Registry |
 | `RegistryDealsTile` | Home, Registry |
+| `RegistryListTile` | Registry |
+| `NameSuggestionsTile` | Gamification / Fun & Games |
+| `PredictionVotesTile` | Gamification / Fun & Games |
 | `RsvpTasksTile` | Home, Calendar |
 | `StorageUsageTile` | Home, Settings |
 | `SystemAnnouncementsTile` | Home |
@@ -173,17 +176,17 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 - Fixed Riverpod `selectedBabyProfileProvider` listeners across Registry and main tabs.
 - All 23 domain models with serialization, validation, and unit tests
 - All 22 services with middleware integration
-- All 15 tile widgets with providers and widget tests
+- All 18 tile widgets with providers and widget tests
 - All feature screens (auth, home, calendar, gallery, registry, profile, baby profile, gamification, settings)
 - GoRouter navigation with auth redirect guards
 - Supabase RLS policies with pgTAP test suite
 - Supabase Edge Functions: `tile-configs`, `notification-trigger`, `image-processing`
 - Localization (English + Spanish)
 - Theming, error boundaries, offline cache and network failure handling
-- **Centralized `TileFactory`** — dynamic tile instantiation from Supabase `tile_configs`/`screen_configs` tables mapped to all 15 tile components.
+- **Centralized `TileFactory`** — dynamic tile instantiation from Supabase `tile_configs`/`screen_configs` tables mapped to all 18 tile components.
 
 ### Pending (Production Readiness Checklist)
-- Implement `ConsumerStatefulWidget` smart wrappers for remaining 11 tiles inside `TileFactory`.
+- Implement `ConsumerStatefulWidget` smart wrappers for remaining tiles inside `TileFactory`.
 - Unit test coverage to 80% minimum (sections 4.1–4.4)
 - Widget, integration, performance, and golden tests (sections 4.2–4.5)
 - App store deployment pipeline

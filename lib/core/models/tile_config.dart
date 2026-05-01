@@ -61,7 +61,7 @@ class TileConfig {
       displayOrder: json['display_order'] as int,
       isVisible: json['is_visible'] as bool? ?? true,
       params: json['params'] as Map<String, dynamic>?,
-      createdAt: json['created_at'] != null 
+      createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : DateTime.parse(json['updated_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),

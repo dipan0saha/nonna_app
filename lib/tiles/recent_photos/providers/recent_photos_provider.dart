@@ -64,7 +64,8 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
 
   late final _realtimeService = ref.read(realtimeServiceProvider);
   String? _subscriptionId;
-  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
+  late final _subscriptionManager =
+      ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   RecentPhotosState build() {

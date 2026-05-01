@@ -10,6 +10,13 @@ import 'package:nonna_app/tiles/recent_photos/providers/recent_photos_provider.d
 import 'package:nonna_app/tiles/recent_photos/widgets/recent_photos_tile.dart';
 
 import 'package:nonna_app/tiles/checklist/widgets/checklist_tile.dart';
+import 'package:nonna_app/tiles/checklist/providers/checklist_provider.dart';
+import 'package:nonna_app/tiles/invites_status/providers/invites_status_provider.dart';
+import 'package:nonna_app/tiles/new_followers/providers/new_followers_provider.dart';
+import 'package:nonna_app/tiles/recent_purchases/providers/recent_purchases_provider.dart';
+import 'package:nonna_app/tiles/storage_usage/providers/storage_usage_provider.dart';
+import 'package:nonna_app/tiles/system_announcements/providers/system_announcements_provider.dart';
+
 import 'package:nonna_app/tiles/countdown/providers/countdown_provider.dart';
 import 'package:nonna_app/tiles/countdown/widgets/countdown_tile.dart';
 import 'package:nonna_app/tiles/activity_list/providers/activity_list_provider.dart';
@@ -29,14 +36,17 @@ import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlight
 
 import 'package:nonna_app/tiles/rsvp_tasks/widgets/rsvp_tasks_tile.dart';
 import 'package:nonna_app/tiles/storage_usage/widgets/storage_usage_tile.dart';
+import 'package:nonna_app/tiles/registry_list/widgets/registry_list_tile.dart';
 import 'package:nonna_app/tiles/system_announcements/widgets/system_announcements_tile.dart';
 import 'package:nonna_app/tiles/upcoming_events/widgets/upcoming_events_tile.dart';
 import 'package:nonna_app/tiles/upcoming_events/providers/upcoming_events_provider.dart';
-import 'package:nonna_app/tiles/upcoming_events/models/event_with_rsvp.dart';
 import 'package:nonna_app/tiles/rsvp_tasks/providers/rsvp_tasks_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
+
+import 'package:nonna_app/tiles/name_suggestions/widgets/name_suggestions_tile.dart';
+import 'package:nonna_app/tiles/prediction_votes/widgets/prediction_votes_tile.dart';
 
 /// Factory for instantiating dynamic tiles based on their configuration.
 class TileFactory {
@@ -53,37 +63,36 @@ class TileFactory {
         return const _UpcomingEventsSmartTile();
       case 'RegistryHighlightsTile':
         return const _RegistryHighlightsSmartTile();
+      case 'RegistryListTile':
+        return const RegistryListSmartTile();
       case 'CountdownTile':
         return const _CountdownSmartTile();
       case 'ChecklistTile':
-        // TODO: Implement _ChecklistSmartTile wrapper
-        return const ChecklistTile(items: [], isLoading: false);
+        return const _ChecklistSmartTile();
       case 'ActivityListTile':
         return const _ActivityListSmartTile();
       case 'GalleryFavoritesTile':
         return const _GalleryFavoritesSmartTile();
       case 'InvitesStatusTile':
-        // TODO: Implement _InvitesStatusSmartTile wrapper
-        return const InvitesStatusTile(invitations: [], isLoading: false);
+        return const _InvitesStatusSmartTile();
       case 'NewFollowersTile':
-        // TODO: Implement _NewFollowersSmartTile wrapper
-        return const NewFollowersTile(followers: [], isLoading: false);
+        return const _NewFollowersSmartTile();
       case 'NotificationsTile':
         return const _NotificationsSmartTile();
       case 'RecentPurchasesTile':
-        // TODO: Implement _RecentPurchasesSmartTile wrapper
-        return const RecentPurchasesTile(purchases: [], isLoading: false);
+        return const _RecentPurchasesSmartTile();
       case 'RegistryDealsTile':
         return const _RegistryDealsSmartTile();
       case 'RsvpTasksTile':
         return const _RsvpTasksSmartTile();
       case 'StorageUsageTile':
-        // TODO: Implement _StorageUsageSmartTile wrapper
-        return const StorageUsageTile(info: null, isLoading: false);
+        return const _StorageUsageSmartTile();
       case 'SystemAnnouncementsTile':
-        // TODO: Implement _SystemAnnouncementsSmartTile wrapper
-        return const SystemAnnouncementsTile(
-            announcements: [], isLoading: false);
+        return const _SystemAnnouncementsSmartTile();
+      case 'NameSuggestionsTile':
+        return const NameSuggestionsSmartTile();
+      case 'PredictionVotesTile':
+        return const PredictionVotesSmartTile();
       default:
         return _buildFallback(config);
     }
@@ -166,7 +175,8 @@ class _RecentPhotosSmartTileState
           .toList(),
       isLoading: state.isLoading && state.photos.isEmpty,
       error: state.error,
-      onPhotoTap: (photo) => context.push('/gallery/photo/detail', extra: photo),
+      onPhotoTap: (photo) =>
+          context.push('/gallery/photo/detail', extra: photo),
       onRefresh: babyProfileId != null
           ? () => ref
               .read(recentPhotosProvider.notifier)
@@ -380,7 +390,8 @@ class _RegistryDealsSmartTile extends ConsumerStatefulWidget {
       _RegistryDealsSmartTileState();
 }
 
-class _RegistryDealsSmartTileState extends ConsumerState<_RegistryDealsSmartTile> {
+class _RegistryDealsSmartTileState
+    extends ConsumerState<_RegistryDealsSmartTile> {
   @override
   void initState() {
     super.initState();
@@ -419,7 +430,6 @@ class _RegistryDealsSmartTileState extends ConsumerState<_RegistryDealsSmartTile
     );
   }
 }
-
 
 class _GalleryFavoritesSmartTile extends ConsumerStatefulWidget {
   const _GalleryFavoritesSmartTile();
@@ -462,7 +472,8 @@ class _GalleryFavoritesSmartTileState
       favorites: state.favorites,
       isLoading: state.isLoading && state.favorites.isEmpty,
       error: state.error,
-      onPhotoTap: (photo) => context.push('/gallery/photo/detail', extra: photo),
+      onPhotoTap: (photo) =>
+          context.push('/gallery/photo/detail', extra: photo),
       onRefresh: babyProfileId != null
           ? () => ref
               .read(galleryFavoritesProvider.notifier)
@@ -472,22 +483,28 @@ class _GalleryFavoritesSmartTileState
     );
   }
 }
+
 class _UpcomingEventsSmartTile extends ConsumerStatefulWidget {
   const _UpcomingEventsSmartTile();
 
   @override
-  ConsumerState<_UpcomingEventsSmartTile> createState() => _UpcomingEventsSmartTileState();
+  ConsumerState<_UpcomingEventsSmartTile> createState() =>
+      _UpcomingEventsSmartTileState();
 }
 
-class _UpcomingEventsSmartTileState extends ConsumerState<_UpcomingEventsSmartTile> {
+class _UpcomingEventsSmartTileState
+    extends ConsumerState<_UpcomingEventsSmartTile> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final babyProfileId = ref.read(selectedBabyProfileProvider);
-      final role = ref.read(homeScreenProvider).selectedRole ?? UserRole.follower;
+      final role =
+          ref.read(homeScreenProvider).selectedRole ?? UserRole.follower;
       if (babyProfileId != null) {
-        ref.read(upcomingEventsProvider.notifier).fetchEvents(babyProfileId: babyProfileId, role: role);
+        ref
+            .read(upcomingEventsProvider.notifier)
+            .fetchEvents(babyProfileId: babyProfileId, role: role);
       }
     });
   }
@@ -496,11 +513,14 @@ class _UpcomingEventsSmartTileState extends ConsumerState<_UpcomingEventsSmartTi
   Widget build(BuildContext context) {
     final state = ref.watch(upcomingEventsProvider);
     final babyProfileId = ref.watch(selectedBabyProfileProvider);
-    final role = ref.watch(homeScreenProvider).selectedRole ?? UserRole.follower;
+    final role =
+        ref.watch(homeScreenProvider).selectedRole ?? UserRole.follower;
 
     ref.listen(selectedBabyProfileProvider, (previous, current) {
       if (current != null && current != previous) {
-        ref.read(upcomingEventsProvider.notifier).fetchEvents(babyProfileId: current, role: role);
+        ref
+            .read(upcomingEventsProvider.notifier)
+            .fetchEvents(babyProfileId: current, role: role);
       }
     });
 
@@ -509,11 +529,13 @@ class _UpcomingEventsSmartTileState extends ConsumerState<_UpcomingEventsSmartTi
       isLoading: state.isLoading && state.events.isEmpty,
       error: state.error,
       onEventTap: (event) {
-        // TODO: Navigate to event details
+        context.push('/calendar/event/detail', extra: event);
       },
       onRefresh: () {
         if (babyProfileId != null) {
-          ref.read(upcomingEventsProvider.notifier).refresh(babyProfileId: babyProfileId, role: role);
+          ref
+              .read(upcomingEventsProvider.notifier)
+              .refresh(babyProfileId: babyProfileId, role: role);
         }
       },
       onViewAll: () {
@@ -527,7 +549,8 @@ class _RsvpTasksSmartTile extends ConsumerStatefulWidget {
   const _RsvpTasksSmartTile();
 
   @override
-  ConsumerState<_RsvpTasksSmartTile> createState() => _RsvpTasksSmartTileState();
+  ConsumerState<_RsvpTasksSmartTile> createState() =>
+      _RsvpTasksSmartTileState();
 }
 
 class _RsvpTasksSmartTileState extends ConsumerState<_RsvpTasksSmartTile> {
@@ -538,7 +561,9 @@ class _RsvpTasksSmartTileState extends ConsumerState<_RsvpTasksSmartTile> {
       final babyProfileId = ref.read(selectedBabyProfileProvider);
       final userId = ref.read(authProvider).user?.id ?? '';
       if (babyProfileId != null && userId.isNotEmpty) {
-        ref.read(rsvpTasksProvider.notifier).fetchRSVPTasks(babyProfileId: babyProfileId, userId: userId);
+        ref
+            .read(rsvpTasksProvider.notifier)
+            .fetchRSVPTasks(babyProfileId: babyProfileId, userId: userId);
       }
     });
   }
@@ -551,7 +576,9 @@ class _RsvpTasksSmartTileState extends ConsumerState<_RsvpTasksSmartTile> {
 
     ref.listen(selectedBabyProfileProvider, (previous, current) {
       if (current != null && current != previous && userId.isNotEmpty) {
-        ref.read(rsvpTasksProvider.notifier).fetchRSVPTasks(babyProfileId: current, userId: userId);
+        ref
+            .read(rsvpTasksProvider.notifier)
+            .fetchRSVPTasks(babyProfileId: current, userId: userId);
       }
     });
 
@@ -564,9 +591,321 @@ class _RsvpTasksSmartTileState extends ConsumerState<_RsvpTasksSmartTile> {
       },
       onRefresh: () {
         if (babyProfileId != null && userId.isNotEmpty) {
-          ref.read(rsvpTasksProvider.notifier).refresh(babyProfileId: babyProfileId, userId: userId);
+          ref
+              .read(rsvpTasksProvider.notifier)
+              .refresh(babyProfileId: babyProfileId, userId: userId);
         }
       },
+    );
+  }
+}
+
+class _ChecklistSmartTile extends ConsumerStatefulWidget {
+  const _ChecklistSmartTile();
+
+  @override
+  ConsumerState<_ChecklistSmartTile> createState() =>
+      _ChecklistSmartTileState();
+}
+
+class _ChecklistSmartTileState extends ConsumerState<_ChecklistSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        ref
+            .read(checklistProvider.notifier)
+            .loadChecklist(babyProfileId: babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(checklistProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(checklistProvider.notifier)
+            .loadChecklist(babyProfileId: current);
+      }
+    });
+
+    return ChecklistTile(
+      items: state.items,
+      isLoading: state.isLoading && state.items.isEmpty,
+      error: state.error,
+      onItemToggle: (item) {
+        if (babyProfileId != null) {
+          ref.read(checklistProvider.notifier).toggleItem(
+                itemId: item.id,
+                babyProfileId: babyProfileId,
+              );
+        }
+      },
+      onRefresh: babyProfileId != null
+          ? () => ref
+              .read(checklistProvider.notifier)
+              .loadChecklist(babyProfileId: babyProfileId)
+          : null,
+    );
+  }
+}
+
+class _InvitesStatusSmartTile extends ConsumerStatefulWidget {
+  const _InvitesStatusSmartTile();
+
+  @override
+  ConsumerState<_InvitesStatusSmartTile> createState() =>
+      _InvitesStatusSmartTileState();
+}
+
+class _InvitesStatusSmartTileState
+    extends ConsumerState<_InvitesStatusSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        ref
+            .read(invitesStatusProvider.notifier)
+            .fetchInvitations(babyProfileId: babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(invitesStatusProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(invitesStatusProvider.notifier)
+            .fetchInvitations(babyProfileId: current);
+      }
+    });
+
+    return InvitesStatusTile(
+      invitations: state.invitations,
+      isLoading: state.isLoading && state.invitations.isEmpty,
+      error: state.error,
+      onRefresh: babyProfileId != null
+          ? () => ref.read(invitesStatusProvider.notifier).fetchInvitations(
+              babyProfileId: babyProfileId, forceRefresh: true)
+          : null,
+    );
+  }
+}
+
+class _NewFollowersSmartTile extends ConsumerStatefulWidget {
+  const _NewFollowersSmartTile();
+
+  @override
+  ConsumerState<_NewFollowersSmartTile> createState() =>
+      _NewFollowersSmartTileState();
+}
+
+class _NewFollowersSmartTileState
+    extends ConsumerState<_NewFollowersSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        ref
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(newFollowersProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(newFollowersProvider.notifier)
+            .fetchFollowers(babyProfileId: current);
+      }
+    });
+
+    return NewFollowersTile(
+      followers: state.followers,
+      isLoading: state.isLoading && state.followers.isEmpty,
+      error: state.error,
+      onRefresh: babyProfileId != null
+          ? () => ref
+              .read(newFollowersProvider.notifier)
+              .fetchFollowers(babyProfileId: babyProfileId, forceRefresh: true)
+          : null,
+      onViewAll: () {},
+    );
+  }
+}
+
+class _RecentPurchasesSmartTile extends ConsumerStatefulWidget {
+  const _RecentPurchasesSmartTile();
+
+  @override
+  ConsumerState<_RecentPurchasesSmartTile> createState() =>
+      _RecentPurchasesSmartTileState();
+}
+
+class _RecentPurchasesSmartTileState
+    extends ConsumerState<_RecentPurchasesSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        ref
+            .read(recentPurchasesProvider.notifier)
+            .fetchPurchases(babyProfileId: babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(recentPurchasesProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(recentPurchasesProvider.notifier)
+            .fetchPurchases(babyProfileId: current);
+      }
+    });
+
+    return RecentPurchasesTile(
+      purchases: state.purchases,
+      isLoading: state.isLoading && state.purchases.isEmpty,
+      error: state.error,
+      onRefresh: babyProfileId != null
+          ? () => ref
+              .read(recentPurchasesProvider.notifier)
+              .fetchPurchases(babyProfileId: babyProfileId, forceRefresh: true)
+          : null,
+    );
+  }
+}
+
+class _StorageUsageSmartTile extends ConsumerStatefulWidget {
+  const _StorageUsageSmartTile();
+
+  @override
+  ConsumerState<_StorageUsageSmartTile> createState() =>
+      _StorageUsageSmartTileState();
+}
+
+class _StorageUsageSmartTileState
+    extends ConsumerState<_StorageUsageSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        ref
+            .read(storageUsageProvider.notifier)
+            .fetchUsage(babyProfileId: babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(storageUsageProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(storageUsageProvider.notifier)
+            .fetchUsage(babyProfileId: current);
+      }
+    });
+
+    return StorageUsageTile(
+      info: state.info,
+      isLoading: state.isLoading && state.info == null,
+      error: state.error,
+      onRefresh: babyProfileId != null
+          ? () => ref
+              .read(storageUsageProvider.notifier)
+              .fetchUsage(babyProfileId: babyProfileId, forceRefresh: true)
+          : null,
+    );
+  }
+}
+
+class _SystemAnnouncementsSmartTile extends ConsumerStatefulWidget {
+  const _SystemAnnouncementsSmartTile();
+
+  @override
+  ConsumerState<_SystemAnnouncementsSmartTile> createState() =>
+      _SystemAnnouncementsSmartTileState();
+}
+
+class _SystemAnnouncementsSmartTileState
+    extends ConsumerState<_SystemAnnouncementsSmartTile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = ref.read(currentUserProvider);
+      if (user != null) {
+        ref
+            .read(systemAnnouncementsProvider.notifier)
+            .loadAnnouncements(userId: user.id);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(systemAnnouncementsProvider);
+    final user = ref.watch(currentUserProvider);
+
+    ref.listen(currentUserProvider, (previous, current) {
+      if (current != null && current != previous) {
+        ref
+            .read(systemAnnouncementsProvider.notifier)
+            .loadAnnouncements(userId: current.id);
+      }
+    });
+
+    return SystemAnnouncementsTile(
+      announcements: state.announcements,
+      dismissedIds: state.dismissedIds,
+      isLoading: state.isLoading && state.announcements.isEmpty,
+      error: state.error,
+      onDismiss: (id) {
+        if (user != null) {
+          ref.read(systemAnnouncementsProvider.notifier).dismissAnnouncement(
+                announcementId: id,
+                userId: user.id,
+              );
+        }
+      },
+      onRefresh: user != null
+          ? () => ref
+              .read(systemAnnouncementsProvider.notifier)
+              .loadAnnouncements(userId: user.id)
+          : null,
     );
   }
 }

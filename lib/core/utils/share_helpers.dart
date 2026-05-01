@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:nonna_app/core/config/app_config.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:nonna_app/core/services/analytics_service.dart';
 
 /// Social sharing and deep linking utilities
 ///
@@ -106,24 +108,22 @@ class ShareHelpers {
   /// Share text content
   /// Note: Implement with share_plus package
   static Future<void> shareText(String text, {String? subject}) async {
-    // TODO: Implement with share_plus package
-    // Example: await Share.share(text, subject: subject);
-    throw UnimplementedError('Requires share_plus package');
+    await Share.share(text, subject: subject);
   }
 
   /// Share link
   /// Note: Implement with share_plus package
   static Future<void> shareLink(String link, {String? text}) async {
-    // TODO: Implement with share_plus package
-    // Example: await Share.share('$text\n$link');
-    throw UnimplementedError('Requires share_plus package');
+    final shareContent = text != null ? '$text\n\n$link' : link;
+    await Share.share(shareContent);
   }
 
   /// Share with specific apps (if needed)
   /// Note: Implement with share_plus package
   static Future<void> shareToApp(String text, String app) async {
-    // TODO: Implement platform-specific sharing
-    throw UnimplementedError('Requires share_plus package');
+    // Basic fallback since shareToApp requires extensive native integrations
+    // depending on the app. We'll just call the basic share method.
+    await Share.share(text);
   }
 
   // ============================================================
@@ -220,17 +220,19 @@ Sent from Nonna App
   // ============================================================
 
   /// Track share event
-  static void trackShare({
+  static void trackShare(
+    AnalyticsService analytics, {
     required String contentType,
     required String contentId,
     required String shareMethod,
+    String? babyProfileId,
   }) {
-    // TODO: Implement analytics tracking
-    // Example: Analytics.logEvent('share', {
-    //   'content_type': contentType,
-    //   'content_id': contentId,
-    //   'method': shareMethod,
-    // });
+    analytics.logContentShared(
+      contentType: contentType,
+      method: shareMethod,
+      contentId: contentId,
+      babyProfileId: babyProfileId,
+    );
   }
 
   /// Track invitation sent

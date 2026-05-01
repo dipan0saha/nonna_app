@@ -9,6 +9,7 @@ import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
+import 'package:nonna_app/features/home/presentation/widgets/home_app_bar_search_dialog.dart';
 
 /// Home screen app bar — prototype design.
 ///
@@ -58,54 +59,61 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
         icon: const Icon(Icons.search),
         tooltip: 'Search',
         onPressed: () {
-          // TODO(search): open search screen/delegate when implemented.
+          showSearch(
+            context: context,
+            delegate: GlobalSearchDelegate(),
+          );
         },
       ),
       // Title — brand name or baby profile switcher
       title: ref.watch(userBabyProfilesProvider).when(
-        data: (profiles) {
-          if (profiles.isEmpty) return _buildTitle(context, 'Nonna');
-          
-          final selectedId = ref.watch(selectedBabyProfileProvider);
-          final selectedProfile = profiles.firstWhere(
-            (p) => p.id == selectedId,
-            orElse: () => profiles.first,
-          );
+            data: (profiles) {
+              if (profiles.isEmpty) return _buildTitle(context, 'Nonna');
 
-          if (profiles.length == 1) {
-            return _buildTitle(context, selectedProfile.name);
-          }
+              final selectedId = ref.watch(selectedBabyProfileProvider);
+              final selectedProfile = profiles.firstWhere(
+                (p) => p.id == selectedId,
+                orElse: () => profiles.first,
+              );
 
-          return DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: selectedProfile.id,
-              icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.primary),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-              ),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  ref.read(selectedBabyProfileProvider.notifier).select(newValue);
-                  // Load tiles for the newly selected profile
-                  ref.read(homeScreenProvider.notifier).switchBabyProfile(
-                    babyProfileId: newValue,
-                    role: ref.read(homeScreenProvider).selectedRole ?? UserRole.follower,
-                  );
-                }
-              },
-              items: profiles.map<DropdownMenuItem<String>>((profile) {
-                return DropdownMenuItem<String>(
-                  value: profile.id,
-                  child: Text(profile.name),
-                );
-              }).toList(),
-            ),
-          );
-        },
-        loading: () => _buildTitle(context, 'Nonna'),
-        error: (_, __) => _buildTitle(context, 'Nonna'),
-      ),
+              if (profiles.length == 1) {
+                return _buildTitle(context, selectedProfile.name);
+              }
+
+              return DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: selectedProfile.id,
+                  icon: const Icon(Icons.keyboard_arrow_down,
+                      color: AppColors.primary),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      ref
+                          .read(selectedBabyProfileProvider.notifier)
+                          .select(newValue);
+                      // Load tiles for the newly selected profile
+                      ref.read(homeScreenProvider.notifier).switchBabyProfile(
+                            babyProfileId: newValue,
+                            role: ref.read(homeScreenProvider).selectedRole ??
+                                UserRole.follower,
+                          );
+                    }
+                  },
+                  items: profiles.map<DropdownMenuItem<String>>((profile) {
+                    return DropdownMenuItem<String>(
+                      value: profile.id,
+                      child: Text(profile.name),
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+            loading: () => _buildTitle(context, 'Nonna'),
+            error: (_, __) => _buildTitle(context, 'Nonna'),
+          ),
       // Actions — avatar + chevron → profile
       actions: [
         GestureDetector(

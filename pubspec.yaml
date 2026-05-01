@@ -84,6 +84,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   url_launcher: ^6.3.2
+  share_plus: ^12.0.2
+  firebase_remote_config: ^6.4.0
+  workmanager: ^0.9.0+3
 
 
 dev_dependencies:

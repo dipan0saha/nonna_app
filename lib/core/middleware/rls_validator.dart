@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../enums/user_role.dart';
+import '../services/observability_service.dart';
 
 /// RLS (Row Level Security) Validator for development-mode testing
 ///
@@ -266,9 +267,13 @@ class RlsValidator {
     debugPrint('│ Reason: $reason');
     debugPrint('└─────────────────────────────────────────────────────────');
 
-    // In production, this would be logged to a monitoring service
-    if (kReleaseMode) {
-      // TODO: Send to monitoring service
+    try {
+      ObservabilityService.captureException(
+        Exception('RLS Access Denied'),
+        hint: 'user=$userId tried to $operation $resource. Reason: $reason',
+      );
+    } catch (e) {
+      debugPrint('❌ Failed to log RLS violation to observability: $e');
     }
   }
 

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 import '../../../core/di/providers.dart';
 
@@ -244,19 +246,45 @@ class TileVisibilityNotifier extends Notifier<TileVisibilityState> {
 
   /// Load feature flags from remote config
   ///
-  /// In a production app, this would fetch from a remote config service
-  /// like Firebase Remote Config or LaunchDarkly.
+  /// In a production app, this fetch from a remote config service
+  /// like Firebase Remote Config.
   Future<void> loadRemoteFeatureFlags() async {
     try {
-      // TODO: Implement remote config fetching
-      // For now, we'll use local storage
-      final flags = await _loadFeatureFlagsFromStorage();
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      // Setup typical remote config settings
+      await remoteConfig.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(minutes: 1),
+        minimumFetchInterval: const Duration(hours: 1),
+      ));
+
+      // Fetch and activate config
+      await remoteConfig.fetchAndActivate();
+
+      // Attempt to load 'feature_flags' json map
+      final String flagsString = remoteConfig.getString('feature_flags');
+
+      // If we don't have a value from Firebase, fallback to storage
+      Map<String, bool> flags;
+      if (flagsString.isNotEmpty) {
+        final Map<String, dynamic> jsonMap = json.decode(flagsString);
+        flags = jsonMap.map((key, value) => MapEntry(key, value as bool));
+        // Save these flags locally so we have them offline
+        await _saveFeatureFlagsToStorage(flags);
+      } else {
+        flags = await _loadFeatureFlagsFromStorage();
+      }
+
       if (!ref.mounted) return;
       state = state.copyWith(featureFlags: flags);
 
       debugPrint('✅ Loaded remote feature flags');
     } catch (e) {
       debugPrint('❌ Failed to load remote feature flags: $e');
+      // On failure, attempt to load last known good state from storage
+      final flags = await _loadFeatureFlagsFromStorage();
+      if (ref.mounted) {
+        state = state.copyWith(featureFlags: flags);
+      }
     }
   }
 

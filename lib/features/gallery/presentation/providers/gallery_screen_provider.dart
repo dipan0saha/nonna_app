@@ -41,7 +41,8 @@ class GalleryScreenState {
       isLoading: isLoading ?? this.isLoading,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       error: error,
-      selectedBabyProfileId: selectedBabyProfileId ?? this.selectedBabyProfileId,
+      selectedBabyProfileId:
+          selectedBabyProfileId ?? this.selectedBabyProfileId,
       selectedRole: selectedRole ?? this.selectedRole,
       lastRefreshed: lastRefreshed ?? this.lastRefreshed,
     );
@@ -116,7 +117,8 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
       );
       if (!ref.mounted) return;
 
-      await _saveToCache(state.selectedBabyProfileId!, state.selectedRole!, tiles);
+      await _saveToCache(
+          state.selectedBabyProfileId!, state.selectedRole!, tiles);
       if (!ref.mounted) return;
 
       state = state.copyWith(
@@ -142,14 +144,15 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
     }
   }
 
-  Future<void> _saveToCache(String babyProfileId, UserRole role, List<TileConfig> tiles) async {
+  Future<void> _saveToCache(
+      String babyProfileId, UserRole role, List<TileConfig> tiles) async {
     final cacheService = ref.read(cacheServiceProvider);
     if (!cacheService.isInitialized) return;
 
     try {
       final cacheKey = '${_cacheKeyPrefix}_${babyProfileId}_${role.name}';
       final dataList = tiles.map((t) => t.toJson()).toList();
-      
+
       await cacheService.put(
         cacheKey,
         dataList,
@@ -162,6 +165,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 }
 
 // Ensure it is properly exported
-final galleryScreenProvider = NotifierProvider<GalleryScreenNotifier, GalleryScreenState>(
+final galleryScreenProvider =
+    NotifierProvider<GalleryScreenNotifier, GalleryScreenState>(
   () => GalleryScreenNotifier(),
 );

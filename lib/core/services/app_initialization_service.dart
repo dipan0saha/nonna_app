@@ -129,8 +129,7 @@ class AppInitializationService {
     );
 
     // Set up Flutter error handling for Crashlytics
-    FlutterError.onError =
-        FirebaseCrashlytics.instance.recordFlutterFatalError;
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
     // Catch async errors
     PlatformDispatcher.instance.onError = (error, stack) {

@@ -30,6 +30,9 @@ enum TileType {
   /// Notifications tile - app notifications
   notifications,
 
+  /// Registry list tile - full list of registry items
+  registryList,
+
   /// Invites status tile - invitation management
   invitesStatus,
 
@@ -61,7 +64,13 @@ enum TileType {
   systemAnnouncements,
 
   /// New followers tile - recent follower activity
-  newFollowers;
+  newFollowers,
+
+  /// Name suggestions tile - baby name suggestions
+  nameSuggestions,
+
+  /// Prediction votes tile - votes for baby gender/birthdate
+  predictionVotes;
 
   /// Convert the enum to a string representation
   String toJson() => name;
@@ -85,6 +94,8 @@ enum TileType {
         return 'Registry Highlights';
       case TileType.notifications:
         return 'Notifications';
+      case TileType.registryList:
+        return 'Registry List';
       case TileType.invitesStatus:
         return 'Invites Status';
       case TileType.rsvpTasks:
@@ -107,6 +118,10 @@ enum TileType {
         return 'System Announcements';
       case TileType.newFollowers:
         return 'New Followers';
+      case TileType.nameSuggestions:
+        return 'Name Suggestions';
+      case TileType.predictionVotes:
+        return 'Prediction Votes';
     }
   }
 
@@ -121,6 +136,8 @@ enum TileType {
         return 'Featured items from your registry';
       case TileType.notifications:
         return 'App notifications and updates';
+      case TileType.registryList:
+        return 'Complete list of items in the registry';
       case TileType.invitesStatus:
         return 'Manage invitations';
       case TileType.rsvpTasks:
@@ -143,6 +160,10 @@ enum TileType {
         return 'Important app announcements';
       case TileType.newFollowers:
         return 'Recent follower activity';
+      case TileType.nameSuggestions:
+        return 'Baby name suggestions';
+      case TileType.predictionVotes:
+        return 'Predictions for gender or birthdate';
     }
   }
 }

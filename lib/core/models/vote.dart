@@ -52,7 +52,7 @@ class Vote {
       id: json['id'] as String,
       babyProfileId: json['baby_profile_id'] as String,
       userId: json['user_id'] as String,
-      voteType: VoteType.fromJson(json['vote_type'] as String),
+      voteType: VoteType.fromJson(json['vote_type'] as String? ?? 'gender'),
       valueText: json['value_text'] as String?,
       valueDate: json['value_date'] != null
           ? DateTime.parse(json['value_date'] as String)

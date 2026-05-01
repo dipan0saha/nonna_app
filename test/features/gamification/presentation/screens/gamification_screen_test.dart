@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/features/gamification/presentation/providers/gamification_provider.dart';
 import 'package:nonna_app/features/gamification/presentation/screens/gamification_screen.dart';
 
@@ -12,7 +13,11 @@ class _FakeGamificationNotifier extends GamificationNotifier {
   GamificationState build() => _initial;
 
   @override
-  Future<void> load({required String babyProfileId}) async {}
+  Future<void> load({
+    required String babyProfileId,
+    UserRole role = UserRole.follower,
+    bool forceRefresh = false,
+  }) async {}
 }
 
 Widget _buildScreen(GamificationState state) {
@@ -44,27 +49,6 @@ void main() {
       await tester.pumpWidget(
           _buildScreen(const GamificationState(error: 'Failed to load')));
       expect(find.text('Failed to load'), findsOneWidget);
-    });
-
-    testWidgets('shows tab bar with Name Suggestions and Votes tabs',
-        (tester) async {
-      await tester.pumpWidget(_buildScreen(const GamificationState()));
-      expect(find.byKey(const Key('name_suggestions_tab')), findsOneWidget);
-      expect(find.byKey(const Key('votes_tab')), findsOneWidget);
-    });
-
-    testWidgets('shows empty state for name suggestions tab when empty',
-        (tester) async {
-      await tester.pumpWidget(_buildScreen(const GamificationState()));
-      expect(find.byKey(const Key('no_name_suggestions_empty_state')),
-          findsOneWidget);
-    });
-
-    testWidgets('shows empty state for votes tab when empty', (tester) async {
-      await tester.pumpWidget(_buildScreen(const GamificationState()));
-      await tester.tap(find.byKey(const Key('votes_tab')));
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('no_votes_empty_state')), findsOneWidget);
     });
   });
 }

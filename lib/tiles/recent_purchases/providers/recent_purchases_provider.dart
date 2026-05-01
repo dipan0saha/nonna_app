@@ -95,6 +95,15 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
             isLoading: false,
             unthankedCount: unthankedCount,
           );
+          
+          // Still setup realtime subscription!
+          await _setupRealtimeSubscription(babyProfileId);
+          
+          // Background refresh if cache is missing item names (prevents showing UUIDs)
+          if (cachedPurchases.any((p) => p.itemName == null)) {
+            _backgroundRefresh(babyProfileId);
+          }
+          
           return;
         }
       }
@@ -167,7 +176,11 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     // Then fetch purchases for these items
     final response = await ref
         .read(databaseServiceProvider)
-        .select(SupabaseTables.registryPurchases)
+        .select(
+          SupabaseTables.registryPurchases,
+          columns:
+              'id, registry_item_id, purchased_by_user_id, purchased_at, note, registry_items(name)',
+        )
         .inFilter('registry_item_id', itemIds)
         .order('purchased_at', ascending: false)
         .limit(_maxPurchases);
@@ -253,43 +266,32 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     if (!ref.mounted) return;
     try {
       final eventType = payload['eventType'] as String?;
-      final newData = payload['new'] as Map<String, dynamic>?;
-
-      if (eventType == 'INSERT' && newData != null) {
-        final newPurchase = RegistryPurchase.fromJson(newData);
-        final updatedPurchases = [newPurchase, ...state.purchases];
-        state = state.copyWith(
-          purchases: updatedPurchases,
-          unthankedCount: 0,
-        );
-        _saveToCache(babyProfileId, updatedPurchases);
-      } else if (eventType == 'UPDATE' && newData != null) {
-        final updatedPurchase = RegistryPurchase.fromJson(newData);
-        final updatedPurchases = state.purchases
-            .map((p) => p.id == updatedPurchase.id ? updatedPurchase : p)
-            .toList();
-        state = state.copyWith(
-          purchases: updatedPurchases,
-          unthankedCount: 0,
-        );
-        _saveToCache(babyProfileId, updatedPurchases);
-      } else if (eventType == 'DELETE') {
-        final oldData = payload['old'] as Map<String, dynamic>?;
-        if (oldData != null) {
-          final deletedId = oldData['id'] as String;
-          final updatedPurchases =
-              state.purchases.where((p) => p.id != deletedId).toList();
-          state = state.copyWith(
-            purchases: updatedPurchases,
-            unthankedCount: 0,
-          );
-          _saveToCache(babyProfileId, updatedPurchases);
-        }
+      
+      // When changes happen (INSERT/UPDATE/DELETE), just trigger a fresh fetch
+      // to ensure we get the joined data like registry_items(name) properly.
+      if (eventType == 'INSERT' || eventType == 'UPDATE' || eventType == 'DELETE') {
+        // Trigger a silent background refresh to fetch latest state WITH joins
+        _backgroundRefresh(babyProfileId);
       }
 
       debugPrint('✅ Real-time purchase update processed: $eventType');
     } catch (e) {
       debugPrint('❌ Failed to handle real-time update: $e');
+    }
+  }
+  
+  Future<void> _backgroundRefresh(String babyProfileId) async {
+    try {
+      final purchases = await _fetchFromDatabase(babyProfileId);
+      if (!ref.mounted) return;
+      _saveToCache(babyProfileId, purchases);
+      if (!ref.mounted) return;
+      state = state.copyWith(
+        purchases: purchases,
+        unthankedCount: 0,
+      );
+    } catch (e) {
+      debugPrint('⚠️ Background refresh failed: $e');
     }
   }
 

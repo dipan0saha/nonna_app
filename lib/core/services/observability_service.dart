@@ -131,7 +131,8 @@ class ObservabilityService {
     int? statusCode,
   }) {
     addBreadcrumb(
-      message: 'HTTP $method: $url${statusCode != null ? ' ($statusCode)' : ''}',
+      message:
+          'HTTP $method: $url${statusCode != null ? ' ($statusCode)' : ''}',
       category: 'http',
     );
   }

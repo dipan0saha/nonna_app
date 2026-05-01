@@ -24,17 +24,18 @@ class BabyProfileSummary {
 }
 
 /// Fetches all baby profiles the current user is a member of.
-final userBabyProfilesProvider = FutureProvider.autoDispose<List<BabyProfileSummary>>((ref) async {
+final userBabyProfilesProvider =
+    FutureProvider.autoDispose<List<BabyProfileSummary>>((ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return [];
 
   final databaseService = ref.watch(databaseServiceProvider);
-  
+
   // First get the user's memberships
   final membershipsResponse = await databaseService
       .select(SupabaseTables.babyMemberships)
       .eq('user_id', user.id);
-      
+
   if (membershipsResponse == null) return [];
 
   final profileIds = (membershipsResponse as List)

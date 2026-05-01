@@ -165,7 +165,7 @@ void main() {
 
       when(mockCacheService.isInitialized).thenReturn(true);
       when(mockCacheService.clear()).thenAnswer((_) async {});
-      
+
       when(mockOfflineCacheManager.isInitialized).thenReturn(true);
       when(mockOfflineCacheManager.clearQueue()).thenAnswer((_) async {});
 
@@ -175,7 +175,8 @@ void main() {
           databaseServiceProvider.overrideWithValue(mockDatabaseService),
           localStorageServiceProvider.overrideWithValue(mockLocalStorage),
           cacheServiceProvider.overrideWithValue(mockCacheService),
-          offlineCacheManagerProvider.overrideWithValue(mockOfflineCacheManager),
+          offlineCacheManagerProvider
+              .overrideWithValue(mockOfflineCacheManager),
         ],
       );
 
@@ -209,7 +210,8 @@ void main() {
             databaseServiceProvider.overrideWithValue(mockDatabaseService),
             localStorageServiceProvider.overrideWithValue(mockLocalStorage),
             cacheServiceProvider.overrideWithValue(mockCacheService),
-            offlineCacheManagerProvider.overrideWithValue(mockOfflineCacheManager),
+            offlineCacheManagerProvider
+                .overrideWithValue(mockOfflineCacheManager),
           ],
         );
         notifier = container.read(authProvider.notifier);

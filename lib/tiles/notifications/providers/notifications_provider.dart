@@ -5,6 +5,8 @@ import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/notification.dart' as app_notification;
+import '../../../core/services/realtime_service.dart';
+import '../../../core/services/realtime_subscription_manager.dart';
 
 /// Notifications provider for the Notifications tile
 ///
@@ -57,12 +59,15 @@ class NotificationsNotifier extends Notifier<NotificationsState> {
   static const String _cacheKeyPrefix = 'notifications';
   static const int _maxNotifications = 50;
 
-  late final _realtimeService = ref.read(realtimeServiceProvider);
+  late final RealtimeService _realtimeService;
+  late final RealtimeSubscriptionManager _subscriptionManager;
   String? _subscriptionId;
-  late final _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
 
   @override
   NotificationsState build() {
+    _realtimeService = ref.read(realtimeServiceProvider);
+    _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
+
     ref.onDispose(() {
       _cancelRealtimeSubscription();
     });

@@ -34,7 +34,7 @@ void main() {
 
       // Setup default stub for cache service
       when(mockCacheService.isInitialized).thenReturn(true);
-      
+
       // Setup default realtime stubs
       when(mockRealtimeService.subscribe(
         table: anyNamed('table'),
@@ -79,7 +79,9 @@ void main() {
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         // Setup for both tables that the provider queries
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([]));
 
@@ -98,7 +100,9 @@ void main() {
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -160,7 +164,9 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -182,7 +188,9 @@ void main() {
 
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -210,10 +218,13 @@ void main() {
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => 
-          FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
+            .thenAnswer(
+          (_) =>
+              FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
         );
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
@@ -231,7 +242,9 @@ void main() {
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -261,7 +274,9 @@ void main() {
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -291,7 +306,9 @@ void main() {
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
@@ -337,7 +354,9 @@ void main() {
             .thenAnswer((_) async {});
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockDatabaseService.select(SupabaseTables.registryItems))
-            .thenAnswer((_) => FakePostgrestBuilder([{'id': 'item_1'}]));
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
         when(mockDatabaseService.select(SupabaseTables.registryPurchases))
             .thenAnswer((_) => FakePostgrestBuilder([
                   purchase1.toJson(),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:nonna_app/core/navigation/navigation_service.dart';
+import 'package:nonna_app/core/router/app_router.dart';
 
 /// OneSignal push notification configuration
 class OneSignalConfig {
@@ -52,29 +54,37 @@ class OneSignalConfig {
         'Notification opened - Type: $type, Baby Profile: $babyProfileId',
       );
 
-      // TODO: Navigate to appropriate screen based on notification type
-      // This will be implemented when navigation is set up
       switch (type) {
         case 'new_photo':
-          debugPrint('Navigate to photo detail: $photoId');
-          break;
         case 'new_comment':
-          debugPrint('Navigate to photo with comment: $photoId');
+        case 'photo_squish':
+          if (photoId != null) {
+            NavigationService.pushTo(AppRoutes.galleryPhoto, extra: photoId);
+          } else {
+            NavigationService.goTo(AppRoutes.gallery);
+          }
           break;
         case 'event_rsvp':
-          debugPrint('Navigate to event: $eventId');
+        case 'event_reminder':
+        case 'new_event':
+          if (eventId != null) {
+            NavigationService.pushTo(AppRoutes.calendarEvent, extra: eventId);
+          } else {
+            NavigationService.goTo(AppRoutes.calendar);
+          }
           break;
         case 'registry_purchase':
-          debugPrint('Navigate to registry: $babyProfileId');
+        case 'new_registry_item':
+          NavigationService.goTo(AppRoutes.registry);
           break;
         case 'new_follower':
-          debugPrint('Navigate to baby profile: $babyProfileId');
-          break;
         case 'birth_announcement':
-          debugPrint('Navigate to baby profile: $babyProfileId');
+        case 'invitation':
+          NavigationService.goTo(AppRoutes.babyProfile);
           break;
         default:
           debugPrint('Unknown notification type: $type');
+          NavigationService.goTo(AppRoutes.home);
       }
     }
   }

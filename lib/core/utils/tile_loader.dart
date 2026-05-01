@@ -61,7 +61,9 @@ class TileLoader {
     // Fetch from database using inner join on screens table and tile_definitions table
     // screenId is actually screen_name (e.g. 'home', 'calendar')
     final response = await databaseService
-        .select(SupabaseTables.tileConfigs, columns: '*, screens!inner(screen_name), tile_definitions!inner(tile_type)')
+        .select(SupabaseTables.tileConfigs,
+            columns:
+                '*, screens!inner(screen_name), tile_definitions!inner(tile_type)')
         .eq('screens.screen_name', screenId)
         .eq('role', role.name);
 

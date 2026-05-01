@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/event.dart';
@@ -82,10 +83,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       );
       return;
     }
-    // TODO: navigate to add-event screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Add event – coming soon!')),
-    );
+    // navigate to add-event screen
+    context.push('/calendar/event/create');
   }
 
   @override
@@ -253,6 +252,9 @@ class _EventCard extends StatelessWidget {
         trailing: event.location != null
             ? const Icon(Icons.location_on_outlined, size: 16)
             : null,
+        onTap: () {
+          context.push('/calendar/event/detail', extra: event);
+        },
       ),
     );
   }

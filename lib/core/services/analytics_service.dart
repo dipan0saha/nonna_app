@@ -358,6 +358,30 @@ class AnalyticsService {
     }
   }
 
+  /// Log when content is shared
+  Future<void> logContentShared({
+    required String
+        contentType, // e.g., 'photo', 'event', 'registry', 'profile'
+    required String method, // e.g., 'link', 'text'
+    String? contentId,
+    String? babyProfileId,
+  }) async {
+    if (!_isEnabled) return;
+    try {
+      await _analytics?.logEvent(
+        name: 'share',
+        parameters: {
+          'content_type': contentType,
+          'method': method,
+          if (contentId != null) 'item_id': contentId,
+          if (babyProfileId != null) 'baby_profile_id': babyProfileId,
+        },
+      );
+    } catch (e) {
+      debugPrint('Analytics error - logContentShared: $e');
+    }
+  }
+
   // ==========================================
   // User Properties
   // ==========================================

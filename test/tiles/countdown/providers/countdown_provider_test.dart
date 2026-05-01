@@ -323,11 +323,8 @@ void main() {
         final notifier = container.read(countdownProvider.notifier);
         await notifier.fetchCountdowns(babyProfileIds: ['profile_1']);
 
-        final initialDays = container
-            .read(countdownProvider)
-            .countdowns
-            .first
-            .daysUntilDueDate;
+        final initialDays =
+            container.read(countdownProvider).countdowns.first.daysUntilDueDate;
 
         // Simulate real-time UPDATE
         final updatedProfile = sampleProfile.copyWith(
@@ -347,11 +344,7 @@ void main() {
         );
 
         expect(
-            container
-                .read(countdownProvider)
-                .countdowns
-                .first
-                .daysUntilDueDate,
+            container.read(countdownProvider).countdowns.first.daysUntilDueDate,
             greaterThan(initialDays));
 
         realtimeController.close();

@@ -124,7 +124,8 @@ class _PurchaseRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Item #${purchase.registryItemId.length >= 8 ? purchase.registryItemId.substring(0, 8) : purchase.registryItemId}',
+                    purchase.itemName ??
+                        'Item #${purchase.registryItemId.length >= 8 ? purchase.registryItemId.substring(0, 8) : purchase.registryItemId}',
                     style: context.textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

@@ -18,11 +18,24 @@ class AppBottomNavBar extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   static const _items = [
-    _NavItem(label: 'Home',     selected: Icons.home,                unselected: Icons.home_outlined),
-    _NavItem(label: 'Gallery',  selected: Icons.photo_library,       unselected: Icons.photo_library_outlined),
-    _NavItem(label: 'Calendar', selected: Icons.calendar_today,      unselected: Icons.calendar_today_outlined),
-    _NavItem(label: 'Registry', selected: Icons.card_giftcard,       unselected: Icons.card_giftcard_outlined),
-    _NavItem(label: 'Fun',      selected: Icons.auto_awesome,        unselected: Icons.auto_awesome_outlined),
+    _NavItem(
+        label: 'Home', selected: Icons.home, unselected: Icons.home_outlined),
+    _NavItem(
+        label: 'Gallery',
+        selected: Icons.photo_library,
+        unselected: Icons.photo_library_outlined),
+    _NavItem(
+        label: 'Calendar',
+        selected: Icons.calendar_today,
+        unselected: Icons.calendar_today_outlined),
+    _NavItem(
+        label: 'Registry',
+        selected: Icons.card_giftcard,
+        unselected: Icons.card_giftcard_outlined),
+    _NavItem(
+        label: 'Fun',
+        selected: Icons.auto_awesome,
+        unselected: Icons.auto_awesome_outlined),
   ];
 
   @override

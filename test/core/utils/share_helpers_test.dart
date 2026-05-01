@@ -1,5 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:nonna_app/core/utils/share_helpers.dart';
+
+class MockWidgetRef extends Mock implements WidgetRef {}
 
 void main() {
   group('ShareHelpers', () {
@@ -325,8 +329,10 @@ void main() {
 
     group('Track Methods (No-op)', () {
       test('trackShare does not throw', () {
+        final mockRef = MockWidgetRef();
         expect(
           () => ShareHelpers.trackShare(
+            mockRef,
             contentType: 'profile',
             contentId: '123',
             shareMethod: 'email',

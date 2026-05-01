@@ -81,20 +81,24 @@ class AuthInterceptor {
           '⚠️  Request failed, retrying in ${delay.inMilliseconds}ms (attempt ${retryCount + 1}/$_maxRetries)',
         );
         await Future.delayed(delay);
-        return await executeWithRetry(operation, retryCount: retryCount + 1, operationName: operationName);
+        return await executeWithRetry(operation,
+            retryCount: retryCount + 1, operationName: operationName);
       }
       return _throwAppException(e, stackTrace, operationName);
     }
   }
 
-  Never _throwAppException(Object e, StackTrace stackTrace, String? operationName) {
+  Never _throwAppException(
+      Object e, StackTrace stackTrace, String? operationName) {
     final message = ErrorHandler.mapErrorToMessage(e);
-    final contextMsg = operationName != null ? 'Error in $operationName: $message' : message;
-    
+    final contextMsg =
+        operationName != null ? 'Error in $operationName: $message' : message;
+
     debugPrint('❌ $contextMsg');
     debugPrint('❌ ORIGINAL EXCEPTION: $e');
-    ErrorHandler.reportWithContext(e, {'operation': operationName ?? 'unknown'}, stackTrace: stackTrace);
-    
+    ErrorHandler.reportWithContext(e, {'operation': operationName ?? 'unknown'},
+        stackTrace: stackTrace);
+
     throw AppException(
       message,
       originalException: e,
@@ -111,7 +115,10 @@ class AuthInterceptor {
     if (retryCount >= _maxRetries) {
       debugPrint('❌ Max retries exceeded for 401 error, logging out');
       await _handleLogout();
-      _throwAppException(AuthException('Authentication failed after $_maxRetries attempts'), StackTrace.current, operationName);
+      _throwAppException(
+          AuthException('Authentication failed after $_maxRetries attempts'),
+          StackTrace.current,
+          operationName);
     }
 
     try {
@@ -124,7 +131,8 @@ class AuthInterceptor {
       if (response.session == null) {
         debugPrint('❌ Token refresh failed, no session returned');
         await _handleLogout();
-        _throwAppException(AuthException('Token refresh failed'), StackTrace.current, operationName);
+        _throwAppException(AuthException('Token refresh failed'),
+            StackTrace.current, operationName);
       }
 
       debugPrint('✅ Token refreshed successfully');
@@ -132,7 +140,8 @@ class AuthInterceptor {
       // Retry the operation with the new token
       final delay = _calculateRetryDelay(retryCount);
       await Future.delayed(delay);
-      return await executeWithRetry(operation, retryCount: retryCount + 1, operationName: operationName);
+      return await executeWithRetry(operation,
+          retryCount: retryCount + 1, operationName: operationName);
     } catch (e, stackTrace) {
       debugPrint('❌ Error refreshing token: $e');
 

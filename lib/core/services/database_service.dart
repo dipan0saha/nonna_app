@@ -5,7 +5,6 @@ import '../middleware/error_handler.dart';
 import '../network/interceptors/auth_interceptor.dart';
 import '../network/supabase_client.dart';
 
-
 /// Database service for typed query execution and transaction support
 ///
 /// Provides query builder wrapper, pagination helpers, and error mapping
@@ -42,7 +41,8 @@ class DatabaseService {
     Map<String, dynamic> data,
   ) async {
     return await _authInterceptor.executeWithRetry(
-      () async => await _client.from(table).insert(data).select(), operationName: 'inserting into',
+      () async => await _client.from(table).insert(data).select(),
+      operationName: 'inserting into',
     );
   }
 
@@ -55,7 +55,8 @@ class DatabaseService {
     List<Map<String, dynamic>> data,
   ) async {
     return await _authInterceptor.executeWithRetry(
-      () async => await _client.from(table).insert(data).select(), operationName: 'inserting multiple rows into',
+      () async => await _client.from(table).insert(data).select(),
+      operationName: 'inserting multiple rows into',
     );
   }
 
@@ -87,7 +88,7 @@ class DatabaseService {
             ? _client.from(table).upsert(data, onConflict: onConflict)
             : _client.from(table).upsert(data);
         return await query.select();
-      }, 
+      },
       operationName: 'upserting into $table',
     );
   }
@@ -108,7 +109,7 @@ class DatabaseService {
             ? _client.from(table).upsert(data, onConflict: onConflict)
             : _client.from(table).upsert(data);
         return await query.select();
-      }, 
+      },
       operationName: 'upserting multiple rows into $table',
     );
   }
@@ -134,7 +135,8 @@ class DatabaseService {
     Map<String, dynamic>? params,
   }) async {
     return await _authInterceptor.executeWithRetry(
-      () async => await _client.rpc(functionName, params: params), operationName: 'executing RPC',
+      () async => await _client.rpc(functionName, params: params),
+      operationName: 'executing RPC',
     );
   }
 
@@ -160,26 +162,26 @@ class DatabaseService {
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
       final from = page * pageSize;
-        final to = from + pageSize - 1;
+      final to = from + pageSize - 1;
 
-        dynamic query = _client.from(table).select(columns);
+      dynamic query = _client.from(table).select(columns);
 
-        if (orderBy != null) {
-          query = query.order(orderBy, ascending: ascending);
-        }
+      if (orderBy != null) {
+        query = query.order(orderBy, ascending: ascending);
+      }
 
-        final response = await query.range(from, to);
+      final response = await query.range(from, to);
 
-        // Get total count for pagination metadata using the count() method
-        final totalCount = await _client.from(table).count();
+      // Get total count for pagination metadata using the count() method
+      final totalCount = await _client.from(table).count();
 
-        return PaginatedResult(
-          data: response,
-          page: page,
-          pageSize: pageSize,
-          totalCount: totalCount,
-          totalPages: (totalCount / pageSize).ceil(),
-        );
+      return PaginatedResult(
+        data: response,
+        page: page,
+        pageSize: pageSize,
+        totalCount: totalCount,
+        totalPages: (totalCount / pageSize).ceil(),
+      );
     }, operationName: 'getting paginated data from');
   }
 
@@ -216,15 +218,14 @@ class DatabaseService {
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
       for (var i = 0; i < data.length; i += batchSize) {
-          final end =
-              (i + batchSize < data.length) ? i + batchSize : data.length;
-          final batch = data.sublist(i, end);
+        final end = (i + batchSize < data.length) ? i + batchSize : data.length;
+        final batch = data.sublist(i, end);
 
-          await _client.from(table).insert(batch);
+        await _client.from(table).insert(batch);
 
-          debugPrint(
-              '✅ Inserted batch ${i ~/ batchSize + 1} (${batch.length} items)');
-        }
+        debugPrint(
+            '✅ Inserted batch ${i ~/ batchSize + 1} (${batch.length} items)');
+      }
     }, operationName: 'in batch insert');
   }
 
@@ -247,7 +248,7 @@ class DatabaseService {
         final response =
             await _client.from(table).select('id').eq(column, value).limit(1);
         return (response as List).isNotEmpty;
-      }, 
+      },
       operationName: 'checking existence in $table',
     );
   }
@@ -257,7 +258,8 @@ class DatabaseService {
   /// [table] The table name
   Future<int> count(String table) async {
     return await _authInterceptor.executeWithRetry(
-      () async => await _client.from(table).count(), operationName: 'counting records in',
+      () async => await _client.from(table).count(),
+      operationName: 'counting records in',
     );
   }
 }

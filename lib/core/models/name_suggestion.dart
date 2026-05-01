@@ -48,7 +48,7 @@ class NameSuggestion {
       id: json['id'] as String,
       babyProfileId: json['baby_profile_id'] as String,
       userId: json['user_id'] as String,
-      gender: Gender.fromJson(json['gender'] as String),
+      gender: Gender.fromJson(json['gender'] as String? ?? 'unknown'),
       suggestedName: json['suggested_name'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),

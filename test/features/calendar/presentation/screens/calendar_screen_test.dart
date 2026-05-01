@@ -23,6 +23,7 @@ class _FakeCalendarNotifier extends CalendarScreenNotifier {
   @override
   Future<void> loadEvents({
     required String babyProfileId,
+    UserRole role = UserRole.owner,
     DateTime? startDate,
     DateTime? endDate,
   }) async {}

@@ -170,7 +170,8 @@ class CountdownNotifier extends Notifier<CountdownState> {
         .isFilter(SupabaseTables.deletedAt, null);
 
     final profiles = (response as List)
-        .map((json) => BabyProfile.fromJson(Map<String, dynamic>.from(json as Map)))
+        .map((json) =>
+            BabyProfile.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
 
     return profiles.map((profile) => _calculateCountdown(profile)).toList();

@@ -193,7 +193,8 @@ void main() {
           forceRefresh: true,
         );
 
-        verify(mockDatabaseService.select(any, columns: anyNamed('columns'))).called(greaterThan(0));
+        verify(mockDatabaseService.select(any, columns: anyNamed('columns')))
+            .called(greaterThan(0));
       });
 
       test('saves fetched items to cache', () async {
@@ -422,7 +423,8 @@ void main() {
 
     group('Real-time Updates', () {
       test('handles items update by refreshing', () async {
-        final streamController = StreamController<Map<String, dynamic>>.broadcast();
+        final streamController =
+            StreamController<Map<String, dynamic>>.broadcast();
         final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(
@@ -449,7 +451,8 @@ void main() {
       });
 
       test('handles purchases update by refreshing', () async {
-        final streamController = StreamController<Map<String, dynamic>>.broadcast();
+        final streamController =
+            StreamController<Map<String, dynamic>>.broadcast();
         final notifier = container.read(registryScreenProvider.notifier);
         when(mockCacheService.get(any)).thenAnswer((_) async => null);
         when(mockRealtimeService.subscribe(

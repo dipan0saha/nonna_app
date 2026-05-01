@@ -184,9 +184,7 @@ class RegistryItemDetailScreen extends ConsumerWidget {
               ),
 
             // Un-Purchase button (non-owner, previously purchased by currentUser)
-            if (!isOwner &&
-                itemWithStatus != null &&
-                itemWithStatus.isPurchasedByCurrentUser)
+            if (!isOwner && (itemWithStatus?.isPurchasedByCurrentUser ?? false))
               OutlinedButton(
                 onPressed: () {
                   if (itemWithStatus != null) {

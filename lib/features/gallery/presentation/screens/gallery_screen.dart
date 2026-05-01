@@ -41,10 +41,11 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
   }
 
   void _loadTilesIfReady() {
-    final babyProfileId = widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
+    final babyProfileId =
+        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
     // Determine the role or default to follower
     final currentRole = widget.userRole ?? UserRole.follower;
-    
+
     if (babyProfileId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(galleryScreenProvider.notifier).loadTiles(
@@ -78,7 +79,8 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
       }
     });
 
-    final currentBabyProfileId = widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
+    final currentBabyProfileId =
+        widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
 
     if (currentBabyProfileId == null) {
       return Scaffold(

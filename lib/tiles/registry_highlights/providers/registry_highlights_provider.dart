@@ -226,7 +226,8 @@ class RegistryHighlightsNotifier extends Notifier<RegistryHighlightsState> {
           item: RegistryItem.fromJson(itemData),
           isPurchased: isPurchased,
           purchases: purchasesData
-              .map((p) => RegistryPurchase.fromJson(Map<String, dynamic>.from(p as Map)))
+              .map((p) => RegistryPurchase.fromJson(
+                  Map<String, dynamic>.from(p as Map)))
               .toList(),
         );
       }).toList();
