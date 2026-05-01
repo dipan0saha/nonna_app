@@ -5,19 +5,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../network/supabase_client.dart';
 
 class SupabaseConfig {
-  static String get supabaseUrl => kReleaseMode
-      ? const String.fromEnvironment('SUPABASE_URL', defaultValue: '')
-      : dotenv.env['SUPABASE_URL'] ?? '';
+  static String get supabaseUrl => dotenv.env['SUPABASE_URL'] ?? '';
 
-  static String get supabaseAnonKey => kReleaseMode
-      ? const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '')
-      : dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+  static String get supabaseAnonKey => dotenv.env['SUPABASE_ANON_KEY'] ?? '';
 
   static Future<void> initialize() async {
-    if (!kReleaseMode) {
-      await dotenv.load(fileName: '.env');
-    }
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+    // Load .env regardless of release/debug to simplify the build process
+    await dotenv.load(fileName: '.env');
+    
+    // Check if we need a fallback for URL/Key just in case
+    final url = supabaseUrl.isNotEmpty ? supabaseUrl : const String.fromEnvironment('SUPABASE_URL', defaultValue: '');
+    final anonKey = supabaseAnonKey.isNotEmpty ? supabaseAnonKey : const String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
+    
+    await Supabase.initialize(url: url, anonKey: anonKey);
     // Sync the singleton manager so that Riverpod providers can access the
     // Supabase client without a separate initialization call.
     SupabaseClientManager.initializeFromGlobal();

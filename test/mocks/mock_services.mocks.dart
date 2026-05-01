@@ -6898,6 +6898,28 @@ class MockAnalyticsService extends _i1.Mock implements _i19.AnalyticsService {
       ) as _i7.Future<void>);
 
   @override
+  _i7.Future<void> logContentShared({
+    required String? contentType,
+    required String? method,
+    String? contentId,
+    String? babyProfileId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #logContentShared,
+          [],
+          {
+            #contentType: contentType,
+            #method: method,
+            #contentId: contentId,
+            #babyProfileId: babyProfileId,
+          },
+        ),
+        returnValue: _i7.Future<void>.value(),
+        returnValueForMissingStub: _i7.Future<void>.value(),
+      ) as _i7.Future<void>);
+
+  @override
   _i7.Future<void> setUserId(String? userId) => (super.noSuchMethod(
         Invocation.method(
           #setUserId,

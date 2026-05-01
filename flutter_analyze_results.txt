@@ -1,0 +1,28 @@
+Analyzing nonna_app...                                          
+
+warning • Unused import: 'package:flutter/material.dart' • integration_test/events_integration_test.dart:1:8 • unused_import
+warning • Unused import: 'package:flutter/material.dart' • integration_test/gallery_integration_test.dart:1:8 • unused_import
+warning • Unused import: 'package:flutter/material.dart' • integration_test/gamification_integration_test.dart:1:8 • unused_import
+warning • Unused import: 'package:flutter/material.dart' • integration_test/registry_integration_test.dart:1:8 • unused_import
+warning • The operand can't be 'null', so the condition is always 'true' • integration_test/third_party_connectivity_test.dart:47:41 • unnecessary_null_comparison
+warning • Unused import: 'package:flutter/foundation.dart' • lib/core/config/supabase_config.dart:1:8 • unused_import
+warning • Unused import: 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart' • lib/core/router/app_router.dart:8:8 • unused_import
+warning • Unused import: '../middleware/error_handler.dart' • lib/core/services/database_service.dart:4:8 • unused_import
+warning • Unused import: '../../../../core/network/supabase_client.dart' • lib/features/home/presentation/providers/home_screen_provider.dart:9:8 • unused_import
+warning • The operand can't be 'null', so the condition is always 'false' • lib/features/home/presentation/providers/user_baby_profiles_provider.dart:39:27 • unnecessary_null_comparison
+warning • The operand can't be 'null', so the condition is always 'false' • lib/features/home/presentation/providers/user_baby_profiles_provider.dart:53:24 • unnecessary_null_comparison
+warning • Unused import: 'package:nonna_app/core/themes/colors.dart' • lib/tiles/name_suggestions/widgets/name_suggestions_tile.dart:4:8 • unused_import
+   info • The imported package 'mocktail' isn't a dependency of the importing package • test/core/utils/share_helpers_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:mocktail/mocktail.dart' • test/core/utils/share_helpers_test.dart:3:8 • uri_does_not_exist
+  error • Missing concrete implementations of 'getter abstract class MutationTarget.container', 'getter sealed class WidgetRef implements MutationTarget.context', 'sealed class WidgetRef implements MutationTarget.exists', 'sealed class WidgetRef implements MutationTarget.invalidate', and 5 more • test/core/utils/share_helpers_test.dart:6:7 • non_abstract_class_inherits_abstract_member
+  error • Classes can only extend other classes • test/core/utils/share_helpers_test.dart:6:29 • extends_non_class
+  error • The class 'WidgetRef' can't be extended, implemented, or mixed in outside of its library because it's a sealed class • test/core/utils/share_helpers_test.dart:6:45 • invalid_use_of_type_outside_library
+  error • The argument type 'MockWidgetRef' can't be assigned to the parameter type 'AnalyticsService'.  • test/core/utils/share_helpers_test.dart:335:13 • argument_type_not_assignable
+warning • The value of the local variable 'error' isn't used • test/core/widgets/error_boundary_test.dart:22:13 • unused_local_variable
+warning • Unused import: 'package:nonna_app/core/models/baby_profile.dart' • test/features/registry/presentation/screens/registry_item_detail_screen_test.dart:7:8 • unused_import
+   info • Unnecessary use of double quotes • test_events.dart:7:31 • prefer_single_quotes
+   info • Don't invoke 'print' in production code • test_events.dart:19:3 • avoid_print
+   info • Don't invoke 'print' in production code • test_events.dart:25:3 • avoid_print
+   info • Don't invoke 'print' in production code • test_events.dart:27:5 • avoid_print
+   info • Don't invoke 'print' in production code • test_photo.dart:17:3 • avoid_print
+
