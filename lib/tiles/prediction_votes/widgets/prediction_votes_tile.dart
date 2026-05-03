@@ -6,6 +6,7 @@ import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/enums/vote_type.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/tiles/prediction_votes/providers/prediction_votes_provider.dart';
 
 class PredictionVotesSmartTile extends ConsumerStatefulWidget {
@@ -28,11 +29,50 @@ class _PredictionVotesSmartTileState
     });
   }
 
+  String get _babyProfileId =>
+      widget.babyProfileId ?? ref.read(selectedBabyProfileProvider) ?? '';
+
+  String get _userId => ref.read(authProvider).user?.id ?? '';
+
   void _loadData() {
-    final id =
-        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider) ?? '';
+    final id = _babyProfileId;
     if (id.isNotEmpty) {
       ref.read(predictionVotesProvider.notifier).load(babyProfileId: id);
+    }
+  }
+
+  Future<void> _voteGender(String gender) async {
+    final id = _babyProfileId;
+    final userId = _userId;
+    if (id.isEmpty || userId.isEmpty) return;
+
+    await ref.read(predictionVotesProvider.notifier).voteGender(
+          babyProfileId: id,
+          userId: userId,
+          genderValue: gender,
+        );
+  }
+
+  Future<void> _voteBirthdate() async {
+    final id = _babyProfileId;
+    final userId = _userId;
+    if (id.isEmpty || userId.isEmpty) return;
+
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: now.add(const Duration(days: 30)),
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+      helpText: 'When do you think the baby will arrive?',
+    );
+
+    if (picked != null && mounted) {
+      await ref.read(predictionVotesProvider.notifier).voteBirthdate(
+            babyProfileId: id,
+            userId: userId,
+            date: picked,
+          );
     }
   }
 
@@ -45,88 +85,343 @@ class _PredictionVotesSmartTileState
     });
 
     final state = ref.watch(predictionVotesProvider);
+    final userId = _userId;
+    final theme = Theme.of(context);
 
     return Card(
+      key: const Key('prediction_votes_tile'),
       child: Padding(
         padding: AppSpacing.cardPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            // ── Header ──
             Text(
               'Prediction Votes',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             AppSpacing.verticalGapM,
+
+            // ── Loading ──
             if (state.isLoading)
-              const Center(child: CircularProgressIndicator())
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(child: CircularProgressIndicator()),
+              )
             else if (state.error != null)
               Center(
-                  child: Text(state.error!,
-                      style: const TextStyle(color: Colors.red)))
-            else if (state.votes.isEmpty)
-              const EmptyState(
-                icon: Icons.how_to_vote_outlined,
-                message: 'No votes yet',
+                child: Text(
+                  state.error!,
+                  style: const TextStyle(color: Colors.red),
+                ),
               )
-            else
-              Builder(
-                builder: (context) {
-                  // Aggregate votes
-                  final Map<String, int> counts = {};
-                  final Map<String, VoteType> types = {};
-                  final Map<String, String> values = {};
-
-                  for (final vote in state.votes) {
-                    final bool isBirthdate =
-                        vote.voteType == VoteType.birthdate;
-                    final String displayValue = isBirthdate
-                        ? (vote.valueDate != null
-                            ? DateFormat.yMMMd().format(vote.valueDate!)
-                            : 'Unknown Date')
-                        : (vote.valueText ?? 'Unknown Value');
-
-                    final key = '${vote.voteType.displayName}|$displayValue';
-                    counts[key] = (counts[key] ?? 0) + 1;
-                    types[key] = vote.voteType;
-                    values[key] = displayValue;
-                  }
-
-                  // Sort by most votes
-                  final sortedKeys = counts.keys.toList()
-                    ..sort((a, b) => counts[b]!.compareTo(counts[a]!));
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: sortedKeys.length,
-                    itemBuilder: (context, index) {
-                      final key = sortedKeys[index];
-                      final count = counts[key]!;
-                      final voteType = types[key]!;
-                      final displayValue = values[key]!;
-                      final bool isBirthdate = voteType == VoteType.birthdate;
-
-                      return ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: Icon(
-                          isBirthdate ? Icons.calendar_today : Icons.face,
-                          color: AppColors.secondary,
-                        ),
-                        title: Text(
-                          '${voteType.displayName}: $displayValue',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text('$count vote${count == 1 ? '' : 's'}'),
-                      );
-                    },
-                  );
-                },
+            else ...[
+              // ── Gender Vote Section ──
+              _GenderVoteSection(
+                votes: state.votes,
+                userVote: state.userGenderVote(userId),
+                isSubmitting: state.isSubmitting,
+                onVote: userId.isNotEmpty ? _voteGender : null,
               ),
+
+              const Divider(height: 24),
+
+              // ── Birthdate Vote Section ──
+              _BirthdateVoteSection(
+                votes: state.votes,
+                userVote: state.userBirthdateVote(userId),
+                isSubmitting: state.isSubmitting,
+                onVote: userId.isNotEmpty ? _voteBirthdate : null,
+              ),
+
+              // ── Vote Summary ──
+              if (state.votes.isNotEmpty) ...[
+                const Divider(height: 24),
+                _VoteSummary(votes: state.votes),
+              ],
+            ],
           ],
         ),
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Gender Vote Section
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _GenderVoteSection extends StatelessWidget {
+  const _GenderVoteSection({
+    required this.votes,
+    required this.userVote,
+    required this.isSubmitting,
+    required this.onVote,
+  });
+
+  final List votes;
+  final dynamic userVote;
+  final bool isSubmitting;
+  final ValueChanged<String>? onVote;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final currentValue = userVote?.valueText;
+
+    // Count gender votes
+    final genderVotes =
+        votes.where((v) => v.voteType == VoteType.gender).toList();
+    final boyCount =
+        genderVotes.where((v) => v.valueText == 'Boy').length;
+    final girlCount =
+        genderVotes.where((v) => v.valueText == 'Girl').length;
+    final totalGenderVotes = genderVotes.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.face, size: 20, color: AppColors.secondary),
+            const SizedBox(width: 8),
+            Text(
+              'Gender Prediction',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (currentValue != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              'Your vote: $currentValue',
+              style: TextStyle(
+                color: AppColors.primaryDark,
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        Row(
+          children: [
+            Expanded(
+              child: _GenderButton(
+                label: 'Boy',
+                icon: Icons.male,
+                color: Colors.blue,
+                isSelected: currentValue == 'Boy',
+                voteCount: boyCount,
+                totalVotes: totalGenderVotes,
+                isSubmitting: isSubmitting,
+                onTap: onVote != null ? () => onVote!('Boy') : null,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _GenderButton(
+                label: 'Girl',
+                icon: Icons.female,
+                color: Colors.pink,
+                isSelected: currentValue == 'Girl',
+                voteCount: girlCount,
+                totalVotes: totalGenderVotes,
+                isSubmitting: isSubmitting,
+                onTap: onVote != null ? () => onVote!('Girl') : null,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _GenderButton extends StatelessWidget {
+  const _GenderButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.isSelected,
+    required this.voteCount,
+    required this.totalVotes,
+    required this.isSubmitting,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final bool isSelected;
+  final int voteCount;
+  final int totalVotes;
+  final bool isSubmitting;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final percentage =
+        totalVotes > 0 ? (voteCount / totalVotes * 100).round() : 0;
+
+    return Material(
+      color: isSelected ? color.withValues(alpha: 0.12) : AppColors.gray50,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: isSubmitting ? null : onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? color : AppColors.gray200,
+              width: isSelected ? 2 : 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Icon(icon, size: 32, color: color),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: isSelected ? color : AppColors.gray700,
+                ),
+              ),
+              if (totalVotes > 0) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '$percentage% ($voteCount)',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.gray500,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Birthdate Vote Section
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _BirthdateVoteSection extends StatelessWidget {
+  const _BirthdateVoteSection({
+    required this.votes,
+    required this.userVote,
+    required this.isSubmitting,
+    required this.onVote,
+  });
+
+  final List votes;
+  final dynamic userVote;
+  final bool isSubmitting;
+  final VoidCallback? onVote;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final currentDate = userVote?.valueDate;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.calendar_today,
+                size: 20, color: AppColors.secondary),
+            const SizedBox(width: 8),
+            Text(
+              'Birthdate Prediction',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (currentDate != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              'Your vote: ${DateFormat.yMMMd().format(currentDate)}',
+              style: TextStyle(
+                color: AppColors.primaryDark,
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            key: const Key('vote_birthdate_button'),
+            onPressed: isSubmitting ? null : onVote,
+            icon: isSubmitting
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.event),
+            label: Text(
+              currentDate != null ? 'Change your prediction' : 'Pick a date',
+            ),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              foregroundColor: AppColors.primaryDark,
+              side: const BorderSide(color: AppColors.primaryDark),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Vote Summary
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _VoteSummary extends StatelessWidget {
+  const _VoteSummary({required this.votes});
+
+  final List votes;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // Aggregate votes by type
+    final genderVotes =
+        votes.where((v) => v.voteType == VoteType.gender).length;
+    final birthdateVotes =
+        votes.where((v) => v.voteType == VoteType.birthdate).length;
+
+    return Row(
+      children: [
+        Icon(Icons.bar_chart, size: 18, color: AppColors.gray500),
+        const SizedBox(width: 6),
+        Text(
+          'Total: $genderVotes gender vote${genderVotes == 1 ? '' : 's'}, '
+          '$birthdateVotes birthdate vote${birthdateVotes == 1 ? '' : 's'}',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: AppColors.gray500,
+          ),
+        ),
+      ],
     );
   }
 }

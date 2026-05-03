@@ -195,7 +195,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                   if (widget.photo.caption != null) ...[
                     Text(
                       'Caption:',
-                      style: Theme.of(context).textTheme.labelLarge,
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                     AppSpacing.verticalGapXS,
                     Text(widget.photo.caption!),
@@ -205,7 +205,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                   if (widget.photo.tags.isNotEmpty) ...[
                     Text(
                       'Tags:',
-                      style: Theme.of(context).textTheme.labelLarge,
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                     AppSpacing.verticalGapXS,
                     Wrap(

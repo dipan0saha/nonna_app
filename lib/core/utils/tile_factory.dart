@@ -182,7 +182,7 @@ class _RecentPhotosSmartTileState
               .read(recentPhotosProvider.notifier)
               .refresh(babyProfileId: babyProfileId)
           : null,
-      onViewAll: () {},
+      onViewAll: () => context.go('/gallery'),
     );
   }
 }
@@ -479,7 +479,7 @@ class _GalleryFavoritesSmartTileState
               .read(galleryFavoritesProvider.notifier)
               .refresh(babyProfileId: babyProfileId)
           : null,
-      onViewAll: () {},
+      onViewAll: () => context.go('/gallery'),
     );
   }
 }
@@ -538,9 +538,7 @@ class _UpcomingEventsSmartTileState
               .refresh(babyProfileId: babyProfileId, role: role);
         }
       },
-      onViewAll: () {
-        // Navigate to full calendar if needed or let the main tab handle it
-      },
+      onViewAll: () => context.go('/calendar'),
     );
   }
 }
