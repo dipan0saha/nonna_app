@@ -457,16 +457,21 @@ final authProvider =
 
 /// Convenience provider for checking if user is authenticated
 final isAuthenticatedProvider = Provider<bool>((ref) {
-  // Use Supabase session state as source of truth for routing decisions.
-  // AuthNotifier can emit transient loading states while still authenticated,
-  // which should not force router redirects.
-  final authService = ref.watch(authServiceProvider);
-  if (authService.currentUser != null) {
+  final authState = ref.watch(authProvider);
+
+  // Honor explicit auth states first so logout cannot be masked by stale
+  // in-memory currentUser during provider transitions.
+  if (authState.status == AuthStatus.unauthenticated) {
+    return false;
+  }
+  if (authState.status == AuthStatus.authenticated) {
     return true;
   }
 
-  final authState = ref.watch(authProvider);
-  return authState.isAuthenticated;
+  // For transient loading/error states, fall back to the live Supabase session
+  // to avoid false redirects during startup/profile hydration.
+  final authService = ref.watch(authServiceProvider);
+  return authService.currentUser != null;
 });
 
 /// Convenience provider for getting current user

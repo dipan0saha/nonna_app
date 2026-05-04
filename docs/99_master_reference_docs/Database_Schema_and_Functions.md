@@ -8,7 +8,7 @@ This document serves as the master reference map for all PostgreSQL tables and S
 | ---------- | ------- |
 | `profiles` | Extended user profiles linked to Supabase Auth (`auth.users`). |
 | `baby_profiles` | Core profiles representing the babies being tracked. |
-| `baby_memberships` | Core role-based access control (RBAC). Links `profiles` to `baby_profiles` with roles ('owner', 'follower', 'admin'). |
+| `baby_memberships` | Core role-based access control (RBAC). Links users to `baby_profiles` with active roles (`owner`, `follower`). |
 | `photos` | Records for uploaded baby photos/videos, storing storage paths and metadata. |
 | `photo_comments` | Social discussion threads on specific photos. |
 | `photo_tags` | Tag definitions linking users to photos. |
@@ -60,7 +60,7 @@ This document serves as the master reference map for all PostgreSQL tables and S
 | `id` | uuid | PK | Unique membership record. |
 | `user_id` | uuid | FK(`profiles`) | The user being granted access. |
 | `baby_profile_id` | uuid | FK(`baby_profiles`) | The target baby profile. |
-| `role` | varchar(20) | CHECK (role in 'owner','follower','admin') | The access level granted. |
+| `role` | varchar(20) | CHECK (role in 'owner','follower') | The access level granted. |
 | `created_at` | timestamptz | DEFAULT now() | When access was granted. |
 
 ### `photos`
@@ -109,14 +109,17 @@ This document serves as the master reference map for all PostgreSQL tables and S
 ### `invitations`
 | Column | Type | Constraints | Description & Usage |
 |---|---|---|---|
-| `id` | uuid | PK | Unique invite record constraint limit. |
-| `baby_profile_id` | uuid | FK | Which baby the user is invited to. |
-| `invited_by` | uuid | FK(`profiles`) | Who dispatched the invite. |
-| `email` | varchar(255) | NOT NULL | Recipient's email. |
-| `role` | varchar(20) | DEFAULT 'follower' | Target permission role. |
-| `token` | varchar(64) | UNIQUE, NOT NULL | Secure join code for deeplinking. |
-| `status` | varchar(20) | 'pending', 'accepted' | Completion lifecycle state. |
-| `expires_at` | timestamptz | NOT NULL | TTL (e.g., 7 days strictly). |
+| `id` | uuid | PK | Unique invitation record. |
+| `baby_profile_id` | uuid | FK(`baby_profiles`) | Baby profile scope for the invitation. |
+| `invited_by_user_id` | uuid | FK(`auth.users`) | Owner who sent the invitation. |
+| `invitee_email` | text | NOT NULL | Recipient email address (email-only flow). |
+| `token_hash` | text | UNIQUE, NOT NULL | Secure invitation token hash for acceptance flow. |
+| `status` | text | CHECK ('pending','accepted','revoked','expired') | Invitation lifecycle status. |
+| `expires_at` | timestamptz | NOT NULL | Invitation expiration timestamp. |
+| `accepted_at` | timestamptz | NULLABLE | Timestamp when invitation was accepted. |
+| `accepted_by_user_id` | uuid | FK(`auth.users`), NULLABLE | User account that accepted the invitation. |
+| `created_at` | timestamptz | DEFAULT now() | Creation timestamp. |
+| `updated_at` | timestamptz | DEFAULT now() | Last update timestamp. |
 
 ### `notifications`
 | Column | Type | Constraints | Description & Usage |

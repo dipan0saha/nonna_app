@@ -1,13 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/enums/gender.dart';
+import '../../../../core/enums/invitation_status.dart';
 import '../../../../core/enums/user_role.dart';
 import '../../../../core/models/baby_membership.dart';
 import '../../../../core/models/baby_profile.dart';
+import '../../../../core/models/invitation.dart';
 import '../../../../core/services/database_service.dart';
 
 /// Baby Profile Provider for managing baby profile state
@@ -28,6 +31,7 @@ import '../../../../core/services/database_service.dart';
 class BabyProfileState {
   final BabyProfile? profile;
   final List<BabyMembership> memberships;
+  final List<Invitation> invitations;
   final bool isLoading;
   final bool isSaving;
   final bool isEditMode;
@@ -39,6 +43,7 @@ class BabyProfileState {
   const BabyProfileState({
     this.profile,
     this.memberships = const [],
+    this.invitations = const [],
     this.isLoading = false,
     this.isSaving = false,
     this.isEditMode = false,
@@ -51,6 +56,7 @@ class BabyProfileState {
   BabyProfileState copyWith({
     BabyProfile? profile,
     List<BabyMembership>? memberships,
+    List<Invitation>? invitations,
     bool? isLoading,
     bool? isSaving,
     bool? isEditMode,
@@ -62,6 +68,7 @@ class BabyProfileState {
     return BabyProfileState(
       profile: profile ?? this.profile,
       memberships: memberships ?? this.memberships,
+      invitations: invitations ?? this.invitations,
       isLoading: isLoading ?? this.isLoading,
       isSaving: isSaving ?? this.isSaving,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -80,6 +87,13 @@ class BabyProfileState {
   /// Get owner memberships
   List<BabyMembership> get owners {
     return memberships.where((m) => m.role == UserRole.owner).toList();
+  }
+
+  /// Get only pending invitations.
+  List<Invitation> get pendingInvitations {
+    return invitations
+        .where((inv) => inv.status == InvitationStatus.pending)
+        .toList();
   }
 }
 
@@ -120,9 +134,13 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
             profile: cachedProfile,
             isLoading: false,
             isOwner: isOwner,
+            invitations: isOwner ? state.invitations : const [],
           );
           // Load memberships in background
           _loadMemberships(babyProfileId, databaseService);
+          if (isOwner) {
+            _loadInvitations(babyProfileId, databaseService);
+          }
           return;
         }
       }
@@ -160,6 +178,13 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       await _loadMemberships(babyProfileId, databaseService);
       if (!ref.mounted) return;
 
+      if (isOwner) {
+        await _loadInvitations(babyProfileId, databaseService);
+        if (!ref.mounted) return;
+      } else {
+        state = state.copyWith(invitations: const []);
+      }
+
       debugPrint('✅ Loaded baby profile: $babyProfileId');
     } catch (e) {
       if (!ref.mounted) return;
@@ -181,6 +206,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
           .eq(SupabaseTables.babyProfileId, babyProfileId)
           .eq('user_id', userId)
           .eq('role', UserRole.owner.name)
+          .isFilter('removed_at', null)
           .maybeSingle();
 
       return response != null;
@@ -208,6 +234,27 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       debugPrint('✅ Loaded ${memberships.length} memberships');
     } catch (e) {
       debugPrint('⚠️  Failed to load memberships: $e');
+    }
+  }
+
+  /// Load invitations for the current baby profile.
+  Future<void> _loadInvitations(
+      String babyProfileId, DatabaseService databaseService) async {
+    try {
+      final response = await databaseService
+          .select(SupabaseTables.invitations)
+          .eq(SupabaseTables.babyProfileId, babyProfileId)
+          .order(SupabaseTables.createdAt, ascending: false);
+
+      final invitations = (response as List)
+          .map((json) => Invitation.fromJson(json as Map<String, dynamic>))
+          .toList();
+      if (!ref.mounted) return;
+
+      state = state.copyWith(invitations: invitations);
+      debugPrint('✅ Loaded ${invitations.length} invitations');
+    } catch (e) {
+      debugPrint('⚠️  Failed to load invitations: $e');
     }
   }
 
@@ -455,6 +502,90 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
     }
   }
 
+  /// Send a follower invitation by email.
+  Future<Invitation> sendInvitation({
+    required String babyProfileId,
+    required String invitedByUserId,
+    required String email,
+  }) async {
+    final trimmedEmail = email.trim();
+    if (trimmedEmail.isEmpty) {
+      throw Exception('Email is required');
+    }
+
+    if (!_isValidEmail(trimmedEmail)) {
+      throw Exception('Enter a valid email address');
+    }
+
+    final normalizedEmail = trimmedEmail.toLowerCase();
+    final databaseService = ref.read(databaseServiceProvider);
+
+    final isOwner =
+        await _checkIsOwner(babyProfileId, invitedByUserId, databaseService);
+    if (!isOwner) {
+      throw Exception('Only profile owners can invite followers');
+    }
+
+    final existingPending = await databaseService
+        .select(SupabaseTables.invitations, columns: 'id')
+        .eq(SupabaseTables.babyProfileId, babyProfileId)
+        .eq('invitee_email', normalizedEmail)
+        .eq(SupabaseTables.status, InvitationStatus.pending.toJson())
+        .maybeSingle();
+
+    if (existingPending != null) {
+      throw Exception('An active invitation already exists for this email');
+    }
+
+    final now = DateTime.now();
+    final response = await databaseService.insert(SupabaseTables.invitations, {
+      SupabaseTables.id: const Uuid().v4(),
+      SupabaseTables.babyProfileId: babyProfileId,
+      'invited_by_user_id': invitedByUserId,
+      'invitee_email': normalizedEmail,
+      'token_hash': const Uuid().v4(),
+      'expires_at': now.add(const Duration(days: 7)).toIso8601String(),
+      SupabaseTables.status: InvitationStatus.pending.toJson(),
+      SupabaseTables.createdAt: now.toIso8601String(),
+      SupabaseTables.updatedAt: now.toIso8601String(),
+    });
+
+    final invitation = Invitation.fromJson(response.first);
+    await _loadInvitations(babyProfileId, databaseService);
+    return invitation;
+  }
+
+  /// Revoke a pending invitation (owner only).
+  Future<bool> revokeInvitation({
+    required String invitationId,
+    required String babyProfileId,
+    required String currentUserId,
+  }) async {
+    final databaseService = ref.read(databaseServiceProvider);
+    final isOwner =
+        await _checkIsOwner(babyProfileId, currentUserId, databaseService);
+    if (!isOwner) {
+      debugPrint('⚠️  Only owners can revoke invitations');
+      return false;
+    }
+
+    try {
+      await databaseService.update(SupabaseTables.invitations, {
+        SupabaseTables.status: InvitationStatus.revoked.toJson(),
+        SupabaseTables.updatedAt: DateTime.now().toIso8601String(),
+      }).eq(SupabaseTables.id, invitationId);
+
+      await _loadInvitations(babyProfileId, databaseService);
+      if (!ref.mounted) return false;
+
+      debugPrint('✅ Invitation revoked');
+      return true;
+    } catch (e) {
+      debugPrint('❌ Failed to revoke invitation: $e');
+      return false;
+    }
+  }
+
   /// Refresh profile
   Future<void> refresh(String babyProfileId, String currentUserId) async {
     await loadProfile(
@@ -506,6 +637,10 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
   /// Get cache key
   String _getCacheKey(String babyProfileId) {
     return '${_cacheKeyPrefix}_$babyProfileId';
+  }
+
+  bool _isValidEmail(String input) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(input);
   }
 }
 

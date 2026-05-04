@@ -2,7 +2,7 @@
 
 **Document Version**: 1.1
 **Created**: April 28, 2026
-**Last Updated**: April 29, 2026
+**Last Updated**: May 4, 2026
 **Status**: Living Document
 
 ---
@@ -160,6 +160,8 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 | `babyProfile` | `/baby-profile` | BabyProfileScreen |
 | `babyProfileCreate` | `/baby-profile/create` | CreateBabyProfileScreen |
 | `babyProfileEdit` | `/baby-profile/:id/edit` | EditBabyProfileScreen |
+| `babyProfileFollowers` | `/baby-profile/followers` | FollowersManagementScreen |
+| `babyProfileInvite` | `/baby-profile/followers/invite` | InviteFollowersScreen |
 | `registry` | `/registry` | RegistryScreen |
 | `registryItem` | `/registry/item/detail` | RegistryItemDetailScreen |
 | `registryItemCreate` | `/registry/item/create` | RegistryItemCreationScreen |
@@ -167,6 +169,26 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 ---
 
 ## Current State (as of April 29, 2026)
+
+### Recent Implementation Updates (May 2026)
+- Added owner-facing follower management routes and screens:
+  - `/baby-profile/followers`
+  - `/baby-profile/followers/invite`
+- Home app bar now exposes:
+  - A persistent `Create Baby Profile` action
+  - An owner-only `Invite & Manage Followers` action for the selected baby profile
+- Baby profile creation flow now immediately:
+  - Selects the newly created profile
+  - Invalidates profile switcher data
+  - Switches Home into owner context for the new profile
+- Invitation flow is currently **email-only** in UI and provider logic:
+  - Validation requires email format
+  - Invitations are stored using `invitee_email` (lowercased)
+  - Owner can revoke pending invitations from follower management
+- Registry role resolution now prioritizes live per-profile membership resolution to avoid stale role/fab mismatches.
+- Logout/auth-session behavior was hardened:
+  - External service identity (Analytics/Crashlytics/OneSignal) is cleared before sign-out
+  - Auth guard checks prioritize explicit auth provider state to reduce stale-session UI artifacts
 
 ### Completed
 - Seed data migration injected globally across tabs via atomic PG transactions.

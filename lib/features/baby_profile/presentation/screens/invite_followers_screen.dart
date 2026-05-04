@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 
 /// Screen for inviting followers to a baby profile by email.
 ///
@@ -43,8 +44,8 @@ class _InviteFollowersScreenState extends ConsumerState<InviteFollowersScreen> {
     super.dispose();
   }
 
-  bool _isValidEmail(String email) {
-    return RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(email);
+  bool _isValidEmail(String value) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value);
   }
 
   Future<void> _sendInvite() async {
@@ -56,16 +57,29 @@ class _InviteFollowersScreenState extends ConsumerState<InviteFollowersScreen> {
       _successMessage = null;
     });
 
-    // Simulate sending – in production this would call a service
-    await Future<void>.delayed(const Duration(milliseconds: 300));
+    try {
+      final email = _emailController.text.trim();
+      final invitation =
+          await ref.read(babyProfileProvider.notifier).sendInvitation(
+                babyProfileId: widget.babyProfileId,
+                invitedByUserId: widget.invitedByUserId,
+                email: email,
+              );
 
-    if (!mounted) return;
-    setState(() {
-      _isSending = false;
-      _successMessage = 'Invitation sent to ${_emailController.text.trim()}';
-      _emailController.clear();
-    });
-    widget.onInviteSent?.call();
+      if (!mounted) return;
+      setState(() {
+        _isSending = false;
+        _successMessage = 'Invitation sent to ${invitation.inviteeEmail}';
+        _emailController.clear();
+      });
+      widget.onInviteSent?.call();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isSending = false;
+        _errorMessage = e.toString().replaceFirst('Exception: ', '');
+      });
+    }
   }
 
   @override
@@ -100,7 +114,8 @@ class _InviteFollowersScreenState extends ConsumerState<InviteFollowersScreen> {
                   if (value == null || value.trim().isEmpty) {
                     return 'Email is required';
                   }
-                  if (!_isValidEmail(value.trim())) {
+                  final trimmed = value.trim();
+                  if (!_isValidEmail(trimmed)) {
                     return 'Enter a valid email address';
                   }
                   return null;

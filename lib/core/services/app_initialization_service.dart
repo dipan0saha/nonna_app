@@ -163,7 +163,13 @@ class AppInitializationService {
       // Set user ID for Crashlytics
       await FirebaseCrashlytics.instance.setUserIdentifier(userId);
 
-      // Set external user ID for OneSignal
+      // Reset and then set external user ID for OneSignal to avoid alias
+      // collisions when users switch accounts on the same device.
+      try {
+        await OneSignal.logout();
+      } catch (_) {
+        // Ignore if no previous user was linked.
+      }
       await OneSignal.login(userId);
 
       debugPrint('✅ User ID set for all services: $userId');

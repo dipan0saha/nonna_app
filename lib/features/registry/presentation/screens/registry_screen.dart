@@ -8,7 +8,24 @@ import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart
 import 'package:nonna_app/core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
 import 'package:nonna_app/core/di/providers.dart';
+
+final registryEffectiveRoleProvider =
+    FutureProvider.autoDispose.family<UserRole, String>(
+  (ref, babyProfileId) async {
+    final selectedRole =
+        ref.watch(homeScreenProvider.select((s) => s.selectedRole));
+
+    try {
+      return await ref.watch(
+        currentUserRoleForBabyProfileProvider(babyProfileId).future,
+      );
+    } catch (_) {
+      return selectedRole ?? UserRole.follower;
+    }
+  },
+);
 
 class RegistryScreen extends ConsumerStatefulWidget {
   const RegistryScreen({
@@ -44,13 +61,16 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
     }
   }
 
-  void _loadRegistryIfReady() {
+  Future<UserRole> _resolveEffectiveRole(String babyId) async {
+    if (widget.userRole != null) return widget.userRole!;
+    return ref.read(registryEffectiveRoleProvider(babyId).future);
+  }
+
+  Future<void> _loadRegistryIfReady() async {
     final babyId =
         widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
     if (babyId != null) {
-      final role = widget.userRole ??
-          ref.read(homeScreenProvider).selectedRole ??
-          UserRole.follower;
+      final role = await _resolveEffectiveRole(babyId);
 
       ref.read(registryScreenProvider.notifier).loadItems(
             babyProfileId: babyId,
@@ -63,9 +83,7 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
     final babyId =
         widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
     if (babyId != null) {
-      final role = widget.userRole ??
-          ref.read(homeScreenProvider).selectedRole ??
-          UserRole.follower;
+      final role = await _resolveEffectiveRole(babyId);
 
       await ref.read(registryScreenProvider.notifier).loadItems(
             babyProfileId: babyId,
@@ -95,9 +113,7 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
     );
 
     if (created == true && mounted) {
-      final role = widget.userRole ??
-          ref.read(homeScreenProvider).selectedRole ??
-          UserRole.follower;
+      final role = await _resolveEffectiveRole(babyId);
       await ref.read(registryScreenProvider.notifier).loadItems(
             babyProfileId: babyId,
             role: role,
@@ -109,7 +125,16 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(registryScreenProvider);
+    final selectedBabyId =
+        widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
+
+    AsyncValue<UserRole> resolvedRole = const AsyncData(UserRole.follower);
+    if (widget.userRole == null && selectedBabyId != null) {
+      resolvedRole = ref.watch(registryEffectiveRoleProvider(selectedBabyId));
+    }
+
     final role = widget.userRole ??
+        resolvedRole.asData?.value ??
         ref.watch(homeScreenProvider).selectedRole ??
         UserRole.follower;
     final isOwner = role == UserRole.owner;

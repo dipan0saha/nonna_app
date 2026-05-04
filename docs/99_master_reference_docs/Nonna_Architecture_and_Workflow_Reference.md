@@ -25,6 +25,18 @@ When details conflict, use this order:
 - Backend: Supabase Auth + Postgres + Realtime + Storage + Edge Functions
 - Cache: Hive + SharedPreferences via service layer
 
+## Recent Implementation Updates (May 2026)
+- Added full-screen follower-management routes:
+  - `/baby-profile/followers`
+  - `/baby-profile/followers/invite`
+- Home app bar now includes:
+  - Persistent create-profile action
+  - Owner-only invite/manage-followers action for the selected baby profile
+- Baby profile creation now auto-selects the new profile and switches Home to owner role context.
+- Registry role/fab visibility now resolves from live membership (`currentUserRoleForBabyProfileProvider`) for the selected profile.
+- Invitation flow is currently email-only in-app (`invitee_email`), with owner-only revoke support.
+- Sign-out/session handling was hardened to clear OneSignal/Firebase identities before Supabase sign-out.
+
 ## Core Architectural Pattern: Dynamic Tile Engine
 The app composes major screens using tile configurations loaded from Supabase tables.
 
@@ -68,6 +80,9 @@ Structure:
   - Registry
   - Fun (Gamification)
 - Each branch has its own navigator key and stack state.
+- Additional full-screen owner flows are routed outside shell for profile collaboration:
+  - Follower management (`/baby-profile/followers`)
+  - Invitation composer (`/baby-profile/followers/invite`)
 
 Auth behavior:
 - Unauthenticated access to protected routes redirects to `/login`.
@@ -166,6 +181,9 @@ Database groups:
 - Tile system: `screens`, `tile_definitions`, `tile_configs`
 - Activity/meta: `activity_events`, `app_versions`
 
+Invitation model note:
+- The active invitation schema in app code uses email-based invitations (`invitee_email`) with token/status lifecycle (`pending`, `accepted`, `revoked`, `expired`).
+
 Edge Functions (documented):
 - Implemented: `tile-configs`, `notification-trigger`, `image-processing`
 - Stubs/placeholders: `send-invitation-email`, `send-push-notification`, `generate-thumbnail`
@@ -216,5 +234,5 @@ Start here for app-wide understanding:
 - `docs/99_master_reference_docs/Database_Schema_and_Functions.md`
 
 ---
-Last updated: 2026-05-03
+Last updated: 2026-05-04
 Maintainer intent: Keep this file concise, implementation-aligned, and actionable for future coding agents.

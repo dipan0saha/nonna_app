@@ -26,6 +26,8 @@ import 'package:nonna_app/features/settings/presentation/screens/settings_screen
 import 'package:nonna_app/features/baby_profile/presentation/screens/baby_profile_screen.dart';
 import 'package:nonna_app/features/baby_profile/presentation/screens/create_baby_profile_screen.dart';
 import 'package:nonna_app/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart';
+import 'package:nonna_app/features/baby_profile/presentation/screens/followers_management_screen.dart';
+import 'package:nonna_app/features/baby_profile/presentation/screens/invite_followers_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_detail_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_creation_screen.dart';
@@ -57,6 +59,8 @@ abstract class AppRoutes {
   static const babyProfile = '/baby-profile';
   static const babyProfileCreate = '/baby-profile/create';
   static const babyProfileEdit = '/baby-profile/:id/edit';
+  static const babyProfileFollowers = '/baby-profile/followers';
+  static const babyProfileInvite = '/baby-profile/followers/invite';
   static const registry = '/registry';
   static const registryItem = '/registry/item/detail';
   static const registryItemCreate = '/registry/item/create';
@@ -180,6 +184,32 @@ List<RouteBase> get _routes => [
             ),
           ),
         ],
+      ),
+      GoRoute(
+        parentNavigatorKey: NavigationService.navigatorKey,
+        path: AppRoutes.babyProfileFollowers,
+        builder: (context, state) => FollowersManagementScreen(
+          babyProfileId: _extraString(state, 'babyProfileId'),
+          currentUserId: _extraString(state, 'currentUserId'),
+          onInviteTap: () {
+            context.push(
+              AppRoutes.babyProfileInvite,
+              extra: {
+                'babyProfileId': _extraString(state, 'babyProfileId'),
+                'currentUserId': _extraString(state, 'currentUserId'),
+              },
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        parentNavigatorKey: NavigationService.navigatorKey,
+        path: AppRoutes.babyProfileInvite,
+        builder: (context, state) => InviteFollowersScreen(
+          babyProfileId: _extraString(state, 'babyProfileId'),
+          invitedByUserId: _extraString(state, 'currentUserId'),
+          onDone: () => context.pop(),
+        ),
       ),
 
       // -----------------------------------------------------------------------

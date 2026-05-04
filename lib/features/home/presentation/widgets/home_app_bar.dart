@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:nonna_app/core/router/app_router.dart';
 import 'package:nonna_app/core/themes/colors.dart';
-import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/di/providers.dart';
+import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
@@ -44,11 +44,28 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userModel = ref.watch(authProvider).userModel;
+    final userId = ref.watch(authProvider).user?.id ?? '';
     final avatarUrl = userModel?.avatarUrl;
     final displayName = userModel?.displayName ?? '';
     final initials = displayName.isNotEmpty
         ? displayName.trim().split(' ').map((w) => w[0]).take(2).join()
         : '?';
+    final profilesAsync = ref.watch(userBabyProfilesProvider);
+    final profiles =
+        profilesAsync.asData?.value ?? const <BabyProfileSummary>[];
+    final selectedId = ref.watch(selectedBabyProfileProvider);
+    final selectedProfile = profiles.isEmpty
+        ? null
+        : profiles.firstWhere(
+            (p) => p.id == selectedId,
+            orElse: () => profiles.first,
+          );
+    final selectedRole = selectedProfile == null
+        ? null
+        : ref
+            .watch(currentUserRoleForBabyProfileProvider(selectedProfile.id))
+            .asData
+            ?.value;
 
     return AppBar(
       key: const Key('home_app_bar'),
@@ -66,61 +83,90 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
         },
       ),
       // Title — brand name or baby profile switcher
-      title: ref.watch(userBabyProfilesProvider).when(
-            data: (profiles) {
-              if (profiles.isEmpty) return _buildTitle(context, 'Nonna');
+      title: profilesAsync.when(
+        data: (profiles) {
+          if (profiles.isEmpty) return _buildTitle(context, 'Nonna');
 
-              final selectedId = ref.watch(selectedBabyProfileProvider);
-              final selectedProfile = profiles.firstWhere(
-                (p) => p.id == selectedId,
-                orElse: () => profiles.first,
-              );
+          final selectedId = ref.watch(selectedBabyProfileProvider);
+          final selectedProfile = profiles.firstWhere(
+            (p) => p.id == selectedId,
+            orElse: () => profiles.first,
+          );
 
-              if (profiles.length == 1) {
-                return _buildTitle(context, selectedProfile.name);
-              }
+          if (profiles.length == 1) {
+            return _buildTitle(context, selectedProfile.name);
+          }
 
-              return DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: selectedProfile.id,
-                  icon: const Icon(Icons.keyboard_arrow_down,
-                      color: AppColors.primary),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      ref
-                          .read(selectedBabyProfileProvider.notifier)
-                          .select(newValue);
-                      // Load tiles for the newly selected profile
-                      ref.read(homeScreenProvider.notifier).switchBabyProfile(
-                            babyProfileId: newValue,
-                            role: ref.read(homeScreenProvider).selectedRole ??
-                                UserRole.follower,
-                          );
-                    }
-                  },
-                  items: profiles.map<DropdownMenuItem<String>>((profile) {
-                    return DropdownMenuItem<String>(
-                      value: profile.id,
-                      child: Text(profile.name),
-                    );
-                  }).toList(),
-                ),
-              );
-            },
-            loading: () => _buildTitle(context, 'Nonna'),
-            error: (_, __) => _buildTitle(context, 'Nonna'),
-          ),
+          return DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: selectedProfile.id,
+              icon: const Icon(Icons.keyboard_arrow_down,
+                  color: AppColors.primary),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+              onChanged: (String? newValue) async {
+                if (newValue != null) {
+                  ref
+                      .read(selectedBabyProfileProvider.notifier)
+                      .select(newValue);
+                  final resolvedRole = await ref.read(
+                    currentUserRoleForBabyProfileProvider(newValue).future,
+                  );
+                  // Load tiles for the newly selected profile
+                  ref.read(homeScreenProvider.notifier).switchBabyProfile(
+                        babyProfileId: newValue,
+                        role: resolvedRole,
+                      );
+                }
+              },
+              items: profiles.map<DropdownMenuItem<String>>((profile) {
+                return DropdownMenuItem<String>(
+                  value: profile.id,
+                  child: Text(profile.name),
+                );
+              }).toList(),
+            ),
+          );
+        },
+        loading: () => _buildTitle(context, 'Nonna'),
+        error: (_, __) => _buildTitle(context, 'Nonna'),
+      ),
       // Actions — avatar + chevron → profile
       actions: [
+        IconButton(
+          icon: const Icon(Icons.add_circle_outline),
+          tooltip: 'Create Baby Profile',
+          onPressed: userId.isEmpty
+              ? null
+              : () {
+                  context.push(
+                    AppRoutes.babyProfileCreate,
+                    extra: {'userId': userId},
+                  );
+                },
+        ),
+        if (selectedProfile != null && selectedRole == UserRole.owner)
+          IconButton(
+            icon: const Icon(Icons.group_add_outlined),
+            tooltip: 'Invite & Manage Followers',
+            onPressed: userId.isEmpty
+                ? null
+                : () {
+                    context.push(
+                      AppRoutes.babyProfileFollowers,
+                      extra: {
+                        'babyProfileId': selectedProfile.id,
+                        'currentUserId': userId,
+                      },
+                    );
+                  },
+          ),
         GestureDetector(
           key: const Key('profile_avatar_button'),
           onTap: onBabyProfileTap ??
               () {
-                final userId = ref.read(authProvider).user?.id ?? '';
                 context.push(AppRoutes.profile, extra: {'userId': userId});
               },
           child: Padding(

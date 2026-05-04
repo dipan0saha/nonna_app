@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/gender.dart';
+import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
 
 /// Screen for creating a new baby profile.
 ///
@@ -77,6 +80,11 @@ class _CreateBabyProfileScreenState
         widget.onCreated!.call(profile.id);
       } else {
         ref.read(selectedBabyProfileProvider.notifier).select(profile.id);
+        ref.invalidate(userBabyProfilesProvider);
+        ref.read(homeScreenProvider.notifier).switchBabyProfile(
+              babyProfileId: profile.id,
+              role: UserRole.owner,
+            );
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Baby profile created successfully!')),
         );

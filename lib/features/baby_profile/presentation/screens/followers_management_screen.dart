@@ -45,6 +45,23 @@ class _FollowersManagementScreenState
         );
   }
 
+  Future<void> _revokeInvitation(String invitationId) async {
+    final success =
+        await ref.read(babyProfileProvider.notifier).revokeInvitation(
+              invitationId: invitationId,
+              babyProfileId: widget.babyProfileId,
+              currentUserId: widget.currentUserId,
+            );
+
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invitation revoked')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(babyProfileProvider);
@@ -54,12 +71,13 @@ class _FollowersManagementScreenState
       appBar: AppBar(
         title: const Text('Manage Followers'),
         actions: [
-          IconButton(
-            key: const Key('invite_follower_button'),
-            icon: const Icon(Icons.person_add),
-            tooltip: 'Invite Follower',
-            onPressed: widget.onInviteTap,
-          ),
+          if (state.isOwner)
+            IconButton(
+              key: const Key('invite_follower_button'),
+              icon: const Icon(Icons.person_add),
+              tooltip: 'Invite Follower',
+              onPressed: widget.onInviteTap,
+            ),
         ],
       ),
       body: _buildBody(state),
@@ -98,9 +116,22 @@ class _FollowersManagementScreenState
       );
     }
 
+    if (!state.isOwner) {
+      return const Center(
+        child: Padding(
+          padding: AppSpacing.screenPadding,
+          child: Text(
+            'Only profile owners can manage followers and invitations.',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    final pendingInvitations = state.pendingInvitations;
     final followers = state.followers;
 
-    if (followers.isEmpty) {
+    if (followers.isEmpty && pendingInvitations.isEmpty) {
       return EmptyState(
         key: const Key('no_followers_empty_state'),
         icon: Icons.people_outline,
@@ -110,24 +141,62 @@ class _FollowersManagementScreenState
       );
     }
 
-    return ListView.separated(
+    return ListView(
       padding: AppSpacing.screenPadding,
-      itemCount: followers.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (context, index) {
-        final membership = followers[index];
-        return FollowerListItem(
-          key: Key('follower_item_$index'),
-          membership: membership,
-          onRemove: () {
-            if (membership.id == null) {
-              debugPrint(
-                  '⚠️  BabyMembership.id is null for userId=${membership.userId}; falling back to userId as membershipId');
-            }
-            _removeFollower(membership.id ?? membership.userId);
-          },
-        );
-      },
+      children: [
+        if (pendingInvitations.isNotEmpty) ...[
+          Text(
+            'Pending Invitations',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          AppSpacing.verticalGapS,
+          ...pendingInvitations.map(
+            (invitation) => ListTile(
+              key: Key('pending_invitation_${invitation.id}'),
+              contentPadding: EdgeInsets.zero,
+              leading: const CircleAvatar(
+                child: Icon(Icons.mail_outline),
+              ),
+              title: Text(invitation.inviteeEmail),
+              subtitle: Text(
+                'Sent ${invitation.createdAt.toLocal().toString().split('.').first}',
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.cancel_outlined, color: Colors.red),
+                tooltip: 'Revoke invitation',
+                onPressed: () => _revokeInvitation(invitation.id),
+              ),
+            ),
+          ),
+          const Divider(height: 24),
+        ],
+        if (followers.isNotEmpty) ...[
+          Text(
+            'Followers',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          AppSpacing.verticalGapS,
+          ...followers.asMap().entries.map((entry) {
+            final index = entry.key;
+            final membership = entry.value;
+            return FollowerListItem(
+              key: Key('follower_item_$index'),
+              membership: membership,
+              onRemove: () {
+                if (membership.id == null) {
+                  debugPrint(
+                      '⚠️  BabyMembership.id is null for userId=${membership.userId}; falling back to userId as membershipId');
+                }
+                _removeFollower(membership.id ?? membership.userId);
+              },
+            );
+          }),
+        ],
+      ],
     );
   }
 }

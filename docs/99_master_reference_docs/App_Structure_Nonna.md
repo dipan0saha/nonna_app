@@ -1,7 +1,7 @@
 # Nonna App Project Structure (Dynamic Tile-Based Architecture)
 
-**Document Version**: 2.4
-**Last Updated**: April 13, 2026
+**Document Version**: 2.5
+**Last Updated**: May 4, 2026
 **Location**: `docs/99_master_reference_docs/App_Structure_Nonna.md`
 **Status**: Living Document - Updated to reflect current implementation state (including in-progress integrations)
 
@@ -15,6 +15,15 @@ This structure is optimized for the Nonna app's dynamic, tile-based UI with role
 ### Current State (As of April 13, 2026)
 
 Core infrastructure, tiles layer, and features layer are implemented. **Note**: The dynamic `TileFactory` integration in the `HomeScreen` is currently being refactored/implemented; screens currently use a simplified tile list view.
+
+### Recent Implementation Notes (May 2026)
+- Added owner collaboration flows in baby profile feature:
+   - `FollowersManagementScreen` at `/baby-profile/followers`
+   - `InviteFollowersScreen` at `/baby-profile/followers/invite`
+- Home app bar now includes persistent create-profile action and owner-only invite/manage-followers action.
+- Invitation workflow is email-only in current app implementation.
+- New profile creation now auto-selects the new profile and refreshes home/profile context.
+- Auth sign-out flow now clears external service user identities before Supabase sign-out.
 
 
 ```
