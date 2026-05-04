@@ -148,6 +148,7 @@ class CalendarScreenNotifier extends Notifier<CalendarScreenState> {
       // We load tile configs first asynchronously so they populate fast
       TileLoader.loadForScreen(
         ref: ref,
+        babyProfileId: babyProfileId,
         screenId: 'calendar',
         role: role,
         forceRefresh: false,

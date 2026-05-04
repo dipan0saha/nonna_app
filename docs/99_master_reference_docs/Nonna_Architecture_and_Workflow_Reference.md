@@ -42,15 +42,17 @@ The app composes major screens using tile configurations loaded from Supabase ta
 
 Runtime flow:
 1. Screen/provider requests tile configs for screen + role.
-2. `TileLoader.loadForScreen()` queries `tile_configs` joined to `screens` and `tile_definitions`.
-3. Results are cached, filtered by `is_visible`, and sorted by `display_order`.
-4. Screen state stores `List<TileConfig>`.
-5. `TileListView` iterates through tile configs.
-6. `TileFactory.buildTile()` maps `componentName` to smart tile wrapper.
-7. Smart tile wrapper reads the relevant Riverpod provider and renders a presentational tile widget.
+2. `TileLoader.loadForScreen()` calls Supabase Edge Function `tile-configs` with `{babyProfileId, userRole, screenName}`.
+3. Edge response is cached per `{babyProfileId, screenId, role}` and locally filtered/sorted.
+4. If edge invocation fails, `TileLoader` falls back to direct `tile_configs` join query (`screens` + `tile_definitions`).
+5. Screen state stores `List<TileConfig>`.
+6. `TileListView` iterates through tile configs.
+7. `TileFactory.buildTile()` maps `componentName` to smart tile wrapper.
+8. Smart tile wrapper reads the relevant Riverpod provider and renders a presentational tile widget.
 
 Important implementation note:
-- The `tile-configs` Edge Function exists in backend docs, but the current screen tile-loading path in Flutter uses direct table queries through `TileLoader` + `DatabaseService`.
+- `tile-configs` is now part of the primary runtime path for tile loading (edge-first with DB fallback).
+- Content-aware hiding is enforced server-side per tile type and tile params (`hideWhenEmpty`).
 
 ## Startup Workflow
 Primary files:

@@ -60,6 +60,7 @@ class GamificationNotifier extends Notifier<GamificationState> {
       // Async load tile configs
       TileLoader.loadForScreen(
         ref: ref,
+        babyProfileId: babyProfileId,
         screenId: 'fun',
         role: role,
         forceRefresh: forceRefresh,

@@ -46,6 +46,12 @@ class InitializationResult {
 class AppInitializationService {
   /// Maximum time to wait for Supabase initialization before aborting.
   static const _supabaseTimeout = Duration(seconds: 30);
+  static const _oneSignalMaxSyncAttempts = 3;
+  static const _oneSignalRetryBaseDelayMs = 400;
+
+  static Future<void>? _oneSignalSyncInFlight;
+  static String? _oneSignalSyncTargetUserId;
+  static String? _lastSyncedOneSignalUserId;
 
   /// Initialize all third-party services.
   ///
@@ -163,14 +169,9 @@ class AppInitializationService {
       // Set user ID for Crashlytics
       await FirebaseCrashlytics.instance.setUserIdentifier(userId);
 
-      // Reset and then set external user ID for OneSignal to avoid alias
-      // collisions when users switch accounts on the same device.
-      try {
-        await OneSignal.logout();
-      } catch (_) {
-        // Ignore if no previous user was linked.
-      }
-      await OneSignal.login(userId);
+      // Sync OneSignal external ID with serialization and retries to reduce
+      // alias conflicts when accounts are switched rapidly.
+      await _syncOneSignalUserId(userId);
 
       debugPrint('✅ User ID set for all services: $userId');
     } catch (e) {
@@ -188,12 +189,124 @@ class AppInitializationService {
       // Clear Crashlytics user ID
       await FirebaseCrashlytics.instance.setUserIdentifier('');
 
+      // Wait for any in-flight sync before clearing identity.
+      final inFlight = _oneSignalSyncInFlight;
+      if (inFlight != null) {
+        try {
+          await inFlight;
+        } catch (_) {
+          // Ignore best-effort OneSignal sync failures on sign out.
+        }
+      }
+
       // Remove external user ID from OneSignal
-      await OneSignal.logout();
+      await _safeOneSignalLogout();
+      _lastSyncedOneSignalUserId = null;
 
       debugPrint('✅ User ID cleared from all services');
     } catch (e) {
       debugPrint('❌ Failed to clear user ID: $e');
+    }
+  }
+
+  static Future<void> _syncOneSignalUserId(String userId) async {
+    if (OneSignalConfig.appId.isEmpty) {
+      debugPrint('⚠️ OneSignal app ID missing; skipping user sync');
+      return;
+    }
+
+    if (_lastSyncedOneSignalUserId == userId) {
+      // Idempotent guard for repeated callbacks with same identity.
+      debugPrint('ℹ️ OneSignal already synced for user: $userId');
+      return;
+    }
+
+    final inFlight = _oneSignalSyncInFlight;
+    if (inFlight != null) {
+      if (_oneSignalSyncTargetUserId == userId) {
+        await inFlight;
+        return;
+      }
+
+      try {
+        await inFlight;
+      } catch (_) {
+        // Continue: this sync will attempt a fresh link for the new user.
+      }
+
+      if (_lastSyncedOneSignalUserId == userId) {
+        return;
+      }
+    }
+
+    _oneSignalSyncTargetUserId = userId;
+    final syncFuture = _performOneSignalUserSync(userId);
+    _oneSignalSyncInFlight = syncFuture;
+
+    try {
+      final synced = await syncFuture;
+      if (synced) {
+        _lastSyncedOneSignalUserId = userId;
+      }
+    } finally {
+      if (identical(_oneSignalSyncInFlight, syncFuture)) {
+        _oneSignalSyncInFlight = null;
+        _oneSignalSyncTargetUserId = null;
+      }
+    }
+  }
+
+  static Future<bool> _performOneSignalUserSync(String userId) async {
+    // Always start from a clean session before login.
+    await _safeOneSignalLogout();
+
+    Object? lastError;
+    for (var attempt = 1; attempt <= _oneSignalMaxSyncAttempts; attempt++) {
+      try {
+        await OneSignal.login(userId);
+        return true;
+      } catch (e) {
+        lastError = e;
+        final isAliasConflict = _isAliasConflictError(e);
+
+        if (attempt >= _oneSignalMaxSyncAttempts) {
+          if (isAliasConflict) {
+            // Conflict is logged as non-fatal; app auth already succeeded.
+            debugPrint(
+              '⚠️ OneSignal alias conflict persists after retries for user '
+              '$userId: $e',
+            );
+            return false;
+          }
+          rethrow;
+        }
+
+        await _safeOneSignalLogout();
+        final delayMs = _oneSignalRetryBaseDelayMs * (1 << (attempt - 1));
+        await Future<void>.delayed(Duration(milliseconds: delayMs));
+      }
+    }
+
+    if (lastError != null) {
+      throw lastError;
+    }
+
+    return false;
+  }
+
+  static bool _isAliasConflictError(Object error) {
+    final msg = error.toString().toLowerCase();
+    return msg.contains('status: 409') ||
+        msg.contains('user-2') ||
+        msg.contains('claimed by another user') ||
+        msg.contains('external_id');
+  }
+
+  static Future<void> _safeOneSignalLogout() async {
+    try {
+      await OneSignal.logout();
+    } catch (_) {
+      // Ignore: logout should be best-effort and never block auth flow.
     }
   }
 }

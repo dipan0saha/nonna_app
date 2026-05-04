@@ -194,6 +194,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
       // We load tile configs first asynchronously so they populate fast
       TileLoader.loadForScreen(
         ref: ref,
+        babyProfileId: babyProfileId,
         screenId: 'registry',
         role: role,
         forceRefresh: false,

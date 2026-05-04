@@ -42,7 +42,7 @@ The core architectural idea is **self-contained, reusable tile widgets** rendere
    - `display_order`: An integer defining the vertical sort order of the tile on the screen.
    - `is_visible`: A boolean kill-switch to quickly disable a tile without deleting the row.
    - `params`: An optional JSONB payload for passing dynamic settings (e.g., max items to fetch) directly to the tile widget.
-4. **Supabase Edge Function (`tile-configs`)**: Instead of the app querying these tables directly, it calls the `tile-configs` Edge Function passing the `screenName` and the user's `role`. The Edge Function resolves the visibility, filters out restricted tiles (e.g., followers are hard-restricted from `registry_deals`), and returns the sorted configuration array.
+4. **Supabase Edge Function (`tile-configs`)**: `TileLoader` now uses an edge-first strategy and invokes `tile-configs` with `{babyProfileId, userRole, screenName}`. The function resolves role/screen config and performs content-aware filtering (hiding tiles with no data) using `tile_configs.params` policy (`hideWhenEmpty`, default true for most tiles). If the function is unavailable, Flutter safely falls back to direct table query loading.
 5. **`TileFactory` (Flutter)**: The frontend reads the JSON array returned by the Edge Function. The `TileFactory.buildTile()` method contains a giant `switch` statement matching the `tile_type` string to the corresponding `ConsumerStatefulWidget` wrapper (e.g., `_RegistryHighlightsSmartTile`).
 
 ```text
@@ -357,7 +357,7 @@ These break circular RLS dependencies and are used inside row-level security pol
 
 | Function | Status | Purpose |
 |---|---|---|
-| `tile-configs` | Implemented | Accepts `{babyProfileId, userRole, screenName}`. Returns role-filtered, screen-scoped tile configs from `tile_configs` table. Owners see all tiles; followers are restricted from `registry_highlights`, `registry_deals`, `storage_usage`. Response cached for 5 minutes. |
+| `tile-configs` | Implemented | Accepts `{babyProfileId, userRole, screenName}` (also compatible with snake_case payload keys). Returns screen-scoped, role-scoped rows from `tile_configs` + `screens` + `tile_definitions` with backend content probes per tile type. Tiles with no content are filtered when `params.hideWhenEmpty` is enabled (or omitted for default-on behavior). Response includes metadata (`hiddenByEmptyCount`, `probeCount`) and cache headers (`max-age=300`). |
 | `notification-trigger` | Implemented | Accepts `{recipientUserId, notificationType, title, message, data, babyProfileId}`. Inserts into `notifications` table then delivers via OneSignal push (uses `ONESIGNAL_APP_ID` + `ONESIGNAL_API_KEY` env vars). |
 | `image-processing` | Implemented | Accepts `{imageUrl, bucketName, filePath, operations}`. Handles thumbnail generation, image optimization, and metadata extraction for Storage uploads. Uses `SUPABASE_SERVICE_ROLE_KEY`. |
 | `send-invitation-email` | Stub | Placeholder — not yet implemented. Intended to send invitation emails when an owner invites a follower. |

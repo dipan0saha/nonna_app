@@ -27,9 +27,11 @@ class GalleryScreenState {
     this.lastRefreshed,
   });
 
-  List<TileConfig> tilesFor(String screenId) => tilesByScreen[screenId] ?? const [];
+  List<TileConfig> tilesFor(String screenId) =>
+      tilesByScreen[screenId] ?? const [];
   bool isLoadingFor(String screenId) => isLoadingByScreen[screenId] ?? false;
-  bool isRefreshingFor(String screenId) => isRefreshingByScreen[screenId] ?? false;
+  bool isRefreshingFor(String screenId) =>
+      isRefreshingByScreen[screenId] ?? false;
   String? errorFor(String screenId) => errorByScreen[screenId];
 
   GalleryScreenState copyWith({
@@ -78,6 +80,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 
       final tiles = await TileLoader.loadForScreen(
         ref: ref,
+        babyProfileId: babyProfileId,
         screenId: screenId,
         role: role,
         forceRefresh: false,
@@ -119,6 +122,7 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
 
       final tiles = await TileLoader.loadForScreen(
         ref: ref,
+        babyProfileId: state.selectedBabyProfileId!,
         screenId: screenId,
         role: state.selectedRole!,
         forceRefresh: true,
@@ -162,7 +166,8 @@ class GalleryScreenNotifier extends Notifier<GalleryScreenState> {
     if (!cacheService.isInitialized) return;
 
     try {
-      final cacheKey = '${_cacheKeyPrefix}_${babyProfileId}_${role.name}_$screenId';
+      final cacheKey =
+          '${_cacheKeyPrefix}_${babyProfileId}_${role.name}_$screenId';
       final dataList = tiles.map((t) => t.toJson()).toList();
 
       await cacheService.put(
