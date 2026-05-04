@@ -22,6 +22,7 @@ class RecentPhotosTile extends StatelessWidget {
     this.onPhotoTap,
     this.onRefresh,
     this.onViewAll,
+    this.fullView = false,
   });
 
   /// Photos to display. Use [PhotoWithSquishCount] to include engagement
@@ -32,6 +33,7 @@ class RecentPhotosTile extends StatelessWidget {
   final void Function(Photo)? onPhotoTap;
   final VoidCallback? onRefresh;
   final VoidCallback? onViewAll;
+  final bool fullView;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class RecentPhotosTile extends StatelessWidget {
         Expanded(
           child: Text('Recent Photos', style: context.textTheme.titleMedium),
         ),
-        if (onViewAll != null)
+        if (onViewAll != null && !fullView)
           TextButton(
             key: const Key('recent_photos_view_all'),
             onPressed: onViewAll,
@@ -100,7 +102,8 @@ class RecentPhotosTile extends StatelessWidget {
       );
     }
 
-    final displayPhotos = photos.take(6).toList();
+    final displayCount = fullView ? 30 : 6;
+    final displayPhotos = photos.take(displayCount).toList();
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,

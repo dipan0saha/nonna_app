@@ -326,9 +326,12 @@ CREATE POLICY "Members can add photo comments"
     )
   );
 
-CREATE POLICY "Users can update own photo comments"
+CREATE POLICY "Users and owners can update photo comments"
   ON public.photo_comments FOR UPDATE
-  USING (auth.uid() = user_id);
+  USING (
+    auth.uid() = user_id
+    OR is_photo_owner(auth.uid(), photo_id)
+  );
 
 CREATE POLICY "Users and owners can delete photo comments"
   ON public.photo_comments FOR DELETE
@@ -984,9 +987,12 @@ CREATE POLICY "Members can add photo comments"
     AND is_photo_member(auth.uid(), photo_id)
   );
 
-CREATE POLICY "Users can update own photo comments"
+CREATE POLICY "Users and owners can update photo comments"
   ON public.photo_comments FOR UPDATE
-  USING (auth.uid() = user_id);
+  USING (
+    auth.uid() = user_id
+    OR is_photo_owner(auth.uid(), photo_id)
+  );
 
 CREATE POLICY "Users and owners can delete photo comments"
   ON public.photo_comments FOR DELETE

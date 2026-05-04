@@ -47,6 +47,8 @@ abstract class AppRoutes {
   static const calendarEvent = '/calendar/event/detail';
   static const calendarEventCreate = '/calendar/event/create';
   static const gallery = '/gallery';
+  static const galleryFavorites = '/gallery/favorites';
+  static const galleryRecent = '/gallery/recent';
   static const galleryPhoto = '/gallery/photo/detail';
   static const gamification = '/gamification';
   static const settings = '/settings';
@@ -205,6 +207,20 @@ List<RouteBase> get _routes => [
                 path: AppRoutes.gallery,
                 builder: (context, state) => const GalleryScreen(),
                 routes: [
+                  GoRoute(
+                    path: 'favorites',
+                    builder: (context, state) => const GalleryScreen(
+                      title: 'Favorite Photos',
+                      screenId: 'gallery_favorites',
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'recent',
+                    builder: (context, state) => const GalleryScreen(
+                      title: 'Recent Photos',
+                      screenId: 'gallery_recent',
+                    ),
+                  ),
                   // Detail escapes the shell → full-screen, nav bar hidden
                   GoRoute(
                     parentNavigatorKey: NavigationService.navigatorKey,

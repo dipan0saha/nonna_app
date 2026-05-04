@@ -534,5 +534,81 @@
   "confirm_logout_message": "Are you sure you want to log out?",
   "@confirm_logout_message": {
     "description": "Logout confirmation dialog message"
+  },
+
+  "gallery_photoDetailTitle": "Photo Detail",
+  "@gallery_photoDetailTitle": {
+    "description": "Photo detail screen app bar title"
+  },
+
+  "gallery_captionLabel": "Caption:",
+  "@gallery_captionLabel": {
+    "description": "Caption section label on photo detail screen"
+  },
+
+  "gallery_captionHint": "Enter caption...",
+  "@gallery_captionHint": {
+    "description": "Hint text for caption input on photo detail screen"
+  },
+
+  "gallery_noCaption": "No caption",
+  "@gallery_noCaption": {
+    "description": "Fallback text when photo has no caption"
+  },
+
+  "gallery_tagsLabel": "Tags:",
+  "@gallery_tagsLabel": {
+    "description": "Tags section label on photo detail screen"
+  },
+
+  "gallery_uploadedDate": "Uploaded: {date}",
+  "@gallery_uploadedDate": {
+    "description": "Uploaded date label on photo detail screen",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "May 3, 2026"
+      }
+    }
+  },
+
+  "gallery_commentsTitle": "Comments",
+  "@gallery_commentsTitle": {
+    "description": "Comments section title on photo detail screen"
+  },
+
+  "gallery_noCommentsYet": "No comments yet. Be the first to comment!",
+  "@gallery_noCommentsYet": {
+    "description": "Empty state message when a photo has no comments"
+  },
+
+  "gallery_editCommentHint": "Edit comment...",
+  "@gallery_editCommentHint": {
+    "description": "Hint text when editing an existing comment"
+  },
+
+  "gallery_addCommentHint": "Add a comment...",
+  "@gallery_addCommentHint": {
+    "description": "Hint text for adding a new comment"
+  },
+
+  "gallery_loginToComment": "Please log in to comment.",
+  "@gallery_loginToComment": {
+    "description": "Prompt shown when unauthenticated user tries to comment"
+  },
+
+  "gallery_deleteCommentTitle": "Delete Comment",
+  "@gallery_deleteCommentTitle": {
+    "description": "Delete comment confirmation dialog title"
+  },
+
+  "gallery_deleteCommentMessage": "Are you sure you want to delete this comment?",
+  "@gallery_deleteCommentMessage": {
+    "description": "Delete comment confirmation dialog message"
+  },
+
+  "gallery_captionUpdatedSuccess": "Caption updated successfully!",
+  "@gallery_captionUpdatedSuccess": {
+    "description": "Success message shown after caption update"
   }
 }

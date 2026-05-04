@@ -93,7 +93,8 @@ CREATE TABLE IF NOT EXISTS public.photos (
   tags TEXT[],
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  deleted_at TIMESTAMPTZ
+  deleted_at TIMESTAMPTZ,
+  comment_count INT DEFAULT 0
 );
 
 -- Table: photo_squishes
@@ -112,6 +113,7 @@ CREATE TABLE IF NOT EXISTS public.photo_comments (
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   body TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   deleted_at TIMESTAMPTZ,
   deleted_by_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL
 );

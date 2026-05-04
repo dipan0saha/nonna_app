@@ -24,6 +24,7 @@ CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.registry_items FOR EACH RO
 CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.votes FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.name_suggestions FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.notification_preferences FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.photo_comments FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.tile_configs FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- ========================================
@@ -189,6 +190,68 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER count_photo_comment
 AFTER INSERT ON public.photo_comments
 FOR EACH ROW EXECUTE FUNCTION increment_comments_added();
+
+-- ========================================
+-- Photo Comment Count Synchronizer
+-- ========================================
+
+CREATE OR REPLACE FUNCTION public.update_photo_comment_count()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    IF NEW.deleted_at IS NOT NULL THEN
+      RETURN NEW;
+    END IF;
+
+    UPDATE public.photos
+    SET comment_count = comment_count + 1
+    WHERE id = NEW.photo_id;
+    RETURN NEW;
+  ELSIF (TG_OP = 'DELETE') THEN
+    UPDATE public.photos
+    SET comment_count = GREATEST(comment_count - 1, 0)
+    WHERE id = OLD.photo_id;
+    RETURN OLD;
+  ELSIF (TG_OP = 'UPDATE') THEN
+    -- Handle soft delete (if used)
+    IF OLD.deleted_at IS NULL AND NEW.deleted_at IS NOT NULL THEN
+      UPDATE public.photos
+      SET comment_count = GREATEST(comment_count - 1, 0)
+      WHERE id = NEW.photo_id;
+    ELSIF OLD.deleted_at IS NOT NULL AND NEW.deleted_at IS NULL THEN
+      UPDATE public.photos
+      SET comment_count = (comment_count + 1)
+      WHERE id = NEW.photo_id;
+    END IF;
+    RETURN NEW;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER photo_comment_count_trigger
+AFTER INSERT OR UPDATE OR DELETE ON public.photo_comments
+FOR EACH ROW EXECUTE FUNCTION public.update_photo_comment_count();
+
+-- Backfill comment_count from existing comments to keep historical data aligned.
+UPDATE public.photos p
+SET comment_count = COALESCE(c.comment_count, 0)
+FROM (
+  SELECT photo_id, COUNT(*)::INTEGER AS comment_count
+  FROM public.photo_comments
+  WHERE deleted_at IS NULL
+  GROUP BY photo_id
+) c
+WHERE p.id = c.photo_id;
+
+UPDATE public.photos p
+SET comment_count = 0
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM public.photo_comments pc
+  WHERE pc.photo_id = p.id
+    AND pc.deleted_at IS NULL
+);
 -- ========================================
 -- Profile Creation Trigger
 -- ========================================

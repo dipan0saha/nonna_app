@@ -33,6 +33,9 @@ class Photo {
   /// Timestamp when the photo was soft deleted (null if not deleted)
   final DateTime? deletedAt;
 
+  /// Number of comments on this photo
+  final int commentCount;
+
   /// Creates a new Photo instance
   const Photo({
     required this.id,
@@ -45,6 +48,7 @@ class Photo {
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
+    this.commentCount = 0,
   });
 
   /// Creates a Photo from a JSON map
@@ -64,6 +68,7 @@ class Photo {
       deletedAt: json['deleted_at'] != null
           ? DateTime.parse(json['deleted_at'] as String)
           : null,
+      commentCount: json['comment_count'] as int? ?? 0,
     );
   }
 
@@ -80,6 +85,7 @@ class Photo {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
       'deleted_at': deletedAt?.toIso8601String(),
+      'comment_count': commentCount,
     };
   }
 
@@ -128,6 +134,7 @@ class Photo {
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? deletedAt,
+    int? commentCount,
   }) {
     return Photo(
       id: id ?? this.id,
@@ -140,6 +147,7 @@ class Photo {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
+      commentCount: commentCount ?? this.commentCount,
     );
   }
 
@@ -157,7 +165,8 @@ class Photo {
         _listEquals(other.tags, tags) &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt &&
-        other.deletedAt == deletedAt;
+        other.deletedAt == deletedAt &&
+        other.commentCount == commentCount;
   }
 
   @override
@@ -171,7 +180,8 @@ class Photo {
         Object.hashAll(tags) ^
         createdAt.hashCode ^
         updatedAt.hashCode ^
-        deletedAt.hashCode;
+        deletedAt.hashCode ^
+        commentCount.hashCode;
   }
 
   @override

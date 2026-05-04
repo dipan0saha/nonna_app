@@ -358,4 +358,51 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get confirm_logout_message =>
       '¿Estás seguro de que deseas cerrar sesión?';
+
+  @override
+  String get gallery_photoDetailTitle => 'Detalle de la Foto';
+
+  @override
+  String get gallery_captionLabel => 'Descripción:';
+
+  @override
+  String get gallery_captionHint => 'Escribe una descripción...';
+
+  @override
+  String get gallery_noCaption => 'Sin descripción';
+
+  @override
+  String get gallery_tagsLabel => 'Etiquetas:';
+
+  @override
+  String gallery_uploadedDate(String date) {
+    return 'Subida: $date';
+  }
+
+  @override
+  String get gallery_commentsTitle => 'Comentarios';
+
+  @override
+  String get gallery_noCommentsYet =>
+      'Aún no hay comentarios. ¡Sé la primera persona en comentar!';
+
+  @override
+  String get gallery_editCommentHint => 'Editar comentario...';
+
+  @override
+  String get gallery_addCommentHint => 'Agregar un comentario...';
+
+  @override
+  String get gallery_loginToComment => 'Inicia sesión para comentar.';
+
+  @override
+  String get gallery_deleteCommentTitle => 'Eliminar Comentario';
+
+  @override
+  String get gallery_deleteCommentMessage =>
+      '¿Seguro que quieres eliminar este comentario?';
+
+  @override
+  String get gallery_captionUpdatedSuccess =>
+      '¡Descripción actualizada con éxito!';
 }

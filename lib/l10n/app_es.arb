@@ -534,5 +534,81 @@
   "confirm_logout_message": "¿Estás seguro de que deseas cerrar sesión?",
   "@confirm_logout_message": {
     "description": "Mensaje del diálogo de confirmación de cerrar sesión"
+  },
+
+  "gallery_photoDetailTitle": "Detalle de la Foto",
+  "@gallery_photoDetailTitle": {
+    "description": "Título de la barra superior de la pantalla de detalle de foto"
+  },
+
+  "gallery_captionLabel": "Descripción:",
+  "@gallery_captionLabel": {
+    "description": "Etiqueta de la sección de descripción en detalle de foto"
+  },
+
+  "gallery_captionHint": "Escribe una descripción...",
+  "@gallery_captionHint": {
+    "description": "Texto de ayuda para la entrada de descripción en detalle de foto"
+  },
+
+  "gallery_noCaption": "Sin descripción",
+  "@gallery_noCaption": {
+    "description": "Texto alternativo cuando la foto no tiene descripción"
+  },
+
+  "gallery_tagsLabel": "Etiquetas:",
+  "@gallery_tagsLabel": {
+    "description": "Etiqueta de la sección de etiquetas en detalle de foto"
+  },
+
+  "gallery_uploadedDate": "Subida: {date}",
+  "@gallery_uploadedDate": {
+    "description": "Etiqueta de fecha de subida en detalle de foto",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "3 may 2026"
+      }
+    }
+  },
+
+  "gallery_commentsTitle": "Comentarios",
+  "@gallery_commentsTitle": {
+    "description": "Título de la sección de comentarios en detalle de foto"
+  },
+
+  "gallery_noCommentsYet": "Aún no hay comentarios. ¡Sé la primera persona en comentar!",
+  "@gallery_noCommentsYet": {
+    "description": "Mensaje de estado vacío cuando una foto no tiene comentarios"
+  },
+
+  "gallery_editCommentHint": "Editar comentario...",
+  "@gallery_editCommentHint": {
+    "description": "Texto de ayuda al editar un comentario existente"
+  },
+
+  "gallery_addCommentHint": "Agregar un comentario...",
+  "@gallery_addCommentHint": {
+    "description": "Texto de ayuda para agregar un nuevo comentario"
+  },
+
+  "gallery_loginToComment": "Inicia sesión para comentar.",
+  "@gallery_loginToComment": {
+    "description": "Mensaje mostrado cuando un usuario sin sesión intenta comentar"
+  },
+
+  "gallery_deleteCommentTitle": "Eliminar Comentario",
+  "@gallery_deleteCommentTitle": {
+    "description": "Título del diálogo de confirmación para eliminar comentario"
+  },
+
+  "gallery_deleteCommentMessage": "¿Seguro que quieres eliminar este comentario?",
+  "@gallery_deleteCommentMessage": {
+    "description": "Mensaje del diálogo de confirmación para eliminar comentario"
+  },
+
+  "gallery_captionUpdatedSuccess": "¡Descripción actualizada con éxito!",
+  "@gallery_captionUpdatedSuccess": {
+    "description": "Mensaje de éxito mostrado después de actualizar la descripción"
   }
 }

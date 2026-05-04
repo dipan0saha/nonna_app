@@ -23,6 +23,7 @@ class GalleryFavoritesTile extends StatelessWidget {
     this.onPhotoTap,
     this.onRefresh,
     this.onViewAll,
+    this.fullView = false,
   });
 
   /// Most-squished photos to display.
@@ -32,6 +33,7 @@ class GalleryFavoritesTile extends StatelessWidget {
   final void Function(Photo)? onPhotoTap;
   final VoidCallback? onRefresh;
   final VoidCallback? onViewAll;
+  final bool fullView;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,8 @@ class GalleryFavoritesTile extends StatelessWidget {
       );
     }
 
-    final display = favorites.take(5).toList();
+    final displayCount = fullView ? 10 : 5;
+    final display = favorites.take(displayCount).toList();
     return Column(
       children: display
           .map((item) => _FavoriteRow(item: item, onTap: onPhotoTap))

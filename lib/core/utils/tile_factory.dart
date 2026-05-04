@@ -44,6 +44,7 @@ import 'package:nonna_app/tiles/rsvp_tasks/providers/rsvp_tasks_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:nonna_app/core/router/app_router.dart';
 
 import 'package:nonna_app/tiles/name_suggestions/widgets/name_suggestions_tile.dart';
 import 'package:nonna_app/tiles/prediction_votes/widgets/prediction_votes_tile.dart';
@@ -58,7 +59,7 @@ class TileFactory {
 
     switch (config.componentName) {
       case 'RecentPhotosTile':
-        return const _RecentPhotosSmartTile();
+        return _RecentPhotosSmartTile(config: config);
       case 'UpcomingEventsTile':
         return const _UpcomingEventsSmartTile();
       case 'RegistryHighlightsTile':
@@ -72,7 +73,7 @@ class TileFactory {
       case 'ActivityListTile':
         return const _ActivityListSmartTile();
       case 'GalleryFavoritesTile':
-        return const _GalleryFavoritesSmartTile();
+        return _GalleryFavoritesSmartTile(config: config);
       case 'InvitesStatusTile':
         return const _InvitesStatusSmartTile();
       case 'NewFollowersTile':
@@ -132,7 +133,8 @@ class TileFactory {
 // -----------------------------------------------------------------------------
 
 class _RecentPhotosSmartTile extends ConsumerStatefulWidget {
-  const _RecentPhotosSmartTile();
+  final TileConfig config;
+  const _RecentPhotosSmartTile({required this.config});
 
   @override
   ConsumerState<_RecentPhotosSmartTile> createState() =>
@@ -168,6 +170,8 @@ class _RecentPhotosSmartTileState
       }
     });
 
+    final fullView = widget.config.params?['full'] as bool? ?? false;
+
     return RecentPhotosTile(
       photos: state.photos
           .map((p) =>
@@ -175,14 +179,21 @@ class _RecentPhotosSmartTileState
           .toList(),
       isLoading: state.isLoading && state.photos.isEmpty,
       error: state.error,
-      onPhotoTap: (photo) =>
-          context.push('/gallery/photo/detail', extra: photo),
+      fullView: fullView,
+      onPhotoTap: (photo) => context.push(AppRoutes.galleryPhoto, extra: photo),
       onRefresh: babyProfileId != null
           ? () => ref
               .read(recentPhotosProvider.notifier)
               .refresh(babyProfileId: babyProfileId)
           : null,
-      onViewAll: () => context.go('/gallery'),
+      onViewAll: () {
+        final path = GoRouterState.of(context).uri.path;
+        if (path == AppRoutes.home || path == '/') {
+          context.go(AppRoutes.galleryRecent);
+        } else if (path == AppRoutes.gallery) {
+          context.push(AppRoutes.galleryRecent);
+        }
+      },
     );
   }
 }
@@ -432,7 +443,8 @@ class _RegistryDealsSmartTileState
 }
 
 class _GalleryFavoritesSmartTile extends ConsumerStatefulWidget {
-  const _GalleryFavoritesSmartTile();
+  final TileConfig config;
+  const _GalleryFavoritesSmartTile({required this.config});
 
   @override
   ConsumerState<_GalleryFavoritesSmartTile> createState() =>
@@ -468,18 +480,27 @@ class _GalleryFavoritesSmartTileState
       }
     });
 
+    final fullView = widget.config.params?['full'] as bool? ?? false;
+
     return GalleryFavoritesTile(
       favorites: state.favorites,
       isLoading: state.isLoading && state.favorites.isEmpty,
       error: state.error,
-      onPhotoTap: (photo) =>
-          context.push('/gallery/photo/detail', extra: photo),
+      fullView: fullView,
+      onPhotoTap: (photo) => context.push(AppRoutes.galleryPhoto, extra: photo),
       onRefresh: babyProfileId != null
           ? () => ref
               .read(galleryFavoritesProvider.notifier)
               .refresh(babyProfileId: babyProfileId)
           : null,
-      onViewAll: () => context.go('/gallery'),
+      onViewAll: () {
+        final path = GoRouterState.of(context).uri.path;
+        if (path == AppRoutes.home || path == '/') {
+          context.go(AppRoutes.galleryFavorites);
+        } else if (path == AppRoutes.gallery) {
+          context.push(AppRoutes.galleryFavorites);
+        }
+      },
     );
   }
 }

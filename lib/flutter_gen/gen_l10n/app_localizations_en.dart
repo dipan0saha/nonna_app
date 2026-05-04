@@ -351,4 +351,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm_logout_message => 'Are you sure you want to log out?';
+
+  @override
+  String get gallery_photoDetailTitle => 'Photo Detail';
+
+  @override
+  String get gallery_captionLabel => 'Caption:';
+
+  @override
+  String get gallery_captionHint => 'Enter caption...';
+
+  @override
+  String get gallery_noCaption => 'No caption';
+
+  @override
+  String get gallery_tagsLabel => 'Tags:';
+
+  @override
+  String gallery_uploadedDate(String date) {
+    return 'Uploaded: $date';
+  }
+
+  @override
+  String get gallery_commentsTitle => 'Comments';
+
+  @override
+  String get gallery_noCommentsYet =>
+      'No comments yet. Be the first to comment!';
+
+  @override
+  String get gallery_editCommentHint => 'Edit comment...';
+
+  @override
+  String get gallery_addCommentHint => 'Add a comment...';
+
+  @override
+  String get gallery_loginToComment => 'Please log in to comment.';
+
+  @override
+  String get gallery_deleteCommentTitle => 'Delete Comment';
+
+  @override
+  String get gallery_deleteCommentMessage =>
+      'Are you sure you want to delete this comment?';
+
+  @override
+  String get gallery_captionUpdatedSuccess => 'Caption updated successfully!';
 }

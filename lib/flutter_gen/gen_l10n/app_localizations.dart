@@ -703,6 +703,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to log out?'**
   String get confirm_logout_message;
+
+  /// Photo detail screen app bar title
+  ///
+  /// In en, this message translates to:
+  /// **'Photo Detail'**
+  String get gallery_photoDetailTitle;
+
+  /// Caption section label on photo detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Caption:'**
+  String get gallery_captionLabel;
+
+  /// Hint text for caption input on photo detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Enter caption...'**
+  String get gallery_captionHint;
+
+  /// Fallback text when photo has no caption
+  ///
+  /// In en, this message translates to:
+  /// **'No caption'**
+  String get gallery_noCaption;
+
+  /// Tags section label on photo detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Tags:'**
+  String get gallery_tagsLabel;
+
+  /// Uploaded date label on photo detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded: {date}'**
+  String gallery_uploadedDate(String date);
+
+  /// Comments section title on photo detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get gallery_commentsTitle;
+
+  /// Empty state message when a photo has no comments
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet. Be the first to comment!'**
+  String get gallery_noCommentsYet;
+
+  /// Hint text when editing an existing comment
+  ///
+  /// In en, this message translates to:
+  /// **'Edit comment...'**
+  String get gallery_editCommentHint;
+
+  /// Hint text for adding a new comment
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment...'**
+  String get gallery_addCommentHint;
+
+  /// Prompt shown when unauthenticated user tries to comment
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to comment.'**
+  String get gallery_loginToComment;
+
+  /// Delete comment confirmation dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Comment'**
+  String get gallery_deleteCommentTitle;
+
+  /// Delete comment confirmation dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this comment?'**
+  String get gallery_deleteCommentMessage;
+
+  /// Success message shown after caption update
+  ///
+  /// In en, this message translates to:
+  /// **'Caption updated successfully!'**
+  String get gallery_captionUpdatedSuccess;
 }
 
 class _AppLocalizationsDelegate
