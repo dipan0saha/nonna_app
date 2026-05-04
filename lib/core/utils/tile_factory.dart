@@ -28,8 +28,6 @@ import 'package:nonna_app/tiles/new_followers/widgets/new_followers_tile.dart';
 import 'package:nonna_app/tiles/notifications/providers/notifications_provider.dart';
 import 'package:nonna_app/tiles/notifications/widgets/notifications_tile.dart';
 import 'package:nonna_app/tiles/recent_purchases/widgets/recent_purchases_tile.dart';
-import 'package:nonna_app/tiles/registry_deals/widgets/registry_deals_tile.dart';
-import 'package:nonna_app/tiles/registry_deals/providers/registry_deals_provider.dart';
 
 import 'package:nonna_app/tiles/registry_highlights/widgets/registry_highlights_tile.dart';
 import 'package:nonna_app/tiles/registry_highlights/providers/registry_highlights_provider.dart';
@@ -81,9 +79,7 @@ class TileFactory {
       case 'NotificationsTile':
         return const _NotificationsSmartTile();
       case 'RecentPurchasesTile':
-        return const _RecentPurchasesSmartTile();
-      case 'RegistryDealsTile':
-        return const _RegistryDealsSmartTile();
+        return _RecentPurchasesSmartTile(config: config);
       case 'RsvpTasksTile':
         return const _RsvpTasksSmartTile();
       case 'StorageUsageTile':
@@ -393,55 +389,6 @@ class _RegistryHighlightsSmartTileState
   }
 }
 
-class _RegistryDealsSmartTile extends ConsumerStatefulWidget {
-  const _RegistryDealsSmartTile();
-
-  @override
-  ConsumerState<_RegistryDealsSmartTile> createState() =>
-      _RegistryDealsSmartTileState();
-}
-
-class _RegistryDealsSmartTileState
-    extends ConsumerState<_RegistryDealsSmartTile> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final babyProfileId = ref.read(selectedBabyProfileProvider);
-      if (babyProfileId != null) {
-        ref
-            .read(registryDealsProvider.notifier)
-            .fetchDeals(babyProfileId: babyProfileId);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final state = ref.watch(registryDealsProvider);
-    final babyProfileId = ref.watch(selectedBabyProfileProvider);
-
-    ref.listen(selectedBabyProfileProvider, (previous, current) {
-      if (current != null && current != previous) {
-        ref
-            .read(registryDealsProvider.notifier)
-            .fetchDeals(babyProfileId: current);
-      }
-    });
-
-    return RegistryDealsTile(
-      deals: state.deals,
-      isLoading: state.isLoading && state.deals.isEmpty,
-      error: state.error,
-      onRefresh: babyProfileId != null
-          ? () => ref
-              .read(registryDealsProvider.notifier)
-              .fetchDeals(babyProfileId: babyProfileId, forceRefresh: true)
-          : null,
-    );
-  }
-}
-
 class _GalleryFavoritesSmartTile extends ConsumerStatefulWidget {
   final TileConfig config;
   const _GalleryFavoritesSmartTile({required this.config});
@@ -453,6 +400,90 @@ class _GalleryFavoritesSmartTile extends ConsumerStatefulWidget {
 
 class _GalleryFavoritesSmartTileState
     extends ConsumerState<_GalleryFavoritesSmartTile> {
+  bool _isRasterAvatarUrl(String? url) {
+    if (url == null || url.isEmpty) return false;
+    final lower = url.toLowerCase();
+    return !(lower.endsWith('.svg') ||
+        lower.contains('.svg?') ||
+        lower.endsWith('/svg') ||
+        lower.contains('/svg?'));
+  }
+
+  Future<void> _showSquishUsers(PhotoWithSquishes item) async {
+    try {
+      final users = await ref
+          .read(galleryFavoritesProvider.notifier)
+          .fetchSquishUsers(photoId: item.photo.id);
+      if (!mounted) return;
+
+      await showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        isScrollControlled: true,
+        builder: (context) {
+          final title =
+              '${item.squishCount} ${item.squishCount == 1 ? 'squish' : 'squishes'}';
+
+          return SafeArea(
+            child: SizedBox(
+              height: 420,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  const Divider(height: 16),
+                  if (users.isEmpty)
+                    const Expanded(
+                      child: Center(
+                        child: Text('No squishes yet'),
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: users.length,
+                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final user = users[index];
+                          final hasRasterAvatar =
+                              _isRasterAvatarUrl(user.avatarUrl);
+                          final initial = user.displayName.isNotEmpty
+                              ? user.displayName[0].toUpperCase()
+                              : '?';
+
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: hasRasterAvatar
+                                  ? NetworkImage(user.avatarUrl!)
+                                  : null,
+                              child: hasRasterAvatar ? null : Text(initial),
+                            ),
+                            title: Text(user.displayName),
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Failed to load squishes. Please try again.')),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -488,6 +519,7 @@ class _GalleryFavoritesSmartTileState
       error: state.error,
       fullView: fullView,
       onPhotoTap: (photo) => context.push(AppRoutes.galleryPhoto, extra: photo),
+      onSquishTap: _showSquishUsers,
       onRefresh: babyProfileId != null
           ? () => ref
               .read(galleryFavoritesProvider.notifier)
@@ -550,7 +582,7 @@ class _UpcomingEventsSmartTileState
       isLoading: state.isLoading && state.events.isEmpty,
       error: state.error,
       onEventTap: (event) {
-        context.push('/calendar/event/detail', extra: event);
+        context.push(AppRoutes.calendarEvent, extra: event);
       },
       onRefresh: () {
         if (babyProfileId != null) {
@@ -559,7 +591,14 @@ class _UpcomingEventsSmartTileState
               .refresh(babyProfileId: babyProfileId, role: role);
         }
       },
-      onViewAll: () => context.go('/calendar'),
+      onViewAll: () {
+        final path = GoRouterState.of(context).uri.path;
+        if (path == AppRoutes.calendar) {
+          context.push(AppRoutes.calendarUpcoming);
+        } else {
+          context.go(AppRoutes.calendarUpcoming);
+        }
+      },
     );
   }
 }
@@ -774,7 +813,9 @@ class _NewFollowersSmartTileState
 }
 
 class _RecentPurchasesSmartTile extends ConsumerStatefulWidget {
-  const _RecentPurchasesSmartTile();
+  const _RecentPurchasesSmartTile({required this.config});
+
+  final TileConfig config;
 
   @override
   ConsumerState<_RecentPurchasesSmartTile> createState() =>
@@ -809,10 +850,13 @@ class _RecentPurchasesSmartTileState
       }
     });
 
+    final maxItems = widget.config.params?['maxItems'] as int? ?? 5;
+
     return RecentPurchasesTile(
       purchases: state.purchases,
       isLoading: state.isLoading && state.purchases.isEmpty,
       error: state.error,
+      maxItems: maxItems,
       onRefresh: babyProfileId != null
           ? () => ref
               .read(recentPurchasesProvider.notifier)

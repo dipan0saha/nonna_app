@@ -39,8 +39,6 @@ enum RegistryFilter {
 enum RegistrySort {
   priorityHigh,
   priorityLow,
-  nameAsc,
-  nameDesc,
   dateNewest,
   dateOldest,
 }
@@ -130,16 +128,18 @@ class RegistryScreenState {
 
     switch (currentSort) {
       case RegistrySort.priorityHigh:
-        itemsToSort.sort((a, b) => b.item.priority.compareTo(a.item.priority));
+        itemsToSort.sort((a, b) {
+          final byPriority = b.item.priority.compareTo(a.item.priority);
+          if (byPriority != 0) return byPriority;
+          return b.item.createdAt.compareTo(a.item.createdAt);
+        });
         break;
       case RegistrySort.priorityLow:
-        itemsToSort.sort((a, b) => a.item.priority.compareTo(b.item.priority));
-        break;
-      case RegistrySort.nameAsc:
-        itemsToSort.sort((a, b) => a.item.name.compareTo(b.item.name));
-        break;
-      case RegistrySort.nameDesc:
-        itemsToSort.sort((a, b) => b.item.name.compareTo(a.item.name));
+        itemsToSort.sort((a, b) {
+          final byPriority = a.item.priority.compareTo(b.item.priority);
+          if (byPriority != 0) return byPriority;
+          return b.item.createdAt.compareTo(a.item.createdAt);
+        });
         break;
       case RegistrySort.dateNewest:
         itemsToSort
@@ -151,7 +151,9 @@ class RegistryScreenState {
         break;
     }
 
-    return itemsToSort;
+    final unpurchased = itemsToSort.where((item) => !item.isPurchased).toList();
+    final purchased = itemsToSort.where((item) => item.isPurchased).toList();
+    return [...unpurchased, ...purchased];
   }
 }
 
@@ -196,7 +198,10 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
         role: role,
         forceRefresh: false,
       ).then((tiles) {
-        if (ref.mounted) state = state.copyWith(tiles: tiles);
+        if (!ref.mounted) return;
+        state = state.copyWith(
+          tiles: _customizeRegistryTiles(tiles),
+        );
       });
 
       // Try to load from cache first
@@ -264,14 +269,25 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     final databaseService = ref.read(databaseServiceProvider);
 
     try {
-      if (itemWithStatus.isPurchased) {
-        // Remove purchase
+      if (itemWithStatus.isPurchasedByCurrentUser) {
+        // Remove only the current user's purchase record
         await databaseService.delete(SupabaseTables.registryPurchases).match({
           'registry_item_id': itemWithStatus.item.id,
           'purchased_by_user_id': user.id,
         });
       } else {
-        // Create new purchase
+        // Create a purchase only if one does not already exist for this user
+        final existing = await databaseService
+            .select(SupabaseTables.registryPurchases, columns: 'id')
+            .eq('registry_item_id', itemWithStatus.item.id)
+            .eq('purchased_by_user_id', user.id)
+            .maybeSingle();
+
+        if (existing != null) {
+          await refresh();
+          return;
+        }
+
         final purchase = RegistryPurchase(
           id: const Uuid().v4(),
           registryItemId: itemWithStatus.item.id,
@@ -289,6 +305,41 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     } catch (e) {
       debugPrint('❌ Failed to toggle purchase: $e');
     }
+  }
+
+  List<TileConfig> _customizeRegistryTiles(List<TileConfig> tiles) {
+    final withoutHighlights = tiles
+        .where((tile) => tile.componentName != 'RegistryHighlightsTile')
+        .map((tile) {
+      if (tile.componentName == 'RecentPurchasesTile') {
+        return tile.copyWith(
+          params: {
+            ...?tile.params,
+            'maxItems': 3,
+          },
+        );
+      }
+      return tile;
+    }).toList();
+
+    int rank(TileConfig tile) {
+      switch (tile.componentName) {
+        case 'RecentPurchasesTile':
+          return 0;
+        case 'RegistryListTile':
+          return 1;
+        default:
+          return 2;
+      }
+    }
+
+    withoutHighlights.sort((a, b) {
+      final rankCompare = rank(a).compareTo(rank(b));
+      if (rankCompare != 0) return rankCompare;
+      return a.displayOrder.compareTo(b.displayOrder);
+    });
+
+    return withoutHighlights;
   }
 
   /// Refresh registry

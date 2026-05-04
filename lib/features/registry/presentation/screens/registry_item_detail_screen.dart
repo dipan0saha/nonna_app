@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
@@ -8,6 +9,7 @@ import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
+import 'package:nonna_app/core/router/app_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Registry item detail screen showing full info, purchase status, and actions.
@@ -21,6 +23,15 @@ class RegistryItemDetailScreen extends ConsumerWidget {
 
   /// The registry item to display
   final RegistryItem item;
+
+  bool _isRasterAvatarUrl(String? url) {
+    if (url == null || url.isEmpty) return false;
+    final lower = url.toLowerCase();
+    return !(lower.endsWith('.svg') ||
+        lower.contains('.svg?') ||
+        lower.endsWith('/svg') ||
+        lower.contains('/svg?'));
+  }
 
   Future<void> _launchUrl(String? urlString) async {
     if (urlString == null || urlString.isEmpty) return;
@@ -41,6 +52,8 @@ class RegistryItemDetailScreen extends ConsumerWidget {
 
     final isPurchased = itemWithStatus?.isPurchased ?? false;
     final purchaseCount = itemWithStatus?.purchaseCount ?? 0;
+    final isPurchasedByCurrentUser =
+        itemWithStatus?.isPurchasedByCurrentUser ?? false;
 
     final role =
         ref.watch(homeScreenProvider).selectedRole ?? UserRole.follower;
@@ -50,15 +63,21 @@ class RegistryItemDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(item.name),
         actions: [
-          if (isOwner)
+          if (isOwner && !isPurchased)
             IconButton(
               key: const Key('edit_item_button'),
               icon: const Icon(Icons.edit),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Edit registry item – coming soon!')),
+              onPressed: () async {
+                final updated = await context.push<bool>(
+                  AppRoutes.registryItemEdit,
+                  extra: item,
                 );
+
+                if (updated == true) {
+                  await ref.read(registryScreenProvider.notifier).refresh(
+                        role: role,
+                      );
+                }
               },
             ),
         ],
@@ -147,13 +166,13 @@ class RegistryItemDetailScreen extends ConsumerWidget {
                 spacing: 8.0,
                 runSpacing: 8.0,
                 children: itemWithStatus.purchasers.map((user) {
+                  final hasRasterAvatar = _isRasterAvatarUrl(user.avatarUrl);
                   return Chip(
                     avatar: CircleAvatar(
-                      backgroundImage:
-                          user.avatarUrl != null && user.avatarUrl!.isNotEmpty
-                              ? NetworkImage(user.avatarUrl!)
-                              : null,
-                      child: user.avatarUrl == null || user.avatarUrl!.isEmpty
+                      backgroundImage: hasRasterAvatar
+                          ? NetworkImage(user.avatarUrl!)
+                          : null,
+                      child: !hasRasterAvatar
                           ? Text(user.displayName.isNotEmpty
                               ? user.displayName[0].toUpperCase()
                               : '?')
@@ -166,11 +185,7 @@ class RegistryItemDetailScreen extends ConsumerWidget {
               AppSpacing.verticalGapM,
             ],
 
-            // Purchase button (non-owner, wait: if it's already purchased, but NOT by the current user, maybe they want to buy another one? Or buy it too?)
-            // If they haven't purchased it, but someone else has? The current logic is simple: Mark as purchased / Unmark. If they haven't purchased it:
-            if (!isOwner &&
-                (itemWithStatus == null ||
-                    !itemWithStatus.isPurchasedByCurrentUser))
+            if (!isPurchasedByCurrentUser)
               ElevatedButton(
                 key: const Key('purchase_button'),
                 onPressed: () {
@@ -183,8 +198,7 @@ class RegistryItemDetailScreen extends ConsumerWidget {
                 child: const Text('Mark as Purchased'),
               ),
 
-            // Un-Purchase button (non-owner, previously purchased by currentUser)
-            if (!isOwner && (itemWithStatus?.isPurchasedByCurrentUser ?? false))
+            if (isPurchasedByCurrentUser)
               OutlinedButton(
                 onPressed: () {
                   if (itemWithStatus != null) {

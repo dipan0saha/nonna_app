@@ -1035,6 +1035,9 @@ CREATE POLICY "Users can delete own RSVPs"
 
 DROP POLICY IF EXISTS "Members can view registry purchases" ON public.registry_purchases;
 DROP POLICY IF EXISTS "Members can mark items as purchased" ON public.registry_purchases;
+DROP POLICY IF EXISTS "Users can unmark own registry purchases" ON public.registry_purchases;
+DROP POLICY IF EXISTS "Owners can update registry items" ON public.registry_items;
+DROP POLICY IF EXISTS "Owners can update unpurchased registry items" ON public.registry_items;
 
 CREATE POLICY "Members can view registry purchases"
   ON public.registry_purchases FOR SELECT
@@ -1045,6 +1048,24 @@ CREATE POLICY "Members can mark items as purchased"
   WITH CHECK (
     auth.uid() = purchased_by_user_id
     AND is_registry_item_member(auth.uid(), registry_item_id)
+  );
+
+CREATE POLICY "Users can unmark own registry purchases"
+  ON public.registry_purchases FOR DELETE
+  USING (
+    auth.uid() = purchased_by_user_id
+    AND is_registry_item_member(auth.uid(), registry_item_id)
+  );
+
+CREATE POLICY "Owners can update unpurchased registry items"
+  ON public.registry_items FOR UPDATE
+  USING (
+    is_baby_owner(auth.uid(), baby_profile_id)
+    AND NOT EXISTS (
+      SELECT 1
+      FROM public.registry_purchases rp
+      WHERE rp.registry_item_id = registry_items.id
+    )
   );
 
 -- ========================================

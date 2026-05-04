@@ -72,8 +72,7 @@ ON CONFLICT DO NOTHING;
 -- Upsert missing Tile Definitions
 INSERT INTO tile_definitions (id, tile_type, description, schema_params, is_active)
 VALUES 
-  (gen_random_uuid(), 'RecentPurchasesTile', 'Shows recent purchases in registry', '{}'::jsonb, true),
-  (gen_random_uuid(), 'RegistryDealsTile', 'Shows AI suggested deals for registry items', '{}'::jsonb, true)
+  (gen_random_uuid(), 'RecentPurchasesTile', 'Shows recent purchases in registry', '{}'::jsonb, true)
 ON CONFLICT (tile_type) DO NOTHING;
 
 -- Insert configs for the Registry screen
@@ -92,8 +91,7 @@ FROM registry_screen rs
 CROSS JOIN (
   VALUES 
     ('RegistryHighlightsTile', 'owner', 10),
-    ('RegistryDealsTile', 'owner', 20),
-    ('RecentPurchasesTile', 'owner', 30),
+    ('RecentPurchasesTile', 'owner', 20),
     ('RecentPurchasesTile', 'follower', 10)
 ) AS mappings(tile_type, role_param, order_param)
 JOIN tile_definitions td ON td.tile_type = mappings.tile_type
@@ -115,8 +113,7 @@ FROM home_screen hs
 CROSS JOIN (
   VALUES 
     ('RegistryHighlightsTile', 'owner', 40),
-    ('RegistryDealsTile', 'owner', 41),
-    ('RecentPurchasesTile', 'owner', 42),
+    ('RecentPurchasesTile', 'owner', 41),
     ('RecentPurchasesTile', 'follower', 40)
 ) AS mappings(tile_type, role_param, order_param)
 JOIN tile_definitions td ON td.tile_type = mappings.tile_type

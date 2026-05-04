@@ -213,13 +213,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final events = state.eventsForSelectedDate;
 
     if (events.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: AppSpacing.xl),
-        child: EmptyState(
-          message: 'No events for this day',
-          icon: Icons.event_available_outlined,
-        ),
-      );
+      return const SizedBox.shrink();
     }
 
     return ListView(

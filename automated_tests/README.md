@@ -41,7 +41,7 @@ python3 quick_test.py core
 
 - **Core**: 16 subcategories (config, constants, di, enums, extensions, middleware, mixins, models, navigation, network, providers, router, services, themes, utils, widgets)
 - **Features**: 9 features (auth, baby_profile, calendar, gallery, gamification, home, profile, registry, settings)
-- **Tiles**: 16 tile types (core, checklist, due_date_countdown, engagement_recap, gallery_favorites, invites_status, new_followers, notifications, recent_photos, recent_purchases, registry_deals, registry_highlights, rsvp_tasks, storage_usage, system_announcements, upcoming_events)
+- **Tiles**: 15 tile types (core, checklist, due_date_countdown, engagement_recap, gallery_favorites, invites_status, new_followers, notifications, recent_photos, recent_purchases, registry_highlights, rsvp_tasks, storage_usage, system_announcements, upcoming_events)
 - **Other**: 2 tests (accessibility, l10n)
 
 ## 📖 Documentation

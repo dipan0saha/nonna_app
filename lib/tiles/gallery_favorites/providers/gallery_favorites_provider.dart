@@ -5,6 +5,7 @@ import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/photo.dart';
+import '../../../core/models/user.dart';
 
 /// Photo with squish count
 class PhotoWithSquishes {
@@ -144,6 +145,44 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
       babyProfileId: babyProfileId,
       forceRefresh: true,
     );
+  }
+
+  /// Fetch users who squished a specific photo, newest first.
+  Future<List<User>> fetchSquishUsers({required String photoId}) async {
+    final databaseService = ref.read(databaseServiceProvider);
+
+    final squishesResponse = await databaseService
+        .select(
+          SupabaseTables.photoSquishes,
+          columns: 'user_id, created_at',
+        )
+        .eq('photo_id', photoId)
+        .order('created_at', ascending: false);
+
+    final userIds = <String>[];
+    for (final json in (squishesResponse as List)) {
+      final userId = json['user_id'] as String?;
+      if (userId != null && !userIds.contains(userId)) {
+        userIds.add(userId);
+      }
+    }
+
+    if (userIds.isEmpty) return const [];
+
+    final profilesResponse = await databaseService
+        .select(SupabaseTables.userProfiles)
+        .inFilter('user_id', userIds);
+
+    final profileById = <String, User>{};
+    for (final json in (profilesResponse as List)) {
+      final user = User.fromJson(Map<String, dynamic>.from(json as Map));
+      profileById[user.userId] = user;
+    }
+
+    return userIds
+        .where((id) => profileById.containsKey(id))
+        .map((id) => profileById[id]!)
+        .toList();
   }
 
   // ==========================================

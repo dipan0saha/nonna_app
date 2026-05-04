@@ -108,7 +108,7 @@ python3 quick_test.py all                  # Everything
 |----------|-------|---------------|
 | **Core** | 108 | config, constants, di, enums, extensions, middleware, mixins, models, navigation, network, providers, router, services, themes, utils, widgets |
 | **Features** | 37 | auth, baby_profile, calendar, gallery, gamification, home, profile, registry, settings |
-| **Tiles** | 35 | core, checklist, due_date_countdown, engagement_recap, gallery_favorites, invites_status, new_followers, notifications, recent_photos, recent_purchases, registry_deals, registry_highlights, rsvp_tasks, storage_usage, system_announcements, upcoming_events |
+| **Tiles** | 33 | core, checklist, due_date_countdown, engagement_recap, gallery_favorites, invites_status, new_followers, notifications, recent_photos, recent_purchases, registry_highlights, rsvp_tasks, storage_usage, system_announcements, upcoming_events |
 | **Other** | 2 | accessibility, l10n |
 | **TOTAL** | **190** | — |
 

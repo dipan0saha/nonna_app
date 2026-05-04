@@ -18,6 +18,26 @@ class TileLoader {
   // Private constructor to prevent instantiation
   TileLoader._();
 
+  static const Set<String> _supportedComponentNames = {
+    'RecentPhotosTile',
+    'UpcomingEventsTile',
+    'RegistryHighlightsTile',
+    'RegistryListTile',
+    'CountdownTile',
+    'ChecklistTile',
+    'ActivityListTile',
+    'GalleryFavoritesTile',
+    'InvitesStatusTile',
+    'NewFollowersTile',
+    'NotificationsTile',
+    'RecentPurchasesTile',
+    'RsvpTasksTile',
+    'StorageUsageTile',
+    'SystemAnnouncementsTile',
+    'NameSuggestionsTile',
+    'PredictionVotesTile',
+  };
+
   /// Cache configuration
   static const String _cacheKeyPrefix = 'tile_configs';
 
@@ -83,7 +103,14 @@ class TileLoader {
 
   /// Filter enabled tiles and sort by order
   static List<TileConfig> _filterAndSortConfigs(List<TileConfig> configs) {
-    return configs.where((config) => config.isVisible).toList()
+    return configs
+        .where(
+          (config) =>
+              config.isVisible &&
+              config.componentName != null &&
+              _supportedComponentNames.contains(config.componentName),
+        )
+        .toList()
       ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
   }
 

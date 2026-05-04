@@ -75,8 +75,35 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
     }
   }
 
-  void _onAddItemTap() {
-    context.push(AppRoutes.registryItem);
+  Future<void> _onAddItemTap() async {
+    final babyId =
+        widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
+    final userId = ref.read(currentUserProvider)?.id;
+    if (babyId == null || userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to open item creation.')),
+      );
+      return;
+    }
+
+    final created = await context.push<bool>(
+      AppRoutes.registryItemCreate,
+      extra: {
+        'babyProfileId': babyId,
+        'createdByUserId': userId,
+      },
+    );
+
+    if (created == true && mounted) {
+      final role = widget.userRole ??
+          ref.read(homeScreenProvider).selectedRole ??
+          UserRole.follower;
+      await ref.read(registryScreenProvider.notifier).loadItems(
+            babyProfileId: babyId,
+            role: role,
+            forceRefresh: true,
+          );
+    }
   }
 
   @override

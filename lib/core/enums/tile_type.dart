@@ -10,7 +10,7 @@
 /// Tile categories:
 /// - Event tiles (upcomingEvents, rsvpTasks)
 /// - Photo tiles (recentPhotos, galleryFavorites)
-/// - Registry tiles (registryHighlights, recentPurchases, registryDeals)
+/// - Registry tiles (registryHighlights, recentPurchases)
 /// - Notification tiles (notifications, systemAnnouncements)
 /// - Status tiles (invitesStatus, countdown, storageUsage)
 /// - Engagement tiles (activityList, newFollowers)
@@ -44,9 +44,6 @@ enum TileType {
 
   /// Recent purchases tile - recently purchased registry items
   recentPurchases,
-
-  /// Registry deals tile - special offers on registry items
-  registryDeals,
 
   /// Engagement recap tile - activity summary
   activityList,
@@ -104,8 +101,6 @@ enum TileType {
         return 'Due Date Countdown';
       case TileType.recentPurchases:
         return 'Recent Purchases';
-      case TileType.registryDeals:
-        return 'Registry Deals';
       case TileType.activityList:
         return 'Engagement Recap';
       case TileType.galleryFavorites:
@@ -146,8 +141,6 @@ enum TileType {
         return 'Countdown to baby\'s due date';
       case TileType.recentPurchases:
         return 'Recently purchased registry items';
-      case TileType.registryDeals:
-        return 'Special offers on registry items';
       case TileType.activityList:
         return 'Summary of recent activity';
       case TileType.galleryFavorites:

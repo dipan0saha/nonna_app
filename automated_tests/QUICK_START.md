@@ -176,7 +176,7 @@ make test-all
 
 - **Features** (9): auth, baby_profile, calendar, gallery, gamification, home, profile, registry, settings
 
-- **Tiles** (16): core, checklist, due_date_countdown, engagement_recap, gallery_favorites, invites_status, new_followers, notifications, recent_photos, recent_purchases, registry_deals, registry_highlights, rsvp_tasks, storage_usage, system_announcements, upcoming_events
+- **Tiles** (15): core, checklist, due_date_countdown, engagement_recap, gallery_favorites, invites_status, new_followers, notifications, recent_photos, recent_purchases, registry_highlights, rsvp_tasks, storage_usage, system_announcements, upcoming_events
 
 - **Other** (2): accessibility, l10n
 

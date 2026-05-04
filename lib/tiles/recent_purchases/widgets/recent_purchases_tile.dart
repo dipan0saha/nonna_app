@@ -19,6 +19,7 @@ class RecentPurchasesTile extends StatelessWidget {
     this.onPurchaseTap,
     this.onRefresh,
     this.onViewAll,
+    this.maxItems = 5,
   });
 
   final List<RegistryPurchase> purchases;
@@ -27,6 +28,7 @@ class RecentPurchasesTile extends StatelessWidget {
   final void Function(RegistryPurchase)? onPurchaseTap;
   final VoidCallback? onRefresh;
   final VoidCallback? onViewAll;
+  final int maxItems;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +89,7 @@ class RecentPurchasesTile extends StatelessWidget {
       );
     }
 
-    final displayPurchases = purchases.take(5).toList();
+    final displayPurchases = purchases.take(maxItems).toList();
     return Column(
       children: displayPurchases
           .map(

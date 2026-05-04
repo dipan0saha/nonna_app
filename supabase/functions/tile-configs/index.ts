@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
 
       // Collaborators see most tiles except sensitive ones
       if (userRole === 'collaborator') {
-        const restrictedTiles = ['registry_highlights', 'registry_deals', 'storage_usage'];
+        const restrictedTiles = ['registry_highlights', 'storage_usage'];
         return !restrictedTiles.includes(config.tileType);
       }
 

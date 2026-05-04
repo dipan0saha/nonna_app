@@ -23,6 +23,7 @@ class UpcomingEventsTile extends StatelessWidget {
     this.onEventTap,
     this.onRefresh,
     this.onViewAll,
+    this.fullView = false,
   });
 
   /// Events to display. Use [EventWithRsvp] to include the current user's RSVP
@@ -33,6 +34,7 @@ class UpcomingEventsTile extends StatelessWidget {
   final void Function(Event)? onEventTap;
   final VoidCallback? onRefresh;
   final VoidCallback? onViewAll;
+  final bool fullView;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class UpcomingEventsTile extends StatelessWidget {
           children: [
             _TileHeader(
               title: 'Upcoming Events',
-              onViewAll: onViewAll,
+              onViewAll: fullView ? null : onViewAll,
               viewAllKey: const Key('upcoming_events_view_all'),
             ),
             AppSpacing.verticalGapS,
@@ -78,7 +80,7 @@ class UpcomingEventsTile extends StatelessWidget {
       );
     }
 
-    final displayEvents = events.take(3).toList();
+    final displayEvents = fullView ? events : events.take(3).toList();
     return Column(
       children: displayEvents
           .map((item) => _EventCard(item: item, onTap: onEventTap))

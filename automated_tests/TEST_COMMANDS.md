@@ -116,7 +116,6 @@ Organized by 16 tile types:
 | Notifications | - | 0 | 0 | `flutter test test/tiles/notifications` |
 | Recent Photos | - | 0 | 0 | `flutter test test/tiles/recent_photos` |
 | Recent Purchases | - | 0 | 0 | `flutter test test/tiles/recent_purchases` |
-| Registry Deals | - | 0 | 0 | `flutter test test/tiles/registry_deals` |
 | Registry Highlights | - | 0 | 0 | `flutter test test/tiles/registry_highlights` |
 | Rsvp Tasks | - | 0 | 0 | `flutter test test/tiles/rsvp_tasks` |
 | Storage Usage | - | 0 | 0 | `flutter test test/tiles/storage_usage` |

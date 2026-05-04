@@ -63,7 +63,6 @@ class TestRunner:
                 "notifications",
                 "recent_photos",
                 "recent_purchases",
-                "registry_deals",
                 "registry_highlights",
                 "rsvp_tasks",
                 "storage_usage",

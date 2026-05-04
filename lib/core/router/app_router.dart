@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/models/photo.dart';
-import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/navigation/navigation_service.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
@@ -19,6 +18,7 @@ import 'package:nonna_app/features/profile/presentation/screens/edit_profile_scr
 import 'package:nonna_app/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:nonna_app/features/calendar/presentation/screens/event_detail_screen.dart';
 import 'package:nonna_app/features/calendar/presentation/screens/event_creation_screen.dart';
+import 'package:nonna_app/features/calendar/presentation/screens/upcoming_events_screen.dart';
 import 'package:nonna_app/features/gallery/presentation/screens/gallery_screen.dart';
 import 'package:nonna_app/features/gallery/presentation/screens/photo_detail_screen.dart';
 import 'package:nonna_app/features/gamification/presentation/screens/gamification_screen.dart';
@@ -29,6 +29,7 @@ import 'package:nonna_app/features/baby_profile/presentation/screens/edit_baby_p
 import 'package:nonna_app/features/registry/presentation/screens/registry_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_detail_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_creation_screen.dart';
+import 'package:nonna_app/features/registry/presentation/screens/registry_item_edit_screen.dart';
 
 import 'route_guards.dart';
 
@@ -41,6 +42,7 @@ abstract class AppRoutes {
   static const profile = '/profile';
   static const profileEdit = '/profile/edit';
   static const calendar = '/calendar';
+  static const calendarUpcoming = '/calendar/upcoming';
   // Note: event/photo/registry detail routes rely on state.extra (object passed
   // during in-app navigation) and therefore do not include a path `:id` segment,
   // as the extra payload is not available when the route is deep-linked by URL.
@@ -58,6 +60,7 @@ abstract class AppRoutes {
   static const registry = '/registry';
   static const registryItem = '/registry/item/detail';
   static const registryItemCreate = '/registry/item/create';
+  static const registryItemEdit = '/registry/item/edit';
 }
 
 // ---------------------------------------------------------------------------
@@ -244,6 +247,10 @@ List<RouteBase> get _routes => [
                 path: AppRoutes.calendar,
                 builder: (context, state) => const CalendarScreen(),
                 routes: [
+                  GoRoute(
+                    path: 'upcoming',
+                    builder: (context, state) => const UpcomingEventsScreen(),
+                  ),
                   // Detail stays nested → nav bar remains visible
                   GoRoute(
                     path: 'event/detail',
@@ -292,6 +299,15 @@ List<RouteBase> get _routes => [
                       babyProfileId: _extraString(state, 'babyProfileId'),
                       createdByUserId: _extraString(state, 'createdByUserId'),
                     ),
+                  ),
+                  GoRoute(
+                    parentNavigatorKey: NavigationService.navigatorKey,
+                    path: 'item/edit',
+                    builder: (context, state) {
+                      final item = state.extra as RegistryItem?;
+                      if (item == null) return _missingData('Registry item');
+                      return RegistryItemEditScreen(item: item);
+                    },
                   ),
                 ],
               ),

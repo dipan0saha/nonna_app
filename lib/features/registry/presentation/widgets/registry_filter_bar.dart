@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 
 /// A filter and sort bar for the registry screen.
 ///
-/// Shows filter chips (All, High Priority, Purchased, Unpurchased) and
-/// a sort dropdown.
+/// Shows a sort dropdown.
 class RegistryFilterBar extends StatelessWidget {
   const RegistryFilterBar({
     super.key,
@@ -29,18 +27,9 @@ class RegistryFilterBar extends StatelessWidget {
   /// Called when sort option is selected
   final ValueChanged<RegistrySort>? onSortChanged;
 
-  static const _filterLabels = <RegistryFilter, String>{
-    RegistryFilter.all: 'All',
-    RegistryFilter.highPriority: 'High Priority',
-    RegistryFilter.purchased: 'Purchased',
-    RegistryFilter.unpurchased: 'Unpurchased',
-  };
-
   static const _sortLabels = <RegistrySort, String>{
     RegistrySort.priorityHigh: 'Priority: High First',
     RegistrySort.priorityLow: 'Priority: Low First',
-    RegistrySort.nameAsc: 'Name: A–Z',
-    RegistrySort.nameDesc: 'Name: Z–A',
     RegistrySort.dateNewest: 'Date: Newest',
     RegistrySort.dateOldest: 'Date: Oldest',
   };
@@ -55,30 +44,6 @@ class RegistryFilterBar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: RegistryFilter.values.map((filter) {
-                final isSelected = filter == currentFilter;
-                final label = _filterLabels[filter]!;
-                final filterName = filter.name;
-                return Padding(
-                  padding: const EdgeInsets.only(right: AppSpacing.xs),
-                  child: ChoiceChip(
-                    key: Key('filter_chip_$filterName'),
-                    label: Text(label),
-                    selected: isSelected,
-                    selectedColor: AppColors.primaryDark,
-                    labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : null,
-                    ),
-                    onSelected: (_) => onFilterChanged?.call(filter),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          AppSpacing.verticalGapXS,
           Align(
             alignment: Alignment.centerRight,
             child: DropdownButton<RegistrySort>(

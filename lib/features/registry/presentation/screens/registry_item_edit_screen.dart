@@ -1,53 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:uuid/uuid.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 
-/// Screen for creating a new registry item.
-///
-/// **Functional Requirements**: Section 3.6.4 - Additional Feature Screens
-class RegistryItemCreationScreen extends ConsumerStatefulWidget {
-  const RegistryItemCreationScreen({
+/// Screen for editing an existing registry item.
+class RegistryItemEditScreen extends ConsumerStatefulWidget {
+  const RegistryItemEditScreen({
     super.key,
-    required this.babyProfileId,
-    required this.createdByUserId,
-    this.onCreated,
-    this.onCancelled,
+    required this.item,
   });
 
-  final String babyProfileId;
-  final String createdByUserId;
-  final VoidCallback? onCreated;
-  final VoidCallback? onCancelled;
+  final RegistryItem item;
 
   @override
-  ConsumerState<RegistryItemCreationScreen> createState() =>
-      _RegistryItemCreationScreenState();
+  ConsumerState<RegistryItemEditScreen> createState() =>
+      _RegistryItemEditScreenState();
 }
 
-class _RegistryItemCreationScreenState
-    extends ConsumerState<RegistryItemCreationScreen> {
-  static const int _defaultPriority = 3;
-
+class _RegistryItemEditScreenState
+    extends ConsumerState<RegistryItemEditScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _linkController;
-  int _priority = _defaultPriority;
+  late int _priority;
   bool _isSaving = false;
   String? _saveError;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
-    _descriptionController = TextEditingController();
-    _linkController = TextEditingController();
+    _nameController = TextEditingController(text: widget.item.name);
+    _descriptionController =
+        TextEditingController(text: widget.item.description ?? '');
+    _linkController = TextEditingController(text: widget.item.linkUrl ?? '');
+    _priority = widget.item.priority;
   }
 
   @override
@@ -67,46 +58,22 @@ class _RegistryItemCreationScreenState
     });
 
     try {
-      final dbService = ref.read(databaseServiceProvider);
-
-      final newItem = RegistryItem(
-        id: const Uuid().v4(),
-        babyProfileId: widget.babyProfileId,
-        createdByUserId: widget.createdByUserId,
-        name: _nameController.text.trim(),
-        description: _descriptionController.text.trim().isNotEmpty
+      await ref
+          .read(databaseServiceProvider)
+          .update(SupabaseTables.registryItems, {
+        'name': _nameController.text.trim(),
+        'description': _descriptionController.text.trim().isNotEmpty
             ? _descriptionController.text.trim()
             : null,
-        linkUrl: _linkController.text.trim().isNotEmpty
+        'link_url': _linkController.text.trim().isNotEmpty
             ? _linkController.text.trim()
             : null,
-        priority: _priority,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      final error = newItem.validate();
-      if (error != null) {
-        setState(() {
-          _saveError = error;
-          _isSaving = false;
-        });
-        return;
-      }
-
-      await dbService.insert(
-        SupabaseTables.registryItems,
-        newItem.toJson(),
-      );
+        'priority': _priority,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('id', widget.item.id);
 
       if (!mounted) return;
-      setState(() => _isSaving = false);
-
-      if (widget.onCreated != null) {
-        widget.onCreated!.call();
-      } else {
-        context.pop(true); // Signal success to caller for refresh
-      }
+      context.pop(true);
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -116,11 +83,25 @@ class _RegistryItemCreationScreenState
     }
   }
 
+  InputDecoration _fieldDecoration(BuildContext context, String label,
+      {Widget? prefixIcon}) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+      border: const OutlineInputBorder(),
+      prefixIcon: prefixIcon,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final fieldStyle =
+        TextStyle(color: Theme.of(context).colorScheme.onSurface);
+
     return Scaffold(
-      key: const Key('registry_item_creation_screen'),
-      appBar: AppBar(title: const Text('Add Registry Item')),
+      appBar: AppBar(title: const Text('Edit Registry Item')),
       body: SingleChildScrollView(
         padding: AppSpacing.screenPadding,
         child: Form(
@@ -129,12 +110,9 @@ class _RegistryItemCreationScreenState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
-                key: const Key('item_name_field'),
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Item Name',
-                  border: OutlineInputBorder(),
-                ),
+                style: fieldStyle,
+                decoration: _fieldDecoration(context, 'Item Name'),
                 textInputAction: TextInputAction.next,
                 validator: (v) => v == null || v.trim().isEmpty
                     ? 'Item name is required'
@@ -142,26 +120,23 @@ class _RegistryItemCreationScreenState
               ),
               AppSpacing.verticalGapM,
               TextFormField(
-                key: const Key('item_description_field'),
                 controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description (optional)',
-                  border: OutlineInputBorder(),
-                ),
+                style: fieldStyle,
+                decoration: _fieldDecoration(context, 'Description (optional)'),
                 maxLines: 3,
                 textInputAction: TextInputAction.next,
               ),
               AppSpacing.verticalGapM,
               TextFormField(
-                key: const Key('item_link_field'),
                 controller: _linkController,
-                decoration: const InputDecoration(
-                  labelText: 'Link URL (optional)',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.link),
+                style: fieldStyle,
+                decoration: _fieldDecoration(
+                  context,
+                  'Link URL (optional)',
+                  prefixIcon: const Icon(Icons.link),
                 ),
                 keyboardType: TextInputType.url,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
               ),
               AppSpacing.verticalGapM,
               Text(
@@ -173,7 +148,6 @@ class _RegistryItemCreationScreenState
                 children: [
                   Expanded(
                     child: Slider(
-                      key: const Key('priority_slider'),
                       value: _priority.toDouble(),
                       min: 1,
                       max: 5,
@@ -186,7 +160,6 @@ class _RegistryItemCreationScreenState
                     width: 32,
                     child: Text(
                       '$_priority',
-                      key: const Key('priority_value_text'),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
@@ -197,25 +170,24 @@ class _RegistryItemCreationScreenState
                 AppSpacing.verticalGapS,
                 Text(
                   _saveError!,
-                  style: const TextStyle(color: Colors.red),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                   textAlign: TextAlign.center,
                 ),
               ],
               AppSpacing.verticalGapL,
               ElevatedButton(
-                key: const Key('save_item_button'),
                 onPressed: _isSaving ? null : _save,
                 child: _isSaving
                     ? const SizedBox(
-                        height: 20,
                         width: 20,
+                        height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text('Add Item'),
+                    : const Text('Save Changes'),
               ),
               AppSpacing.verticalGapS,
               OutlinedButton(
-                onPressed: widget.onCancelled ?? () => context.pop(false),
+                onPressed: _isSaving ? null : () => context.pop(false),
                 child: const Text('Cancel'),
               ),
             ],
