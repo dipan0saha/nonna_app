@@ -106,27 +106,45 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       state = const AuthState.loading();
 
+      // Sign-up with email verification can yield a user without a session.
+      // In that state, querying RLS-protected tables would fail (401/42501).
+      final authService = ref.read(authServiceProvider);
+      final effectiveSession = session ??
+          (authService.currentUser != null ? authService.currentSession : null);
+
+      if (effectiveSession == null) {
+        state = const AuthState.unauthenticated();
+        debugPrint('ℹ️ No active session yet; skipping profile load');
+        return;
+      }
+
       // Fetch user model from database
-      final response = await databaseService
-          .select(SupabaseTables.userProfiles)
-          .eq(SupabaseTables.userId, user.id)
-          .maybeSingle();
+      dynamic response;
+      try {
+        response = await databaseService
+            .select(SupabaseTables.userProfiles)
+            .eq(SupabaseTables.userId, user.id)
+            .maybeSingle();
+      } on supabase.PostgrestException catch (e) {
+        final message = e.message.toLowerCase();
+        final isPermissionDenied =
+            e.code == '42501' || message.contains('permission denied');
+
+        if (!isPermissionDenied) {
+          rethrow;
+        }
+
+        // Continue authenticated with a null profile model.
+        debugPrint(
+          '⚠️ Profiles access denied during profile hydration; '
+          'continuing without user model',
+        );
+      }
       if (!ref.mounted) return;
 
       app_user.User? userModel;
       if (response != null) {
         userModel = app_user.User.fromJson(response);
-      }
-
-      // Use provided session or fall back to currentSession
-      final authService = ref.read(authServiceProvider);
-      final effectiveSession = session ??
-          (authService.currentUser != null ? authService.currentSession : null);
-
-      // Handle null session gracefully
-      if (effectiveSession == null) {
-        state = const AuthState.error('No valid session available');
-        return;
       }
 
       state = AuthState.authenticated(
@@ -187,7 +205,7 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   /// Sign up with email and password
-  Future<void> signUpWithEmail({
+  Future<bool> signUpWithEmail({
     required String email,
     required String password,
     required String displayName,
@@ -204,22 +222,32 @@ class AuthNotifier extends Notifier<AuthState> {
         password: password,
         displayName: displayName,
       );
-      if (!ref.mounted) return;
+      if (!ref.mounted) return false;
 
-      if (response.user != null) {
+      if (response.user != null && response.session != null) {
         await _loadUserProfile(
           response.user!,
           databaseService,
           localStorage,
           session: response.session,
         );
+        return state.isAuthenticated;
+      }
+
+      if (response.user != null && response.session == null) {
+        // Typical email-confirmation path: account created, no session yet.
+        state = const AuthState.unauthenticated();
+        debugPrint('✅ Sign up created; awaiting email verification');
+        return true;
       } else {
         state = const AuthState.error('Sign up failed');
+        return false;
       }
     } catch (e) {
-      if (!ref.mounted) return;
+      if (!ref.mounted) return false;
       debugPrint('❌ Sign up error: $e');
       state = AuthState.error(e.toString());
+      return false;
     }
   }
 

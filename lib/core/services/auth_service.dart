@@ -3,6 +3,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../config/app_config.dart';
 import '../middleware/error_handler.dart';
 import 'analytics_service.dart';
 import 'app_initialization_service.dart';
@@ -45,6 +46,10 @@ class AuthService {
   // Email/Password Authentication
   // ==========================================
 
+  /// Redirect URL used by Supabase email auth flows for mobile deep-linking.
+  String get _authEmailRedirectUrl =>
+      AppConfig.getDeepLinkUrl('/auth/callback');
+
   /// Sign up with email and password
   Future<AuthResponse> signUpWithEmail({
     required String email,
@@ -56,6 +61,7 @@ class AuthService {
         email: email,
         password: password,
         data: {'display_name': displayName},
+        emailRedirectTo: _authEmailRedirectUrl,
       );
 
       if (response.user != null) {
@@ -98,7 +104,10 @@ class AuthService {
   /// Send password reset email
   Future<void> resetPassword(String email) async {
     try {
-      await _supabase.auth.resetPasswordForEmail(email);
+      await _supabase.auth.resetPasswordForEmail(
+        email,
+        redirectTo: _authEmailRedirectUrl,
+      );
     } catch (e) {
       final message = ErrorHandler.mapErrorToMessage(e);
       debugPrint('❌ Error sending password reset email: $message');
@@ -128,6 +137,7 @@ class AuthService {
       await _supabase.auth.resend(
         type: OtpType.signup,
         email: currentUser!.email!,
+        emailRedirectTo: _authEmailRedirectUrl,
       );
     } catch (e) {
       final message = ErrorHandler.mapErrorToMessage(e);

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
-import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:nonna_app/features/auth/presentation/widgets/auth_form_widgets.dart';
 
 /// Sign-up screen
@@ -49,6 +48,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   bool _termsAccepted = false;
   bool _termsError = false;
   bool _signUpComplete = false;
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -60,28 +60,33 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   Future<void> _signUp() async {
+    if (_isSubmitting) return;
+
     setState(() => _termsError = !_termsAccepted);
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (!_termsAccepted) return;
 
-    await ref.read(authProvider.notifier).signUpWithEmail(
+    setState(() => _isSubmitting = true);
+
+    final success = await ref.read(authProvider.notifier).signUpWithEmail(
           email: _emailController.text.trim(),
           password: _passwordController.text,
           displayName: _nameController.text.trim(),
         );
 
     if (mounted) {
-      final state = ref.read(authProvider);
-      if (state.isAuthenticated || state.status == AuthStatus.authenticated) {
-        setState(() => _signUpComplete = true);
-      }
+      setState(() => _isSubmitting = false);
+    }
+
+    if (mounted && success) {
+      setState(() => _signUpComplete = true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
-    final isLoading = authState.isLoading;
+    final isLoading = authState.isLoading || _isSubmitting;
 
     if (_signUpComplete) {
       return _buildVerificationPrompt(context);
