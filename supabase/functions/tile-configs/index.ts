@@ -38,6 +38,7 @@ const corsHeaders = {
 const ALWAYS_VISIBLE_TILE_TYPES = new Set<string>([
   "CountdownTile",
   "ChecklistTile",
+  "ActivityListTile",
   "StorageUsageTile",
   "SystemAnnouncementsTile",
 ]);

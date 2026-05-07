@@ -138,6 +138,7 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
       final response = await databaseService
           .select(SupabaseTables.babyMemberships)
           .eq('user_id', userId)
+          .isFilter('removed_at', null)
           .order('created_at', ascending: true)
           .limit(1)
           .maybeSingle();

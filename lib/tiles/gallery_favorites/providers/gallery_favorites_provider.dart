@@ -6,6 +6,7 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/photo.dart';
 import '../../../core/models/user.dart';
+import '../../../core/services/storage_service.dart';
 
 /// Photo with squish count
 class PhotoWithSquishes {
@@ -201,9 +202,11 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
         .isFilter(SupabaseTables.deletedAt, null)
         .order(SupabaseTables.createdAt, ascending: false);
 
-    final photos = (photosResponse as List)
+    final rawPhotos = (photosResponse as List)
         .map((json) => Photo.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
+
+    final photos = await _toDisplayPhotos(rawPhotos);
 
     if (photos.isEmpty) return [];
 
@@ -237,6 +240,49 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
 
     // Return top favorites
     return photosWithSquishes.take(_maxFavorites).toList();
+  }
+
+  Future<List<Photo>> _toDisplayPhotos(List<Photo> photos) async {
+    final converted = <Photo>[];
+    for (final photo in photos) {
+      converted.add(await _toDisplayPhoto(photo));
+    }
+    return converted;
+  }
+
+  Future<Photo> _toDisplayPhoto(Photo photo) async {
+    final storageService = ref.read(storageServiceProvider);
+    final resolvedStorage =
+        await _resolveGalleryPath(storageService, photo.storagePath);
+    final resolvedThumbnail = photo.thumbnailPath != null
+        ? await _resolveGalleryPath(storageService, photo.thumbnailPath!)
+        : null;
+
+    return photo.copyWith(
+      storagePath: resolvedStorage,
+      thumbnailPath: resolvedThumbnail,
+    );
+  }
+
+  Future<String> _resolveGalleryPath(
+      StorageService storageService, String pathOrUrl) async {
+    if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
+      return pathOrUrl;
+    }
+
+    if (!_isGalleryStoragePath(pathOrUrl)) {
+      return pathOrUrl;
+    }
+
+    try {
+      return await storageService.getSignedUrl('gallery-photos', pathOrUrl);
+    } catch (_) {
+      return pathOrUrl;
+    }
+  }
+
+  bool _isGalleryStoragePath(String pathOrUrl) {
+    return pathOrUrl.startsWith('baby_') || pathOrUrl.contains('/baby_');
   }
 
   /// Load favorites from cache

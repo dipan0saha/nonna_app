@@ -40,7 +40,7 @@ class TileLoader {
   };
 
   /// Cache configuration
-  static const String _cacheKeyPrefix = 'tile_configs_v2';
+  static const String _cacheKeyPrefix = 'tile_configs_v3';
 
   /// Load tile configurations for a specific screen
   ///

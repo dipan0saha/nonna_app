@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -214,6 +216,11 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
             items: cachedItems,
             isLoading: false,
           );
+
+          await _setupRealtimeSubscriptions(babyProfileId);
+          if (!ref.mounted) return;
+
+          unawaited(_backgroundSyncItems(babyProfileId));
           return;
         }
       }
@@ -247,6 +254,23 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     }
   }
 
+  Future<void> _backgroundSyncItems(String babyProfileId) async {
+    try {
+      final itemsWithStatus = await _fetchItemsWithStatus(babyProfileId);
+      if (!ref.mounted) return;
+
+      await _saveToCache(babyProfileId, itemsWithStatus);
+      if (!ref.mounted) return;
+
+      state = state.copyWith(
+        items: itemsWithStatus,
+        isLoading: false,
+      );
+    } catch (e) {
+      debugPrint('⚠️  Background registry sync failed: $e');
+    }
+  }
+
   /// Apply filter
   void applyFilter(RegistryFilter filter) {
     state = state.copyWith(currentFilter: filter);
@@ -270,6 +294,13 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     final databaseService = ref.read(databaseServiceProvider);
 
     try {
+      if (itemWithStatus.isPurchased &&
+          !itemWithStatus.isPurchasedByCurrentUser) {
+        debugPrint('⚠️  Item already purchased by another user');
+        await refresh();
+        return;
+      }
+
       if (itemWithStatus.isPurchasedByCurrentUser) {
         // Remove only the current user's purchase record
         await databaseService.delete(SupabaseTables.registryPurchases).match({
@@ -277,11 +308,14 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
           'purchased_by_user_id': user.id,
         });
       } else {
-        // Create a purchase only if one does not already exist for this user
+        // Re-check server state to avoid duplicate purchases from stale UI.
         final existing = await databaseService
-            .select(SupabaseTables.registryPurchases, columns: 'id')
+            .select(
+              SupabaseTables.registryPurchases,
+              columns: 'id, purchased_by_user_id',
+            )
             .eq('registry_item_id', itemWithStatus.item.id)
-            .eq('purchased_by_user_id', user.id)
+            .limit(1)
             .maybeSingle();
 
         if (existing != null) {
@@ -305,6 +339,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
       await refresh();
     } catch (e) {
       debugPrint('❌ Failed to toggle purchase: $e');
+      await refresh();
     }
   }
 

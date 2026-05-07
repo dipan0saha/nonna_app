@@ -1,13 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nonna_app/core/models/invitation.dart';
+import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 import 'package:nonna_app/features/baby_profile/presentation/screens/invite_followers_screen.dart';
+
+class _FakeBabyProfileNotifier extends BabyProfileNotifier {
+  _FakeBabyProfileNotifier({this.errorMessage});
+
+  final String? errorMessage;
+
+  @override
+  BabyProfileState build() => const BabyProfileState();
+
+  @override
+  Future<Invitation> sendInvitation({
+    required String babyProfileId,
+    required String invitedByUserId,
+    required String email,
+  }) async {
+    if (errorMessage != null) {
+      throw Exception(errorMessage);
+    }
+
+    final now = DateTime.now();
+    return Invitation(
+      id: 'inv-1',
+      babyProfileId: babyProfileId,
+      invitedByUserId: invitedByUserId,
+      inviteeEmail: email.toLowerCase(),
+      tokenHash: 'token-1',
+      expiresAt: now.add(const Duration(days: 7)),
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
+}
 
 Widget _buildScreen({
   VoidCallback? onInviteSent,
   VoidCallback? onDone,
+  String? sendError,
 }) {
   return ProviderScope(
+    overrides: [
+      babyProfileProvider.overrideWith(
+        () => _FakeBabyProfileNotifier(errorMessage: sendError),
+      ),
+    ],
     child: MaterialApp(
       home: InviteFollowersScreen(
         babyProfileId: 'baby-1',
@@ -78,6 +118,22 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
       expect(called, isTrue);
+    });
+
+    testWidgets('shows error message when invitation send fails',
+        (tester) async {
+      await tester.pumpWidget(
+        _buildScreen(sendError: 'Unable to send invitation email right now'),
+      );
+      await tester.enterText(
+          find.byKey(const Key('invite_email_field')), 'test@example.com');
+      await tester.tap(find.byKey(const Key('send_invite_button')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.byKey(const Key('invite_error_message')), findsOneWidget);
+      expect(find.text('Unable to send invitation email right now'),
+          findsOneWidget);
     });
   });
 }

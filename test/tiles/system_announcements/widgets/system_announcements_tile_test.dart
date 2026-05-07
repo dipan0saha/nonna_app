@@ -47,7 +47,9 @@ Widget _buildWidget({
 void main() {
   group('SystemAnnouncementsTile', () {
     testWidgets('renders with correct widget key', (tester) async {
-      await tester.pumpWidget(_buildWidget());
+      await tester.pumpWidget(
+        _buildWidget(announcements: [_makeAnnouncement(id: 'a1')]),
+      );
       expect(
           find.byKey(const Key('system_announcements_tile')), findsOneWidget);
     });
@@ -62,24 +64,25 @@ void main() {
       expect(find.text('Something went wrong'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when all announcements are dismissed',
+    testWidgets('hides tile when all announcements are dismissed',
         (tester) async {
       final a = _makeAnnouncement(id: 'a1');
       await tester.pumpWidget(_buildWidget(
         announcements: [a],
         dismissedIds: {'a1'},
       ));
-      expect(find.text('No announcements'), findsOneWidget);
+      expect(find.byKey(const Key('system_announcements_tile')), findsNothing);
     });
 
-    testWidgets('shows empty state when announcements list is empty',
-        (tester) async {
+    testWidgets('hides tile when announcements list is empty', (tester) async {
       await tester.pumpWidget(_buildWidget());
-      expect(find.text('No announcements'), findsOneWidget);
+      expect(find.byKey(const Key('system_announcements_tile')), findsNothing);
     });
 
     testWidgets('shows correct header text', (tester) async {
-      await tester.pumpWidget(_buildWidget());
+      await tester.pumpWidget(
+        _buildWidget(announcements: [_makeAnnouncement(id: 'a1')]),
+      );
       expect(find.text('Announcements'), findsOneWidget);
     });
 

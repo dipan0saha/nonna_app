@@ -51,6 +51,8 @@ class AuthNotifier extends Notifier<AuthState> {
   // Configuration
   static const String _sessionKey = 'auth_session';
   static const String _biometricEnabledKey = 'biometric_enabled';
+  static const String _dismissedAnnouncementsCachePrefix =
+      'dismissed_announcements_';
 
   // ==========================================
   // Initialization
@@ -319,6 +321,23 @@ class AuthNotifier extends Notifier<AuthState> {
       final cacheService = ref.read(cacheServiceProvider);
       final offlineCacheManager = ref.read(offlineCacheManagerProvider);
 
+      final preservedCache = <String, dynamic>{};
+      if (cacheService.isInitialized) {
+        final keysToPreserve = cacheService
+            .getAllKeys()
+            .where(
+              (key) => key.startsWith(_dismissedAnnouncementsCachePrefix),
+            )
+            .toList();
+
+        for (final key in keysToPreserve) {
+          final value = await cacheService.get<dynamic>(key);
+          if (value != null) {
+            preservedCache[key] = value;
+          }
+        }
+      }
+
       await authService.signOut();
 
       // Perform comprehensive data wipe across all persistent storage
@@ -327,6 +346,9 @@ class AuthNotifier extends Notifier<AuthState> {
       }
       if (cacheService.isInitialized) {
         await cacheService.clear();
+        for (final entry in preservedCache.entries) {
+          await cacheService.put(entry.key, entry.value);
+        }
       }
       if (offlineCacheManager.isInitialized) {
         await offlineCacheManager.clearQueue();

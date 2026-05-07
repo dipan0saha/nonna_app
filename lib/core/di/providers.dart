@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -243,10 +245,25 @@ final autoDisposeExampleProvider = Provider.autoDispose<String>((ref) {
 /// requiring constructor params or route extras.
 class SelectedBabyProfileNotifier extends Notifier<String?> {
   @override
-  String? build() => null;
+  String? build() {
+    final localStorage = ref.read(localStorageServiceProvider);
+    if (!localStorage.isInitialized) {
+      return null;
+    }
+    return localStorage.selectedBabyProfileId;
+  }
 
   /// Update the currently selected baby profile ID.
-  void select(String? id) => state = id;
+  void select(String? id) {
+    state = id;
+
+    final localStorage = ref.read(localStorageServiceProvider);
+    if (!localStorage.isInitialized) {
+      return;
+    }
+
+    unawaited(localStorage.setSelectedBabyProfileId(id));
+  }
 }
 
 final selectedBabyProfileProvider =

@@ -42,6 +42,12 @@ void main() {
         filter: anyNamed('filter'),
       )).thenAnswer((_) => Stream.value(<String, dynamic>{}));
       when(mockRealtimeService.unsubscribe(any)).thenAnswer((_) async {});
+
+      // Default purchases stub for queries that include joined registry item name.
+      when(mockDatabaseService.select(
+        SupabaseTables.registryPurchases,
+        columns: anyNamed('columns'),
+      )).thenAnswer((_) => FakePostgrestBuilder([]));
     });
 
     ProviderContainer createContainer() {
@@ -82,8 +88,10 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => FakePostgrestBuilder([]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -103,8 +111,10 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -122,14 +132,17 @@ void main() {
         // Setup cache to return data
         when(mockCacheService.get(any))
             .thenAnswer((_) async => [samplePurchase.toJson()]);
+        when(mockDatabaseService.select(SupabaseTables.registryItems))
+            .thenAnswer((_) => FakePostgrestBuilder([
+                  {'id': 'item_1'}
+                ]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
-
-        // Verify database was not called
-        verifyNever(mockDatabaseService.select(SupabaseTables.registryItems));
-        verifyNever(
-            mockDatabaseService.select(SupabaseTables.registryPurchases));
 
         final state = container!.read(recentPurchasesProvider);
         expect(state.purchases, hasLength(1));
@@ -167,8 +180,10 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(
@@ -191,8 +206,10 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -221,8 +238,10 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer(
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer(
           (_) =>
               FakePostgrestBuilder(purchases.map((p) => p.toJson()).toList()),
         );
@@ -245,8 +264,10 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.refresh(babyProfileId: 'profile_1');
@@ -277,8 +298,10 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -309,8 +332,10 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([samplePurchase.toJson()]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');
@@ -357,12 +382,14 @@ void main() {
             .thenAnswer((_) => FakePostgrestBuilder([
                   {'id': 'item_1'}
                 ]));
-        when(mockDatabaseService.select(SupabaseTables.registryPurchases))
-            .thenAnswer((_) => FakePostgrestBuilder([
-                  purchase1.toJson(),
-                  purchase2.toJson(),
-                  purchase3.toJson(),
-                ]));
+        when(mockDatabaseService.select(
+          SupabaseTables.registryPurchases,
+          columns: anyNamed('columns'),
+        )).thenAnswer((_) => FakePostgrestBuilder([
+              purchase1.toJson(),
+              purchase2.toJson(),
+              purchase3.toJson(),
+            ]));
 
         final notifier = container!.read(recentPurchasesProvider.notifier);
         await notifier.fetchPurchases(babyProfileId: 'profile_1');

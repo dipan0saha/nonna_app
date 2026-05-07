@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -75,7 +76,7 @@ Widget _buildScreen(
     ],
     child: MaterialApp(
       home: CalendarScreen(
-        babyProfileId: babyProfileId,
+        babyProfileId: babyProfileId ?? 'baby-1',
         userRole: userRole,
       ),
     ),
@@ -124,16 +125,20 @@ void main() {
       expect(find.text('Load failed'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when no events for selected date',
+    testWidgets('hides selected-date label when no events for selected date',
         (tester) async {
+      final selectedDate = DateTime(2024, 6, 15);
+      final formattedDate = DateFormat('EEEE, MMMM d').format(selectedDate);
+
       await tester.pumpWidget(
         _buildScreen(
-          CalendarScreenState(),
+          CalendarScreenState(selectedDate: selectedDate),
           userRole: UserRole.owner,
         ),
       );
       await tester.pump();
-      expect(find.text('No events for this day'), findsOneWidget);
+      expect(find.byKey(const Key('selected_date_label')), findsNothing);
+      expect(find.text(formattedDate), findsNothing);
     });
 
     testWidgets('shows FAB for owner role', (tester) async {
@@ -146,15 +151,14 @@ void main() {
       expect(find.byKey(const Key('add_event_fab')), findsOneWidget);
     });
 
-    testWidgets('shows FAB for follower role', (tester) async {
+    testWidgets('does not show FAB for follower role', (tester) async {
       await tester.pumpWidget(
         _buildScreen(
           CalendarScreenState(),
           userRole: UserRole.follower,
         ),
       );
-      // FAB is shown for all non-null roles; snackbar restricts action
-      expect(find.byKey(const Key('add_event_fab')), findsOneWidget);
+      expect(find.byKey(const Key('add_event_fab')), findsNothing);
     });
 
     testWidgets('does not show FAB when userRole is null', (tester) async {
@@ -166,6 +170,7 @@ void main() {
 
     testWidgets('renders event cards for selected date', (tester) async {
       final selectedDate = DateTime(2024, 6, 15);
+      final formattedDate = DateFormat('EEEE, MMMM d').format(selectedDate);
       final event = _makeEvent('e1', 'Birthday Party', selectedDate);
       final dateKey = '2024-06-15';
       final state = CalendarScreenState(
@@ -183,9 +188,11 @@ void main() {
       );
       await tester.pump();
       expect(find.text('Birthday Party'), findsOneWidget);
+      expect(find.byKey(const Key('selected_date_label')), findsOneWidget);
+      expect(find.text(formattedDate), findsOneWidget);
     });
 
-    testWidgets('snackbar shown when follower taps add event FAB',
+    testWidgets('does not render snackbar guard path for follower',
         (tester) async {
       await tester.pumpWidget(
         _buildScreen(
@@ -193,9 +200,8 @@ void main() {
           userRole: UserRole.follower,
         ),
       );
-      await tester.tap(find.byKey(const Key('add_event_fab')));
       await tester.pump();
-      expect(find.text('Only owners can add events.'), findsOneWidget);
+      expect(find.text('Only owners can add events.'), findsNothing);
     });
   });
 }

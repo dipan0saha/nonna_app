@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/system_announcement.dart';
 import 'package:nonna_app/core/themes/colors.dart';
-import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
@@ -38,6 +37,12 @@ class SystemAnnouncementsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final visible = _visible;
+    if (!isLoading && error == null && visible.isEmpty) {
+      // Hide the entire tile when there are no announcements left.
+      return const SizedBox.shrink();
+    }
+
     return Card(
       key: const Key('system_announcements_tile'),
       child: Padding(
@@ -68,16 +73,8 @@ class SystemAnnouncementsTile extends StatelessWidget {
       return InlineErrorView(message: error!, onRetry: onRefresh);
     }
 
-    final visible = _visible;
-    if (visible.isEmpty) {
-      return const CompactEmptyState(
-        message: 'No announcements',
-        icon: Icons.campaign_outlined,
-      );
-    }
-
     return Column(
-      children: visible
+      children: _visible
           .take(3)
           .map(
             (a) => _AnnouncementCard(

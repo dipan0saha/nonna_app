@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/config/app_config.dart';
 import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
@@ -538,12 +539,13 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
     }
 
     final now = DateTime.now();
+    final tokenHash = const Uuid().v4();
     final response = await databaseService.insert(SupabaseTables.invitations, {
       SupabaseTables.id: const Uuid().v4(),
       SupabaseTables.babyProfileId: babyProfileId,
       'invited_by_user_id': invitedByUserId,
       'invitee_email': normalizedEmail,
-      'token_hash': const Uuid().v4(),
+      'token_hash': tokenHash,
       'expires_at': now.add(const Duration(days: 7)).toIso8601String(),
       SupabaseTables.status: InvitationStatus.pending.toJson(),
       SupabaseTables.createdAt: now.toIso8601String(),
@@ -551,8 +553,132 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
     });
 
     final invitation = Invitation.fromJson(response.first);
+
+    try {
+      await _sendInvitationEmail(
+        invitation: invitation,
+        babyProfileId: babyProfileId,
+        invitedByUserId: invitedByUserId,
+      );
+    } catch (e) {
+      try {
+        await databaseService
+            .delete(SupabaseTables.invitations)
+            .eq(SupabaseTables.id, invitation.id);
+      } catch (rollbackError) {
+        debugPrint('⚠️  Failed to rollback invitation after email error: '
+            '$rollbackError');
+      }
+      rethrow;
+    }
+
     await _loadInvitations(babyProfileId, databaseService);
     return invitation;
+  }
+
+  Future<void> _sendInvitationEmail({
+    required Invitation invitation,
+    required String babyProfileId,
+    required String invitedByUserId,
+  }) async {
+    final databaseService = ref.read(databaseServiceProvider);
+    final supabaseClient = ref.read(supabaseClientProvider);
+
+    final inviterName = await _resolveInviterName(
+      databaseService: databaseService,
+      invitedByUserId: invitedByUserId,
+    );
+    final babyName = await _resolveBabyName(
+      databaseService: databaseService,
+      babyProfileId: babyProfileId,
+    );
+
+    final inviteUrl =
+        AppConfig.getFullUrl('/invite?token=${invitation.tokenHash}');
+
+    final response = await supabaseClient.functions.invoke(
+      'send-invitation-email',
+      body: {
+        'email': invitation.inviteeEmail,
+        'inviterName': inviterName,
+        'babyName': babyName,
+        'inviteUrl': inviteUrl,
+      },
+    );
+
+    if (response.status < 200 || response.status >= 300) {
+      throw Exception('Unable to send invitation email right now');
+    }
+
+    final data = response.data;
+    if (data is Map) {
+      final message = data['message'] as String?;
+      final error = data['error'] as String?;
+
+      if (error != null && error.isNotEmpty) {
+        throw Exception(error);
+      }
+
+      if (message != null && message.toLowerCase().contains('mock email')) {
+        throw Exception('Invitation email service is not configured');
+      }
+    }
+  }
+
+  Future<String> _resolveInviterName({
+    required DatabaseService databaseService,
+    required String invitedByUserId,
+  }) async {
+    try {
+      final response = await databaseService
+          .select(
+            SupabaseTables.userProfiles,
+            columns: SupabaseTables.displayName,
+          )
+          .eq(SupabaseTables.userId, invitedByUserId)
+          .maybeSingle();
+
+      final displayName = response?[SupabaseTables.displayName] as String?;
+      if (displayName != null && displayName.trim().isNotEmpty) {
+        return displayName.trim();
+      }
+    } catch (e) {
+      debugPrint('⚠️  Failed to resolve inviter name: $e');
+    }
+
+    return 'A family member';
+  }
+
+  Future<String> _resolveBabyName({
+    required DatabaseService databaseService,
+    required String babyProfileId,
+  }) async {
+    final currentProfile = state.profile;
+    if (currentProfile != null && currentProfile.id == babyProfileId) {
+      final currentName = currentProfile.name.trim();
+      if (currentName.isNotEmpty) {
+        return currentName;
+      }
+    }
+
+    try {
+      final response = await databaseService
+          .select(
+            SupabaseTables.babyProfiles,
+            columns: SupabaseTables.name,
+          )
+          .eq(SupabaseTables.id, babyProfileId)
+          .maybeSingle();
+
+      final babyName = response?[SupabaseTables.name] as String?;
+      if (babyName != null && babyName.trim().isNotEmpty) {
+        return babyName.trim();
+      }
+    } catch (e) {
+      debugPrint('⚠️  Failed to resolve baby name: $e');
+    }
+
+    return 'your baby';
   }
 
   /// Revoke a pending invitation (owner only).

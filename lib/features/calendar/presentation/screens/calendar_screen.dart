@@ -8,10 +8,13 @@ import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart'; // Ensure TileListView gets imported
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/features/calendar/presentation/providers/calendar_screen_provider.dart';
 import 'package:nonna_app/features/calendar/presentation/widgets/calendar_widget.dart';
+import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
 
 /// Calendar screen
 ///
@@ -59,7 +62,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   void _loadEventsIfReady() {
     final babyProfileId =
         widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
-    final userRole = widget.userRole ?? UserRole.follower;
+    final userRole = widget.userRole ??
+        ref.read(homeScreenProvider).selectedRole ??
+        UserRole.follower;
     if (babyProfileId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(calendarScreenProvider.notifier).loadEvents(
@@ -74,8 +79,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     await ref.read(calendarScreenProvider.notifier).refresh();
   }
 
-  void _onAddEventTap() {
-    if (widget.userRole != UserRole.owner) {
+  Future<void> _onAddEventTap(
+      UserRole effectiveRole, String babyProfileId) async {
+    if (effectiveRole != UserRole.owner) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Only owners can add events.'),
@@ -84,7 +90,18 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       return;
     }
     // navigate to add-event screen
-    context.push('/calendar/event/create');
+    final userId = ref.read(authProvider).user?.id ?? '';
+    final created = await context.push(
+      '/calendar/event/create',
+      extra: {
+        'babyProfileId': babyProfileId,
+        'createdByUserId': userId,
+      },
+    );
+
+    if (created == true && mounted) {
+      await ref.read(calendarScreenProvider.notifier).refresh();
+    }
   }
 
   @override
@@ -100,6 +117,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     final currentBabyProfileId =
         widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
+    final resolvedRole = currentBabyProfileId != null
+        ? ref
+            .watch(currentUserRoleForBabyProfileProvider(currentBabyProfileId))
+            .asData
+            ?.value
+        : null;
+    final effectiveRole = widget.userRole ??
+        ref.watch(homeScreenProvider).selectedRole ??
+        resolvedRole ??
+        UserRole.follower;
 
     if (currentBabyProfileId == null) {
       return Scaffold(
@@ -114,15 +141,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     }
 
     final state = ref.watch(calendarScreenProvider);
+    final hasSelectedDateEvents = state.eventsForSelectedDate.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calendar'),
       ),
-      floatingActionButton: widget.userRole != null
+      floatingActionButton: effectiveRole == UserRole.owner
           ? FloatingActionButton(
               key: const Key('add_event_fab'),
-              onPressed: _onAddEventTap,
+              onPressed: () =>
+                  _onAddEventTap(effectiveRole, currentBabyProfileId),
               child: const Icon(Icons.add),
             )
           : null,
@@ -148,16 +177,18 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               ),
               const Divider(),
               // Selected-date label
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.m,
-                  vertical: AppSpacing.xs,
+              if (hasSelectedDateEvents)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.m,
+                    vertical: AppSpacing.xs,
+                  ),
+                  child: Text(
+                    DateFormat('EEEE, MMMM d').format(state.selectedDate),
+                    key: const Key('selected_date_label'),
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                 ),
-                child: Text(
-                  DateFormat('EEEE, MMMM d').format(state.selectedDate),
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ),
               // Event list area
               _buildEventList(state),
               // Separator and Tiles

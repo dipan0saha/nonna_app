@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/features/gallery/presentation/widgets/squish_photo_widget.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
@@ -30,6 +31,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   bool _isEditingCaption = false;
   late TextEditingController _captionController;
   String? _currentCaption;
+  late final Future<String> _imageUrlFuture;
 
   // Comment state
   final TextEditingController _commentController = TextEditingController();
@@ -41,6 +43,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
     super.initState();
     _currentCaption = widget.photo.caption;
     _captionController = TextEditingController(text: _currentCaption);
+    _imageUrlFuture = _resolveDisplayUrl(widget.photo.storagePath);
 
     // Load comments
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -110,6 +113,27 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
     }
   }
 
+  Future<String> _resolveDisplayUrl(String pathOrUrl) async {
+    if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
+      return pathOrUrl;
+    }
+
+    if (!_isGalleryStoragePath(pathOrUrl)) {
+      return pathOrUrl;
+    }
+
+    try {
+      final storageService = ref.read(storageServiceProvider);
+      return await storageService.getSignedUrl('gallery-photos', pathOrUrl);
+    } catch (_) {
+      return pathOrUrl;
+    }
+  }
+
+  bool _isGalleryStoragePath(String pathOrUrl) {
+    return pathOrUrl.startsWith('baby_') || pathOrUrl.contains('/baby_');
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -137,20 +161,31 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                 maxHeight: MediaQuery.of(context).size.height * 0.6,
               ),
               color: Colors.black,
-              child: InteractiveViewer(
-                minScale: 1.0,
-                maxScale: 4.0,
-                child: CachedNetworkImage(
-                  imageUrl: widget.photo.storagePath,
-                  fit: BoxFit.contain,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  errorWidget: (context, url, error) => const Center(
-                    child: Icon(Icons.broken_image,
-                        color: Colors.white54, size: 50),
-                  ),
-                ),
+              child: FutureBuilder<String>(
+                future: _imageUrlFuture,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  return InteractiveViewer(
+                    minScale: 1.0,
+                    maxScale: 4.0,
+                    child: CachedNetworkImage(
+                      imageUrl: snapshot.data!,
+                      fit: BoxFit.contain,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) => const Center(
+                        child: Icon(Icons.broken_image,
+                            color: Colors.white54, size: 50),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             Padding(

@@ -35,7 +35,8 @@ final userBabyProfilesProvider =
   // First get the user's memberships
   final membershipsResponse = await databaseService
       .select(SupabaseTables.babyMemberships)
-      .eq('user_id', user.id);
+      .eq('user_id', user.id)
+      .isFilter('removed_at', null);
 
   final profileIds = (membershipsResponse as List)
       .map((m) => m['baby_profile_id'] as String)

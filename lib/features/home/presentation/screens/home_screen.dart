@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,6 +12,7 @@ import 'package:nonna_app/core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
 import 'package:nonna_app/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
 
@@ -87,11 +90,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
     final userRole =
         widget.userRole ?? ref.read(homeScreenProvider).selectedRole;
+
     if (babyProfileId != null && userRole != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(homeScreenProvider.notifier).loadTiles(
               babyProfileId: babyProfileId,
               role: userRole,
+            );
+      });
+    } else if (babyProfileId != null && userRole == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final resolvedRole = await ref
+            .read(currentUserRoleForBabyProfileProvider(babyProfileId).future);
+        if (!mounted) return;
+
+        ref.read(homeScreenProvider.notifier).loadTiles(
+              babyProfileId: babyProfileId,
+              role: resolvedRole,
             );
       });
     } else if (babyProfileId == null) {
@@ -104,6 +119,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  Future<void> _syncSelectedProfileIfNeeded(
+    List<BabyProfileSummary> profiles,
+  ) async {
+    if (profiles.isEmpty) return;
+
+    final selectedId = ref.read(selectedBabyProfileProvider);
+    final hasValidSelection = selectedId != null &&
+        profiles.any((profile) => profile.id == selectedId);
+    if (hasValidSelection) return;
+
+    final fallbackProfileId = profiles.first.id;
+    ref.read(selectedBabyProfileProvider.notifier).select(fallbackProfileId);
+
+    final resolvedRole = await ref
+        .read(currentUserRoleForBabyProfileProvider(fallbackProfileId).future);
+    if (!mounted) return;
+
+    await ref.read(homeScreenProvider.notifier).switchBabyProfile(
+          babyProfileId: fallbackProfileId,
+          role: resolvedRole,
+        );
+  }
+
   Future<void> _onRefresh() async {
     await ref.read(homeScreenProvider.notifier).onPullToRefresh();
   }
@@ -114,6 +152,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<List<BabyProfileSummary>>>(
+      userBabyProfilesProvider,
+      (previous, next) {
+        next.whenData((profiles) {
+          unawaited(_syncSelectedProfileIfNeeded(profiles));
+        });
+      },
+    );
+
     final state = ref.watch(homeScreenProvider);
     // Resolve role and dual-role flag from provider state then constructor fallback.
     final userRole = state.selectedRole ?? widget.userRole;
@@ -149,9 +196,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final babyProfileId = state.selectedBabyProfileId ??
         widget.babyProfileId ??
         ref.read(selectedBabyProfileProvider);
-    final userRole = state.selectedRole ?? widget.userRole;
+    final resolvedRole = babyProfileId != null
+        ? ref
+            .watch(currentUserRoleForBabyProfileProvider(babyProfileId))
+            .asData
+            ?.value
+        : null;
+    final userRole = state.selectedRole ?? widget.userRole ?? resolvedRole;
+
     // No profile or role configured yet
-    if (babyProfileId == null || userRole == null) {
+    if (babyProfileId == null) {
       return EmptyState(
         message: 'Select a baby profile to get started',
         icon: Icons.child_care,
@@ -161,6 +215,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           context.push(AppRoutes.babyProfileCreate, extra: {'userId': userId});
         },
       );
+    }
+
+    if (userRole == null) {
+      return const Center(child: CircularProgressIndicator());
     }
 
     return TileListView(

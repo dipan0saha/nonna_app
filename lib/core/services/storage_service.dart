@@ -203,6 +203,11 @@ class StorageService {
     List<String>? tags,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
+      final currentUserId = _supabase.auth.currentUser?.id;
+      if (currentUserId == null || currentUserId.isEmpty) {
+        throw Exception('Please sign in again to upload photos');
+      }
+
       // Validate file
       _validateImageFile(imageFile);
 
@@ -212,7 +217,7 @@ class StorageService {
 
       // Generate unique file name
       final fileName = '${const Uuid().v4()}.jpg';
-      final storagePath = 'baby_$babyProfileId/$fileName';
+      final storagePath = '$currentUserId/baby_$babyProfileId/$fileName';
 
       // Upload to Supabase Storage
       await _supabase.storage.from('gallery-photos').uploadBinary(
@@ -292,11 +297,16 @@ class StorageService {
     required String babyProfileId,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
+      final currentUserId = _supabase.auth.currentUser?.id;
+      if (currentUserId == null || currentUserId.isEmpty) {
+        throw Exception('Please sign in again to upload event photos');
+      }
+
       _validateImageFile(imageFile);
 
       final imageBytes = await imageFile.readAsBytes();
       final fileName = '${const Uuid().v4()}.jpg';
-      final storagePath = 'baby_$babyProfileId/$fileName';
+      final storagePath = '$currentUserId/baby_$babyProfileId/$fileName';
 
       await _supabase.storage.from('event-photos').uploadBinary(
             storagePath,
@@ -444,6 +454,11 @@ class StorageService {
     List<String>? tags,
   }) async {
     try {
+      final currentUserId = _supabase.auth.currentUser?.id;
+      if (currentUserId == null || currentUserId.isEmpty) {
+        throw Exception('Please sign in again to upload photos');
+      }
+
       // Upload main photo
       final photoPath = await uploadGalleryPhoto(
         imageFile: imageFile,
@@ -456,7 +471,8 @@ class StorageService {
       final thumbnail = await generateThumbnail(imageFile);
       final thumbnailBytes = await thumbnail.readAsBytes();
       final thumbnailFileName = '${const Uuid().v4()}_thumb.jpg';
-      final thumbnailPath = 'baby_$babyProfileId/$thumbnailFileName';
+      final thumbnailPath =
+          '$currentUserId/baby_$babyProfileId/$thumbnailFileName';
 
       await _supabase.storage.from('gallery-photos').uploadBinary(
             thumbnailPath,
@@ -484,13 +500,21 @@ class StorageService {
   /// Get storage usage for a baby profile
   Future<int> getStorageUsage(String babyProfileId) async {
     try {
-      final files = await _supabase.storage
-          .from('gallery-photos')
-          .list(path: 'baby_$babyProfileId');
-
       int totalSize = 0;
-      for (final file in files) {
-        totalSize += file.metadata?['size'] as int? ?? 0;
+
+      final currentUserId = _supabase.auth.currentUser?.id;
+      final candidatePaths = <String>{'baby_$babyProfileId'};
+      if (currentUserId != null && currentUserId.isNotEmpty) {
+        candidatePaths.add('$currentUserId/baby_$babyProfileId');
+      }
+
+      for (final pathPrefix in candidatePaths) {
+        final files = await _supabase.storage
+            .from('gallery-photos')
+            .list(path: pathPrefix);
+        for (final file in files) {
+          totalSize += file.metadata?['size'] as int? ?? 0;
+        }
       }
 
       return totalSize;

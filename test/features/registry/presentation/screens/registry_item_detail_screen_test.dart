@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/models/user.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
-import 'package:nonna_app/core/models/baby_profile.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_detail_screen.dart';
@@ -137,11 +136,12 @@ void main() {
       expect(find.byKey(const Key('purchase_button')), findsOneWidget);
     });
 
-    testWidgets('hides purchase button for owner', (tester) async {
+    testWidgets('shows purchase button for owner when not purchased',
+        (tester) async {
       await tester.pumpWidget(
         _buildScreen(_makeItem(), isOwner: true, isPurchased: false),
       );
-      expect(find.byKey(const Key('purchase_button')), findsNothing);
+      expect(find.byKey(const Key('purchase_button')), findsOneWidget);
     });
   });
 }

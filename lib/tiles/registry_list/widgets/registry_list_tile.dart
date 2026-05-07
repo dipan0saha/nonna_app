@@ -151,7 +151,7 @@ class _RegistryItemRow extends StatelessWidget {
         itemWithStatus.purchasers.map((p) => p.displayName).toSet().join(', ');
 
     final canUnpurchase = itemWithStatus.isPurchasedByCurrentUser;
-    final canPurchase = !itemWithStatus.isPurchasedByCurrentUser;
+    final canPurchase = !itemWithStatus.isPurchased;
 
     IconData icon;
     Color? iconColor;
@@ -162,11 +162,10 @@ class _RegistryItemRow extends StatelessWidget {
       iconColor = Colors.orange;
       tooltip = 'Mark as unpurchased';
     } else if (itemWithStatus.isPurchased) {
-      icon = Icons.add_task;
-      iconColor = Colors.green;
-      tooltip = isOwner
-          ? 'Also mark as purchased by you'
-          : 'Mark as purchased by you';
+      icon = Icons.lock;
+      iconColor = Colors.grey;
+      tooltip =
+          isOwner ? 'Already purchased by someone else' : 'Already purchased';
     } else {
       icon = Icons.check_circle_outline;
       iconColor = Colors.green;

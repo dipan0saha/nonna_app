@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/di/providers.dart';
 
 /// Screen for creating a new calendar event.
 ///
@@ -13,12 +15,14 @@ class EventCreationScreen extends ConsumerStatefulWidget {
     required this.createdByUserId,
     this.onCreated,
     this.onCancelled,
+    this.onSaveEvent,
   });
 
   final String babyProfileId;
   final String createdByUserId;
   final VoidCallback? onCreated;
   final VoidCallback? onCancelled;
+  final Future<void> Function(Map<String, dynamic> payload)? onSaveEvent;
 
   @override
   ConsumerState<EventCreationScreen> createState() =>
@@ -94,18 +98,58 @@ class _EventCreationScreenState extends ConsumerState<EventCreationScreen> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
+    if (_endsAt != null && _endsAt!.isBefore(_startsAt)) {
+      setState(() {
+        _saveError = 'End date must be after start date';
+      });
+      return;
+    }
+
     setState(() {
       _isSaving = true;
       _saveError = null;
     });
 
-    // In production this would call a service to persist the event.
-    // For now we just reload the calendar after a short delay.
-    await Future<void>.delayed(const Duration(milliseconds: 200));
+    try {
+      final nowIso = DateTime.now().toIso8601String();
+      final payload = {
+        'baby_profile_id': widget.babyProfileId,
+        'created_by_user_id': widget.createdByUserId,
+        'title': _titleController.text.trim(),
+        'description': _descriptionController.text.trim().isEmpty
+            ? null
+            : _descriptionController.text.trim(),
+        'location': _locationController.text.trim().isEmpty
+            ? null
+            : _locationController.text.trim(),
+        'starts_at': _startsAt.toIso8601String(),
+        'ends_at': _endsAt?.toIso8601String(),
+        'created_at': nowIso,
+        'updated_at': nowIso,
+      };
 
-    if (!mounted) return;
-    setState(() => _isSaving = false);
-    widget.onCreated?.call();
+      if (widget.onSaveEvent != null) {
+        await widget.onSaveEvent!(payload);
+      } else {
+        final databaseService = ref.read(databaseServiceProvider);
+        await databaseService.insert(SupabaseTables.events, payload);
+      }
+
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+
+      if (widget.onCreated != null) {
+        widget.onCreated!.call();
+      } else {
+        Navigator.of(context).pop(true);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isSaving = false;
+        _saveError = 'Failed to save event: $e';
+      });
+    }
   }
 
   @override

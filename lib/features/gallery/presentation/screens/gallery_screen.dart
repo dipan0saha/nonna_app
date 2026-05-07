@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/di/providers.dart';
+import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/gallery_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
 import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
+import 'package:nonna_app/tiles/gallery_favorites/providers/gallery_favorites_provider.dart';
+import 'package:nonna_app/tiles/recent_photos/providers/recent_photos_provider.dart';
 
 /// Gallery screen showing a photo gallery for a baby profile via tile configs.
 class GalleryScreen extends ConsumerStatefulWidget {
@@ -52,7 +58,9 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
     final babyProfileId =
         widget.babyProfileId ?? ref.read(selectedBabyProfileProvider);
     // Determine the role or default to follower
-    final currentRole = widget.userRole ?? UserRole.follower;
+    final currentRole = widget.userRole ??
+        ref.read(homeScreenProvider).selectedRole ??
+        UserRole.follower;
 
     if (babyProfileId != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -69,9 +77,103 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
     await ref.read(galleryScreenProvider.notifier).refresh(widget.screenId);
   }
 
-  void _onUploadTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Upload photo – coming soon!')),
+  Future<void> _onUploadTap(String babyProfileId) async {
+    final userId = ref.read(authProvider).user?.id;
+    if (userId == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please sign in again to upload photos.')),
+      );
+      return;
+    }
+
+    try {
+      final storageService = ref.read(storageServiceProvider);
+      final databaseService = ref.read(databaseServiceProvider);
+
+      final imageFile = await storageService.pickImageFromGallery();
+      if (imageFile == null) {
+        return;
+      }
+
+      final captionResult = await _promptForCaption();
+      if (captionResult == null) {
+        return;
+      }
+      final caption =
+          captionResult.trim().isEmpty ? null : captionResult.trim();
+
+      final storagePath = await storageService.uploadGalleryPhoto(
+        imageFile: imageFile,
+        babyProfileId: babyProfileId,
+        caption: caption,
+      );
+
+      await databaseService.insert(
+        SupabaseTables.photos,
+        {
+          'baby_profile_id': babyProfileId,
+          'uploaded_by_user_id': userId,
+          'storage_path': storagePath,
+          'caption': caption,
+          'created_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toIso8601String(),
+        },
+      );
+
+      await ref
+          .read(recentPhotosProvider.notifier)
+          .refresh(babyProfileId: babyProfileId);
+      await ref
+          .read(galleryFavoritesProvider.notifier)
+          .refresh(babyProfileId: babyProfileId);
+
+      await ref.read(galleryScreenProvider.notifier).refresh(widget.screenId);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Photo uploaded successfully.')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to upload photo: $e')),
+      );
+    }
+  }
+
+  Future<String?> _promptForCaption() async {
+    var draftCaption = '';
+    return await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add a caption'),
+          content: TextField(
+            maxLines: 3,
+            textInputAction: TextInputAction.done,
+            onChanged: (value) => draftCaption = value,
+            decoration: const InputDecoration(
+              hintText: 'Write something about this photo',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(''),
+              child: const Text('Skip'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(draftCaption),
+              child: const Text('Upload'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -80,7 +182,9 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
     // Listen to changes in the globally selected baby profile
     ref.listen<String?>(selectedBabyProfileProvider, (previous, next) {
       if (next != previous && next != null) {
-        final currentRole = widget.userRole ?? UserRole.follower;
+        final currentRole = widget.userRole ??
+            ref.read(homeScreenProvider).selectedRole ??
+            UserRole.follower;
         ref.read(galleryScreenProvider.notifier).loadTiles(
               babyProfileId: next,
               screenId: widget.screenId,
@@ -91,6 +195,16 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
 
     final currentBabyProfileId =
         widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);
+    final resolvedRole = currentBabyProfileId != null
+        ? ref
+            .watch(currentUserRoleForBabyProfileProvider(currentBabyProfileId))
+            .asData
+            ?.value
+        : null;
+    final effectiveRole = widget.userRole ??
+        ref.watch(homeScreenProvider).selectedRole ??
+        resolvedRole ??
+        UserRole.follower;
 
     if (currentBabyProfileId == null) {
       return Scaffold(
@@ -111,10 +225,10 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
         title: Text(widget.title),
         automaticallyImplyLeading: true,
       ),
-      floatingActionButton: widget.userRole == UserRole.owner
+      floatingActionButton: effectiveRole == UserRole.owner
           ? FloatingActionButton(
               key: const Key('upload_photo_fab'),
-              onPressed: _onUploadTap,
+              onPressed: () => _onUploadTap(currentBabyProfileId),
               child: const Icon(Icons.upload),
             )
           : null,

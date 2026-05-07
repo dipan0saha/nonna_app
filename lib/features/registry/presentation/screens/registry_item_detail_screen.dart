@@ -93,7 +93,9 @@ class RegistryItemDetailScreen extends ConsumerWidget {
               children: [
                 Text(
                   'Priority:',
-                  style: Theme.of(context).textTheme.labelLarge,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                 ),
                 AppSpacing.horizontalGapXS,
                 ...List.generate(
@@ -185,7 +187,7 @@ class RegistryItemDetailScreen extends ConsumerWidget {
               AppSpacing.verticalGapM,
             ],
 
-            if (!isPurchasedByCurrentUser)
+            if (!isPurchased)
               ElevatedButton(
                 key: const Key('purchase_button'),
                 onPressed: () {
@@ -209,6 +211,13 @@ class RegistryItemDetailScreen extends ConsumerWidget {
                 },
                 child: const Text('Unmark as Purchased'),
               ),
+
+            if (isPurchased && !isPurchasedByCurrentUser)
+              Text(
+                'This item has already been purchased.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+
             // Purchase count
             if (purchaseCount > 0) ...[
               AppSpacing.verticalGapS,

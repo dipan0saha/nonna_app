@@ -3,7 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nonna_app/features/calendar/presentation/screens/event_creation_screen.dart';
 
-Widget _buildScreen({VoidCallback? onCreated, VoidCallback? onCancelled}) {
+Widget _buildScreen({
+  VoidCallback? onCreated,
+  VoidCallback? onCancelled,
+  Future<void> Function(Map<String, dynamic> payload)? onSaveEvent,
+}) {
   return ProviderScope(
     child: MaterialApp(
       home: EventCreationScreen(
@@ -11,6 +15,7 @@ Widget _buildScreen({VoidCallback? onCreated, VoidCallback? onCancelled}) {
         createdByUserId: 'user-1',
         onCreated: onCreated,
         onCancelled: onCancelled,
+        onSaveEvent: onSaveEvent,
       ),
     ),
   );
@@ -52,7 +57,12 @@ void main() {
 
     testWidgets('calls onCreated after saving valid event', (tester) async {
       var called = false;
-      await tester.pumpWidget(_buildScreen(onCreated: () => called = true));
+      await tester.pumpWidget(
+        _buildScreen(
+          onCreated: () => called = true,
+          onSaveEvent: (_) async {},
+        ),
+      );
       await tester.enterText(
           find.byKey(const Key('event_title_field')), 'Birthday Party');
       await tester.tap(find.byKey(const Key('save_event_button')));

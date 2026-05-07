@@ -20,7 +20,7 @@ Edge Functions in this repo:
 |---|---|---|---|
 | `generate-thumbnail` | Partial (stub) | Simulates thumbnail generation and optional record update | `bucket`, `path`, optional `recordId`, `table` |
 | `image-processing` | Partial (simulated processing) | Metadata/thumbnail/optimization response workflow | `imageUrl`, `bucketName`, `filePath`, `operations` |
-| `send-invitation-email` | Implemented | Sends invite email via Resend (or mock if key missing) | `email`, `inviterName`, `babyName`, `inviteUrl` |
+| `send-invitation-email` | Implemented | Sends invite email via Resend (preferred) or SendGrid fallback; returns error if neither provider secret is configured | `email`, `inviterName`, `babyName`, `inviteUrl` |
 | `send-push-notification` | Implemented | Sends OneSignal push by external user IDs (or mock) | `targetUserIds`, `title`, `message`, optional `additionalData` |
 | `notification-trigger` | Implemented | Persists notification then sends OneSignal push | `recipientUserId`, `notificationType`, `title`, `message`, optional `data`, `babyProfileId` |
 | `tile-configs` | Implemented (updated) | Returns role/screen tile configs with server-side content-aware filtering | `babyProfileId`, `userRole`, optional `screenName` |
@@ -34,7 +34,8 @@ Set under: Supabase Dashboard -> Project Settings -> Edge Functions -> Secrets
 | `SUPABASE_URL` | all | Project URL |
 | `SUPABASE_ANON_KEY` | `tile-configs`, `notification-trigger` | User-context queries |
 | `SUPABASE_SERVICE_ROLE_KEY` | `generate-thumbnail`, `image-processing` | Privileged updates/storage operations |
-| `RESEND_API_KEY` | `send-invitation-email` | If missing, function logs mock success |
+| `RESEND_API_KEY` | `send-invitation-email` | Preferred provider key for invitation email delivery |
+| `SENDGRID_API_KEY` | `send-invitation-email` | Fallback provider key when `RESEND_API_KEY` is not set |
 | `ONESIGNAL_APP_ID` | `send-push-notification`, `notification-trigger` | OneSignal app |
 | `ONESIGNAL_REST_API_KEY` | `send-push-notification` | Basic auth key |
 | `ONESIGNAL_API_KEY` | `notification-trigger` | Basic auth key (current code path) |
@@ -117,8 +118,8 @@ curl -X POST "https://ubptybhhrgdiyfkcqgwu.supabase.co/functions/v1/send-invitat
 ```
 
 Expected:
-- HTTP `200`
-- Real send when `RESEND_API_KEY` exists, mock success otherwise
+- HTTP `200` when either `RESEND_API_KEY` (preferred) or `SENDGRID_API_KEY` (fallback) is configured and provider accepts the send request
+- HTTP `500` when neither provider key is configured
 
 ## Monitoring
 

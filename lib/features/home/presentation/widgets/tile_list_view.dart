@@ -78,10 +78,22 @@ class TileListView extends StatelessWidget {
       shrinkWrap: shrinkWrap,
       physics: physics,
       itemCount: tiles.length,
-      itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.m),
-        child: TileFactory.buildTile(context, tiles[index]),
-      ),
+      itemBuilder: (context, index) {
+        final tile = TileFactory.buildTile(context, tiles[index]);
+
+        // Allow smart tiles to fully hide themselves without leaving list gaps.
+        if (tile is SizedBox &&
+            tile.width == 0 &&
+            tile.height == 0 &&
+            tile.child == null) {
+          return tile;
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.m),
+          child: tile,
+        );
+      },
     );
 
     if (onRefresh != null) {

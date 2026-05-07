@@ -135,9 +135,10 @@ class RealtimeService {
         table: table,
         filter: changeFilter,
         callback: (payload) {
+          final normalizedPayload = _normalizePayload(payload);
           debugPrint(
-              '📨 Received realtime event for $table: ${payload.eventType}');
-          controller.add(payload);
+              '📨 Received realtime event for $table: ${normalizedPayload['eventType']}');
+          controller.add(normalizedPayload);
         },
       );
 
@@ -296,4 +297,34 @@ class RealtimeService {
 
   /// Get list of active channel names
   List<String> get activeChannelNames => _channels.keys.toList();
+
+  Map<String, dynamic> _normalizePayload(dynamic payload) {
+    if (payload is Map<String, dynamic>) return payload;
+    if (payload is Map) return Map<String, dynamic>.from(payload);
+
+    final dynamic eventType = payload.eventType;
+    final dynamic newRecord = payload.newRecord;
+    final dynamic oldRecord = payload.oldRecord;
+    final dynamic schema = payload.schema;
+    final dynamic table = payload.table;
+
+    return {
+      'eventType': _normalizeEventType(eventType),
+      'new': newRecord is Map ? Map<String, dynamic>.from(newRecord) : null,
+      'old': oldRecord is Map ? Map<String, dynamic>.from(oldRecord) : null,
+      'schema': schema,
+      'table': table,
+    };
+  }
+
+  String _normalizeEventType(dynamic eventType) {
+    if (eventType == null) return 'UNKNOWN';
+    if (eventType is Enum) return eventType.name.toUpperCase();
+
+    final value = eventType.toString();
+    if (value.contains('.')) {
+      return value.split('.').last.toUpperCase();
+    }
+    return value.toUpperCase();
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -63,6 +65,10 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
   @override
   RecentPurchasesState build() {
+    // Eager initialization prevents ref.read calls from happening during dispose.
+    _realtimeService;
+    _subscriptionManager;
+
     ref.onDispose(() {
       _cancelRealtimeSubscription();
     });
@@ -95,15 +101,13 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
             isLoading: false,
             unthankedCount: unthankedCount,
           );
-          
+
           // Still setup realtime subscription!
           await _setupRealtimeSubscription(babyProfileId);
-          
-          // Background refresh if cache is missing item names (prevents showing UUIDs)
-          if (cachedPurchases.any((p) => p.itemName == null)) {
-            _backgroundRefresh(babyProfileId);
-          }
-          
+
+          // Always refresh in background to recover from stale cache/missed events.
+          unawaited(_backgroundRefresh(babyProfileId));
+
           return;
         }
       }
@@ -266,10 +270,12 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     if (!ref.mounted) return;
     try {
       final eventType = payload['eventType'] as String?;
-      
+
       // When changes happen (INSERT/UPDATE/DELETE), just trigger a fresh fetch
       // to ensure we get the joined data like registry_items(name) properly.
-      if (eventType == 'INSERT' || eventType == 'UPDATE' || eventType == 'DELETE') {
+      if (eventType == 'INSERT' ||
+          eventType == 'UPDATE' ||
+          eventType == 'DELETE') {
         // Trigger a silent background refresh to fetch latest state WITH joins
         _backgroundRefresh(babyProfileId);
       }
@@ -279,7 +285,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
       debugPrint('❌ Failed to handle real-time update: $e');
     }
   }
-  
+
   Future<void> _backgroundRefresh(String babyProfileId) async {
     try {
       final purchases = await _fetchFromDatabase(babyProfileId);

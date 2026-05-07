@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,6 +7,7 @@ import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/photo.dart';
+import '../../../core/services/storage_service.dart';
 
 /// Recent Photos provider for the Recent Photos tile
 ///
@@ -69,6 +72,10 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
 
   @override
   RecentPhotosState build() {
+    // Eager initialization prevents ref.read during dispose.
+    _realtimeService;
+    _subscriptionManager;
+
     ref.onDispose(() {
       _cancelRealtimeSubscription();
     });
@@ -95,11 +102,21 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
         final cachedPhotos = await _loadFromCache(babyProfileId);
         if (!ref.mounted) return;
         if (cachedPhotos != null && cachedPhotos.isNotEmpty) {
+          final displayPhotos = await _toDisplayPhotos(cachedPhotos);
+          if (!ref.mounted) return;
+
           state = state.copyWith(
-            photos: cachedPhotos,
+            photos: displayPhotos,
             isLoading: false,
             currentPage: 1,
           );
+
+          // Keep live updates active even when cache is used.
+          await _setupRealtimeSubscription(babyProfileId);
+          if (!ref.mounted) return;
+
+          // Refresh in background to surface newly uploaded photos quickly.
+          unawaited(_refreshFromDatabase(babyProfileId));
           return;
         }
       }
@@ -202,9 +219,11 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
         .order(SupabaseTables.createdAt, ascending: false)
         .range(offset, offset + limit - 1);
 
-    return (response as List)
+    final rawPhotos = (response as List)
         .map((json) => Photo.fromJson(Map<String, dynamic>.from(json as Map)))
         .toList();
+
+    return await _toDisplayPhotos(rawPhotos);
   }
 
   /// Load photos from cache
@@ -218,9 +237,11 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
 
       if (cachedData == null) return null;
 
-      return (cachedData as List)
+      final photos = (cachedData as List)
           .map((json) => Photo.fromJson(Map<String, dynamic>.from(json as Map)))
           .toList();
+
+      return await _toDisplayPhotos(photos);
     } catch (e) {
       debugPrint('⚠️  Failed to load from cache: $e');
       return null;
@@ -281,35 +302,82 @@ class RecentPhotosNotifier extends Notifier<RecentPhotosState> {
     if (!ref.mounted) return;
     try {
       final eventType = payload['eventType'] as String?;
-      final newData = payload['new'] as Map<String, dynamic>?;
-
-      if (eventType == 'INSERT' && newData != null) {
-        final newPhoto = Photo.fromJson(newData);
-        final updatedPhotos = [newPhoto, ...state.photos];
-        state = state.copyWith(photos: updatedPhotos);
-        _saveToCache(babyProfileId, updatedPhotos);
-      } else if (eventType == 'UPDATE' && newData != null) {
-        final updatedPhoto = Photo.fromJson(newData);
-        final updatedPhotos = state.photos
-            .map((p) => p.id == updatedPhoto.id ? updatedPhoto : p)
-            .toList();
-        state = state.copyWith(photos: updatedPhotos);
-        _saveToCache(babyProfileId, updatedPhotos);
-      } else if (eventType == 'DELETE') {
-        final oldData = payload['old'] as Map<String, dynamic>?;
-        if (oldData != null) {
-          final deletedId = oldData['id'] as String;
-          final updatedPhotos =
-              state.photos.where((p) => p.id != deletedId).toList();
-          state = state.copyWith(photos: updatedPhotos);
-          _saveToCache(babyProfileId, updatedPhotos);
-        }
+      if (eventType == 'INSERT' ||
+          eventType == 'UPDATE' ||
+          eventType == 'DELETE') {
+        unawaited(_refreshFromDatabase(babyProfileId));
       }
 
       debugPrint('✅ Real-time photo update processed: $eventType');
     } catch (e) {
       debugPrint('❌ Failed to handle real-time update: $e');
     }
+  }
+
+  Future<void> _refreshFromDatabase(String babyProfileId) async {
+    try {
+      final photos = await _fetchFromDatabase(
+        babyProfileId: babyProfileId,
+        limit: _pageSize,
+        offset: 0,
+      );
+      if (!ref.mounted) return;
+
+      await _saveToCache(babyProfileId, photos);
+      if (!ref.mounted) return;
+
+      state = state.copyWith(
+        photos: photos,
+        isLoading: false,
+        hasMore: photos.isNotEmpty,
+        currentPage: 1,
+      );
+    } catch (e) {
+      debugPrint('⚠️  Background recent photos refresh failed: $e');
+    }
+  }
+
+  Future<List<Photo>> _toDisplayPhotos(List<Photo> photos) async {
+    final converted = <Photo>[];
+    for (final photo in photos) {
+      converted.add(await _toDisplayPhoto(photo));
+    }
+    return converted;
+  }
+
+  Future<Photo> _toDisplayPhoto(Photo photo) async {
+    final storageService = ref.read(storageServiceProvider);
+    final resolvedStorage =
+        await _resolveGalleryPath(storageService, photo.storagePath);
+    final resolvedThumbnail = photo.thumbnailPath != null
+        ? await _resolveGalleryPath(storageService, photo.thumbnailPath!)
+        : null;
+
+    return photo.copyWith(
+      storagePath: resolvedStorage,
+      thumbnailPath: resolvedThumbnail,
+    );
+  }
+
+  Future<String> _resolveGalleryPath(
+      StorageService storageService, String pathOrUrl) async {
+    if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
+      return pathOrUrl;
+    }
+
+    if (!_isGalleryStoragePath(pathOrUrl)) {
+      return pathOrUrl;
+    }
+
+    try {
+      return await storageService.getSignedUrl('gallery-photos', pathOrUrl);
+    } catch (_) {
+      return pathOrUrl;
+    }
+  }
+
+  bool _isGalleryStoragePath(String pathOrUrl) {
+    return pathOrUrl.startsWith('baby_') || pathOrUrl.contains('/baby_');
   }
 
   /// Cancel real-time subscription
