@@ -236,5 +236,7 @@ Start here for app-wide understanding:
 - `docs/99_master_reference_docs/Database_Schema_and_Functions.md`
 
 ---
-Last updated: 2026-05-04
-Maintainer intent: Keep this file concise, implementation-aligned, and actionable for future coding agents.
+# Test Login Credentials for automated testing
+
+Email: testuser_nonna@example.com
+Password: Password123!
