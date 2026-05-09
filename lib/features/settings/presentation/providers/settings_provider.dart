@@ -10,6 +10,7 @@ class SettingsState {
   final bool notificationsEnabled;
   final bool darkModeEnabled;
   final String language;
+  final String fontFamily;
   final bool isSaving;
   final String? saveError;
   final bool saveSuccess;
@@ -18,6 +19,7 @@ class SettingsState {
     this.notificationsEnabled = true,
     this.darkModeEnabled = false,
     this.language = 'en',
+    this.fontFamily = 'Plus Jakarta Sans',
     this.isSaving = false,
     this.saveError,
     this.saveSuccess = false,
@@ -27,6 +29,7 @@ class SettingsState {
     bool? notificationsEnabled,
     bool? darkModeEnabled,
     String? language,
+    String? fontFamily,
     bool? isSaving,
     String? saveError,
     bool? saveSuccess,
@@ -35,6 +38,7 @@ class SettingsState {
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       darkModeEnabled: darkModeEnabled ?? this.darkModeEnabled,
       language: language ?? this.language,
+      fontFamily: fontFamily ?? this.fontFamily,
       isSaving: isSaving ?? this.isSaving,
       saveError: saveError,
       saveSuccess: saveSuccess ?? this.saveSuccess,
@@ -54,6 +58,7 @@ class SettingsNotifier extends Notifier<SettingsState> {
           theme == 'system' &&
               PlatformDispatcher.instance.platformBrightness == Brightness.dark,
       language: storage.languageCode ?? 'en',
+      fontFamily: storage.fontFamily,
     );
   }
 
@@ -80,6 +85,13 @@ class SettingsNotifier extends Notifier<SettingsState> {
     state = state.copyWith(language: language, saveSuccess: false);
     await ref.read(localStorageServiceProvider).setLanguageCode(language);
     debugPrint('✅ Language changed: $language');
+  }
+
+  /// Change font family
+  void changeFontFamily(String family) async {
+    state = state.copyWith(fontFamily: family, saveSuccess: false);
+    await ref.read(localStorageServiceProvider).setFontFamily(family);
+    debugPrint('✅ Font family changed: $family');
   }
 
   /// Save settings

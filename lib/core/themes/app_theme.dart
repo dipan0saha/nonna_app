@@ -22,8 +22,36 @@ class AppTheme {
   // Light Theme
   // ============================================================
 
+  static TextTheme _getDynamicTextTheme(String fontFamily, TextTheme baseTheme) {
+    switch (fontFamily) {
+      case 'Inter':
+        return GoogleFonts.interTextTheme(baseTheme);
+      case 'Outfit':
+        return GoogleFonts.outfitTextTheme(baseTheme);
+      case 'Poppins':
+        return GoogleFonts.poppinsTextTheme(baseTheme);
+      case 'Roboto':
+        return GoogleFonts.robotoTextTheme(baseTheme);
+      case 'Montserrat':
+        return GoogleFonts.montserratTextTheme(baseTheme);
+      case 'Nunito':
+        return GoogleFonts.nunitoTextTheme(baseTheme);
+      case 'Lato':
+        return GoogleFonts.latoTextTheme(baseTheme);
+      case 'Manrope':
+        return GoogleFonts.manropeTextTheme(baseTheme);
+      case 'Quicksand':
+        return GoogleFonts.quicksandTextTheme(baseTheme);
+      case 'Rubik':
+        return GoogleFonts.rubikTextTheme(baseTheme);
+      case 'Plus Jakarta Sans':
+      default:
+        return GoogleFonts.plusJakartaSansTextTheme(baseTheme);
+    }
+  }
+
   /// Get the light theme for the app
-  static ThemeData get lightTheme {
+  static ThemeData getLightTheme(String fontFamily) {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
@@ -32,7 +60,7 @@ class AppTheme {
       colorScheme: _lightColorScheme,
 
       // Typography
-      textTheme: GoogleFonts.outfitTextTheme(AppTextStyles.textTheme),
+      textTheme: _getDynamicTextTheme(fontFamily, AppTextStyles.textTheme),
 
       // Scaffold
       scaffoldBackgroundColor: AppColors.background,
@@ -114,7 +142,7 @@ class AppTheme {
   // ============================================================
 
   /// Get the dark theme for the app
-  static ThemeData get darkTheme {
+  static ThemeData getDarkTheme(String fontFamily) {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
@@ -123,7 +151,7 @@ class AppTheme {
       colorScheme: _darkColorScheme,
 
       // Typography
-      textTheme: GoogleFonts.outfitTextTheme(_darkTextTheme),
+      textTheme: _getDynamicTextTheme(fontFamily, _darkTextTheme),
 
       // Scaffold
       scaffoldBackgroundColor: AppColors.gray900,

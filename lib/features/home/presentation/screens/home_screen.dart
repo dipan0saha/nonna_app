@@ -122,7 +122,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _syncSelectedProfileIfNeeded(
     List<BabyProfileSummary> profiles,
   ) async {
-    if (profiles.isEmpty) return;
+    if (profiles.isEmpty) {
+      final currentSelected = ref.read(selectedBabyProfileProvider);
+      if (currentSelected != null) {
+        ref.read(selectedBabyProfileProvider.notifier).select(null);
+      }
+      return;
+    }
 
     final selectedId = ref.read(selectedBabyProfileProvider);
     final hasValidSelection = selectedId != null &&

@@ -156,47 +156,64 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
       ),
       // Actions — avatar + chevron → profile
       actions: [
-        IconButton(
-          icon: const Icon(Icons.add_circle_outline),
-          onPressed: userId.isEmpty
-              ? null
-              : () {
-                  context.push(
-                    AppRoutes.babyProfileCreate,
-                    extra: {'userId': userId},
-                  );
-                },
-        ),
-        if (selectedProfile != null)
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            tooltip: 'Baby Profile Info',
-            onPressed: userId.isEmpty
-                ? null
-                : () {
-                    context.push(
-                      AppRoutes.babyProfile,
-                      extra: {
-                        'babyProfileId': selectedProfile.id,
-                        'currentUserId': userId,
-                      },
-                    );
-                  },
-          ),
-        if (selectedProfile != null && selectedRole == UserRole.owner)
-          IconButton(
-            icon: const Icon(Icons.group_add_outlined),
-            onPressed: userId.isEmpty
-                ? null
-                : () {
-                    context.push(
-                      AppRoutes.babyProfileFollowers,
-                      extra: {
-                        'babyProfileId': selectedProfile.id,
-                        'currentUserId': userId,
-                      },
-                    );
-                  },
+        if (userId.isNotEmpty)
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            tooltip: 'Baby Profile Options',
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            onSelected: (value) {
+              if (value == 'create') {
+                context.push(AppRoutes.babyProfileCreate, extra: {'userId': userId});
+              } else if (value == 'info' && selectedProfile != null) {
+                context.push(AppRoutes.babyProfile, extra: {
+                  'babyProfileId': selectedProfile.id,
+                  'currentUserId': userId,
+                });
+              } else if (value == 'followers' && selectedProfile != null) {
+                context.push(AppRoutes.babyProfileFollowers, extra: {
+                  'babyProfileId': selectedProfile.id,
+                  'currentUserId': userId,
+                });
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              if (selectedProfile != null)
+                const PopupMenuItem(
+                  value: 'info',
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline, size: 20),
+                      SizedBox(width: 12),
+                      Text('Baby Profile Info'),
+                    ],
+                  ),
+                ),
+              if (selectedProfile != null && selectedRole == UserRole.owner)
+                const PopupMenuItem(
+                  value: 'followers',
+                  child: Row(
+                    children: [
+                      Icon(Icons.group_add_outlined, size: 20),
+                      SizedBox(width: 12),
+                      Text('Manage Followers'),
+                    ],
+                  ),
+                ),
+              if (selectedProfile != null)
+                const PopupMenuDivider(),
+              const PopupMenuItem(
+                value: 'create',
+                child: Row(
+                  children: [
+                    Icon(Icons.add_circle_outline, size: 20),
+                    SizedBox(width: 12),
+                    Text('Add New Baby'),
+                  ],
+                ),
+              ),
+            ],
           ),
         GestureDetector(
           key: const Key('profile_avatar_button'),

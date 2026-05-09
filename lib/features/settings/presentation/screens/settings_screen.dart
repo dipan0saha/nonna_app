@@ -38,13 +38,20 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (v) => notifier.toggleDarkMode(enabled: v),
           ),
           const Divider(),
-          const _SectionHeader(title: 'Language'),
+          const _SectionHeader(title: 'Language & Typography'),
           ListTile(
             key: const Key('language_tile'),
             title: const Text('Language'),
             subtitle: Text(_languageLabel(state.language)),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showLanguagePicker(context, state.language, notifier),
+          ),
+          ListTile(
+            key: const Key('font_tile'),
+            title: const Text('App Font'),
+            subtitle: Text(state.fontFamily),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _showFontPicker(context, state.fontFamily, notifier),
           ),
           const Divider(),
           const _SectionHeader(title: 'Account'),
@@ -106,6 +113,51 @@ class SettingsScreen extends ConsumerWidget {
                   Navigator.of(ctx).pop();
                 },
                 child: Text(lang.$2),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+
+  Future<void> _showFontPicker(
+    BuildContext context,
+    String current,
+    SettingsNotifier notifier,
+  ) async {
+    final fonts = [
+      'Plus Jakarta Sans',
+      'Inter',
+      'Outfit',
+      'Poppins',
+      'Roboto',
+      'Montserrat',
+      'Nunito',
+      'Lato',
+      'Manrope',
+      'Quicksand',
+      'Rubik',
+    ];
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: const Text('Select App Font'),
+        children: fonts
+            .map(
+              (font) => SimpleDialogOption(
+                key: Key('font_option_$font'),
+                onPressed: () {
+                  notifier.changeFontFamily(font);
+                  Navigator.of(ctx).pop();
+                },
+                child: Text(
+                  font,
+                  style: TextStyle(
+                    fontWeight: current == font ? FontWeight.bold : FontWeight.normal,
+                    color: current == font ? Theme.of(context).colorScheme.primary : null,
+                  ),
+                ),
               ),
             )
             .toList(),

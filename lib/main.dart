@@ -32,8 +32,8 @@ class MyApp extends ConsumerWidget {
         return MaterialApp.router(
           routerConfig: router,
           title: 'Nonna App',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
+          theme: AppTheme.getLightTheme(settings.fontFamily),
+          darkTheme: AppTheme.getDarkTheme(settings.fontFamily),
           themeMode:
               settings.darkModeEnabled ? ThemeMode.dark : ThemeMode.light,
           themeAnimationDuration: Duration.zero,

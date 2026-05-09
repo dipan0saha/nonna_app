@@ -94,6 +94,8 @@ This document serves as the master reference map for all PostgreSQL tables and S
 | `note` | varchar(500) | | Optional gift message to the family. |
 | `purchased_at` | timestamptz | DEFAULT now() | Time the gift was marked bought. |
 
+*Note on RLS:* Baby profile owners have an explicit `DELETE` policy allowing them to unmark/delete ANY purchase record for their baby's registry items, regardless of who purchased it.
+
 ### `events`
 | Column | Type | Constraints | Description & Usage |
 |---|---|---|---|

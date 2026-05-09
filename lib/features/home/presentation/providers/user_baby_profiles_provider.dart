@@ -48,6 +48,7 @@ final userBabyProfilesProvider =
   final profilesResponse = await databaseService
       .select(SupabaseTables.babyProfiles)
       .inFilter('id', profileIds)
+      .isFilter('deleted_at', null)
       .order('created_at');
 
   return (profilesResponse as List)

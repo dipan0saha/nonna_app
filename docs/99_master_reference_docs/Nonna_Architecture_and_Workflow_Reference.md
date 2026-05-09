@@ -29,9 +29,9 @@ When details conflict, use this order:
 - Added full-screen follower-management routes:
   - `/baby-profile/followers`
   - `/baby-profile/followers/invite`
-- Home app bar now includes:
-  - Persistent create-profile action
-  - Owner-only invite/manage-followers action for the selected baby profile
+- Home app bar actions (create-profile, baby info, and owner-only manage-followers) have been consolidated into a single PopupMenuButton to reduce visual clutter.
+- Dynamic typography was added, allowing users to switch between 11 premium Google Fonts (e.g., Plus Jakarta Sans, Inter, Montserrat) globally from the settings screen.
+- Registry business logic and RLS policies were updated to allow baby profile owners to unmark/delete ANY registry purchase, not just their own.
 - Baby profile creation now auto-selects the new profile and switches Home to owner role context.
 - Registry role/fab visibility now resolves from live membership (`currentUserRoleForBabyProfileProvider`) for the selected profile.
 - Invitation flow is currently email-only in-app (`invitee_email`), with owner-only revoke support.

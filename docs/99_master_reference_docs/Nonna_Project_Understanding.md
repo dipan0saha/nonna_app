@@ -174,9 +174,11 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 - Added owner-facing follower management routes and screens:
   - `/baby-profile/followers`
   - `/baby-profile/followers/invite`
-- Home app bar now exposes:
-  - A persistent `Create Baby Profile` action
-  - An owner-only `Invite & Manage Followers` action for the selected baby profile
+- Home app bar actions have been consolidated into a single, cleaner PopupMenuButton containing:
+  - `Create Baby Profile`
+  - `Baby Profile Info`
+  - Owner-only `Manage Followers`
+- Dynamic typography added: users can change the global app font from Settings (supported via Riverpod state driving `GoogleFonts` in `MaterialApp` theme).
 - Baby profile creation flow now immediately:
   - Selects the newly created profile
   - Invalidates profile switcher data
@@ -186,6 +188,7 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
   - Invitations are stored using `invitee_email` (lowercased)
   - Owner can revoke pending invitations from follower management
 - Registry role resolution now prioritizes live per-profile membership resolution to avoid stale role/fab mismatches.
+- Registry unmark purchases: Supabase RLS policies and provider logic were updated to explicitly allow baby profile owners to delete ANY registry purchase.
 - Logout/auth-session behavior was hardened:
   - External service identity (Analytics/Crashlytics/OneSignal) is cleared before sign-out
   - Auth guard checks prioritize explicit auth provider state to reduce stale-session UI artifacts

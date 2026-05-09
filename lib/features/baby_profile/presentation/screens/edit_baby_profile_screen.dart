@@ -4,6 +4,7 @@ import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/gender.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 import 'package:nonna_app/features/baby_profile/presentation/widgets/baby_profile_widgets.dart';
+import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
 
 /// Screen for editing an existing baby profile.
 ///
@@ -101,6 +102,7 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
     if (!mounted) return;
     final state = ref.read(babyProfileProvider);
     if (state.saveSuccess) {
+      ref.invalidate(userBabyProfilesProvider);
       widget.onSaved?.call();
     }
   }
@@ -113,7 +115,10 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
             .read(babyProfileProvider.notifier)
             .deleteProfile(babyProfileId: widget.babyProfileId);
         if (!mounted) return;
-        if (deleted) widget.onDeleted?.call();
+        if (deleted) {
+          ref.invalidate(userBabyProfilesProvider);
+          widget.onDeleted?.call();
+        }
       },
     );
   }

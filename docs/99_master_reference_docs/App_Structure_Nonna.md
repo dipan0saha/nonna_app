@@ -20,7 +20,9 @@ Core infrastructure, tiles layer, and features layer are implemented. **Note**: 
 - Added owner collaboration flows in baby profile feature:
    - `FollowersManagementScreen` at `/baby-profile/followers`
    - `InviteFollowersScreen` at `/baby-profile/followers/invite`
-- Home app bar now includes persistent create-profile action and owner-only invite/manage-followers action.
+- Home app bar actions (`add`, `info`, `followers`) have been consolidated into a cleaner PopupMenuButton.
+- Added dynamic typography, allowing users to choose from 11 top mobile fonts via the Settings screen.
+- Registry business logic and RLS policies updated to allow baby profile owners to delete any registry purchase.
 - Invitation workflow is email-only in current app implementation.
 - New profile creation now auto-selects the new profile and refreshes home/profile context.
 - Auth sign-out flow now clears external service user identities before Supabase sign-out.

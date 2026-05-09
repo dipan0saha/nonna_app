@@ -18,6 +18,7 @@ class LocalStorageService {
   // Storage keys
   static const String _keyOnboardingCompleted = 'onboarding_completed';
   static const String _keyThemeMode = 'theme_mode';
+  static const String _keyFontFamily = 'font_family';
   static const String _keyLanguageCode = 'language_code';
   static const String _keyAnalyticsEnabled = 'analytics_enabled';
   static const String _keyNotificationsEnabled = 'notifications_enabled';
@@ -98,6 +99,22 @@ class LocalStorageService {
   Future<void> setThemeMode(String mode) async {
     _ensureInitialized();
     await _prefs!.setString(_keyThemeMode, mode);
+  }
+
+  // ==========================================
+  // Typography
+  // ==========================================
+
+  /// Get the saved font family
+  String get fontFamily {
+    _ensureInitialized();
+    return _prefs!.getString(_keyFontFamily) ?? 'Plus Jakarta Sans';
+  }
+
+  /// Set the font family
+  Future<void> setFontFamily(String family) async {
+    _ensureInitialized();
+    await _prefs!.setString(_keyFontFamily, family);
   }
 
   // ==========================================
