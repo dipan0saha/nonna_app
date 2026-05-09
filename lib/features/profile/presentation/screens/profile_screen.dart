@@ -42,14 +42,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(profileProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       key: const Key('profile_screen'),
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: AppColors.primaryLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.large(
+            title: const Text('Profile'),
+            backgroundColor: theme.scaffoldBackgroundColor,
+            scrolledUnderElevation: 0,
+          ),
+          SliverToBoxAdapter(
+            child: _buildBody(state),
+          ),
+        ],
       ),
-      body: _buildBody(state),
     );
   }
 
@@ -88,57 +97,207 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       return const Center(child: Text('No profile found'));
     }
 
-    return SingleChildScrollView(
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
       padding: AppSpacing.screenPadding,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ProfileAvatar(
-            avatarUrl: profile.avatarUrl,
-            displayName: profile.displayName,
-            radius: 48,
-          ),
-          AppSpacing.verticalGapM,
-          Text(
-            profile.displayName,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+          // Profile Header Card
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.l),
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).shadowColor.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
+              ],
+            ),
+            child: Column(
+              children: [
+                ProfileAvatar(
+                  avatarUrl: profile.avatarUrl,
+                  displayName: profile.displayName,
+                  radius: 48,
+                ),
+                AppSpacing.verticalGapM,
+                Text(
+                  profile.displayName,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '@${profile.userId.substring(0, 8)}', // Softly hinting a mock handle or subtitle
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                ),
+              ],
+            ),
           ),
           AppSpacing.verticalGapL,
-          if (state.stats != null) _StatsSection(stats: state.stats!),
-          AppSpacing.verticalGapL,
-          const Divider(),
-          ProfileSettingsItem(
-            icon: Icons.edit,
-            label: 'Edit Profile',
-            onTap: widget.onEditTap ??
-                () {
-                  context.push('${AppRoutes.profile}/edit',
-                      extra: {'userId': widget.userId});
-                },
+
+          // Stats Section
+          if (state.stats != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: AppSpacing.m, bottom: AppSpacing.xs),
+              child: Text(
+                'Activity',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            _StatsSection(stats: state.stats!),
+            AppSpacing.verticalGapL,
+          ],
+
+          // Actions Section
+          Padding(
+            padding: const EdgeInsets.only(
+                left: AppSpacing.m, bottom: AppSpacing.xs),
+            child: Text(
+              'Account',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
           ),
-          ProfileSettingsItem(
-            icon: Icons.settings,
-            label: 'Settings',
-            onTap: widget.onSettingsTap ??
-                () {
-                  context.push(AppRoutes.settings);
-                },
+          Container(
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).shadowColor.withOpacity(0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    _EnhancedListTile(
+                      icon: Icons.edit_rounded,
+                      iconColor: Colors.blue.shade600,
+                      backgroundColor: Colors.blue.shade100,
+                      title: 'Edit Profile',
+                      onTap: widget.onEditTap ??
+                          () {
+                            context.push('${AppRoutes.profile}/edit',
+                                extra: {'userId': widget.userId});
+                          },
+                    ),
+                    const _Divider(),
+                    _EnhancedListTile(
+                      icon: Icons.settings_rounded,
+                      iconColor: Colors.teal.shade600,
+                      backgroundColor: Colors.teal.shade100,
+                      title: 'Settings',
+                      onTap: widget.onSettingsTap ??
+                          () {
+                            context.push(AppRoutes.settings);
+                          },
+                    ),
+                    const _Divider(),
+                    _EnhancedListTile(
+                      icon: Icons.logout_rounded,
+                      iconColor: colorScheme.error,
+                      backgroundColor: colorScheme.errorContainer,
+                      title: 'Logout',
+                      titleColor: colorScheme.error,
+                      showTrailing: false,
+                      onTap: widget.onLogoutTap ??
+                          () async {
+                            final router = GoRouter.of(context);
+                            await ref.read(authProvider.notifier).signOut();
+                            router.go(AppRoutes.login);
+                          },
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          ProfileSettingsItem(
-            icon: Icons.logout,
-            label: 'Logout',
-            onTap: widget.onLogoutTap ??
-                () async {
-                  final router = GoRouter.of(context);
-                  await ref.read(authProvider.notifier).signOut();
-                  router.go(AppRoutes.login);
-                },
-            trailing: const Icon(Icons.logout, color: AppColors.error),
-          ),
+          // Extra padding for scrolling
+          const SizedBox(height: 100),
         ],
       ),
+    );
+  }
+}
+
+class _Divider extends StatelessWidget {
+  const _Divider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 64.0),
+      child: Divider(
+        height: 1,
+        thickness: 1,
+        color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.4),
+      ),
+    );
+  }
+}
+
+class _EnhancedListTile extends StatelessWidget {
+  const _EnhancedListTile({
+    required this.title,
+    required this.icon,
+    required this.iconColor,
+    required this.backgroundColor,
+    this.onTap,
+    this.showTrailing = true,
+    this.titleColor,
+  });
+
+  final String title;
+  final IconData icon;
+  final Color iconColor;
+  final Color backgroundColor;
+  final VoidCallback? onTap;
+  final bool showTrailing;
+  final Color? titleColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: AppSpacing.m, vertical: 4),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: iconColor, size: 22),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.w500, color: titleColor),
+      ),
+      trailing: showTrailing
+          ? const Icon(Icons.chevron_right_rounded, color: Colors.grey)
+          : null,
+      onTap: onTap,
     );
   }
 }
