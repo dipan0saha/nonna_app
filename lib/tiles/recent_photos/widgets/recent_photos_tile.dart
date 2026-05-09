@@ -143,7 +143,7 @@ class _PhotoItem extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppSpacing.xs),
               child: CachedNetworkImage(
-                imageUrl: photo.storagePath,
+                imageUrl: photo.thumbnailPath ?? photo.storagePath,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
                   color: AppColors.primaryLight,

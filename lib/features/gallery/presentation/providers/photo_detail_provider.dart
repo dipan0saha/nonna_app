@@ -196,6 +196,37 @@ class PhotoDetailNotifier extends Notifier<PhotoDetailState> {
     }
   }
 
+  Future<bool> deletePhoto({required Photo photo}) async {
+    try {
+      state = state.copyWith(isLoading: true, error: null);
+
+      final db = ref.read(databaseServiceProvider);
+      final storage = ref.read(storageServiceProvider);
+
+      await db.delete(SupabaseTables.photos).eq('id', photo.id);
+      
+      try {
+        await storage.deleteFile('gallery-photos', photo.storagePath);
+        if (photo.thumbnailPath != null) {
+          await storage.deleteFile('gallery-photos', photo.thumbnailPath!);
+        }
+      } catch (e) {
+        debugPrint('Warning: Failed to delete files from storage: $e');
+      }
+
+      await _refreshRelatedTiles(photo.babyProfileId);
+      return true;
+    } catch (e) {
+      debugPrint('Failed to delete photo: $e');
+      if (!ref.mounted) return false;
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Failed to delete photo.',
+      );
+      return false;
+    }
+  }
+
   Future<void> refreshRelatedTilesForComments(String babyProfileId) async {
     await _refreshRelatedTiles(babyProfileId);
   }

@@ -58,8 +58,6 @@ class AppInitializationService {
   /// Returns an [InitializationResult] describing what succeeded and what
   /// failed. The caller should inspect [InitializationResult.success] to
   /// decide whether the app can start normally.
-  ///
-  /// Call this in `main()` before `runApp()`.
   static Future<InitializationResult> initialize() async {
     final warnings = <String>[];
 
@@ -75,21 +73,25 @@ class AppInitializationService {
       );
     }
 
-    // ── Optional: Firebase ───────────────────────────────────────────
-    try {
-      await _initializeFirebase();
-    } catch (e) {
-      debugPrint('⚠️  Optional service failed (Firebase): $e');
-      warnings.add('Firebase');
-    }
-
-    // ── Optional: OneSignal ──────────────────────────────────────────
-    try {
-      await _initializeOneSignal();
-    } catch (e) {
-      debugPrint('⚠️  Optional service failed (OneSignal): $e');
-      warnings.add('OneSignal');
-    }
+    // ── Optional: Firebase + OneSignal (parallel) ────────────────────
+    await Future.wait([
+      () async {
+        try {
+          await _initializeFirebase();
+        } catch (e) {
+          debugPrint('⚠️  Optional service failed (Firebase): $e');
+          warnings.add('Firebase');
+        }
+      }(),
+      () async {
+        try {
+          await _initializeOneSignal();
+        } catch (e) {
+          debugPrint('⚠️  Optional service failed (OneSignal): $e');
+          warnings.add('OneSignal');
+        }
+      }(),
+    ]);
 
     if (warnings.isEmpty) {
       debugPrint('✅ All third-party integrations initialized successfully');

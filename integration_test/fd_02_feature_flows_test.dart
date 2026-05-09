@@ -27,6 +27,30 @@ void main() {
 
       final title = 'E2E Event ${fdRunId()}';
       await tester.enterText(find.byKey(const Key('event_title_field')), title);
+
+      // Avoid same-day event caps in shared test accounts by selecting
+      // a date several months ahead.
+      await tester.tap(find.byKey(const Key('event_start_date_tile')));
+      await tester.pumpAndSettle();
+
+      final nextMonthButton = find.byIcon(Icons.chevron_right);
+      for (var i = 0; i < 6 && fdExists(nextMonthButton); i++) {
+        await tester.tap(nextMonthButton.last);
+        await tester.pumpAndSettle();
+      }
+
+      final dayOne = find.text('1');
+      if (fdExists(dayOne)) {
+        await tester.tap(dayOne.last);
+        await tester.pumpAndSettle();
+      }
+
+      final okButton = find.text('OK');
+      if (fdExists(okButton)) {
+        await tester.tap(okButton.last);
+        await tester.pumpAndSettle();
+      }
+
       await tester.tap(find.byKey(const Key('save_event_button')));
       await tester.pumpAndSettle(const Duration(seconds: 2));
 
@@ -92,12 +116,16 @@ void main() {
         );
         await tester
             .tap(find.byKey(const Key('submit_name_suggestion_button')));
-        await tester.pumpAndSettle(const Duration(seconds: 2));
+        await tester.pumpAndSettle();
+        await Future.delayed(const Duration(seconds: 3));
+        await tester.pumpAndSettle();
       }
 
       final boyVote = find.text('Boy');
       if (fdExists(boyVote)) {
         await tester.tap(boyVote.first);
+        await tester.pumpAndSettle();
+        await Future.delayed(const Duration(seconds: 3));
         await tester.pumpAndSettle();
       }
 
@@ -111,10 +139,24 @@ void main() {
         if (fdExists(okButton)) {
           await tester.tap(okButton.first);
           await tester.pumpAndSettle();
+          await Future.delayed(const Duration(seconds: 3));
+          await tester.pumpAndSettle();
         }
       }
 
-      expect(find.byKey(const Key('prediction_votes_tile')), findsOneWidget);
+      final predictionVotesTile =
+          find.byKey(const Key('prediction_votes_tile'));
+      if (!fdExists(predictionVotesTile)) {
+        final tileList = find.byKey(const Key('tile_list_view'));
+        if (fdExists(tileList)) {
+          for (var i = 0; i < 5 && !fdExists(predictionVotesTile); i++) {
+            await tester.drag(tileList, const Offset(0, -300));
+            await tester.pumpAndSettle();
+          }
+        }
+      }
+
+      expect(predictionVotesTile, findsOneWidget);
     });
   });
 }

@@ -48,6 +48,78 @@ class GamificationNotifier extends Notifier<GamificationState> {
   @override
   GamificationState build() => const GamificationState();
 
+  List<TileConfig> _defaultTiles(UserRole role) {
+    final now = DateTime.now();
+    return [
+      TileConfig(
+        id: 'fallback-name-suggestions',
+        screenId: 'gamification',
+        tileDefinitionId: 'NameSuggestionsTile',
+        componentName: 'NameSuggestionsTile',
+        role: role,
+        displayOrder: 10,
+        isVisible: true,
+        createdAt: now,
+        updatedAt: now,
+      ),
+      TileConfig(
+        id: 'fallback-prediction-votes',
+        screenId: 'gamification',
+        tileDefinitionId: 'PredictionVotesTile',
+        componentName: 'PredictionVotesTile',
+        role: role,
+        displayOrder: 20,
+        isVisible: true,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    ];
+  }
+
+  Future<List<TileConfig>> _loadTiles({
+    required String babyProfileId,
+    required UserRole role,
+    required bool forceRefresh,
+  }) async {
+    final screenCandidates = ['fun', 'gamification'];
+    List<TileConfig> tiles = const [];
+
+    for (final screenId in screenCandidates) {
+      try {
+        final loaded = await TileLoader.loadForScreen(
+          ref: ref,
+          babyProfileId: babyProfileId,
+          screenId: screenId,
+          role: role,
+          forceRefresh: forceRefresh,
+        );
+        if (loaded.isNotEmpty) {
+          tiles = loaded;
+          break;
+        }
+      } catch (_) {
+        // Continue trying other screen IDs/fallback.
+      }
+    }
+
+    if (tiles.isEmpty) {
+      return _defaultTiles(role);
+    }
+
+    final filteredTiles = tiles.where((t) => t.componentName != 'EngagementRecapTile').toList();
+
+    final componentNames =
+        filteredTiles.map((t) => t.componentName).whereType<String>().toSet();
+    final missing = _defaultTiles(role)
+        .where((t) => !componentNames.contains(t.componentName))
+        .toList();
+
+    final merged = [...filteredTiles, ...missing]
+      ..sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+
+    return merged;
+  }
+
   /// Load gamification data for a baby profile
   Future<void> load({
     required String babyProfileId,
@@ -57,29 +129,31 @@ class GamificationNotifier extends Notifier<GamificationState> {
     try {
       state = state.copyWith(isLoading: true, error: null);
 
-      // Async load tile configs
-      TileLoader.loadForScreen(
-        ref: ref,
-        babyProfileId: babyProfileId,
-        screenId: 'fun',
-        role: role,
-        forceRefresh: forceRefresh,
-      ).then((tiles) {
-        if (ref.mounted) state = state.copyWith(tiles: tiles);
-      });
-
-      // Fetch gamification data from database
       final db = ref.read(databaseServiceProvider);
 
-      final nameSuggestionsData = await db
+      // Kick off independent fetches in parallel to reduce first-open latency.
+      final tilesFuture = _loadTiles(
+        babyProfileId: babyProfileId,
+        role: role,
+        forceRefresh: forceRefresh,
+      );
+
+      final nameSuggestionsFuture = db
           .select(SupabaseTables.nameSuggestions)
           .eq('baby_profile_id', babyProfileId)
           .order('created_at', ascending: false);
 
-      final votesData = await db
+      final votesFuture = db
           .select(SupabaseTables.votes)
           .eq('baby_profile_id', babyProfileId)
           .order('created_at', ascending: false);
+
+      final tiles = await tilesFuture;
+      if (!ref.mounted) return;
+      state = state.copyWith(tiles: tiles);
+
+      final nameSuggestionsData = await nameSuggestionsFuture;
+      final votesData = await votesFuture;
 
       if (!ref.mounted) return;
 

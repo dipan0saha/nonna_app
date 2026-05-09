@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,6 +16,7 @@ import '../services/offline_cache_manager.dart';
 import '../services/realtime_service.dart';
 import '../services/realtime_subscription_manager.dart';
 import '../services/storage_service.dart';
+import '../services/app_initialization_service.dart';
 
 /// Global providers for dependency injection throughout the app
 ///
@@ -188,11 +190,22 @@ final currentUserProvider = Provider<User?>((ref) {
 
 /// Provider for tracking app initialization state
 ///
-/// Manages the initialization of cache and local storage services.
+/// Manages third-party bootstrapping and local cache/storage readiness.
 /// Returns true when all services are initialized and ready.
 ///
 /// **Issue #3.21 Fix**: Changed ref.read() to ref.watch() for reactivity
 final appInitializationProvider = FutureProvider<bool>((ref) async {
+  final result = await AppInitializationService.initialize();
+  if (!result.success) {
+    throw StateError(result.criticalError ?? 'Initialization failed');
+  }
+
+  if (result.hasWarnings) {
+    // Optional services should not block app startup.
+    final names = result.warnings.join(', ');
+    debugPrint('⚠️ Optional startup integrations failed: $names');
+  }
+
   // Initialize cache service - using ref.watch for reactivity
   final cacheService = ref.watch(cacheServiceProvider);
   if (!cacheService.isInitialized) {

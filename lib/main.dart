@@ -5,7 +5,6 @@ import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'core/di/providers.dart';
 import 'core/router/app_router.dart';
-import 'core/services/app_initialization_service.dart';
 import 'core/themes/app_theme.dart';
 import 'features/settings/presentation/providers/settings_provider.dart';
 import 'l10n/l10n.dart';
@@ -13,19 +12,9 @@ import 'l10n/l10n.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize all third-party integrations
-  // (Supabase, OneSignal, Firebase Analytics)
-  final result = await AppInitializationService.initialize();
-
-  if (result.hasWarnings) {
-    debugPrint('⚠️  Optional services failed: ${result.warnings.join(", ")}');
-  }
-
-  if (result.success) {
-    runApp(const ProviderScope(child: MyApp()));
-  } else {
-    runApp(InitializationErrorApp(error: result.criticalError ?? 'Unknown'));
-  }
+  // Start rendering immediately; heavy integrations are initialized via
+  // appInitializationProvider so startup work does not block first frame.
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -47,6 +36,7 @@ class MyApp extends ConsumerWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode:
               settings.darkModeEnabled ? ThemeMode.dark : ThemeMode.light,
+          themeAnimationDuration: Duration.zero,
 
           // Localization configuration
           localizationsDelegates: const [

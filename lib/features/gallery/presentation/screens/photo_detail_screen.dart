@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/photo.dart';
+import 'package:nonna_app/core/utils/gallery_image_url_resolver.dart';
 import 'package:nonna_app/features/gallery/presentation/widgets/squish_photo_widget.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/photo_detail_provider.dart';
@@ -114,24 +115,11 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   }
 
   Future<String> _resolveDisplayUrl(String pathOrUrl) async {
-    if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
-      return pathOrUrl;
-    }
-
-    if (!_isGalleryStoragePath(pathOrUrl)) {
-      return pathOrUrl;
-    }
-
-    try {
-      final storageService = ref.read(storageServiceProvider);
-      return await storageService.getSignedUrl('gallery-photos', pathOrUrl);
-    } catch (_) {
-      return pathOrUrl;
-    }
-  }
-
-  bool _isGalleryStoragePath(String pathOrUrl) {
-    return pathOrUrl.startsWith('baby_') || pathOrUrl.contains('/baby_');
+    final storageService = ref.read(storageServiceProvider);
+    return GalleryImageUrlResolver.resolve(
+      storageService: storageService,
+      pathOrUrl: pathOrUrl,
+    );
   }
 
   @override
@@ -147,6 +135,38 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.gallery_photoDetailTitle),
+        actions: [
+          if (detailState.isOwner)
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Delete Photo'),
+                    content: const Text('Are you sure you want to delete this photo?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: Text(l10n.common_cancel),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: Text(l10n.common_delete, style: const TextStyle(color: Colors.red)),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirm == true) {
+                  final success = await ref.read(photoDetailProvider.notifier).deletePhoto(photo: widget.photo);
+                  if (success && mounted) {
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
+            ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -103,11 +103,27 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
       final caption =
           captionResult.trim().isEmpty ? null : captionResult.trim();
 
-      final storagePath = await storageService.uploadGalleryPhoto(
-        imageFile: imageFile,
-        babyProfileId: babyProfileId,
-        caption: caption,
-      );
+      String storagePath;
+      String? thumbnailPath;
+
+      try {
+        final uploadResult = await storageService.uploadPhotoWithThumbnail(
+          imageFile: imageFile,
+          babyProfileId: babyProfileId,
+          caption: caption,
+        );
+        storagePath = uploadResult['photo_path']!;
+        thumbnailPath = uploadResult['thumbnail_path'];
+      } catch (e) {
+        debugPrint(
+          '⚠️ Thumbnail upload failed, falling back to photo-only upload: $e',
+        );
+        storagePath = await storageService.uploadGalleryPhoto(
+          imageFile: imageFile,
+          babyProfileId: babyProfileId,
+          caption: caption,
+        );
+      }
 
       await databaseService.insert(
         SupabaseTables.photos,
@@ -115,6 +131,7 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
           'baby_profile_id': babyProfileId,
           'uploaded_by_user_id': userId,
           'storage_path': storagePath,
+          'thumbnail_path': thumbnailPath,
           'caption': caption,
           'created_at': DateTime.now().toIso8601String(),
           'updated_at': DateTime.now().toIso8601String(),
@@ -162,10 +179,6 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
             TextButton(
               onPressed: () => Navigator.of(context).pop(null),
               child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(''),
-              child: const Text('Skip'),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(draftCaption),
@@ -229,7 +242,7 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
           ? FloatingActionButton(
               key: const Key('upload_photo_fab'),
               onPressed: () => _onUploadTap(currentBabyProfileId),
-              child: const Icon(Icons.upload),
+              child: const Icon(Icons.add),
             )
           : null,
       body: TileListView(

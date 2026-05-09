@@ -74,7 +74,6 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
       leading: IconButton(
         key: const Key('search_icon_button'),
         icon: const Icon(Icons.search),
-        tooltip: 'Search',
         onPressed: () {
           showSearch(
             context: context,
@@ -98,35 +97,57 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
           }
 
           return DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: selectedProfile.id,
-              icon: const Icon(Icons.keyboard_arrow_down,
-                  color: AppColors.primary),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-              onChanged: (String? newValue) async {
-                if (newValue != null) {
-                  ref
-                      .read(selectedBabyProfileProvider.notifier)
-                      .select(newValue);
-                  final resolvedRole = await ref.read(
-                    currentUserRoleForBabyProfileProvider(newValue).future,
+            child: SizedBox(
+              width: double.infinity,
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: selectedProfile.id,
+                icon: const Icon(Icons.keyboard_arrow_down,
+                    color: AppColors.primary),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                selectedItemBuilder: (context) {
+                  return profiles
+                      .map(
+                        (profile) => Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            profile.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      )
+                      .toList();
+                },
+                onChanged: (String? newValue) async {
+                  if (newValue != null) {
+                    ref
+                        .read(selectedBabyProfileProvider.notifier)
+                        .select(newValue);
+                    final resolvedRole = await ref.read(
+                      currentUserRoleForBabyProfileProvider(newValue).future,
+                    );
+                    // Load tiles for the newly selected profile
+                    ref.read(homeScreenProvider.notifier).switchBabyProfile(
+                          babyProfileId: newValue,
+                          role: resolvedRole,
+                        );
+                  }
+                },
+                items: profiles.map<DropdownMenuItem<String>>((profile) {
+                  return DropdownMenuItem<String>(
+                    value: profile.id,
+                    child: Text(
+                      profile.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   );
-                  // Load tiles for the newly selected profile
-                  ref.read(homeScreenProvider.notifier).switchBabyProfile(
-                        babyProfileId: newValue,
-                        role: resolvedRole,
-                      );
-                }
-              },
-              items: profiles.map<DropdownMenuItem<String>>((profile) {
-                return DropdownMenuItem<String>(
-                  value: profile.id,
-                  child: Text(profile.name),
-                );
-              }).toList(),
+                }).toList(),
+              ),
             ),
           );
         },
@@ -137,7 +158,6 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.add_circle_outline),
-          tooltip: 'Create Baby Profile',
           onPressed: userId.isEmpty
               ? null
               : () {
@@ -147,10 +167,25 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   );
                 },
         ),
+        if (selectedProfile != null)
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: 'Baby Profile Info',
+            onPressed: userId.isEmpty
+                ? null
+                : () {
+                    context.push(
+                      AppRoutes.babyProfile,
+                      extra: {
+                        'babyProfileId': selectedProfile.id,
+                        'currentUserId': userId,
+                      },
+                    );
+                  },
+          ),
         if (selectedProfile != null && selectedRole == UserRole.owner)
           IconButton(
             icon: const Icon(Icons.group_add_outlined),
-            tooltip: 'Invite & Manage Followers',
             onPressed: userId.isEmpty
                 ? null
                 : () {

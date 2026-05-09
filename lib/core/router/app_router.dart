@@ -168,6 +168,14 @@ List<RouteBase> get _routes => [
         builder: (context, state) => BabyProfileScreen(
           babyProfileId: _extraString(state, 'babyProfileId'),
           currentUserId: _extraString(state, 'currentUserId'),
+          onEditTap: () {
+            context.push(
+              AppRoutes.babyProfileEdit.replaceFirst(':id', _extraString(state, 'babyProfileId')),
+              extra: {
+                'currentUserId': _extraString(state, 'currentUserId'),
+              },
+            );
+          },
         ),
         routes: [
           GoRoute(

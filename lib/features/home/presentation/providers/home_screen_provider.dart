@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -118,6 +120,11 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
         isLoading: false,
         lastRefreshed: DateTime.now(),
       );
+
+      unawaited(_warmSecondaryScreenTileCaches(
+        babyProfileId: babyProfileId,
+        role: role,
+      ));
 
       debugPrint('✅ Loaded ${tiles.length} tiles for home screen');
     } catch (e) {
@@ -273,6 +280,33 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
   /// Get cache key
   String _getCacheKey(String babyProfileId, UserRole role) {
     return '${_cacheKeyPrefix}_${babyProfileId}_${role.name}';
+  }
+
+  Future<void> _warmSecondaryScreenTileCaches({
+    required String babyProfileId,
+    required UserRole role,
+  }) async {
+    try {
+      await Future.wait([
+        TileLoader.loadForScreen(
+          ref: ref,
+          babyProfileId: babyProfileId,
+          screenId: 'registry',
+          role: role,
+          forceRefresh: false,
+        ),
+        TileLoader.loadForScreen(
+          ref: ref,
+          babyProfileId: babyProfileId,
+          screenId: 'fun',
+          role: role,
+          forceRefresh: false,
+        ),
+      ]);
+      debugPrint('✅ Warmed Registry/Fun tile caches');
+    } catch (e) {
+      debugPrint('⚠️  Failed warming Registry/Fun tile caches: $e');
+    }
   }
 }
 

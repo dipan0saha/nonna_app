@@ -180,10 +180,10 @@ class AppColors {
   static const Color textDisabled = gray400;
 
   /// Text color on primary background
-  static const Color textOnPrimary = white;
+  static const Color textOnPrimary = gray900;
 
   /// Text color on secondary background
-  static const Color textOnSecondary = white;
+  static const Color textOnSecondary = gray900;
 
   /// Text color on dark background
   static const Color textOnDark = white;

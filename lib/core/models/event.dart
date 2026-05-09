@@ -66,18 +66,18 @@ class Event {
       babyProfileId: json['baby_profile_id'] as String,
       createdByUserId: json['created_by_user_id'] as String,
       title: json['title'] as String,
-      startsAt: DateTime.parse(json['starts_at'] as String),
+      startsAt: DateTime.parse(json['starts_at'] as String).toLocal(),
       endsAt: json['ends_at'] != null
-          ? DateTime.parse(json['ends_at'] as String)
+          ? DateTime.parse(json['ends_at'] as String).toLocal()
           : null,
       description: json['description'] as String?,
       location: json['location'] as String?,
       videoLink: json['video_link'] as String?,
       coverPhotoUrl: json['cover_photo_url'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      createdAt: DateTime.parse(json['created_at'] as String).toLocal(),
+      updatedAt: DateTime.parse(json['updated_at'] as String).toLocal(),
       deletedAt: json['deleted_at'] != null
-          ? DateTime.parse(json['deleted_at'] as String)
+          ? DateTime.parse(json['deleted_at'] as String).toLocal()
           : null,
     );
   }

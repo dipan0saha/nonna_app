@@ -111,7 +111,7 @@ class _EventCreationScreenState extends ConsumerState<EventCreationScreen> {
     });
 
     try {
-      final nowIso = DateTime.now().toIso8601String();
+      final nowIso = DateTime.now().toUtc().toIso8601String();
       final payload = {
         'baby_profile_id': widget.babyProfileId,
         'created_by_user_id': widget.createdByUserId,
@@ -122,8 +122,8 @@ class _EventCreationScreenState extends ConsumerState<EventCreationScreen> {
         'location': _locationController.text.trim().isEmpty
             ? null
             : _locationController.text.trim(),
-        'starts_at': _startsAt.toIso8601String(),
-        'ends_at': _endsAt?.toIso8601String(),
+        'starts_at': _startsAt.toUtc().toIso8601String(),
+        'ends_at': _endsAt?.toUtc().toIso8601String(),
         'created_at': nowIso,
         'updated_at': nowIso,
       };

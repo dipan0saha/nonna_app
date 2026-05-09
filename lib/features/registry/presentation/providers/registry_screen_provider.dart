@@ -14,6 +14,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../core/models/tile_config.dart';
 import '../../../../core/utils/tile_loader.dart';
+import '../../../home/presentation/providers/home_screen_provider.dart';
 
 /// Registry Screen Provider for managing registry state
 ///
@@ -292,21 +293,27 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     }
 
     final databaseService = ref.read(databaseServiceProvider);
+    final role = ref.read(homeScreenProvider).selectedRole ?? UserRole.follower;
+    final isOwner = role == UserRole.owner;
 
     try {
-      if (itemWithStatus.isPurchased &&
-          !itemWithStatus.isPurchasedByCurrentUser) {
-        debugPrint('⚠️  Item already purchased by another user');
-        await refresh();
-        return;
-      }
+      if (itemWithStatus.isPurchased) {
+        if (!itemWithStatus.isPurchasedByCurrentUser && !isOwner) {
+          debugPrint('⚠️  Item already purchased by another user');
+          await refresh();
+          return;
+        }
 
-      if (itemWithStatus.isPurchasedByCurrentUser) {
-        // Remove only the current user's purchase record
-        await databaseService.delete(SupabaseTables.registryPurchases).match({
-          'registry_item_id': itemWithStatus.item.id,
-          'purchased_by_user_id': user.id,
-        });
+        if (isOwner) {
+          await databaseService.delete(SupabaseTables.registryPurchases).match({
+            'registry_item_id': itemWithStatus.item.id,
+          });
+        } else {
+          await databaseService.delete(SupabaseTables.registryPurchases).match({
+            'registry_item_id': itemWithStatus.item.id,
+            'purchased_by_user_id': user.id,
+          });
+        }
       } else {
         // Re-check server state to avoid duplicate purchases from stale UI.
         final existing = await databaseService
@@ -414,9 +421,15 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
         .map((json) => RegistryItem.fromJson(json as Map<String, dynamic>))
         .toList();
 
+    final itemIds = items.map((item) => item.id).toList();
+    if (itemIds.isEmpty) {
+      return const [];
+    }
+
     // Fetch purchases
     final purchasesResponse = await databaseService
         .select(SupabaseTables.registryPurchases)
+        .inFilter('registry_item_id', itemIds)
         .order('purchased_at', ascending: false);
 
     final purchases = (purchasesResponse as List)

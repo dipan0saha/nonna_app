@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,7 +30,7 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late final TextEditingController _displayNameController;
   final ImagePicker _picker = ImagePicker();
-  File? _selectedImage;
+  XFile? _selectedImage;
   bool _biometricEnabled = false;
   bool _isUploadingPhoto = false;
   bool _initialized = false;
@@ -107,7 +108,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         setState(() {
-          _selectedImage = File(pickedFile.path);
+          _selectedImage = pickedFile;
         });
       }
     } catch (e) {
@@ -135,7 +136,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   _selectedImage != null
                       ? CircleAvatar(
                           radius: 48,
-                          backgroundImage: FileImage(_selectedImage!),
+                          backgroundImage: kIsWeb ? NetworkImage(_selectedImage!.path) : FileImage(File(_selectedImage!.path)) as ImageProvider,
                         )
                       : ProfileAvatar(
                           avatarUrl: state.profile?.avatarUrl,

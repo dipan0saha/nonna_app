@@ -200,7 +200,7 @@ class RegistryItemDetailScreen extends ConsumerWidget {
                 child: const Text('Mark as Purchased'),
               ),
 
-            if (isPurchasedByCurrentUser)
+            if (isPurchased && (isOwner || isPurchasedByCurrentUser))
               OutlinedButton(
                 onPressed: () {
                   if (itemWithStatus != null) {
@@ -212,7 +212,7 @@ class RegistryItemDetailScreen extends ConsumerWidget {
                 child: const Text('Unmark as Purchased'),
               ),
 
-            if (isPurchased && !isPurchasedByCurrentUser)
+            if (isPurchased && !isPurchasedByCurrentUser && !isOwner)
               Text(
                 'This item has already been purchased.',
                 style: Theme.of(context).textTheme.bodyMedium,

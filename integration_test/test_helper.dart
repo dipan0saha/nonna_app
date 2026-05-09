@@ -10,7 +10,14 @@ const String kIntegrationTestPassword = 'Password123!';
 /// Helper to start the app for integration tests.
 Future<void> startApp(WidgetTester tester) async {
   debugPrint('Starting AppInitializationService.initialize()...');
+
+  // Save the test runner's error handler
+  final originalOnError = FlutterError.onError;
+
   final result = await AppInitializationService.initialize();
+
+  // Restore the test runner's error handler so exceptions don't break the test framework
+  FlutterError.onError = originalOnError;
 
   await tester.pumpWidget(const ProviderScope(child: app.MyApp()));
   await tester.pumpAndSettle();

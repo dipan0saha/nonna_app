@@ -122,7 +122,6 @@ class _NameSuggestionsSmartTileState
                     _showForm ? Icons.close : Icons.add_circle_outline,
                     color: AppColors.primaryDark,
                   ),
-                  tooltip: _showForm ? 'Cancel' : 'Suggest a name',
                   onPressed: () => setState(() => _showForm = !_showForm),
                 ),
               ],
@@ -230,8 +229,8 @@ class _AddNameForm extends StatelessWidget {
                 (g) => ChoiceChip(
                   key: Key('gender_chip_${g.name}'),
                   avatar: Icon(g.icon, size: 16, color: g.color),
-                  label: Text(g.displayName,
-                      style: const TextStyle(fontSize: 12)),
+                  label:
+                      Text(g.displayName, style: const TextStyle(fontSize: 12)),
                   selected: selectedGender == g,
                   onSelected: (_) => onGenderChanged(g),
                   selectedColor: g.color.withValues(alpha: 0.25),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:async';
 
 import 'package:nonna_app/core/models/tile_config.dart';
 import 'package:nonna_app/core/di/providers.dart';
@@ -301,17 +302,36 @@ class _ActivityListSmartTile extends ConsumerStatefulWidget {
 
 class _ActivityListSmartTileState
     extends ConsumerState<_ActivityListSmartTile> {
+  Timer? _refreshTimer;
+
+  void _refreshEngagement({bool forceRefresh = false}) {
+    final babyProfileId = ref.read(selectedBabyProfileProvider);
+    if (babyProfileId != null) {
+      ref.read(activityListProvider.notifier).fetchEngagement(
+            babyProfileId: babyProfileId,
+            forceRefresh: forceRefresh,
+          );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final babyProfileId = ref.read(selectedBabyProfileProvider);
-      if (babyProfileId != null) {
-        ref
-            .read(activityListProvider.notifier)
-            .fetchEngagement(babyProfileId: babyProfileId);
-      }
+      _refreshEngagement();
     });
+
+    // Keep recap metrics fresh even when Home remains mounted in the shell.
+    _refreshTimer = Timer.periodic(const Duration(seconds: 45), (_) {
+      if (!mounted) return;
+      _refreshEngagement(forceRefresh: true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -321,9 +341,7 @@ class _ActivityListSmartTileState
 
     ref.listen(selectedBabyProfileProvider, (previous, current) {
       if (current != null && current != previous) {
-        ref
-            .read(activityListProvider.notifier)
-            .fetchEngagement(babyProfileId: current);
+        _refreshEngagement(forceRefresh: true);
       }
     });
 

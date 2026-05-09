@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,7 +35,7 @@ class StorageService {
   // ==========================================
 
   /// Pick and compress image from gallery
-  Future<File?> pickImageFromGallery({
+  Future<XFile?> pickImageFromGallery({
     int quality = 70,
     int maxWidth = 1920,
     int maxHeight = 1920,
@@ -44,7 +45,7 @@ class StorageService {
       if (image == null) return null;
 
       return await _compressImage(
-        File(image.path),
+        image,
         quality: quality,
         maxWidth: maxWidth,
         maxHeight: maxHeight,
@@ -57,7 +58,7 @@ class StorageService {
   }
 
   /// Pick and compress image from camera
-  Future<File?> pickImageFromCamera({
+  Future<XFile?> pickImageFromCamera({
     int quality = 70,
     int maxWidth = 1920,
     int maxHeight = 1920,
@@ -67,7 +68,7 @@ class StorageService {
       if (image == null) return null;
 
       return await _compressImage(
-        File(image.path),
+        image,
         quality: quality,
         maxWidth: maxWidth,
         maxHeight: maxHeight,
@@ -84,15 +85,16 @@ class StorageService {
   // ==========================================
 
   /// Compress image file
-  Future<File> _compressImage(
-    File file, {
+  Future<XFile> _compressImage(
+    XFile file, {
     int quality = 70,
     int maxWidth = 1920,
     int maxHeight = 1920,
   }) async {
     try {
+      if (kIsWeb) return file;
       final compressedBytes = await FlutterImageCompress.compressWithFile(
-        file.absolute.path,
+        file.path,
         quality: quality,
         minWidth: maxWidth,
         minHeight: maxHeight,
@@ -106,7 +108,7 @@ class StorageService {
       final tempFile = File('${tempDir.path}/${const Uuid().v4()}.jpg');
       await tempFile.writeAsBytes(compressedBytes);
 
-      return tempFile;
+      return XFile(tempFile.path);
     } catch (e) {
       debugPrint('Error compressing image: $e');
       return file; // Return original if compression fails
@@ -197,7 +199,7 @@ class StorageService {
 
   /// Upload photo to gallery bucket
   Future<String> uploadGalleryPhoto({
-    required File imageFile,
+    required XFile imageFile,
     required String babyProfileId,
     String? caption,
     List<String>? tags,
@@ -209,7 +211,7 @@ class StorageService {
       }
 
       // Validate file
-      _validateImageFile(imageFile);
+      await _validateImageFile(imageFile);
 
       // Read image bytes
       final imageBytes = await imageFile.readAsBytes();
@@ -243,11 +245,11 @@ class StorageService {
 
   /// Upload user avatar
   Future<String> uploadUserAvatar({
-    required File imageFile,
+    required XFile imageFile,
     required String userId,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      _validateImageFile(imageFile);
+      await _validateImageFile(imageFile);
 
       final imageBytes = await imageFile.readAsBytes();
       final fileName = '${const Uuid().v4()}.jpg';
@@ -268,11 +270,11 @@ class StorageService {
 
   /// Upload baby profile photo
   Future<String> uploadBabyProfilePhoto({
-    required File imageFile,
+    required XFile imageFile,
     required String babyProfileId,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
-      _validateImageFile(imageFile);
+      await _validateImageFile(imageFile);
 
       final imageBytes = await imageFile.readAsBytes();
       final fileName = '${const Uuid().v4()}.jpg';
@@ -293,7 +295,7 @@ class StorageService {
 
   /// Upload event cover photo
   Future<String> uploadEventPhoto({
-    required File imageFile,
+    required XFile imageFile,
     required String babyProfileId,
   }) async {
     return await _authInterceptor.executeWithRetry(() async {
@@ -302,7 +304,7 @@ class StorageService {
         throw Exception('Please sign in again to upload event photos');
       }
 
-      _validateImageFile(imageFile);
+      await _validateImageFile(imageFile);
 
       final imageBytes = await imageFile.readAsBytes();
       final fileName = '${const Uuid().v4()}.jpg';
@@ -392,7 +394,7 @@ class StorageService {
 
   /// Upload multiple photos in batch
   Future<List<String>> batchUploadPhotos({
-    required List<File> imageFiles,
+    required List<XFile> imageFiles,
     required String babyProfileId,
     List<String>? captions,
     List<List<String>>? tags,
@@ -427,8 +429,8 @@ class StorageService {
   // ==========================================
 
   /// Generate thumbnail for image
-  Future<File> generateThumbnail(
-    File imageFile, {
+  Future<XFile> generateThumbnail(
+    XFile imageFile, {
     int maxWidth = PerformanceLimits.thumbnailMaxWidth,
     int maxHeight = PerformanceLimits.thumbnailMaxHeight,
     int quality = PerformanceLimits.thumbnailCompressionQuality,
@@ -448,7 +450,7 @@ class StorageService {
 
   /// Upload photo with thumbnail
   Future<Map<String, String>> uploadPhotoWithThumbnail({
-    required File imageFile,
+    required XFile imageFile,
     required String babyProfileId,
     String? caption,
     List<String>? tags,
@@ -545,16 +547,16 @@ class StorageService {
   // ==========================================
 
   /// Validate image file
-  void _validateImageFile(File file) {
+  Future<void> _validateImageFile(XFile file) async {
     // Check file size
-    final fileSize = file.lengthSync();
+    final fileSize = await file.length();
     if (fileSize > PerformanceLimits.maxImageSizeBytes) {
       throw Exception(
           'File size exceeds ${PerformanceLimits.maxImageSizeBytes ~/ (1024 * 1024)}MB limit');
     }
 
     // Check file extension
-    final extension = path.extension(file.path).toLowerCase();
+    final extension = path.extension(file.name).toLowerCase();
     if (!['.jpg', '.jpeg', '.png'].contains(extension)) {
       throw Exception('Only JPEG and PNG files are allowed');
     }

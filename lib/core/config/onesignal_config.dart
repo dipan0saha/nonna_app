@@ -9,7 +9,9 @@ class OneSignalConfig {
   static String get appId => dotenv.env['ONESIGNAL_APP_ID'] ?? '';
 
   /// Initialize OneSignal
-  static Future<void> initialize() async {
+  static Future<void> initialize({
+    bool requestPermissionOnInit = false,
+  }) async {
     if (appId.isEmpty) {
       debugPrint('⚠️ OneSignal App ID not found in .env file');
       return;
@@ -19,8 +21,10 @@ class OneSignalConfig {
       // Set OneSignal App ID
       OneSignal.initialize(appId);
 
-      // Request notification permission
-      await OneSignal.Notifications.requestPermission(true);
+      // Avoid forcing OS permission prompts during cold start.
+      if (requestPermissionOnInit) {
+        await OneSignal.Notifications.requestPermission(true);
+      }
 
       // Set up notification clicked handler
       OneSignal.Notifications.addClickListener((event) {

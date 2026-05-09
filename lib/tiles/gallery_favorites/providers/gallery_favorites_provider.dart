@@ -6,7 +6,7 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/photo.dart';
 import '../../../core/models/user.dart';
-import '../../../core/services/storage_service.dart';
+import '../../../core/utils/gallery_image_url_resolver.dart';
 
 /// Photo with squish count
 class PhotoWithSquishes {
@@ -252,37 +252,21 @@ class GalleryFavoritesNotifier extends Notifier<GalleryFavoritesState> {
 
   Future<Photo> _toDisplayPhoto(Photo photo) async {
     final storageService = ref.read(storageServiceProvider);
-    final resolvedStorage =
-        await _resolveGalleryPath(storageService, photo.storagePath);
+    final resolvedStorage = await GalleryImageUrlResolver.resolve(
+      storageService: storageService,
+      pathOrUrl: photo.storagePath,
+    );
     final resolvedThumbnail = photo.thumbnailPath != null
-        ? await _resolveGalleryPath(storageService, photo.thumbnailPath!)
+        ? await GalleryImageUrlResolver.resolve(
+            storageService: storageService,
+            pathOrUrl: photo.thumbnailPath!,
+          )
         : null;
 
     return photo.copyWith(
       storagePath: resolvedStorage,
       thumbnailPath: resolvedThumbnail,
     );
-  }
-
-  Future<String> _resolveGalleryPath(
-      StorageService storageService, String pathOrUrl) async {
-    if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
-      return pathOrUrl;
-    }
-
-    if (!_isGalleryStoragePath(pathOrUrl)) {
-      return pathOrUrl;
-    }
-
-    try {
-      return await storageService.getSignedUrl('gallery-photos', pathOrUrl);
-    } catch (_) {
-      return pathOrUrl;
-    }
-  }
-
-  bool _isGalleryStoragePath(String pathOrUrl) {
-    return pathOrUrl.startsWith('baby_') || pathOrUrl.contains('/baby_');
   }
 
   /// Load favorites from cache

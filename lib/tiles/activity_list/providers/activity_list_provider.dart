@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -119,6 +121,13 @@ class ActivityListNotifier extends Notifier<ActivityListState> {
             metrics: cachedMetrics,
             isLoading: false,
           );
+
+          // Keep UI snappy with cached values, then refresh in background
+          // so metrics don't remain stale at zero until cache TTL expires.
+          unawaited(_refreshFromDatabaseInBackground(
+            babyProfileId: babyProfileId,
+            daysBack: daysBack,
+          ));
           return;
         }
       }
@@ -218,7 +227,7 @@ class ActivityListNotifier extends Notifier<ActivityListState> {
     int eventRSVPsCount = 0;
     if (eventIds.isNotEmpty) {
       final rsvpsResponse = await databaseService
-          .select('event_rsvps')
+          .select(SupabaseTables.eventRsvps)
           .inFilter('event_id', eventIds)
           .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String());
 
@@ -281,6 +290,30 @@ class ActivityListNotifier extends Notifier<ActivityListState> {
   /// Get cache key
   String _getCacheKey(String babyProfileId, int daysBack) {
     return '${_cacheKeyPrefix}_${babyProfileId}_${daysBack}d';
+  }
+
+  Future<void> _refreshFromDatabaseInBackground({
+    required String babyProfileId,
+    required int daysBack,
+  }) async {
+    try {
+      final freshMetrics = await _calculateMetrics(babyProfileId, daysBack);
+      if (!ref.mounted) return;
+
+      await _saveToCache(babyProfileId, daysBack, freshMetrics);
+      if (!ref.mounted) return;
+
+      state = state.copyWith(
+        metrics: freshMetrics,
+        isLoading: false,
+      );
+      debugPrint(
+        '✅ Refreshed engagement metrics in background for profile: $babyProfileId '
+        '(${freshMetrics.totalEngagement} total)',
+      );
+    } catch (e) {
+      debugPrint('⚠️ Background engagement refresh failed: $e');
+    }
   }
 }
 
