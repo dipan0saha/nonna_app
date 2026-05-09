@@ -4,34 +4,35 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i7;
-import 'dart:convert' as _i30;
-import 'dart:io' as _i10;
-import 'dart:typed_data' as _i16;
+import 'dart:convert' as _i31;
+import 'dart:io' as _i11;
+import 'dart:typed_data' as _i17;
 
-import 'package:firebase_analytics/firebase_analytics.dart' as _i17;
+import 'package:firebase_analytics/firebase_analytics.dart' as _i18;
 import 'package:firebase_analytics_platform_interface/firebase_analytics_platform_interface.dart'
-    as _i18;
+    as _i19;
 import 'package:firebase_core/firebase_core.dart' as _i8;
-import 'package:logging/logging.dart' as _i12;
+import 'package:flutter_image_compress/flutter_image_compress.dart' as _i10;
+import 'package:logging/logging.dart' as _i13;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i11;
-import 'package:nonna_app/core/models/owner_update_marker.dart' as _i22;
-import 'package:nonna_app/core/services/analytics_service.dart' as _i19;
-import 'package:nonna_app/core/services/auth_service.dart' as _i20;
-import 'package:nonna_app/core/services/backup_service.dart' as _i27;
-import 'package:nonna_app/core/services/cache_service.dart' as _i21;
+import 'package:mockito/src/dummies.dart' as _i12;
+import 'package:nonna_app/core/models/owner_update_marker.dart' as _i23;
+import 'package:nonna_app/core/services/analytics_service.dart' as _i20;
+import 'package:nonna_app/core/services/auth_service.dart' as _i21;
+import 'package:nonna_app/core/services/backup_service.dart' as _i28;
+import 'package:nonna_app/core/services/cache_service.dart' as _i22;
 import 'package:nonna_app/core/services/database_service.dart' as _i9;
-import 'package:nonna_app/core/services/local_storage_service.dart' as _i23;
-import 'package:nonna_app/core/services/notification_service.dart' as _i28;
-import 'package:nonna_app/core/services/observability_service.dart' as _i29;
-import 'package:nonna_app/core/services/realtime_service.dart' as _i24;
-import 'package:nonna_app/core/services/storage_service.dart' as _i25;
-import 'package:nonna_app/core/services/supabase_service.dart' as _i26;
-import 'package:realtime_client/src/constants.dart' as _i15;
-import 'package:realtime_client/src/message.dart' as _i13;
+import 'package:nonna_app/core/services/local_storage_service.dart' as _i24;
+import 'package:nonna_app/core/services/notification_service.dart' as _i29;
+import 'package:nonna_app/core/services/observability_service.dart' as _i30;
+import 'package:nonna_app/core/services/realtime_service.dart' as _i25;
+import 'package:nonna_app/core/services/storage_service.dart' as _i26;
+import 'package:nonna_app/core/services/supabase_service.dart' as _i27;
+import 'package:realtime_client/src/constants.dart' as _i16;
+import 'package:realtime_client/src/message.dart' as _i14;
 import 'package:realtime_client/src/push.dart' as _i5;
 import 'package:realtime_client/src/retry_timer.dart' as _i4;
-import 'package:realtime_client/src/types.dart' as _i14;
+import 'package:realtime_client/src/types.dart' as _i15;
 import 'package:storage_client/src/fetch.dart' as _i6;
 import 'package:supabase/supabase.dart' as _i2;
 import 'package:web_socket_channel/web_socket_channel.dart' as _i3;
@@ -450,8 +451,8 @@ class _FakePaginatedResult_37 extends _i1.SmartFake
         );
 }
 
-class _FakeFile_38 extends _i1.SmartFake implements _i10.File {
-  _FakeFile_38(
+class _FakeXFile_38 extends _i1.SmartFake implements _i10.XFile {
+  _FakeXFile_38(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -471,8 +472,8 @@ class _FakeSupabaseClient_39 extends _i1.SmartFake
         );
 }
 
-class _FakeDirectory_40 extends _i1.SmartFake implements _i10.Directory {
-  _FakeDirectory_40(
+class _FakeFile_40 extends _i1.SmartFake implements _i11.File {
+  _FakeFile_40(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -481,9 +482,8 @@ class _FakeDirectory_40 extends _i1.SmartFake implements _i10.Directory {
         );
 }
 
-class _FakeFileSystemEntity_41 extends _i1.SmartFake
-    implements _i10.FileSystemEntity {
-  _FakeFileSystemEntity_41(
+class _FakeDirectory_41 extends _i1.SmartFake implements _i11.Directory {
+  _FakeDirectory_41(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -492,8 +492,9 @@ class _FakeFileSystemEntity_41 extends _i1.SmartFake
         );
 }
 
-class _FakeDateTime_42 extends _i1.SmartFake implements DateTime {
-  _FakeDateTime_42(
+class _FakeFileSystemEntity_42 extends _i1.SmartFake
+    implements _i11.FileSystemEntity {
+  _FakeFileSystemEntity_42(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -502,9 +503,8 @@ class _FakeDateTime_42 extends _i1.SmartFake implements DateTime {
         );
 }
 
-class _FakeRandomAccessFile_43 extends _i1.SmartFake
-    implements _i10.RandomAccessFile {
-  _FakeRandomAccessFile_43(
+class _FakeDateTime_43 extends _i1.SmartFake implements DateTime {
+  _FakeDateTime_43(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -513,8 +513,9 @@ class _FakeRandomAccessFile_43 extends _i1.SmartFake
         );
 }
 
-class _FakeIOSink_44 extends _i1.SmartFake implements _i10.IOSink {
-  _FakeIOSink_44(
+class _FakeRandomAccessFile_44 extends _i1.SmartFake
+    implements _i11.RandomAccessFile {
+  _FakeRandomAccessFile_44(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -523,8 +524,18 @@ class _FakeIOSink_44 extends _i1.SmartFake implements _i10.IOSink {
         );
 }
 
-class _FakeFileStat_45 extends _i1.SmartFake implements _i10.FileStat {
-  _FakeFileStat_45(
+class _FakeIOSink_45 extends _i1.SmartFake implements _i11.IOSink {
+  _FakeIOSink_45(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeFileStat_46 extends _i1.SmartFake implements _i11.FileStat {
+  _FakeFileStat_46(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -732,7 +743,7 @@ class MockSupabaseClient extends _i1.Mock implements _i2.SupabaseClient {
           #removeChannel,
           [channel],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #removeChannel,
@@ -1100,7 +1111,7 @@ class MockGoTrueClient extends _i1.Mock implements _i2.GoTrueClient {
             #captchaToken: captchaToken,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #getSSOSignInUrl,
@@ -1506,7 +1517,7 @@ class MockUser extends _i1.Mock implements _i2.User {
   @override
   String get id => (super.noSuchMethod(
         Invocation.getter(#id),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#id),
         ),
@@ -1521,7 +1532,7 @@ class MockUser extends _i1.Mock implements _i2.User {
   @override
   String get aud => (super.noSuchMethod(
         Invocation.getter(#aud),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#aud),
         ),
@@ -1530,7 +1541,7 @@ class MockUser extends _i1.Mock implements _i2.User {
   @override
   String get createdAt => (super.noSuchMethod(
         Invocation.getter(#createdAt),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#createdAt),
         ),
@@ -1563,7 +1574,7 @@ class MockSession extends _i1.Mock implements _i2.Session {
   @override
   String get accessToken => (super.noSuchMethod(
         Invocation.getter(#accessToken),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#accessToken),
         ),
@@ -1572,7 +1583,7 @@ class MockSession extends _i1.Mock implements _i2.Session {
   @override
   String get tokenType => (super.noSuchMethod(
         Invocation.getter(#tokenType),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#tokenType),
         ),
@@ -1698,7 +1709,7 @@ class MockRealtimeClient extends _i1.Mock implements _i2.RealtimeClient {
   @override
   String get endPoint => (super.noSuchMethod(
         Invocation.getter(#endPoint),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#endPoint),
         ),
@@ -1949,7 +1960,7 @@ class MockRealtimeClient extends _i1.Mock implements _i2.RealtimeClient {
   @override
   String get connectionState => (super.noSuchMethod(
         Invocation.getter(#connectionState),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#connectionState),
         ),
@@ -1964,7 +1975,7 @@ class MockRealtimeClient extends _i1.Mock implements _i2.RealtimeClient {
   @override
   String get endPointURL => (super.noSuchMethod(
         Invocation.getter(#endPointURL),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#endPointURL),
         ),
@@ -2014,7 +2025,7 @@ class MockRealtimeClient extends _i1.Mock implements _i2.RealtimeClient {
           #removeChannel,
           [channel],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #removeChannel,
@@ -2037,7 +2048,7 @@ class MockRealtimeClient extends _i1.Mock implements _i2.RealtimeClient {
     String? kind,
     String? msg,
     dynamic data,
-    _i12.Level? level = _i12.Level.FINEST,
+    _i13.Level? level = _i13.Level.FINEST,
   ]) =>
       super.noSuchMethod(
         Invocation.method(
@@ -2123,7 +2134,7 @@ class MockRealtimeClient extends _i1.Mock implements _i2.RealtimeClient {
       ) as _i2.RealtimeChannel);
 
   @override
-  String? push(_i13.Message? message) => (super.noSuchMethod(Invocation.method(
+  String? push(_i14.Message? message) => (super.noSuchMethod(Invocation.method(
         #push,
         [message],
       )) as String?);
@@ -2143,7 +2154,7 @@ class MockRealtimeClient extends _i1.Mock implements _i2.RealtimeClient {
           #makeRef,
           [],
         ),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.method(
             #makeRef,
@@ -2244,7 +2255,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
   @override
   String get broadcastEndpointURL => (super.noSuchMethod(
         Invocation.getter(#broadcastEndpointURL),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#broadcastEndpointURL),
         ),
@@ -2262,7 +2273,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
   @override
   String get subTopic => (super.noSuchMethod(
         Invocation.getter(#subTopic),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#subTopic),
         ),
@@ -2271,7 +2282,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
   @override
   String get topic => (super.noSuchMethod(
         Invocation.getter(#topic),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#topic),
         ),
@@ -2310,7 +2321,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
   @override
   String get joinRef => (super.noSuchMethod(
         Invocation.getter(#joinRef),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#joinRef),
         ),
@@ -2554,7 +2565,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
   @override
   _i2.RealtimeChannel onEvents(
     String? type,
-    _i14.ChannelFilter? filter,
+    _i15.ChannelFilter? filter,
     _i2.BindingCallback? callback,
   ) =>
       (super.noSuchMethod(
@@ -2606,7 +2617,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
 
   @override
   _i5.Push push(
-    _i15.ChannelEvents? event,
+    _i16.ChannelEvents? event,
     Map<String, dynamic>? payload, [
     Duration? timeout,
   ]) =>
@@ -2672,7 +2683,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
 
   @override
   _i7.Future<_i2.ChannelResponse> send({
-    required _i14.RealtimeListenTypes? type,
+    required _i15.RealtimeListenTypes? type,
     String? event,
     required Map<String, dynamic>? payload,
     Map<String, dynamic>? opts = const {},
@@ -2707,7 +2718,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
           #unsubscribe,
           [timeout],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #unsubscribe,
@@ -2782,7 +2793,7 @@ class MockRealtimeChannel extends _i1.Mock implements _i2.RealtimeChannel {
           #replyEventName,
           [ref],
         ),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.method(
             #replyEventName,
@@ -2804,7 +2815,7 @@ class MockSupabaseStorageClient extends _i1.Mock
   @override
   String get url => (super.noSuchMethod(
         Invocation.getter(#url),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#url),
         ),
@@ -2895,7 +2906,7 @@ class MockSupabaseStorageClient extends _i1.Mock
             bucketOptions,
           ],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #createBucket,
@@ -2920,7 +2931,7 @@ class MockSupabaseStorageClient extends _i1.Mock
             bucketOptions,
           ],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #updateBucket,
@@ -2938,7 +2949,7 @@ class MockSupabaseStorageClient extends _i1.Mock
           #emptyBucket,
           [id],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #emptyBucket,
@@ -2953,7 +2964,7 @@ class MockSupabaseStorageClient extends _i1.Mock
           #deleteBucket,
           [id],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #deleteBucket,
@@ -2974,7 +2985,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
   @override
   String get url => (super.noSuchMethod(
         Invocation.getter(#url),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#url),
         ),
@@ -2989,7 +3000,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
   @override
   _i7.Future<String> upload(
     String? path,
-    _i10.File? file, {
+    _i11.File? file, {
     _i2.FileOptions? fileOptions = const _i2.FileOptions(),
     int? retryAttempts,
     _i2.StorageRetryController? retryController,
@@ -3007,7 +3018,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
             #retryController: retryController,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #upload,
@@ -3027,7 +3038,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
   @override
   _i7.Future<String> uploadBinary(
     String? path,
-    _i16.Uint8List? data, {
+    _i17.Uint8List? data, {
     _i2.FileOptions? fileOptions = const _i2.FileOptions(),
     int? retryAttempts,
     _i2.StorageRetryController? retryController,
@@ -3045,7 +3056,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
             #retryController: retryController,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #uploadBinary,
@@ -3066,7 +3077,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
   _i7.Future<String> uploadToSignedUrl(
     String? path,
     String? token,
-    _i10.File? file, [
+    _i11.File? file, [
     _i2.FileOptions? fileOptions = const _i2.FileOptions(),
     int? retryAttempts,
     _i2.StorageRetryController? retryController,
@@ -3083,7 +3094,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
             retryController,
           ],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #uploadToSignedUrl,
@@ -3103,7 +3114,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
   _i7.Future<String> uploadBinaryToSignedUrl(
     String? path,
     String? token,
-    _i16.Uint8List? data, [
+    _i17.Uint8List? data, [
     _i2.FileOptions? fileOptions = const _i2.FileOptions(),
     int? retryAttempts,
     _i2.StorageRetryController? retryController,
@@ -3120,7 +3131,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
             retryController,
           ],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #uploadBinaryToSignedUrl,
@@ -3156,7 +3167,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
   @override
   _i7.Future<String> update(
     String? path,
-    _i10.File? file, {
+    _i11.File? file, {
     _i2.FileOptions? fileOptions = const _i2.FileOptions(),
     int? retryAttempts,
     _i2.StorageRetryController? retryController,
@@ -3174,7 +3185,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
             #retryController: retryController,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #update,
@@ -3194,7 +3205,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
   @override
   _i7.Future<String> updateBinary(
     String? path,
-    _i16.Uint8List? data, {
+    _i17.Uint8List? data, {
     _i2.FileOptions? fileOptions = const _i2.FileOptions(),
     int? retryAttempts,
     _i2.StorageRetryController? retryController,
@@ -3212,7 +3223,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
             #retryController: retryController,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #updateBinary,
@@ -3244,7 +3255,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
           ],
           {#destinationBucket: destinationBucket},
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #move,
@@ -3272,7 +3283,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
           ],
           {#destinationBucket: destinationBucket},
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #copy,
@@ -3300,7 +3311,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
           ],
           {#transform: transform},
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #createSignedUrl,
@@ -3330,7 +3341,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
       ) as _i7.Future<List<_i2.SignedUrl>>);
 
   @override
-  _i7.Future<_i16.Uint8List> download(
+  _i7.Future<_i17.Uint8List> download(
     String? path, {
     _i2.TransformOptions? transform,
   }) =>
@@ -3340,8 +3351,8 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
           [path],
           {#transform: transform},
         ),
-        returnValue: _i7.Future<_i16.Uint8List>.value(_i16.Uint8List(0)),
-      ) as _i7.Future<_i16.Uint8List>);
+        returnValue: _i7.Future<_i17.Uint8List>.value(_i17.Uint8List(0)),
+      ) as _i7.Future<_i17.Uint8List>);
 
   @override
   _i7.Future<_i2.FileObjectV2> info(String? path) => (super.noSuchMethod(
@@ -3378,7 +3389,7 @@ class MockStorageFileApi extends _i1.Mock implements _i2.StorageFileApi {
           [path],
           {#transform: transform},
         ),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.method(
             #getPublicUrl,
@@ -3427,7 +3438,7 @@ class MockPostgrestClient extends _i1.Mock implements _i2.PostgrestClient {
   @override
   String get url => (super.noSuchMethod(
         Invocation.getter(#url),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#url),
         ),
@@ -4679,8 +4690,8 @@ class MockPostgrestFilterBuilder<T> extends _i1.Mock
           [onError],
           {#test: test},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #catchError,
@@ -4711,8 +4722,8 @@ class MockPostgrestFilterBuilder<T> extends _i1.Mock
           [onValue],
           {#onError: onError},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<U>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<U>(
                 this,
                 Invocation.method(
                   #then,
@@ -4743,8 +4754,8 @@ class MockPostgrestFilterBuilder<T> extends _i1.Mock
           [timeLimit],
           {#onTimeout: onTimeout},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #timeout,
@@ -4771,8 +4782,8 @@ class MockPostgrestFilterBuilder<T> extends _i1.Mock
           #whenComplete,
           [action],
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #whenComplete,
@@ -5179,8 +5190,8 @@ class MockPostgrestTransformBuilder<T> extends _i1.Mock
           [onError],
           {#test: test},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #catchError,
@@ -5211,8 +5222,8 @@ class MockPostgrestTransformBuilder<T> extends _i1.Mock
           [onValue],
           {#onError: onError},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<U>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<U>(
                 this,
                 Invocation.method(
                   #then,
@@ -5243,8 +5254,8 @@ class MockPostgrestTransformBuilder<T> extends _i1.Mock
           [timeLimit],
           {#onTimeout: onTimeout},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #timeout,
@@ -5271,8 +5282,8 @@ class MockPostgrestTransformBuilder<T> extends _i1.Mock
           #whenComplete,
           [action],
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #whenComplete,
@@ -5399,8 +5410,8 @@ class MockPostgrestBuilder<T, S, R> extends _i1.Mock
           [onError],
           {#test: test},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #catchError,
@@ -5431,8 +5442,8 @@ class MockPostgrestBuilder<T, S, R> extends _i1.Mock
           [onValue],
           {#onError: onError},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<U>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<U>(
                 this,
                 Invocation.method(
                   #then,
@@ -5463,8 +5474,8 @@ class MockPostgrestBuilder<T, S, R> extends _i1.Mock
           [timeLimit],
           {#onTimeout: onTimeout},
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #timeout,
@@ -5491,8 +5502,8 @@ class MockPostgrestBuilder<T, S, R> extends _i1.Mock
           #whenComplete,
           [action],
         ),
-        returnValue: _i11.ifNotNull(
-              _i11.dummyValueOrNull<T>(
+        returnValue: _i12.ifNotNull(
+              _i12.dummyValueOrNull<T>(
                 this,
                 Invocation.method(
                   #whenComplete,
@@ -5514,7 +5525,7 @@ class MockPostgrestBuilder<T, S, R> extends _i1.Mock
 /// A class which mocks [FirebaseAnalytics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
+class MockFirebaseAnalytics extends _i1.Mock implements _i18.FirebaseAnalytics {
   MockFirebaseAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -5571,7 +5582,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logEvent({
     required String? name,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5644,7 +5655,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   @override
   _i7.Future<void> setUserId({
     String? id,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5663,7 +5674,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> setUserProperty({
     required String? name,
     required String? value,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5695,9 +5706,9 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     String? currency,
     String? paymentType,
     double? value,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5723,9 +5734,9 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     String? currency,
     double? value,
     String? shippingTier,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5747,11 +5758,11 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
 
   @override
   _i7.Future<void> logAddToCart({
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     double? value,
     String? currency,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5771,11 +5782,11 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
 
   @override
   _i7.Future<void> logAddToWishlist({
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     double? value,
     String? currency,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5802,7 +5813,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     double? value,
     String? currency,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5825,7 +5836,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
 
   @override
   _i7.Future<void> logAppOpen({
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
     Map<String, Object>? parameters,
   }) =>
       (super.noSuchMethod(
@@ -5845,10 +5856,10 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logBeginCheckout({
     double? value,
     String? currency,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     String? coupon,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5877,7 +5888,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     String? aclid,
     String? cp1,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5904,7 +5915,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     required String? virtualCurrencyName,
     required num? value,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5926,7 +5937,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     String? currency,
     double? value,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5947,7 +5958,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logJoinGroup({
     required String? groupId,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5968,7 +5979,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     required int? level,
     String? character,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -5989,7 +6000,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logLevelStart({
     required String? levelName,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6010,7 +6021,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     required String? levelName,
     int? success,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6031,7 +6042,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logLogin({
     String? loginMethod,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6053,7 +6064,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     int? level,
     String? character,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6076,13 +6087,13 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     String? currency,
     String? coupon,
     double? value,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     double? tax,
     double? shipping,
     String? transactionId,
     String? affiliation,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6109,9 +6120,9 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logRemoveFromCart({
     String? currency,
     double? value,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6134,7 +6145,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     String? screenClass,
     String? screenName,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6155,9 +6166,9 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logSelectItem({
     String? itemListId,
     String? itemListName,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6179,12 +6190,12 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logSelectPromotion({
     String? creativeName,
     String? creativeSlot,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     String? locationId,
     String? promotionId,
     String? promotionName,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6209,9 +6220,9 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logViewCart({
     String? currency,
     double? value,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6241,7 +6252,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     String? endDate,
     String? travelClass,
     Map<String, Object>? parameters,
-    _i18.AnalyticsCallOptions? callOptions,
+    _i19.AnalyticsCallOptions? callOptions,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -6393,7 +6404,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logViewItem({
     String? currency,
     double? value,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     Map<String, Object>? parameters,
   }) =>
       (super.noSuchMethod(
@@ -6413,7 +6424,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
 
   @override
   _i7.Future<void> logViewItemList({
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     String? itemListId,
     String? itemListName,
     Map<String, Object>? parameters,
@@ -6437,7 +6448,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
   _i7.Future<void> logViewPromotion({
     String? creativeName,
     String? creativeSlot,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     String? locationId,
     String? promotionId,
     String? promotionName,
@@ -6488,7 +6499,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
     double? shipping,
     String? transactionId,
     String? affiliation,
-    List<_i18.AnalyticsEventItem>? items,
+    List<_i19.AnalyticsEventItem>? items,
     Map<String, Object>? parameters,
   }) =>
       (super.noSuchMethod(
@@ -6606,7 +6617,7 @@ class MockFirebaseAnalytics extends _i1.Mock implements _i17.FirebaseAnalytics {
 /// A class which mocks [AnalyticsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnalyticsService extends _i1.Mock implements _i19.AnalyticsService {
+class MockAnalyticsService extends _i1.Mock implements _i20.AnalyticsService {
   MockAnalyticsService() {
     _i1.throwOnMissingStub(this);
   }
@@ -6969,7 +6980,7 @@ class MockAnalyticsService extends _i1.Mock implements _i19.AnalyticsService {
 /// A class which mocks [AuthService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthService extends _i1.Mock implements _i20.AuthService {
+class MockAuthService extends _i1.Mock implements _i21.AuthService {
   MockAuthService() {
     _i1.throwOnMissingStub(this);
   }
@@ -7373,7 +7384,7 @@ class MockDatabaseService extends _i1.Mock implements _i9.DatabaseService {
 /// A class which mocks [CacheService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCacheService extends _i1.Mock implements _i21.CacheService {
+class MockCacheService extends _i1.Mock implements _i22.CacheService {
   MockCacheService() {
     _i1.throwOnMissingStub(this);
   }
@@ -7465,7 +7476,7 @@ class MockCacheService extends _i1.Mock implements _i21.CacheService {
   @override
   _i7.Future<void> invalidateByOwnerUpdate(
     String? babyProfileId,
-    _i22.OwnerUpdateMarker? ownerUpdateMarker,
+    _i23.OwnerUpdateMarker? ownerUpdateMarker,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -7523,7 +7534,7 @@ class MockCacheService extends _i1.Mock implements _i21.CacheService {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockLocalStorageService extends _i1.Mock
-    implements _i23.LocalStorageService {
+    implements _i24.LocalStorageService {
   MockLocalStorageService() {
     _i1.throwOnMissingStub(this);
   }
@@ -7543,7 +7554,7 @@ class MockLocalStorageService extends _i1.Mock
   @override
   String get themeMode => (super.noSuchMethod(
         Invocation.getter(#themeMode),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#themeMode),
         ),
@@ -7981,7 +7992,7 @@ class MockLocalStorageService extends _i1.Mock
 /// A class which mocks [RealtimeService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRealtimeService extends _i1.Mock implements _i24.RealtimeService {
+class MockRealtimeService extends _i1.Mock implements _i25.RealtimeService {
   MockRealtimeService() {
     _i1.throwOnMissingStub(this);
   }
@@ -8148,13 +8159,13 @@ class MockRealtimeService extends _i1.Mock implements _i24.RealtimeService {
 /// A class which mocks [StorageService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStorageService extends _i1.Mock implements _i25.StorageService {
+class MockStorageService extends _i1.Mock implements _i26.StorageService {
   MockStorageService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i7.Future<_i10.File?> pickImageFromGallery({
+  _i7.Future<_i10.XFile?> pickImageFromGallery({
     int? quality = 70,
     int? maxWidth = 1920,
     int? maxHeight = 1920,
@@ -8169,11 +8180,11 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #maxHeight: maxHeight,
           },
         ),
-        returnValue: _i7.Future<_i10.File?>.value(),
-      ) as _i7.Future<_i10.File?>);
+        returnValue: _i7.Future<_i10.XFile?>.value(),
+      ) as _i7.Future<_i10.XFile?>);
 
   @override
-  _i7.Future<_i10.File?> pickImageFromCamera({
+  _i7.Future<_i10.XFile?> pickImageFromCamera({
     int? quality = 70,
     int? maxWidth = 1920,
     int? maxHeight = 1920,
@@ -8188,12 +8199,12 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #maxHeight: maxHeight,
           },
         ),
-        returnValue: _i7.Future<_i10.File?>.value(),
-      ) as _i7.Future<_i10.File?>);
+        returnValue: _i7.Future<_i10.XFile?>.value(),
+      ) as _i7.Future<_i10.XFile?>);
 
   @override
-  _i7.Future<_i16.Uint8List?> compressImageBytes(
-    _i16.Uint8List? imageBytes, {
+  _i7.Future<_i17.Uint8List?> compressImageBytes(
+    _i17.Uint8List? imageBytes, {
     int? quality = 70,
     int? maxWidth = 1920,
     int? maxHeight = 1920,
@@ -8208,8 +8219,8 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #maxHeight: maxHeight,
           },
         ),
-        returnValue: _i7.Future<_i16.Uint8List?>.value(),
-      ) as _i7.Future<_i16.Uint8List?>);
+        returnValue: _i7.Future<_i17.Uint8List?>.value(),
+      ) as _i7.Future<_i17.Uint8List?>);
 
   @override
   _i7.Future<String> uploadFile({
@@ -8227,7 +8238,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #bucket: bucket,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #uploadFile,
@@ -8243,7 +8254,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
 
   @override
   _i7.Future<String> uploadGalleryPhoto({
-    required _i10.File? imageFile,
+    required _i10.XFile? imageFile,
     required String? babyProfileId,
     String? caption,
     List<String>? tags,
@@ -8259,7 +8270,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #tags: tags,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #uploadGalleryPhoto,
@@ -8276,7 +8287,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
 
   @override
   _i7.Future<String> uploadUserAvatar({
-    required _i10.File? imageFile,
+    required _i10.XFile? imageFile,
     required String? userId,
   }) =>
       (super.noSuchMethod(
@@ -8288,7 +8299,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #userId: userId,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #uploadUserAvatar,
@@ -8303,7 +8314,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
 
   @override
   _i7.Future<String> uploadBabyProfilePhoto({
-    required _i10.File? imageFile,
+    required _i10.XFile? imageFile,
     required String? babyProfileId,
   }) =>
       (super.noSuchMethod(
@@ -8315,7 +8326,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #babyProfileId: babyProfileId,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #uploadBabyProfilePhoto,
@@ -8330,7 +8341,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
 
   @override
   _i7.Future<String> uploadEventPhoto({
-    required _i10.File? imageFile,
+    required _i10.XFile? imageFile,
     required String? babyProfileId,
   }) =>
       (super.noSuchMethod(
@@ -8342,7 +8353,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #babyProfileId: babyProfileId,
           },
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #uploadEventPhoto,
@@ -8368,7 +8379,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             path,
           ],
         ),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.method(
             #getPublicUrl,
@@ -8393,7 +8404,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             path,
           ],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #getSignedUrl,
@@ -8427,7 +8438,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #format: format,
           },
         ),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.method(
             #getOptimizedImageUrl,
@@ -8480,7 +8491,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
 
   @override
   _i7.Future<List<String>> batchUploadPhotos({
-    required List<_i10.File>? imageFiles,
+    required List<_i10.XFile>? imageFiles,
     required String? babyProfileId,
     List<String>? captions,
     List<List<String>>? tags,
@@ -8500,8 +8511,8 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
       ) as _i7.Future<List<String>>);
 
   @override
-  _i7.Future<_i10.File> generateThumbnail(
-    _i10.File? imageFile, {
+  _i7.Future<_i10.XFile> generateThumbnail(
+    _i10.XFile? imageFile, {
     int? maxWidth = 300,
     int? maxHeight = 300,
     int? quality = 60,
@@ -8516,7 +8527,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             #quality: quality,
           },
         ),
-        returnValue: _i7.Future<_i10.File>.value(_FakeFile_38(
+        returnValue: _i7.Future<_i10.XFile>.value(_FakeXFile_38(
           this,
           Invocation.method(
             #generateThumbnail,
@@ -8528,11 +8539,11 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
             },
           ),
         )),
-      ) as _i7.Future<_i10.File>);
+      ) as _i7.Future<_i10.XFile>);
 
   @override
   _i7.Future<Map<String, String>> uploadPhotoWithThumbnail({
-    required _i10.File? imageFile,
+    required _i10.XFile? imageFile,
     required String? babyProfileId,
     String? caption,
     List<String>? tags,
@@ -8578,7 +8589,7 @@ class MockStorageService extends _i1.Mock implements _i25.StorageService {
 /// A class which mocks [SupabaseService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSupabaseService extends _i1.Mock implements _i26.SupabaseService {
+class MockSupabaseService extends _i1.Mock implements _i27.SupabaseService {
   MockSupabaseService() {
     _i1.throwOnMissingStub(this);
   }
@@ -8718,7 +8729,7 @@ class MockSupabaseService extends _i1.Mock implements _i26.SupabaseService {
 /// A class which mocks [BackupService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBackupService extends _i1.Mock implements _i27.BackupService {
+class MockBackupService extends _i1.Mock implements _i28.BackupService {
   MockBackupService() {
     _i1.throwOnMissingStub(this);
   }
@@ -8729,7 +8740,7 @@ class MockBackupService extends _i1.Mock implements _i27.BackupService {
           #exportUserData,
           [userId],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #exportUserData,
@@ -8805,7 +8816,7 @@ class MockBackupService extends _i1.Mock implements _i27.BackupService {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockNotificationService extends _i1.Mock
-    implements _i28.NotificationService {
+    implements _i29.NotificationService {
   MockNotificationService() {
     _i1.throwOnMissingStub(this);
   }
@@ -8991,7 +9002,7 @@ class MockNotificationService extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockObservabilityService extends _i1.Mock
-    implements _i29.ObservabilityService {
+    implements _i30.ObservabilityService {
   MockObservabilityService() {
     _i1.throwOnMissingStub(this);
   }
@@ -9000,24 +9011,24 @@ class MockObservabilityService extends _i1.Mock
 /// A class which mocks [File].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFile extends _i1.Mock implements _i10.File {
+class MockFile extends _i1.Mock implements _i11.File {
   MockFile() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.File get absolute => (super.noSuchMethod(
+  _i11.File get absolute => (super.noSuchMethod(
         Invocation.getter(#absolute),
-        returnValue: _FakeFile_38(
+        returnValue: _FakeFile_40(
           this,
           Invocation.getter(#absolute),
         ),
-      ) as _i10.File);
+      ) as _i11.File);
 
   @override
   String get path => (super.noSuchMethod(
         Invocation.getter(#path),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.getter(#path),
         ),
@@ -9039,16 +9050,16 @@ class MockFile extends _i1.Mock implements _i10.File {
       ) as bool);
 
   @override
-  _i10.Directory get parent => (super.noSuchMethod(
+  _i11.Directory get parent => (super.noSuchMethod(
         Invocation.getter(#parent),
-        returnValue: _FakeDirectory_40(
+        returnValue: _FakeDirectory_41(
           this,
           Invocation.getter(#parent),
         ),
-      ) as _i10.Directory);
+      ) as _i11.Directory);
 
   @override
-  _i7.Future<_i10.File> create({
+  _i7.Future<_i11.File> create({
     bool? recursive = false,
     bool? exclusive = false,
   }) =>
@@ -9061,7 +9072,7 @@ class MockFile extends _i1.Mock implements _i10.File {
             #exclusive: exclusive,
           },
         ),
-        returnValue: _i7.Future<_i10.File>.value(_FakeFile_38(
+        returnValue: _i7.Future<_i11.File>.value(_FakeFile_40(
           this,
           Invocation.method(
             #create,
@@ -9072,7 +9083,7 @@ class MockFile extends _i1.Mock implements _i10.File {
             },
           ),
         )),
-      ) as _i7.Future<_i10.File>);
+      ) as _i7.Future<_i11.File>);
 
   @override
   void createSync({
@@ -9092,37 +9103,37 @@ class MockFile extends _i1.Mock implements _i10.File {
       );
 
   @override
-  _i7.Future<_i10.File> rename(String? newPath) => (super.noSuchMethod(
+  _i7.Future<_i11.File> rename(String? newPath) => (super.noSuchMethod(
         Invocation.method(
           #rename,
           [newPath],
         ),
-        returnValue: _i7.Future<_i10.File>.value(_FakeFile_38(
+        returnValue: _i7.Future<_i11.File>.value(_FakeFile_40(
           this,
           Invocation.method(
             #rename,
             [newPath],
           ),
         )),
-      ) as _i7.Future<_i10.File>);
+      ) as _i7.Future<_i11.File>);
 
   @override
-  _i10.File renameSync(String? newPath) => (super.noSuchMethod(
+  _i11.File renameSync(String? newPath) => (super.noSuchMethod(
         Invocation.method(
           #renameSync,
           [newPath],
         ),
-        returnValue: _FakeFile_38(
+        returnValue: _FakeFile_40(
           this,
           Invocation.method(
             #renameSync,
             [newPath],
           ),
         ),
-      ) as _i10.File);
+      ) as _i11.File);
 
   @override
-  _i7.Future<_i10.FileSystemEntity> delete({bool? recursive = false}) =>
+  _i7.Future<_i11.FileSystemEntity> delete({bool? recursive = false}) =>
       (super.noSuchMethod(
         Invocation.method(
           #delete,
@@ -9130,7 +9141,7 @@ class MockFile extends _i1.Mock implements _i10.File {
           {#recursive: recursive},
         ),
         returnValue:
-            _i7.Future<_i10.FileSystemEntity>.value(_FakeFileSystemEntity_41(
+            _i7.Future<_i11.FileSystemEntity>.value(_FakeFileSystemEntity_42(
           this,
           Invocation.method(
             #delete,
@@ -9138,7 +9149,7 @@ class MockFile extends _i1.Mock implements _i10.File {
             {#recursive: recursive},
           ),
         )),
-      ) as _i7.Future<_i10.FileSystemEntity>);
+      ) as _i7.Future<_i11.FileSystemEntity>);
 
   @override
   void deleteSync({bool? recursive = false}) => super.noSuchMethod(
@@ -9151,34 +9162,34 @@ class MockFile extends _i1.Mock implements _i10.File {
       );
 
   @override
-  _i7.Future<_i10.File> copy(String? newPath) => (super.noSuchMethod(
+  _i7.Future<_i11.File> copy(String? newPath) => (super.noSuchMethod(
         Invocation.method(
           #copy,
           [newPath],
         ),
-        returnValue: _i7.Future<_i10.File>.value(_FakeFile_38(
+        returnValue: _i7.Future<_i11.File>.value(_FakeFile_40(
           this,
           Invocation.method(
             #copy,
             [newPath],
           ),
         )),
-      ) as _i7.Future<_i10.File>);
+      ) as _i7.Future<_i11.File>);
 
   @override
-  _i10.File copySync(String? newPath) => (super.noSuchMethod(
+  _i11.File copySync(String? newPath) => (super.noSuchMethod(
         Invocation.method(
           #copySync,
           [newPath],
         ),
-        returnValue: _FakeFile_38(
+        returnValue: _FakeFile_40(
           this,
           Invocation.method(
             #copySync,
             [newPath],
           ),
         ),
-      ) as _i10.File);
+      ) as _i11.File);
 
   @override
   _i7.Future<int> length() => (super.noSuchMethod(
@@ -9204,7 +9215,7 @@ class MockFile extends _i1.Mock implements _i10.File {
           #lastAccessed,
           [],
         ),
-        returnValue: _i7.Future<DateTime>.value(_FakeDateTime_42(
+        returnValue: _i7.Future<DateTime>.value(_FakeDateTime_43(
           this,
           Invocation.method(
             #lastAccessed,
@@ -9219,7 +9230,7 @@ class MockFile extends _i1.Mock implements _i10.File {
           #lastAccessedSync,
           [],
         ),
-        returnValue: _FakeDateTime_42(
+        returnValue: _FakeDateTime_43(
           this,
           Invocation.method(
             #lastAccessedSync,
@@ -9252,7 +9263,7 @@ class MockFile extends _i1.Mock implements _i10.File {
           #lastModified,
           [],
         ),
-        returnValue: _i7.Future<DateTime>.value(_FakeDateTime_42(
+        returnValue: _i7.Future<DateTime>.value(_FakeDateTime_43(
           this,
           Invocation.method(
             #lastModified,
@@ -9267,7 +9278,7 @@ class MockFile extends _i1.Mock implements _i10.File {
           #lastModifiedSync,
           [],
         ),
-        returnValue: _FakeDateTime_42(
+        returnValue: _FakeDateTime_43(
           this,
           Invocation.method(
             #lastModifiedSync,
@@ -9295,8 +9306,8 @@ class MockFile extends _i1.Mock implements _i10.File {
       );
 
   @override
-  _i7.Future<_i10.RandomAccessFile> open(
-          {_i10.FileMode? mode = _i10.FileMode.read}) =>
+  _i7.Future<_i11.RandomAccessFile> open(
+          {_i11.FileMode? mode = _i11.FileMode.read}) =>
       (super.noSuchMethod(
         Invocation.method(
           #open,
@@ -9304,7 +9315,7 @@ class MockFile extends _i1.Mock implements _i10.File {
           {#mode: mode},
         ),
         returnValue:
-            _i7.Future<_i10.RandomAccessFile>.value(_FakeRandomAccessFile_43(
+            _i7.Future<_i11.RandomAccessFile>.value(_FakeRandomAccessFile_44(
           this,
           Invocation.method(
             #open,
@@ -9312,17 +9323,17 @@ class MockFile extends _i1.Mock implements _i10.File {
             {#mode: mode},
           ),
         )),
-      ) as _i7.Future<_i10.RandomAccessFile>);
+      ) as _i7.Future<_i11.RandomAccessFile>);
 
   @override
-  _i10.RandomAccessFile openSync({_i10.FileMode? mode = _i10.FileMode.read}) =>
+  _i11.RandomAccessFile openSync({_i11.FileMode? mode = _i11.FileMode.read}) =>
       (super.noSuchMethod(
         Invocation.method(
           #openSync,
           [],
           {#mode: mode},
         ),
-        returnValue: _FakeRandomAccessFile_43(
+        returnValue: _FakeRandomAccessFile_44(
           this,
           Invocation.method(
             #openSync,
@@ -9330,7 +9341,7 @@ class MockFile extends _i1.Mock implements _i10.File {
             {#mode: mode},
           ),
         ),
-      ) as _i10.RandomAccessFile);
+      ) as _i11.RandomAccessFile);
 
   @override
   _i7.Stream<List<int>> openRead([
@@ -9349,9 +9360,9 @@ class MockFile extends _i1.Mock implements _i10.File {
       ) as _i7.Stream<List<int>>);
 
   @override
-  _i10.IOSink openWrite({
-    _i10.FileMode? mode = _i10.FileMode.write,
-    _i30.Encoding? encoding = const _i30.Utf8Codec(),
+  _i11.IOSink openWrite({
+    _i11.FileMode? mode = _i11.FileMode.write,
+    _i31.Encoding? encoding = const _i31.Utf8Codec(),
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -9362,7 +9373,7 @@ class MockFile extends _i1.Mock implements _i10.File {
             #encoding: encoding,
           },
         ),
-        returnValue: _FakeIOSink_44(
+        returnValue: _FakeIOSink_45(
           this,
           Invocation.method(
             #openWrite,
@@ -9373,36 +9384,36 @@ class MockFile extends _i1.Mock implements _i10.File {
             },
           ),
         ),
-      ) as _i10.IOSink);
+      ) as _i11.IOSink);
 
   @override
-  _i7.Future<_i16.Uint8List> readAsBytes() => (super.noSuchMethod(
+  _i7.Future<_i17.Uint8List> readAsBytes() => (super.noSuchMethod(
         Invocation.method(
           #readAsBytes,
           [],
         ),
-        returnValue: _i7.Future<_i16.Uint8List>.value(_i16.Uint8List(0)),
-      ) as _i7.Future<_i16.Uint8List>);
+        returnValue: _i7.Future<_i17.Uint8List>.value(_i17.Uint8List(0)),
+      ) as _i7.Future<_i17.Uint8List>);
 
   @override
-  _i16.Uint8List readAsBytesSync() => (super.noSuchMethod(
+  _i17.Uint8List readAsBytesSync() => (super.noSuchMethod(
         Invocation.method(
           #readAsBytesSync,
           [],
         ),
-        returnValue: _i16.Uint8List(0),
-      ) as _i16.Uint8List);
+        returnValue: _i17.Uint8List(0),
+      ) as _i17.Uint8List);
 
   @override
   _i7.Future<String> readAsString(
-          {_i30.Encoding? encoding = const _i30.Utf8Codec()}) =>
+          {_i31.Encoding? encoding = const _i31.Utf8Codec()}) =>
       (super.noSuchMethod(
         Invocation.method(
           #readAsString,
           [],
           {#encoding: encoding},
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #readAsString,
@@ -9413,14 +9424,14 @@ class MockFile extends _i1.Mock implements _i10.File {
       ) as _i7.Future<String>);
 
   @override
-  String readAsStringSync({_i30.Encoding? encoding = const _i30.Utf8Codec()}) =>
+  String readAsStringSync({_i31.Encoding? encoding = const _i31.Utf8Codec()}) =>
       (super.noSuchMethod(
         Invocation.method(
           #readAsStringSync,
           [],
           {#encoding: encoding},
         ),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.method(
             #readAsStringSync,
@@ -9432,7 +9443,7 @@ class MockFile extends _i1.Mock implements _i10.File {
 
   @override
   _i7.Future<List<String>> readAsLines(
-          {_i30.Encoding? encoding = const _i30.Utf8Codec()}) =>
+          {_i31.Encoding? encoding = const _i31.Utf8Codec()}) =>
       (super.noSuchMethod(
         Invocation.method(
           #readAsLines,
@@ -9444,7 +9455,7 @@ class MockFile extends _i1.Mock implements _i10.File {
 
   @override
   List<String> readAsLinesSync(
-          {_i30.Encoding? encoding = const _i30.Utf8Codec()}) =>
+          {_i31.Encoding? encoding = const _i31.Utf8Codec()}) =>
       (super.noSuchMethod(
         Invocation.method(
           #readAsLinesSync,
@@ -9455,9 +9466,9 @@ class MockFile extends _i1.Mock implements _i10.File {
       ) as List<String>);
 
   @override
-  _i7.Future<_i10.File> writeAsBytes(
+  _i7.Future<_i11.File> writeAsBytes(
     List<int>? bytes, {
-    _i10.FileMode? mode = _i10.FileMode.write,
+    _i11.FileMode? mode = _i11.FileMode.write,
     bool? flush = false,
   }) =>
       (super.noSuchMethod(
@@ -9469,7 +9480,7 @@ class MockFile extends _i1.Mock implements _i10.File {
             #flush: flush,
           },
         ),
-        returnValue: _i7.Future<_i10.File>.value(_FakeFile_38(
+        returnValue: _i7.Future<_i11.File>.value(_FakeFile_40(
           this,
           Invocation.method(
             #writeAsBytes,
@@ -9480,12 +9491,12 @@ class MockFile extends _i1.Mock implements _i10.File {
             },
           ),
         )),
-      ) as _i7.Future<_i10.File>);
+      ) as _i7.Future<_i11.File>);
 
   @override
   void writeAsBytesSync(
     List<int>? bytes, {
-    _i10.FileMode? mode = _i10.FileMode.write,
+    _i11.FileMode? mode = _i11.FileMode.write,
     bool? flush = false,
   }) =>
       super.noSuchMethod(
@@ -9501,10 +9512,10 @@ class MockFile extends _i1.Mock implements _i10.File {
       );
 
   @override
-  _i7.Future<_i10.File> writeAsString(
+  _i7.Future<_i11.File> writeAsString(
     String? contents, {
-    _i10.FileMode? mode = _i10.FileMode.write,
-    _i30.Encoding? encoding = const _i30.Utf8Codec(),
+    _i11.FileMode? mode = _i11.FileMode.write,
+    _i31.Encoding? encoding = const _i31.Utf8Codec(),
     bool? flush = false,
   }) =>
       (super.noSuchMethod(
@@ -9517,7 +9528,7 @@ class MockFile extends _i1.Mock implements _i10.File {
             #flush: flush,
           },
         ),
-        returnValue: _i7.Future<_i10.File>.value(_FakeFile_38(
+        returnValue: _i7.Future<_i11.File>.value(_FakeFile_40(
           this,
           Invocation.method(
             #writeAsString,
@@ -9529,13 +9540,13 @@ class MockFile extends _i1.Mock implements _i10.File {
             },
           ),
         )),
-      ) as _i7.Future<_i10.File>);
+      ) as _i7.Future<_i11.File>);
 
   @override
   void writeAsStringSync(
     String? contents, {
-    _i10.FileMode? mode = _i10.FileMode.write,
-    _i30.Encoding? encoding = const _i30.Utf8Codec(),
+    _i11.FileMode? mode = _i11.FileMode.write,
+    _i31.Encoding? encoding = const _i31.Utf8Codec(),
     bool? flush = false,
   }) =>
       super.noSuchMethod(
@@ -9575,7 +9586,7 @@ class MockFile extends _i1.Mock implements _i10.File {
           #resolveSymbolicLinks,
           [],
         ),
-        returnValue: _i7.Future<String>.value(_i11.dummyValue<String>(
+        returnValue: _i7.Future<String>.value(_i12.dummyValue<String>(
           this,
           Invocation.method(
             #resolveSymbolicLinks,
@@ -9590,7 +9601,7 @@ class MockFile extends _i1.Mock implements _i10.File {
           #resolveSymbolicLinksSync,
           [],
         ),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i12.dummyValue<String>(
           this,
           Invocation.method(
             #resolveSymbolicLinksSync,
@@ -9600,37 +9611,37 @@ class MockFile extends _i1.Mock implements _i10.File {
       ) as String);
 
   @override
-  _i7.Future<_i10.FileStat> stat() => (super.noSuchMethod(
+  _i7.Future<_i11.FileStat> stat() => (super.noSuchMethod(
         Invocation.method(
           #stat,
           [],
         ),
-        returnValue: _i7.Future<_i10.FileStat>.value(_FakeFileStat_45(
+        returnValue: _i7.Future<_i11.FileStat>.value(_FakeFileStat_46(
           this,
           Invocation.method(
             #stat,
             [],
           ),
         )),
-      ) as _i7.Future<_i10.FileStat>);
+      ) as _i7.Future<_i11.FileStat>);
 
   @override
-  _i10.FileStat statSync() => (super.noSuchMethod(
+  _i11.FileStat statSync() => (super.noSuchMethod(
         Invocation.method(
           #statSync,
           [],
         ),
-        returnValue: _FakeFileStat_45(
+        returnValue: _FakeFileStat_46(
           this,
           Invocation.method(
             #statSync,
             [],
           ),
         ),
-      ) as _i10.FileStat);
+      ) as _i11.FileStat);
 
   @override
-  _i7.Stream<_i10.FileSystemEvent> watch({
+  _i7.Stream<_i11.FileSystemEvent> watch({
     int? events = 15,
     bool? recursive = false,
   }) =>
@@ -9643,6 +9654,6 @@ class MockFile extends _i1.Mock implements _i10.File {
             #recursive: recursive,
           },
         ),
-        returnValue: _i7.Stream<_i10.FileSystemEvent>.empty(),
-      ) as _i7.Stream<_i10.FileSystemEvent>);
+        returnValue: _i7.Stream<_i11.FileSystemEvent>.empty(),
+      ) as _i7.Stream<_i11.FileSystemEvent>);
 }

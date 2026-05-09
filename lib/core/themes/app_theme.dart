@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/themes/text_styles.dart';
 
@@ -31,7 +32,7 @@ class AppTheme {
       colorScheme: _lightColorScheme,
 
       // Typography
-      textTheme: AppTextStyles.textTheme,
+      textTheme: GoogleFonts.outfitTextTheme(AppTextStyles.textTheme),
 
       // Scaffold
       scaffoldBackgroundColor: AppColors.background,
@@ -122,7 +123,7 @@ class AppTheme {
       colorScheme: _darkColorScheme,
 
       // Typography
-      textTheme: _darkTextTheme,
+      textTheme: GoogleFonts.outfitTextTheme(_darkTextTheme),
 
       // Scaffold
       scaffoldBackgroundColor: AppColors.gray900,
@@ -266,22 +267,22 @@ class AppTheme {
   // ============================================================
 
   static final CardThemeData _cardTheme = CardThemeData(
-    elevation: 2,
-    shadowColor: AppColors.shadow,
+    elevation: 8,
+    shadowColor: AppColors.primary30,
     surfaceTintColor: Colors.transparent,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16.0),
+      borderRadius: BorderRadius.circular(24.0),
     ),
     color: AppColors.surface,
     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
   );
 
   static final CardThemeData _darkCardTheme = CardThemeData(
-    elevation: 2,
-    shadowColor: AppColors.shadow,
+    elevation: 8,
+    shadowColor: Colors.black45,
     surfaceTintColor: Colors.transparent,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16.0),
+      borderRadius: BorderRadius.circular(24.0),
     ),
     color: AppColors.gray800,
     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -302,7 +303,7 @@ class AppTheme {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       minimumSize: const Size(88, 44),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(24.0),
       ),
       textStyle: AppTextStyles.buttonMedium,
     ),
@@ -317,7 +318,7 @@ class AppTheme {
       minimumSize: const Size(88, 44),
       side: const BorderSide(color: AppColors.primary, width: 1.5),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(24.0),
       ),
       textStyle: AppTextStyles.buttonMedium,
     ),

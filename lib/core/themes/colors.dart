@@ -143,7 +143,7 @@ class AppColors {
   // ============================================================
 
   /// Background color for the app
-  static const Color background = gray50;
+  static const Color background = primaryPale;
 
   /// Surface color for cards and elevated elements
   static const Color surface = white;
