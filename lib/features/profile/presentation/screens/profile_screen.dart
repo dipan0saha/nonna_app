@@ -49,7 +49,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.large(
+          SliverAppBar(
+            pinned: true,
             title: const Text('Profile'),
             backgroundColor: theme.scaffoldBackgroundColor,
             scrolledUnderElevation: 0,
@@ -106,7 +107,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         children: [
           // Profile Header Card
           Container(
-            padding: const EdgeInsets.all(AppSpacing.l),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.m,
+              vertical: AppSpacing.m,
+            ),
             decoration: BoxDecoration(
               color: colorScheme.surface,
               borderRadius: BorderRadius.circular(24),
@@ -118,32 +122,41 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               ],
             ),
-            child: Column(
+            child: Row(
               children: [
                 ProfileAvatar(
                   avatarUrl: profile.avatarUrl,
                   displayName: profile.displayName,
-                  radius: 48,
+                  radius: 32,
                 ),
-                AppSpacing.verticalGapM,
-                Text(
-                  profile.displayName,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                AppSpacing.horizontalGapM,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        profile.displayName,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '@${profile.userId.substring(0, 8)}', // Softly hinting a mock handle or subtitle
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
+                      AppSpacing.verticalGapXS,
+                      Text(
+                        '@${profile.userId.substring(0, 8)}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
                       ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          AppSpacing.verticalGapL,
+          AppSpacing.verticalGapM,
 
           // Stats Section
           if (state.stats != null) ...[
@@ -159,7 +172,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ),
             _StatsSection(stats: state.stats!),
-            AppSpacing.verticalGapL,
+            AppSpacing.verticalGapM,
           ],
 
           // Actions Section
@@ -315,7 +328,7 @@ class _StatsSection extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: AppSpacing.s,
       mainAxisSpacing: AppSpacing.s,
-      childAspectRatio: 1.4,
+      childAspectRatio: 1.8,
       children: [
         ProfileStatCard(
           label: 'Events Attended',

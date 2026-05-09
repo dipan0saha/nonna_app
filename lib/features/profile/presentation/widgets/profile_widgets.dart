@@ -99,15 +99,15 @@ class ProfileStatCard extends StatelessWidget {
           color: Colors.transparent,
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.m,
-              vertical: AppSpacing.s,
+              horizontal: AppSpacing.s,
+              vertical: AppSpacing.xs,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   value,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,
                       ),
