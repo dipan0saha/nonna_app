@@ -8,6 +8,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/rsvp_tasks/providers/rsvp_tasks_provider.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 /// Tile widget that displays events requiring an RSVP response.
 class RsvpTasksTile extends StatelessWidget {
@@ -49,43 +51,43 @@ class RsvpTasksTile extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     final pendingCount = events.where((e) => e.needsResponse).length;
-    return Row(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              Text('RSVP Tasks', style: context.textTheme.titleMedium),
-              if (pendingCount > 0 && !isLoading) ...[
-                AppSpacing.horizontalGapXS,
-                Container(
-                  key: const Key('pending_rsvp_badge'),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xs,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(AppSpacing.l),
-                  ),
-                  child: Text(
-                    '$pendingCount',
-                    style: context.textTheme.labelSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
+    final actions = <Widget>[];
+    if (onViewAll != null) {
+      actions.add(
+        TextButton(
+          key: const Key('rsvp_tasks_view_all'),
+          onPressed: onViewAll,
+          child: const Text('View all'),
         ),
-        if (onViewAll != null)
-          TextButton(
-            key: const Key('rsvp_tasks_view_all'),
-            onPressed: onViewAll,
-            child: const Text('View all'),
-          ),
-      ],
+      );
+    }
+
+    final pendingBadge = pendingCount > 0 && !isLoading
+        ? Container(
+            key: const Key('pending_rsvp_badge'),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: 2,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(AppSpacing.l),
+            ),
+            child: Text(
+              '$pendingCount',
+              style: context.textTheme.labelSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        : null;
+
+    return TileHeader(
+      icon: TileIcons.rsvpTasks,
+      title: 'RSVP Tasks',
+      titleSuffix: pendingBadge,
+      actions: actions,
     );
   }
 

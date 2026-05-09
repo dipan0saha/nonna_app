@@ -8,6 +8,8 @@ import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 /// Tile widget that shows recent followers (baby profile members added in the
 /// last 30 days).
@@ -43,17 +45,53 @@ class NewFollowersTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _TileHeader(
-              title: 'New Followers',
-              activeCount: activeCount,
-              onViewAll: onViewAll,
-              viewAllKey: const Key('new_followers_view_all'),
-            ),
+            _buildHeader(context),
             AppSpacing.verticalGapS,
             _buildBody(context),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final actions = <Widget>[];
+    if (onViewAll != null) {
+      actions.add(
+        TextButton(
+          key: const Key('new_followers_view_all'),
+          onPressed: onViewAll,
+          child: const Text('View all'),
+        ),
+      );
+    }
+
+    final countBadge = activeCount > 0
+        ? Container(
+            key: const Key('new_followers_count_badge'),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: 2,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              '$activeCount',
+              style: context.textTheme.labelSmall?.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        : null;
+
+    return TileHeader(
+      icon: TileIcons.newFollowers,
+      title: 'New Followers',
+      titleSuffix: countBadge,
+      actions: actions,
     );
   }
 
@@ -176,56 +214,6 @@ class _StatusBadge extends StatelessWidget {
         label,
         style: context.textTheme.labelSmall?.copyWith(color: color),
       ),
-    );
-  }
-}
-
-class _TileHeader extends StatelessWidget {
-  const _TileHeader({
-    required this.title,
-    required this.activeCount,
-    this.onViewAll,
-    this.viewAllKey,
-  });
-
-  final String title;
-  final int activeCount;
-  final VoidCallback? onViewAll;
-  final Key? viewAllKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(title, style: context.textTheme.titleMedium),
-        ),
-        if (activeCount > 0)
-          Container(
-            key: const Key('new_followers_count_badge'),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.xs,
-              vertical: 2,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              '$activeCount',
-              style: context.textTheme.labelSmall?.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        if (onViewAll != null)
-          TextButton(
-            key: viewAllKey,
-            onPressed: onViewAll,
-            child: const Text('View all'),
-          ),
-      ],
     );
   }
 }

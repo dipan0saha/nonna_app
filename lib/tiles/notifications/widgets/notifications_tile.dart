@@ -7,6 +7,8 @@ import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 /// Tile widget that displays recent notifications with read/unread state.
 class NotificationsTile extends StatelessWidget {
@@ -50,49 +52,52 @@ class NotificationsTile extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              Text('Notifications', style: context.textTheme.titleMedium),
-              if (unreadCount > 0) ...[
-                AppSpacing.horizontalGapXS,
-                Container(
-                  key: const Key('unread_badge'),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xs,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(AppSpacing.l),
-                  ),
-                  child: Text(
-                    '$unreadCount',
-                    style: context.textTheme.labelSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
+    final actions = <Widget>[];
+    if (onMarkAllRead != null && unreadCount > 0) {
+      actions.add(
+        TextButton(
+          key: const Key('mark_all_read_button'),
+          onPressed: onMarkAllRead,
+          child: const Text('Mark all read'),
         ),
-        if (onMarkAllRead != null && unreadCount > 0)
-          TextButton(
-            key: const Key('mark_all_read_button'),
-            onPressed: onMarkAllRead,
-            child: const Text('Mark all read'),
-          ),
-        if (onViewAll != null)
-          TextButton(
-            key: const Key('notifications_view_all'),
-            onPressed: onViewAll,
-            child: const Text('View all'),
-          ),
-      ],
+      );
+    }
+    if (onViewAll != null) {
+      actions.add(
+        TextButton(
+          key: const Key('notifications_view_all'),
+          onPressed: onViewAll,
+          child: const Text('View all'),
+        ),
+      );
+    }
+
+    final unreadBadge = unreadCount > 0
+        ? Container(
+            key: const Key('unread_badge'),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: 2,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(AppSpacing.l),
+            ),
+            child: Text(
+              '$unreadCount',
+              style: context.textTheme.labelSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        : null;
+
+    return TileHeader(
+      icon: TileIcons.notifications,
+      title: 'Notifications',
+      titleSuffix: unreadBadge,
+      actions: actions,
     );
   }
 

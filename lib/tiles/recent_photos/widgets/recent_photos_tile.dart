@@ -9,6 +9,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/recent_photos/models/photo_with_squish_count.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 export 'package:nonna_app/tiles/recent_photos/models/photo_with_squish_count.dart';
 
@@ -57,18 +59,21 @@ class RecentPhotosTile extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text('Recent Photos', style: context.textTheme.titleMedium),
+    final actions = <Widget>[];
+    if (onViewAll != null && !fullView) {
+      actions.add(
+        TextButton(
+          key: const Key('recent_photos_view_all'),
+          onPressed: onViewAll,
+          child: const Text('View all'),
         ),
-        if (onViewAll != null && !fullView)
-          TextButton(
-            key: const Key('recent_photos_view_all'),
-            onPressed: onViewAll,
-            child: const Text('View all'),
-          ),
-      ],
+      );
+    }
+
+    return TileHeader(
+      icon: TileIcons.recentPhotos,
+      title: 'Recent Photos',
+      actions: actions,
     );
   }
 

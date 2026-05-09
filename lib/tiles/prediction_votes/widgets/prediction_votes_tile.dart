@@ -8,6 +8,8 @@ import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/enums/vote_type.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/tiles/prediction_votes/providers/prediction_votes_provider.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 class PredictionVotesSmartTile extends ConsumerStatefulWidget {
   const PredictionVotesSmartTile({super.key, this.babyProfileId});
@@ -97,9 +99,10 @@ class _PredictionVotesSmartTileState
           mainAxisSize: MainAxisSize.min,
           children: [
             // ── Header ──
-            Text(
-              'Prediction Votes',
-              style: theme.textTheme.titleLarge?.copyWith(
+            TileHeader(
+              icon: TileIcons.predictionVotes,
+              title: 'Prediction Votes',
+              titleStyle: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -175,10 +178,8 @@ class _GenderVoteSection extends StatelessWidget {
     // Count gender votes
     final genderVotes =
         votes.where((v) => v.voteType == VoteType.gender).toList();
-    final boyCount =
-        genderVotes.where((v) => v.valueText == 'Boy').length;
-    final girlCount =
-        genderVotes.where((v) => v.valueText == 'Girl').length;
+    final boyCount = genderVotes.where((v) => v.valueText == 'Boy').length;
+    final girlCount = genderVotes.where((v) => v.valueText == 'Girl').length;
     final totalGenderVotes = genderVotes.length;
 
     return Column(

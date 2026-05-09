@@ -6,6 +6,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/activity_list/providers/activity_list_provider.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 /// Tile widget that shows an engagement recap (squishes, comments, RSVPs).
 class ActivityListTile extends StatelessWidget {
@@ -51,21 +53,21 @@ class ActivityListTile extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            'Engagement Recap',
-            style: context.textTheme.titleMedium,
-          ),
+    final actions = <Widget>[];
+    if (onPeriodChanged != null) {
+      actions.add(
+        _PeriodSelector(
+          selectedDays: selectedDays,
+          options: _periodOptions,
+          onChanged: onPeriodChanged!,
         ),
-        if (onPeriodChanged != null)
-          _PeriodSelector(
-            selectedDays: selectedDays,
-            options: _periodOptions,
-            onChanged: onPeriodChanged!,
-          ),
-      ],
+      );
+    }
+
+    return TileHeader(
+      icon: TileIcons.activityList,
+      title: 'Engagement Recap',
+      actions: actions,
     );
   }
 

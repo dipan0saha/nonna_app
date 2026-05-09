@@ -6,6 +6,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/storage_usage/providers/storage_usage_provider.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 export 'package:nonna_app/tiles/storage_usage/providers/storage_usage_provider.dart'
     show StorageUsageInfo;
@@ -34,7 +36,10 @@ class StorageUsageTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Storage Usage', style: context.textTheme.titleMedium),
+            const TileHeader(
+              icon: TileIcons.storageUsage,
+              title: 'Storage Usage',
+            ),
             AppSpacing.verticalGapS,
             _buildBody(context),
           ],

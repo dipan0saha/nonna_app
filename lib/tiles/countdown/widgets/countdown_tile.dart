@@ -7,6 +7,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/countdown/providers/countdown_provider.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 /// Tile widget that displays due date countdowns for one or more baby profiles.
 class CountdownTile extends StatelessWidget {
@@ -32,9 +34,9 @@ class CountdownTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Due Date Countdown',
-              style: context.textTheme.titleMedium,
+            const TileHeader(
+              icon: TileIcons.countdown,
+              title: 'Due Date Countdown',
             ),
             AppSpacing.verticalGapS,
             _buildBody(context),

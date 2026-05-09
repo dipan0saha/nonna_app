@@ -7,6 +7,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/registry_highlights/models/registry_item_with_status.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 /// Tile widget that displays registry highlights with priority and purchase status.
 class RegistryHighlightsTile extends StatelessWidget {
@@ -46,21 +48,21 @@ class RegistryHighlightsTile extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            'Registry Highlights',
-            style: context.textTheme.titleMedium,
-          ),
+    final actions = <Widget>[];
+    if (onViewAll != null) {
+      actions.add(
+        TextButton(
+          key: const Key('registry_highlights_view_all'),
+          onPressed: onViewAll,
+          child: const Text('View all'),
         ),
-        if (onViewAll != null)
-          TextButton(
-            key: const Key('registry_highlights_view_all'),
-            onPressed: onViewAll,
-            child: const Text('View all'),
-          ),
-      ],
+      );
+    }
+
+    return TileHeader(
+      icon: TileIcons.registryHighlights,
+      title: 'Registry Highlights',
+      actions: actions,
     );
   }
 

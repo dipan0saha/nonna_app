@@ -10,6 +10,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/upcoming_events/models/event_with_rsvp.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 export 'package:nonna_app/tiles/upcoming_events/models/event_with_rsvp.dart';
 
@@ -45,16 +47,31 @@ class UpcomingEventsTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _TileHeader(
-              title: 'Upcoming Events',
-              onViewAll: fullView ? null : onViewAll,
-              viewAllKey: const Key('upcoming_events_view_all'),
-            ),
+            _buildHeader(context),
             AppSpacing.verticalGapS,
             _buildBody(context),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final actions = <Widget>[];
+    if (onViewAll != null && !fullView) {
+      actions.add(
+        TextButton(
+          key: const Key('upcoming_events_view_all'),
+          onPressed: onViewAll,
+          child: const Text('View all'),
+        ),
+      );
+    }
+
+    return TileHeader(
+      icon: TileIcons.upcomingEvents,
+      title: 'Upcoming Events',
+      actions: actions,
     );
   }
 
@@ -188,35 +205,6 @@ class _RsvpBadge extends StatelessWidget {
         size: 18,
         color: status.color,
       ),
-    );
-  }
-}
-
-class _TileHeader extends StatelessWidget {
-  const _TileHeader({
-    required this.title,
-    this.onViewAll,
-    this.viewAllKey,
-  });
-
-  final String title;
-  final VoidCallback? onViewAll;
-  final Key? viewAllKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(title, style: context.textTheme.titleMedium),
-        ),
-        if (onViewAll != null)
-          TextButton(
-            key: viewAllKey,
-            onPressed: onViewAll,
-            child: const Text('View all'),
-          ),
-      ],
     );
   }
 }

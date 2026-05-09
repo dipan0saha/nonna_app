@@ -9,6 +9,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/gallery_favorites/providers/gallery_favorites_provider.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 export 'package:nonna_app/tiles/gallery_favorites/providers/gallery_favorites_provider.dart'
     show PhotoWithSquishes;
@@ -46,16 +48,31 @@ class GalleryFavoritesTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _TileHeader(
-              title: 'Gallery Favorites',
-              onViewAll: onViewAll,
-              viewAllKey: const Key('gallery_favorites_view_all'),
-            ),
+            _buildHeader(context),
             AppSpacing.verticalGapS,
             _buildBody(context),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final actions = <Widget>[];
+    if (onViewAll != null) {
+      actions.add(
+        TextButton(
+          key: const Key('gallery_favorites_view_all'),
+          onPressed: onViewAll,
+          child: const Text('View all'),
+        ),
+      );
+    }
+
+    return TileHeader(
+      icon: TileIcons.galleryFavorites,
+      title: 'Gallery Favorites',
+      actions: actions,
     );
   }
 
@@ -202,35 +219,6 @@ class _SquishBadge extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _TileHeader extends StatelessWidget {
-  const _TileHeader({
-    required this.title,
-    this.onViewAll,
-    this.viewAllKey,
-  });
-
-  final String title;
-  final VoidCallback? onViewAll;
-  final Key? viewAllKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(title, style: context.textTheme.titleMedium),
-        ),
-        if (onViewAll != null)
-          TextButton(
-            key: viewAllKey,
-            onPressed: onViewAll,
-            child: const Text('View all'),
-          ),
-      ],
     );
   }
 }

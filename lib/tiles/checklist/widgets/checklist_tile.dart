@@ -7,6 +7,8 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/checklist/providers/checklist_provider.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 export 'package:nonna_app/tiles/checklist/providers/checklist_provider.dart'
     show ChecklistItem;
@@ -53,35 +55,30 @@ class ChecklistTile extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child:
-                  Text('Getting Started', style: context.textTheme.titleMedium),
-            ),
-            Text(
-              key: const Key('checklist_progress_text'),
-              '$completedCount/${items.isEmpty ? 0 : items.length}',
-              style: context.textTheme.bodySmall?.copyWith(
-                color: AppColors.onSurfaceSecondary(context.colorScheme),
+    final showProgress = !isLoading && error == null && items.isNotEmpty;
+    final progressText = Text(
+      key: const Key('checklist_progress_text'),
+      '$completedCount/${items.isEmpty ? 0 : items.length}',
+      style: context.textTheme.bodySmall?.copyWith(
+        color: AppColors.onSurfaceSecondary(context.colorScheme),
+      ),
+    );
+
+    return TileHeader(
+      icon: TileIcons.checklist,
+      title: 'Getting Started',
+      actions: [progressText],
+      bottom: showProgress
+          ? LinearProgressIndicator(
+              key: const Key('checklist_progress_bar'),
+              value: progressPercentage / 100,
+              backgroundColor: AppColors.onSurfaceHint(context.colorScheme)
+                  .withValues(alpha: 0.2),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColors.primary,
               ),
-            ),
-          ],
-        ),
-        if (!isLoading && error == null && items.isNotEmpty) ...[
-          AppSpacing.verticalGapXS,
-          LinearProgressIndicator(
-            key: const Key('checklist_progress_bar'),
-            value: progressPercentage / 100,
-            backgroundColor: AppColors.onSurfaceHint(context.colorScheme)
-                .withValues(alpha: 0.2),
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-          ),
-        ],
-      ],
+            )
+          : null,
     );
   }
 

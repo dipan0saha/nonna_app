@@ -6,6 +6,8 @@ import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 /// Tile widget that displays global system announcements with per-user dismissal.
 class SystemAnnouncementsTile extends StatelessWidget {
@@ -50,7 +52,10 @@ class SystemAnnouncementsTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Announcements', style: context.textTheme.titleMedium),
+            const TileHeader(
+              icon: TileIcons.systemAnnouncements,
+              title: 'Announcements',
+            ),
             AppSpacing.verticalGapS,
             _buildBody(context),
           ],

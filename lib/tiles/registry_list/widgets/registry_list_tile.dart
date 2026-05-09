@@ -10,6 +10,8 @@ import 'package:nonna_app/features/registry/presentation/widgets/registry_filter
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 class RegistryListSmartTile extends ConsumerWidget {
   const RegistryListSmartTile({super.key});
@@ -40,9 +42,10 @@ class RegistryListSmartTile extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Text(
-              'Registry Items',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            child: TileHeader(
+              icon: TileIcons.registryList,
+              title: 'Registry Items',
+              titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),

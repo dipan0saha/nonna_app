@@ -14,6 +14,7 @@ class RealtimeService {
   late final SupabaseClient _client;
   final Map<String, RealtimeChannel> _channels = {};
   final Map<String, StreamController<dynamic>> _streamControllers = {};
+  final Map<String, int> _channelRefCounts = {};
 
   bool _isConnected = false;
 
@@ -76,6 +77,7 @@ class RealtimeService {
 
       _channels.clear();
       _streamControllers.clear();
+      _channelRefCounts.clear();
 
       debugPrint('✅ RealtimeService disposed');
     } catch (e) {
@@ -102,8 +104,12 @@ class RealtimeService {
     try {
       // Check if channel already exists
       if (_channels.containsKey(channelName)) {
+        _channelRefCounts[channelName] =
+            (_channelRefCounts[channelName] ?? 0) + 1;
         debugPrint(
-            '⚠️  Channel $channelName already exists, returning existing stream');
+          'ℹ️  Channel $channelName already exists, reusing stream '
+          '(refs: ${_channelRefCounts[channelName]})',
+        );
         return _streamControllers[channelName]!.stream;
       }
 
@@ -147,12 +153,26 @@ class RealtimeService {
         if (status == RealtimeSubscribeStatus.subscribed) {
           debugPrint('✅ Subscribed to channel: $channelName');
         } else if (status == RealtimeSubscribeStatus.channelError) {
-          debugPrint('❌ Channel error for $channelName: $error');
-          controller.addError(error ?? 'Unknown channel error');
+          final message = error?.toString();
+          if (message == null || message.isEmpty) {
+            debugPrint('⚠️  Channel error for $channelName (no details)');
+          } else {
+            debugPrint('⚠️  Channel error for $channelName: $message');
+          }
+
+          if (!controller.isClosed && message != null && message.isNotEmpty) {
+            controller.add({
+              'eventType': 'CHANNEL_ERROR',
+              'error': message,
+              'table': table,
+              'channel': channelName,
+            });
+          }
         }
       });
 
       _channels[channelName] = channel;
+      _channelRefCounts[channelName] = 1;
 
       return controller.stream;
     } catch (e) {
@@ -166,11 +186,23 @@ class RealtimeService {
   /// [channelName] The channel name
   Future<void> unsubscribe(String channelName) async {
     try {
+      final refCount = _channelRefCounts[channelName] ?? 0;
+      if (refCount > 1) {
+        _channelRefCounts[channelName] = refCount - 1;
+        debugPrint(
+          'ℹ️  Channel $channelName still in use '
+          '(refs: ${_channelRefCounts[channelName]})',
+        );
+        return;
+      }
+
       final channel = _channels[channelName];
       if (channel != null) {
         await _client.removeChannel(channel);
         _channels.remove(channelName);
       }
+
+      _channelRefCounts.remove(channelName);
 
       final controller = _streamControllers[channelName];
       if (controller != null) {
@@ -276,6 +308,7 @@ class RealtimeService {
       }
 
       _channels.clear();
+      _channelRefCounts.clear();
 
       debugPrint('✅ Reconnected to realtime');
     } catch (e) {

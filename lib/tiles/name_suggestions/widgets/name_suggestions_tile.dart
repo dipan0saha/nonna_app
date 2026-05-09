@@ -7,6 +7,8 @@ import 'package:nonna_app/core/enums/gender.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/tiles/name_suggestions/providers/name_suggestions_provider.dart';
+import 'package:nonna_app/tiles/core/tile_icons.dart';
+import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
 class NameSuggestionsSmartTile extends ConsumerStatefulWidget {
   const NameSuggestionsSmartTile({super.key, this.babyProfileId});
@@ -106,16 +108,13 @@ class _NameSuggestionsSmartTileState
           mainAxisSize: MainAxisSize.min,
           children: [
             // ── Header ──
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Name Suggestions',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+            TileHeader(
+              icon: TileIcons.nameSuggestions,
+              title: 'Name Suggestions',
+              titleStyle: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              actions: [
                 IconButton(
                   key: const Key('add_name_suggestion_button'),
                   icon: Icon(

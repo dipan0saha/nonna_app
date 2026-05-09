@@ -59,6 +59,8 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
   static const int _maxPurchases = 20;
 
   late final _realtimeService = ref.read(realtimeServiceProvider);
+  late final _databaseService = ref.read(databaseServiceProvider);
+  late final _cacheService = ref.read(cacheServiceProvider);
   String? _subscriptionId;
   late final _subscriptionManager =
       ref.read(realtimeSubscriptionManagerProvider);
@@ -67,6 +69,8 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
   RecentPurchasesState build() {
     // Eager initialization prevents ref.read calls from happening during dispose.
     _realtimeService;
+    _databaseService;
+    _cacheService;
     _subscriptionManager;
 
     ref.onDispose(() {
@@ -166,8 +170,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     String babyProfileId,
   ) async {
     // First get all registry items for this baby profile
-    final itemsResponse = await ref
-        .read(databaseServiceProvider)
+    final itemsResponse = await _databaseService
         .select(SupabaseTables.registryItems)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
         .isFilter(SupabaseTables.deletedAt, null);
@@ -178,8 +181,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     if (itemIds.isEmpty) return [];
 
     // Then fetch purchases for these items
-    final response = await ref
-        .read(databaseServiceProvider)
+    final response = await _databaseService
         .select(
           SupabaseTables.registryPurchases,
           columns:
@@ -197,12 +199,11 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
   /// Load purchases from cache
   Future<List<RegistryPurchase>?> _loadFromCache(String babyProfileId) async {
-    final cacheService = ref.read(cacheServiceProvider);
-    if (!cacheService.isInitialized) return null;
+    if (!_cacheService.isInitialized) return null;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
-      final cachedData = await cacheService.get(cacheKey);
+      final cachedData = await _cacheService.get(cacheKey);
 
       if (cachedData == null) return null;
 
@@ -221,13 +222,12 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     String babyProfileId,
     List<RegistryPurchase> purchases,
   ) async {
-    final cacheService = ref.read(cacheServiceProvider);
-    if (!cacheService.isInitialized) return;
+    if (!_cacheService.isInitialized) return;
 
     try {
       final cacheKey = _getCacheKey(babyProfileId);
       final jsonData = purchases.map((p) => p.toJson()).toList();
-      await cacheService.put(cacheKey, jsonData,
+      await _cacheService.put(cacheKey, jsonData,
           ttlMinutes: PerformanceLimits.tileCacheDuration.inMinutes);
     } catch (e) {
       debugPrint('⚠️  Failed to save to cache: $e');
@@ -252,7 +252,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
       _subscriptionId = channelName;
 
-      stream.listen((payload) {
+      _subscriptionManager.subscribe(channelName, stream, (payload) {
         _handleRealtimeUpdate(payload, babyProfileId);
       });
 
@@ -288,9 +288,10 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
   Future<void> _backgroundRefresh(String babyProfileId) async {
     try {
+      if (!ref.mounted) return;
       final purchases = await _fetchFromDatabase(babyProfileId);
       if (!ref.mounted) return;
-      _saveToCache(babyProfileId, purchases);
+      await _saveToCache(babyProfileId, purchases);
       if (!ref.mounted) return;
       state = state.copyWith(
         purchases: purchases,
