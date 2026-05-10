@@ -183,9 +183,10 @@ class _RegistryItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final item = itemWithStatus.item;
-    final addedDate = DateFormat('MMM d, yyyy').format(item.createdAt);
-    final purchaserNames =
-        itemWithStatus.purchasers.map((p) => p.displayName).toSet().join(', ');
+    final addedDate = DateFormat('MMM d').format(item.createdAt);
+    final purchaserNames = itemWithStatus.isPurchased
+        ? itemWithStatus.purchasers.map((p) => p.displayName).toSet().join(', ')
+        : '';
 
     final canUnpurchase = itemWithStatus.isPurchasedByCurrentUser;
     final canPurchase = !itemWithStatus.isPurchased;
@@ -214,22 +215,32 @@ class _RegistryItemRow extends StatelessWidget {
       visualDensity: const VisualDensity(vertical: -2),
       minVerticalPadding: 0,
       contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-      title: Text(
-        item.name,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              item.name,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
+          ),
+          _PriorityBadge(priority: item.priority),
+        ],
       ),
       subtitle: Text(
-        itemWithStatus.isPurchased && purchaserNames.isNotEmpty
-            ? 'Priority ${item.priority} • Added $addedDate\nPurchased by: $purchaserNames'
-            : 'Priority ${item.priority} • Added $addedDate',
+        itemWithStatus.isPurchased
+            ? purchaserNames.isNotEmpty
+                ? 'Added $addedDate • Purchased by $purchaserNames'
+                : 'Added $addedDate • Purchased'
+            : 'Added $addedDate',
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color:
                   AppColors.onSurfaceSecondary(Theme.of(context).colorScheme),
             ),
       ),
-      isThreeLine: itemWithStatus.isPurchased && purchaserNames.isNotEmpty,
       trailing: IconButton(
         icon: Icon(icon, color: iconColor),
         iconSize: 20,
@@ -240,6 +251,47 @@ class _RegistryItemRow extends StatelessWidget {
         onPressed: canPurchase || canUnpurchase ? onTogglePurchase : null,
       ),
       onTap: onTap,
+    );
+  }
+}
+
+class _PriorityBadge extends StatelessWidget {
+  const _PriorityBadge({required this.priority});
+
+  final int priority;
+
+  Color _priorityColor(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    if (priority >= 4) return scheme.error;
+    if (priority == 3) return AppColors.secondary;
+    return AppColors.primary;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _priorityColor(context);
+    return Container(
+      margin: const EdgeInsets.only(left: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: 2,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: color.withValues(alpha: 0.4),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        'P$priority',
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
+      ),
     );
   }
 }
