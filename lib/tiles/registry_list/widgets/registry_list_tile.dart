@@ -10,6 +10,7 @@ import 'package:nonna_app/features/registry/presentation/widgets/registry_filter
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/tiles/core/tile_icons.dart';
 import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
@@ -37,61 +38,39 @@ class RegistryListSmartTile extends ConsumerWidget {
 
     return Card(
       key: const Key('registry_list_smart_tile'),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: TileHeader(
+      child: Padding(
+        padding: AppSpacing.cardPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const TileHeader(
               icon: TileIcons.registryList,
               title: 'Registry Items',
-              titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
             ),
-          ),
-          RegistryFilterBar(
-            currentFilter: state.currentFilter,
-            currentSort: state.currentSort,
-            onFilterChanged: (_) {},
-            onSortChanged: (sort) =>
-                ref.read(registryScreenProvider.notifier).applySort(sort),
-          ),
-          if (items.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: EmptyState(
+            AppSpacing.verticalGapXS,
+            RegistryFilterBar(
+              currentFilter: state.currentFilter,
+              currentSort: state.currentSort,
+              onFilterChanged: (_) {},
+              onSortChanged: (sort) =>
+                  ref.read(registryScreenProvider.notifier).applySort(sort),
+            ),
+            if (items.isEmpty)
+              const CompactEmptyState(
                 message: 'No registry items found',
                 icon: Icons.card_giftcard_outlined,
-              ),
-            )
-          else
-            ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                _SectionHeader(
-                  title: 'Available Items',
-                  count: availableItems.length,
-                ),
-                ...availableItems.map(
-                  (itemWithStatus) => _RegistryItemRow(
-                    itemWithStatus: itemWithStatus,
-                    isOwner: isOwner,
-                    onTap: () => context.push(AppRoutes.registryItem,
-                        extra: itemWithStatus.item),
-                    onTogglePurchase: () => ref
-                        .read(registryScreenProvider.notifier)
-                        .togglePurchase(itemWithStatus),
-                  ),
-                ),
-                if (purchasedItems.isNotEmpty) ...[
-                  const Divider(height: 20),
+              )
+            else
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
                   _SectionHeader(
-                    title: 'Purchased Items',
-                    count: purchasedItems.length,
+                    title: 'Available Items',
+                    count: availableItems.length,
+                    color: AppColors.primary,
                   ),
-                  ...purchasedItems.map(
+                  ...availableItems.map(
                     (itemWithStatus) => _RegistryItemRow(
                       itemWithStatus: itemWithStatus,
                       isOwner: isOwner,
@@ -102,11 +81,29 @@ class RegistryListSmartTile extends ConsumerWidget {
                           .togglePurchase(itemWithStatus),
                     ),
                   ),
+                  if (purchasedItems.isNotEmpty) ...[
+                    const Divider(height: 16),
+                    _SectionHeader(
+                      title: 'Purchased Items',
+                      count: purchasedItems.length,
+                      color: AppColors.secondary,
+                    ),
+                    ...purchasedItems.map(
+                      (itemWithStatus) => _RegistryItemRow(
+                        itemWithStatus: itemWithStatus,
+                        isOwner: isOwner,
+                        onTap: () => context.push(AppRoutes.registryItem,
+                            extra: itemWithStatus.item),
+                        onTogglePurchase: () => ref
+                            .read(registryScreenProvider.notifier)
+                            .togglePurchase(itemWithStatus),
+                      ),
+                    ),
+                  ],
                 ],
-              ],
-            ),
-          AppSpacing.verticalGapS,
-        ],
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -116,18 +113,55 @@ class _SectionHeader extends StatelessWidget {
   const _SectionHeader({
     required this.title,
     required this.count,
+    required this.color,
   });
 
   final String title;
   final int count;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-      child: Text(
-        '$title ($count)',
-        style: Theme.of(context).textTheme.titleSmall,
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      child: Row(
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          AppSpacing.horizontalGapXS,
+          Text(
+            title,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          AppSpacing.horizontalGapXS,
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: 2,
+            ),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: color.withValues(alpha: 0.4)),
+            ),
+            child: Text(
+              '$count',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -162,30 +196,46 @@ class _RegistryItemRow extends StatelessWidget {
 
     if (canUnpurchase) {
       icon = Icons.undo;
-      iconColor = Colors.orange;
+      iconColor = AppColors.warningDark;
       tooltip = 'Mark as unpurchased';
     } else if (itemWithStatus.isPurchased) {
       icon = Icons.lock;
-      iconColor = Colors.grey;
+      iconColor = AppColors.onSurfaceHint(Theme.of(context).colorScheme);
       tooltip =
           isOwner ? 'Already purchased by someone else' : 'Already purchased';
     } else {
       icon = Icons.check_circle_outline;
-      iconColor = Colors.green;
+      iconColor = AppColors.success;
       tooltip = 'Mark as purchased';
     }
 
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      title: Text(item.name),
+      dense: true,
+      visualDensity: const VisualDensity(vertical: -2),
+      minVerticalPadding: 0,
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+      title: Text(
+        item.name,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+      ),
       subtitle: Text(
         itemWithStatus.isPurchased && purchaserNames.isNotEmpty
             ? 'Priority ${item.priority} • Added $addedDate\nPurchased by: $purchaserNames'
             : 'Priority ${item.priority} • Added $addedDate',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color:
+                  AppColors.onSurfaceSecondary(Theme.of(context).colorScheme),
+            ),
       ),
       isThreeLine: itemWithStatus.isPurchased && purchaserNames.isNotEmpty,
       trailing: IconButton(
         icon: Icon(icon, color: iconColor),
+        iconSize: 20,
+        padding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
         tooltip: tooltip,
         onPressed: canPurchase || canUnpurchase ? onTogglePurchase : null,
       ),

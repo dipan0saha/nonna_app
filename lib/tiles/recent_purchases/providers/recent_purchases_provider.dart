@@ -58,6 +58,8 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
   static const String _cacheKeyPrefix = 'recent_purchases';
   static const int _maxPurchases = 20;
 
+  List<String> _registryItemIds = [];
+
   late final _realtimeService = ref.read(realtimeServiceProvider);
   late final _databaseService = ref.read(databaseServiceProvider);
   late final _cacheService = ref.read(cacheServiceProvider);
@@ -178,7 +180,12 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     final itemIds =
         (itemsResponse as List).map((json) => json['id'] as String).toList();
 
-    if (itemIds.isEmpty) return [];
+    if (itemIds.isEmpty) {
+      _registryItemIds = [];
+      return [];
+    }
+
+    _registryItemIds = itemIds;
 
     // Then fetch purchases for these items
     final response = await _databaseService
@@ -244,10 +251,21 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     try {
       _cancelRealtimeSubscription();
 
+      final itemIds = _registryItemIds.isNotEmpty
+          ? _registryItemIds
+          : await _loadRegistryItemIds(babyProfileId);
+      if (!ref.mounted || itemIds.isEmpty) {
+        return;
+      }
+
       final channelName = 'registry-purchases-channel-$babyProfileId';
       final stream = _realtimeService.subscribe(
         table: SupabaseTables.registryPurchases,
         channelName: channelName,
+        filter: {
+          'column': 'registry_item_id',
+          'value': itemIds,
+        },
       );
 
       _subscriptionId = channelName;
@@ -260,6 +278,19 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
     } catch (e) {
       debugPrint('⚠️  Failed to setup real-time subscription: $e');
     }
+  }
+
+  Future<List<String>> _loadRegistryItemIds(String babyProfileId) async {
+    final response = await _databaseService
+        .select(SupabaseTables.registryItems, columns: 'id')
+        .eq(SupabaseTables.babyProfileId, babyProfileId)
+        .isFilter(SupabaseTables.deletedAt, null);
+
+    final ids = (response as List)
+        .map((json) => json['id'] as String)
+        .toList(growable: false);
+    _registryItemIds = ids;
+    return ids;
   }
 
   /// Handle real-time update

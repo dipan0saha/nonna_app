@@ -98,7 +98,7 @@ class RealtimeService {
   Stream<dynamic> subscribe({
     required String table,
     required String channelName,
-    Map<String, String>? filter,
+    Map<String, dynamic>? filter,
     PostgresChangeEvent event = PostgresChangeEvent.all,
   }) {
     try {
@@ -123,11 +123,13 @@ class RealtimeService {
       // Build filter if provided
       PostgresChangeFilter? changeFilter;
       if (filter != null && filter.isNotEmpty) {
-        final column = filter['column'];
+        final column = filter['column'] as String?;
         final value = filter['value'];
         if (column != null && value != null) {
           changeFilter = PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
+            type: value is Iterable
+                ? PostgresChangeFilterType.inFilter
+                : PostgresChangeFilterType.eq,
             column: column,
             value: value,
           );

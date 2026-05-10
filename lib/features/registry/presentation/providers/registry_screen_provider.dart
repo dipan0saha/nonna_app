@@ -218,7 +218,10 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
             isLoading: false,
           );
 
-          await _setupRealtimeSubscriptions(babyProfileId);
+          await _setupRealtimeSubscriptions(
+            babyProfileId,
+            cachedItems.map((item) => item.item.id).toList(),
+          );
           if (!ref.mounted) return;
 
           unawaited(_backgroundSyncItems(babyProfileId));
@@ -240,7 +243,10 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
       );
 
       // Setup real-time subscriptions
-      await _setupRealtimeSubscriptions(babyProfileId);
+      await _setupRealtimeSubscriptions(
+        babyProfileId,
+        itemsWithStatus.map((item) => item.item.id).toList(),
+      );
       if (!ref.mounted) return;
 
       debugPrint('✅ Loaded ${itemsWithStatus.length} registry items');
@@ -559,7 +565,10 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
   }
 
   /// Setup real-time subscriptions
-  Future<void> _setupRealtimeSubscriptions(String babyProfileId) async {
+  Future<void> _setupRealtimeSubscriptions(
+    String babyProfileId,
+    List<String> itemIds,
+  ) async {
     try {
       _cancelRealtimeSubscriptions();
 
@@ -583,17 +592,24 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
       });
 
       // Subscribe to purchases changes
-      final purchasesChannelName = 'registry-purchases-channel-$babyProfileId';
-      final purchasesStream = realtimeService.subscribe(
-        table: SupabaseTables.registryPurchases,
-        channelName: purchasesChannelName,
-      );
+      if (itemIds.isNotEmpty) {
+        final purchasesChannelName =
+            'registry-purchases-channel-$babyProfileId';
+        final purchasesStream = realtimeService.subscribe(
+          table: SupabaseTables.registryPurchases,
+          channelName: purchasesChannelName,
+          filter: {
+            'column': 'registry_item_id',
+            'value': itemIds,
+          },
+        );
 
-      _purchasesSubscriptionId = purchasesChannelName;
+        _purchasesSubscriptionId = purchasesChannelName;
 
-      purchasesStream.listen((payload) {
-        _handlePurchasesUpdate(payload, babyProfileId);
-      });
+        purchasesStream.listen((payload) {
+          _handlePurchasesUpdate(payload, babyProfileId);
+        });
+      }
 
       debugPrint('✅ Real-time subscriptions setup for registry');
     } catch (e) {

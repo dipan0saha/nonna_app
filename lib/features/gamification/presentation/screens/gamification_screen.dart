@@ -113,12 +113,9 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen> {
                 )
               : RefreshIndicator(
                   onRefresh: _onRefresh,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TileListView(
-                      tiles: state.tiles,
-                      onRefresh: _onRefresh,
-                    ),
+                  child: TileListView(
+                    tiles: state.tiles,
+                    onRefresh: _onRefresh,
                   ),
                 ),
     );

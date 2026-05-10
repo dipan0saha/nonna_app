@@ -103,10 +103,11 @@ class _RegistryItemRow extends StatelessWidget {
   final RegistryItemWithStatus item;
   final void Function(RegistryItemWithStatus)? onTap;
 
-  Color _priorityColor(int priority) {
-    if (priority >= 4) return Colors.red;
-    if (priority == 3) return Colors.orange;
-    return Colors.blue;
+  Color _priorityColor(BuildContext context, int priority) {
+    final scheme = Theme.of(context).colorScheme;
+    if (priority >= 4) return scheme.error;
+    if (priority == 3) return AppColors.secondary;
+    return AppColors.primary;
   }
 
   @override
@@ -120,41 +121,69 @@ class _RegistryItemRow extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.item.name,
-                    style: context.textTheme.bodyMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  AppSpacing.verticalGapXS,
-                  Chip(
-                    key: Key('priority_badge_${item.item.id}'),
-                    label: Text(
-                      'P${item.item.priority}',
-                      style: context.textTheme.labelSmall
-                          ?.copyWith(color: Colors.white),
-                    ),
-                    backgroundColor: _priorityColor(item.item.priority),
-                    visualDensity: VisualDensity.compact,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: EdgeInsets.zero,
-                  ),
-                ],
+              child: Text(
+                item.item.name,
+                style: context.textTheme.bodyMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
+            _PriorityBadge(
+              priority: item.item.priority,
+              color: _priorityColor(context, item.item.priority),
+              id: item.item.id,
+            ),
+            AppSpacing.horizontalGapS,
             Icon(
               key: Key('purchase_status_${item.item.id}'),
               item.isPurchased
-                  ? Icons.check_circle
-                  : Icons.radio_button_unchecked,
+                  ? Icons.check_circle_rounded
+                  : Icons.radio_button_unchecked_rounded,
               color: item.isPurchased
-                  ? Colors.green
+                  ? AppColors.primary
                   : AppColors.onSurfaceHint(context.colorScheme),
+              size: 20,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PriorityBadge extends StatelessWidget {
+  const _PriorityBadge({
+    required this.priority,
+    required this.color,
+    required this.id,
+  });
+
+  final int priority;
+  final Color color;
+  final String id;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: Key('priority_badge_$id'),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: 2,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: color.withValues(alpha: 0.4),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        'P$priority',
+        style: context.textTheme.labelSmall?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.2,
         ),
       ),
     );
