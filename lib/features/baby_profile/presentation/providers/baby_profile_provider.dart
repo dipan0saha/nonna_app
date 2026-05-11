@@ -6,6 +6,7 @@ import '../../../../core/config/app_config.dart';
 import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
+import '../../../../tiles/new_baby_welcome/providers/new_baby_welcome_provider.dart';
 import '../../../../core/enums/gender.dart';
 import '../../../../core/enums/invitation_status.dart';
 import '../../../../core/enums/user_role.dart';
@@ -356,6 +357,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
     Gender? gender,
     String? profilePhotoUrl,
     String? defaultLastNameSource,
+    double? birthWeightKg,
+    double? birthHeightCm,
   }) async {
     if (!state.isOwner) {
       state = state.copyWith(saveError: 'Only owners can update baby profile');
@@ -381,6 +384,8 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
         'gender': gender?.toJson(),
         'profile_photo_url': profilePhotoUrl,
         'default_last_name_source': defaultLastNameSource,
+        'birth_weight_kg': birthWeightKg,
+        'birth_height_cm': birthHeightCm,
         'updated_at': DateTime.now().toIso8601String(),
       };
 
@@ -401,6 +406,12 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       // Update cache
       await _saveToCache(babyProfileId, profile);
       if (!ref.mounted) return;
+
+      // Bust the NewBabyWelcome tile's own Hive cache so the tile
+      // immediately reflects any field changes (e.g. gender, weight, height).
+      ref.read(newBabyWelcomeProvider.notifier).refresh(
+            babyProfileId: babyProfileId,
+          );
 
       state = state.copyWith(
         profile: profile,

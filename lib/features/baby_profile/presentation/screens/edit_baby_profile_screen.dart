@@ -34,6 +34,8 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
   static const int _twoYearsInDays = 730;
 
   late final TextEditingController _nameController;
+  late final TextEditingController _weightController;
+  late final TextEditingController _heightController;
   Gender _selectedGender = Gender.unknown;
   DateTime? _expectedBirthDate;
   DateTime? _actualBirthDate;
@@ -43,6 +45,8 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController();
+    _weightController = TextEditingController();
+    _heightController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(babyProfileProvider.notifier).loadProfile(
             babyProfileId: widget.babyProfileId,
@@ -54,6 +58,8 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _weightController.dispose();
+    _heightController.dispose();
     super.dispose();
   }
 
@@ -64,6 +70,12 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
       _selectedGender = p.gender;
       _expectedBirthDate = p.expectedBirthDate;
       _actualBirthDate = p.actualBirthDate;
+      if (p.birthWeightKg != null) {
+        _weightController.text = p.birthWeightKg!.toStringAsFixed(3);
+      }
+      if (p.birthHeightCm != null) {
+        _heightController.text = p.birthHeightCm!.toStringAsFixed(1);
+      }
       _initialized = true;
     }
   }
@@ -97,6 +109,8 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
           gender: _selectedGender,
           expectedBirthDate: _expectedBirthDate,
           actualBirthDate: _actualBirthDate,
+          birthWeightKg: double.tryParse(_weightController.text.trim()),
+          birthHeightCm: double.tryParse(_heightController.text.trim()),
         );
 
     if (!mounted) return;
@@ -194,6 +208,38 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
                       lastDate: DateTime.now(),
                       onPicked: (d) => setState(() => _actualBirthDate = d),
                     ),
+                  ),
+                  AppSpacing.verticalGapM,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _weightController,
+                          decoration: const InputDecoration(
+                            labelText: 'Birth Weight (kg)',
+                            hintText: 'e.g. 3.450',
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          textInputAction: TextInputAction.next,
+                        ),
+                      ),
+                      AppSpacing.horizontalGapS,
+                      Expanded(
+                        child: TextFormField(
+                          controller: _heightController,
+                          decoration: const InputDecoration(
+                            labelText: 'Birth Height (cm)',
+                            hintText: 'e.g. 51.0',
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          textInputAction: TextInputAction.done,
+                        ),
+                      ),
+                    ],
                   ),
                   if (state.saveError != null) ...[
                     AppSpacing.verticalGapS,

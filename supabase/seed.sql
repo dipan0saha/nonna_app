@@ -321,34 +321,39 @@ INSERT INTO auth.identities (id, user_id, identity_data, provider, provider_id, 
 COMMIT;
 
 
--- NOTE: In production, auth.users would be created via Supabase Auth API.
--- For testing, we update the auto-created profiles with additional data
+-- NOTE: auth.users are created by direct INSERT in this seed (bypass Auth API).
+-- The handle_new_user trigger does NOT fire for direct DB inserts, so profiles
+-- are seeded directly using INSERT ... ON CONFLICT DO UPDATE for full idempotency.
 
 -- ============================================================================
 -- SECTION 1: PROFILES - Owners (20 users, 2 per baby)
 -- ============================================================================
 
--- Update profiles with display_name and avatar_url
-UPDATE public.profiles SET display_name = 'Sarah Johnson', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah0', created_at = NOW() - INTERVAL '30 days', updated_at = NOW() - INTERVAL '30 days' WHERE user_id = '10000000-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'Michael Johnson', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael0', created_at = NOW() - INTERVAL '30 days', updated_at = NOW() - INTERVAL '30 days' WHERE user_id = '20000000-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Emily Davis', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily1', created_at = NOW() - INTERVAL '33 days', updated_at = NOW() - INTERVAL '33 days' WHERE user_id = '10000001-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'John Davis', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=John1', created_at = NOW() - INTERVAL '33 days', updated_at = NOW() - INTERVAL '33 days' WHERE user_id = '20000001-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Jennifer Smith', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer2', created_at = NOW() - INTERVAL '36 days', updated_at = NOW() - INTERVAL '36 days' WHERE user_id = '10000002-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'David Smith', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=David2', created_at = NOW() - INTERVAL '36 days', updated_at = NOW() - INTERVAL '36 days' WHERE user_id = '20000002-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Jessica Brown', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica3', created_at = NOW() - INTERVAL '39 days', updated_at = NOW() - INTERVAL '39 days' WHERE user_id = '10000003-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'Robert Brown', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert3', created_at = NOW() - INTERVAL '39 days', updated_at = NOW() - INTERVAL '39 days' WHERE user_id = '20000003-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Amanda Wilson', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amanda4', created_at = NOW() - INTERVAL '42 days', updated_at = NOW() - INTERVAL '42 days' WHERE user_id = '10000004-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'James Wilson', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=James4', created_at = NOW() - INTERVAL '42 days', updated_at = NOW() - INTERVAL '42 days' WHERE user_id = '20000004-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Maria Martinez', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria5', created_at = NOW() - INTERVAL '45 days', updated_at = NOW() - INTERVAL '45 days' WHERE user_id = '10000005-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'Carlos Martinez', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos5', created_at = NOW() - INTERVAL '45 days', updated_at = NOW() - INTERVAL '45 days' WHERE user_id = '20000005-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Sofia Garcia', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sofia6', created_at = NOW() - INTERVAL '48 days', updated_at = NOW() - INTERVAL '48 days' WHERE user_id = '10000006-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'Miguel Garcia', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Miguel6', created_at = NOW() - INTERVAL '48 days', updated_at = NOW() - INTERVAL '48 days' WHERE user_id = '20000006-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Michelle Lee', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michelle7', created_at = NOW() - INTERVAL '51 days', updated_at = NOW() - INTERVAL '51 days' WHERE user_id = '10000007-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'Kevin Lee', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kevin7', created_at = NOW() - INTERVAL '51 days', updated_at = NOW() - INTERVAL '51 days' WHERE user_id = '20000007-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Rachel Anderson', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rachel8', created_at = NOW() - INTERVAL '54 days', updated_at = NOW() - INTERVAL '54 days' WHERE user_id = '10000008-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'Christopher Anderson', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Christopher8', created_at = NOW() - INTERVAL '54 days', updated_at = NOW() - INTERVAL '54 days' WHERE user_id = '20000008-2001-2001-2001-000000002001';
-UPDATE public.profiles SET display_name = 'Lauren Taylor', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lauren9', created_at = NOW() - INTERVAL '57 days', updated_at = NOW() - INTERVAL '57 days' WHERE user_id = '10000009-1001-1001-1001-000000001001';
-UPDATE public.profiles SET display_name = 'Daniel Taylor', avatar_url = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel9', created_at = NOW() - INTERVAL '57 days', updated_at = NOW() - INTERVAL '57 days' WHERE user_id = '20000009-2001-2001-2001-000000002001';
+INSERT INTO public.profiles (user_id, display_name, avatar_url, biometric_enabled, created_at, updated_at) VALUES
+    ('10000000-1001-1001-1001-000000001001', 'Sarah Johnson',        'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah0',        false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('20000000-2001-2001-2001-000000002001', 'Michael Johnson',      'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael0',      false, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+    ('10000001-1001-1001-1001-000000001001', 'Emily Davis',          'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily1',        false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('20000001-2001-2001-2001-000000002001', 'John Davis',           'https://api.dicebear.com/7.x/avataaars/svg?seed=John1',         false, NOW() - INTERVAL '33 days', NOW() - INTERVAL '33 days'),
+    ('10000002-1001-1001-1001-000000001001', 'Jennifer Smith',       'https://api.dicebear.com/7.x/avataaars/svg?seed=Jennifer2',     false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('20000002-2001-2001-2001-000000002001', 'David Smith',          'https://api.dicebear.com/7.x/avataaars/svg?seed=David2',        false, NOW() - INTERVAL '36 days', NOW() - INTERVAL '36 days'),
+    ('10000003-1001-1001-1001-000000001001', 'Jessica Brown',        'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica3',      false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('20000003-2001-2001-2001-000000002001', 'Robert Brown',         'https://api.dicebear.com/7.x/avataaars/svg?seed=Robert3',       false, NOW() - INTERVAL '39 days', NOW() - INTERVAL '39 days'),
+    ('10000004-1001-1001-1001-000000001001', 'Amanda Wilson',        'https://api.dicebear.com/7.x/avataaars/svg?seed=Amanda4',       false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('20000004-2001-2001-2001-000000002001', 'James Wilson',         'https://api.dicebear.com/7.x/avataaars/svg?seed=James4',        false, NOW() - INTERVAL '42 days', NOW() - INTERVAL '42 days'),
+    ('10000005-1001-1001-1001-000000001001', 'Maria Martinez',       'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria5',        false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('20000005-2001-2001-2001-000000002001', 'Carlos Martinez',      'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos5',       false, NOW() - INTERVAL '45 days', NOW() - INTERVAL '45 days'),
+    ('10000006-1001-1001-1001-000000001001', 'Sofia Garcia',         'https://api.dicebear.com/7.x/avataaars/svg?seed=Sofia6',        false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('20000006-2001-2001-2001-000000002001', 'Miguel Garcia',        'https://api.dicebear.com/7.x/avataaars/svg?seed=Miguel6',       false, NOW() - INTERVAL '48 days', NOW() - INTERVAL '48 days'),
+    ('10000007-1001-1001-1001-000000001001', 'Michelle Lee',         'https://api.dicebear.com/7.x/avataaars/svg?seed=Michelle7',     false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('20000007-2001-2001-2001-000000002001', 'Kevin Lee',            'https://api.dicebear.com/7.x/avataaars/svg?seed=Kevin7',        false, NOW() - INTERVAL '51 days', NOW() - INTERVAL '51 days'),
+    ('10000008-1001-1001-1001-000000001001', 'Rachel Anderson',      'https://api.dicebear.com/7.x/avataaars/svg?seed=Rachel8',       false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('20000008-2001-2001-2001-000000002001', 'Christopher Anderson', 'https://api.dicebear.com/7.x/avataaars/svg?seed=Christopher8',  false, NOW() - INTERVAL '54 days', NOW() - INTERVAL '54 days'),
+    ('10000009-1001-1001-1001-000000001001', 'Lauren Taylor',        'https://api.dicebear.com/7.x/avataaars/svg?seed=Lauren9',       false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days'),
+    ('20000009-2001-2001-2001-000000002001', 'Daniel Taylor',        'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel9',       false, NOW() - INTERVAL '57 days', NOW() - INTERVAL '57 days')
+ON CONFLICT (user_id) DO UPDATE SET
+    display_name = EXCLUDED.display_name,
+    avatar_url   = EXCLUDED.avatar_url,
+    updated_at   = EXCLUDED.updated_at;
 
 -- ============================================================================
 -- SECTION 2: PROFILES - Followers (120 users)

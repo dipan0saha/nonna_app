@@ -150,6 +150,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       floatingActionButton: effectiveRole == UserRole.owner
           ? FloatingActionButton(
               key: const Key('add_event_fab'),
+              heroTag: null,
               onPressed: () =>
                   _onAddEventTap(effectiveRole, currentBabyProfileId),
               child: const Icon(Icons.add),

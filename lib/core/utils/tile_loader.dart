@@ -37,6 +37,7 @@ class TileLoader {
     'SystemAnnouncementsTile',
     'NameSuggestionsTile',
     'PredictionVotesTile',
+    'NewBabyWelcomeTile',
   };
 
   /// Cache configuration

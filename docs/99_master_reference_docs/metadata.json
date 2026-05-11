@@ -7,6 +7,7 @@
     "docs/99_master_reference_docs/Nonna_Project_Understanding.md",
     "docs/99_master_reference_docs/Database_Schema_and_Functions.md",
     "docs/99_master_reference_docs/Nonna_Architecture_and_Workflow_Reference.md",
+    "docs/99_master_reference_docs/Nonna_App_Architecture_Diagrams.md",
     "lib/core/utils/tile_factory.dart",
     "lib/core/utils/tile_loader.dart",
     "lib/core/models/tile_config.dart",

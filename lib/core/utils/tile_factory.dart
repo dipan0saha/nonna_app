@@ -48,6 +48,9 @@ import 'package:nonna_app/core/router/app_router.dart';
 import 'package:nonna_app/tiles/name_suggestions/widgets/name_suggestions_tile.dart';
 import 'package:nonna_app/tiles/prediction_votes/widgets/prediction_votes_tile.dart';
 
+import 'package:nonna_app/tiles/new_baby_welcome/providers/new_baby_welcome_provider.dart';
+import 'package:nonna_app/tiles/new_baby_welcome/widgets/new_baby_welcome_tile.dart';
+
 /// Factory for instantiating dynamic tiles based on their configuration.
 class TileFactory {
   /// Builds the appropriate smart tile widget for a given configuration.
@@ -91,6 +94,8 @@ class TileFactory {
         return const NameSuggestionsSmartTile();
       case 'PredictionVotesTile':
         return const PredictionVotesSmartTile();
+      case 'NewBabyWelcomeTile':
+        return const _NewBabyWelcomeSmartTile();
       default:
         return _buildFallback(config);
     }
@@ -986,6 +991,65 @@ class _SystemAnnouncementsSmartTileState
           ? () => ref
               .read(systemAnnouncementsProvider.notifier)
               .loadAnnouncements(userId: user.id)
+          : null,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// NewBabyWelcome smart wrapper
+// ---------------------------------------------------------------------------
+
+class _NewBabyWelcomeSmartTile extends ConsumerStatefulWidget {
+  const _NewBabyWelcomeSmartTile();
+
+  @override
+  ConsumerState<_NewBabyWelcomeSmartTile> createState() =>
+      _NewBabyWelcomeSmartTileState();
+}
+
+class _NewBabyWelcomeSmartTileState
+    extends ConsumerState<_NewBabyWelcomeSmartTile> {
+  void _fetch(String babyProfileId, {bool forceRefresh = false}) {
+    ref.read(newBabyWelcomeProvider.notifier).fetchProfile(
+          babyProfileId: babyProfileId,
+          forceRefresh: forceRefresh,
+        );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final babyProfileId = ref.read(selectedBabyProfileProvider);
+      if (babyProfileId != null) {
+        _fetch(babyProfileId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(newBabyWelcomeProvider);
+    final babyProfileId = ref.watch(selectedBabyProfileProvider);
+
+    ref.listen(selectedBabyProfileProvider, (previous, current) {
+      if (current != null && current != previous) {
+        _fetch(current, forceRefresh: true);
+      }
+    });
+
+    // Do not render the tile at all once outside the 7-day window.
+    if (!state.isLoading && !state.isWithinWelcomeWindow) {
+      return const SizedBox.shrink();
+    }
+
+    return NewBabyWelcomeTile(
+      babyProfile: state.babyProfile,
+      isLoading: state.isLoading && state.babyProfile == null,
+      error: state.error,
+      onRefresh: babyProfileId != null
+          ? () => _fetch(babyProfileId, forceRefresh: true)
           : null,
     );
   }

@@ -35,6 +35,12 @@ class BabyProfile {
   /// Timestamp when the profile was soft deleted (null if not deleted)
   final DateTime? deletedAt;
 
+  /// Birth weight in kilograms (e.g. 3.450), set after birth
+  final double? birthWeightKg;
+
+  /// Birth height/length in centimetres (e.g. 51.0), set after birth
+  final double? birthHeightCm;
+
   /// Creates a new BabyProfile instance
   const BabyProfile({
     required this.id,
@@ -47,6 +53,8 @@ class BabyProfile {
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
+    this.birthWeightKg,
+    this.birthHeightCm,
   });
 
   /// Creates a BabyProfile from a JSON map
@@ -70,6 +78,8 @@ class BabyProfile {
       deletedAt: json['deleted_at'] != null
           ? DateTime.parse(json['deleted_at'] as String)
           : null,
+      birthWeightKg: (json['birth_weight_kg'] as num?)?.toDouble(),
+      birthHeightCm: (json['birth_height_cm'] as num?)?.toDouble(),
     );
   }
 
@@ -86,6 +96,8 @@ class BabyProfile {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
       'deleted_at': deletedAt?.toIso8601String(),
+      'birth_weight_kg': birthWeightKg,
+      'birth_height_cm': birthHeightCm,
     };
   }
 
@@ -129,6 +141,8 @@ class BabyProfile {
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? deletedAt,
+    double? birthWeightKg,
+    double? birthHeightCm,
   }) {
     return BabyProfile(
       id: id ?? this.id,
@@ -142,6 +156,8 @@ class BabyProfile {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
+      birthWeightKg: birthWeightKg ?? this.birthWeightKg,
+      birthHeightCm: birthHeightCm ?? this.birthHeightCm,
     );
   }
 
@@ -159,7 +175,9 @@ class BabyProfile {
         other.gender == gender &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt &&
-        other.deletedAt == deletedAt;
+        other.deletedAt == deletedAt &&
+        other.birthWeightKg == birthWeightKg &&
+        other.birthHeightCm == birthHeightCm;
   }
 
   @override
@@ -173,7 +191,9 @@ class BabyProfile {
         gender.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode ^
-        deletedAt.hashCode;
+        deletedAt.hashCode ^
+        birthWeightKg.hashCode ^
+        birthHeightCm.hashCode;
   }
 
   @override

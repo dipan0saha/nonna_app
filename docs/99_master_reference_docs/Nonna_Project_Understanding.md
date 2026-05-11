@@ -1,8 +1,8 @@
 # Nonna App — Project Understanding
 
-**Document Version**: 1.1
+**Document Version**: 1.2
 **Created**: April 28, 2026
-**Last Updated**: May 4, 2026
+**Last Updated**: May 11, 2026
 **Status**: Living Document
 
 ---
@@ -53,7 +53,7 @@ lib/
 │   ├── upcoming_events/
 │   ├── recent_photos/
 │   ├── registry_highlights/
-│   └── ... (18 total)
+│   └── ... (19 total)
 └── features/      # Screen composition (Home, Calendar, Gallery, etc.)
     ├── auth/
     ├── home/       # Composes tiles into a scrollable list view via TileFactory
@@ -113,10 +113,11 @@ The `HomeScreen` accepts `babyProfileId`, `userRole`, and `isDualRole` props and
 
 ---
 
-## Tile Widgets (18 total)
+## Tile Widgets (19 total)
 
 | Tile | Screens Used |
 |---|---|
+| `NewBabyWelcomeTile` | Home (owner-only, visible for 7 days from `actual_birth_date`) |
 | `UpcomingEventsTile` | Home, Calendar |
 | `RecentPhotosTile` | Home, Gallery |
 | `RegistryHighlightsTile` | Home, Registry |
@@ -171,6 +172,15 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 ## Current State (as of April 29, 2026)
 
 ### Recent Implementation Updates (May 2026)
+- **`NewBabyWelcomeTile`** added (May 11, 2026):
+  - Birth announcement card tile displayed on the owner home screen for exactly **7 days** from `actual_birth_date`.
+  - Shows: baby photo/avatar, name, gender chip, birth date, weight (kg), height (cm), and a day-counter badge ("🎉 Born today!" / "🎉 N days old").
+  - Auto-hides via `SizedBox.shrink()` once outside the 7-day window — no server-side config change needed.
+  - `tile_config`: screen=`home`, role=`owner`, `display_order=5` (appears at the top).
+  - Files: `lib/tiles/new_baby_welcome/providers/new_baby_welcome_provider.dart`, `lib/tiles/new_baby_welcome/widgets/new_baby_welcome_tile.dart`.
+- **EditBabyProfile screen** now includes Birth Weight (kg) and Birth Height (cm) input fields (`TextFormField` with decimal keyboard).
+- **`baby_profiles` DB schema** extended with `birth_weight_kg NUMERIC(5,3)` and `birth_height_cm NUMERIC(5,1)` (migration `20260510000000_add_birth_measurements_to_baby_profiles.sql`).
+- **`BabyProfile` model** updated: `birthWeightKg` and `birthHeightCm` nullable fields added to constructor, `fromJson`, `toJson`, `copyWith`, `==`, `hashCode`.
 - Added owner-facing follower management routes and screens:
   - `/baby-profile/followers`
   - `/baby-profile/followers/invite`
@@ -201,14 +211,14 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 - Fixed Riverpod `selectedBabyProfileProvider` listeners across Registry and main tabs.
 - All 23 domain models with serialization, validation, and unit tests
 - All 22 services with middleware integration
-- All 18 tile widgets with providers and widget tests
+- All 19 tile widgets with providers and widget tests (includes `NewBabyWelcomeTile` added May 2026)
 - All feature screens (auth, home, calendar, gallery, registry, profile, baby profile, gamification, settings)
 - GoRouter navigation with auth redirect guards
 - Supabase RLS policies with pgTAP test suite
 - Supabase Edge Functions: `tile-configs`, `notification-trigger`, `image-processing`
 - Localization (English + Spanish)
 - Theming, error boundaries, offline cache and network failure handling
-- **Centralized `TileFactory`** — dynamic tile instantiation from Supabase `tile_configs`/`screen_configs` tables mapped to all 18 tile components.
+- **Centralized `TileFactory`** — dynamic tile instantiation from Supabase `tile_configs`/`screen_configs` tables mapped to all 19 tile components.
 
 ### Pending (Production Readiness Checklist)
 - Implement `ConsumerStatefulWidget` smart wrappers for remaining tiles inside `TileFactory`.
@@ -231,6 +241,12 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 | `lib/core/themes/colors.dart` | App color palette |
 | `pubspec.yaml` | Dependency manifest |
 | `supabase/migrations/` | Database migration scripts |
+| `supabase/migrations/20260510000000_add_birth_measurements_to_baby_profiles.sql` | Adds `birth_weight_kg` and `birth_height_cm` columns to `baby_profiles` |
+| `supabase/seed/06_new_baby_welcome_tile.sql` | Seeds `tile_definitions` + `tile_configs` for `NewBabyWelcomeTile` |
+| `lib/tiles/new_baby_welcome/providers/new_baby_welcome_provider.dart` | Riverpod provider for `NewBabyWelcomeTile` — fetches profile, checks 7-day welcome window |
+| `lib/tiles/new_baby_welcome/widgets/new_baby_welcome_tile.dart` | Dumb tile widget — birth announcement card |
+| `lib/core/models/baby_profile.dart` | Core baby profile model (extended with `birthWeightKg`, `birthHeightCm`) |
+| `lib/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart` | Edit profile screen (extended with weight/height input fields) |
 | `supabase/functions/` | Edge Functions (TypeScript/Deno) |
 
 ---
@@ -248,7 +264,7 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 #### Baby Profile
 | Table | Key Columns | Purpose |
 |---|---|---|
-| `baby_profiles` | `id`, `name`, `expected_birth_date`, `actual_birth_date`, `gender`, `profile_photo_url`, `created_by`, `deleted_at` | Core baby record; soft-deleted; `created_by` allows creator access before membership is set |
+| `baby_profiles` | `id`, `name`, `expected_birth_date`, `actual_birth_date`, `gender`, `profile_photo_url`, `birth_weight_kg`, `birth_height_cm`, `created_by`, `deleted_at` | Core baby record; soft-deleted; `created_by` allows creator access before membership is set; `birth_weight_kg` (NUMERIC 5,3) and `birth_height_cm` (NUMERIC 5,1) added May 2026 |
 | `baby_memberships` | `id`, `baby_profile_id`, `user_id`, `role` (`owner`/`follower`), `relationship_label`, `removed_at` | Links users to babies with role; max 2 owners enforced by trigger; soft-removed |
 | `invitations` | `id`, `baby_profile_id`, `invited_by_user_id`, `invitee_email`, `token_hash`, `expires_at`, `status` (`pending`/`accepted`/`revoked`/`expired`) | Token-based email invitations to join a baby profile |
 | `owner_update_markers` | `id`, `baby_profile_id` (UNIQUE), `tiles_last_updated_at`, `reason` | Timestamp of last content change per baby; drives tile cache invalidation |

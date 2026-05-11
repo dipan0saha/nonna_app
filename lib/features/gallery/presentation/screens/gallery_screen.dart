@@ -241,6 +241,7 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
       floatingActionButton: effectiveRole == UserRole.owner
           ? FloatingActionButton(
               key: const Key('upload_photo_fab'),
+              heroTag: null,
               onPressed: () => _onUploadTap(currentBabyProfileId),
               child: const Icon(Icons.add),
             )

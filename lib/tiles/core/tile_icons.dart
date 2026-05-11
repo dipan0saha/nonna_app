@@ -21,4 +21,5 @@ class TileIcons {
   static const IconData systemAnnouncements = Icons.campaign_outlined;
   static const IconData nameSuggestions = Icons.edit_note_outlined;
   static const IconData predictionVotes = Icons.how_to_vote_outlined;
+  static const IconData newBabyWelcome = Icons.child_friendly_outlined;
 }

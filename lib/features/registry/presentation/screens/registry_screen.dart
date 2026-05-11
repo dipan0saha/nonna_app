@@ -146,6 +146,7 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
       floatingActionButton: isOwner
           ? FloatingActionButton(
               key: const Key('add_registry_item_fab'),
+              heroTag: null,
               onPressed: _onAddItemTap,
               child: const Icon(Icons.add),
             )
