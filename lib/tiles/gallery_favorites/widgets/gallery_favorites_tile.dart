@@ -98,7 +98,7 @@ class GalleryFavoritesTile extends StatelessWidget {
       );
     }
 
-    final displayCount = fullView ? 10 : 5;
+    final displayCount = fullView ? 10 : 3;
     final display = favorites.take(displayCount).toList();
     return Column(
       children: display

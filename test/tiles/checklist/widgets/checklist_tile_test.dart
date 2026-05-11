@@ -105,10 +105,10 @@ void main() {
       expect(find.byKey(const Key('checklist_item_i2')), findsOneWidget);
     });
 
-    testWidgets('shows at most 5 items', (tester) async {
+    testWidgets('shows all items without truncation', (tester) async {
       final items = List.generate(7, (i) => _makeItem(id: 'i$i'));
       await tester.pumpWidget(_buildWidget(items: items));
-      expect(find.byType(InkWell), findsNWidgets(5));
+      expect(find.byType(InkWell), findsNWidgets(7));
     });
 
     testWidgets('shows checked icon for completed items', (tester) async {

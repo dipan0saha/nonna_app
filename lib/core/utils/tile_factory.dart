@@ -188,14 +188,7 @@ class _RecentPhotosSmartTileState
               .read(recentPhotosProvider.notifier)
               .refresh(babyProfileId: babyProfileId)
           : null,
-      onViewAll: () {
-        final path = GoRouterState.of(context).uri.path;
-        if (path == AppRoutes.home || path == '/') {
-          context.go(AppRoutes.galleryRecent);
-        } else if (path == AppRoutes.gallery) {
-          context.push(AppRoutes.galleryRecent);
-        }
-      },
+      onViewAll: () => context.go(AppRoutes.gallery),
     );
   }
 }
@@ -284,6 +277,11 @@ class _CountdownSmartTileState extends ConsumerState<_CountdownSmartTile> {
             .fetchCountdowns(babyProfileIds: [current]);
       }
     });
+
+    // Hide the tile entirely once all babies have an actual birth date recorded
+    if (!state.isLoading && state.error == null && state.countdowns.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return CountdownTile(
       countdowns: state.countdowns,
@@ -548,14 +546,6 @@ class _GalleryFavoritesSmartTileState
               .read(galleryFavoritesProvider.notifier)
               .refresh(babyProfileId: babyProfileId)
           : null,
-      onViewAll: () {
-        final path = GoRouterState.of(context).uri.path;
-        if (path == AppRoutes.home || path == '/') {
-          context.go(AppRoutes.galleryFavorites);
-        } else if (path == AppRoutes.gallery) {
-          context.push(AppRoutes.galleryFavorites);
-        }
-      },
     );
   }
 }
@@ -718,6 +708,8 @@ class _ChecklistSmartTileState extends ConsumerState<_ChecklistSmartTile> {
 
     return ChecklistTile(
       items: state.items,
+      completedCount: state.completedCount,
+      progressPercentage: state.progressPercentage,
       isLoading: state.isLoading && state.items.isEmpty,
       error: state.error,
       onItemToggle: (item) {
@@ -821,6 +813,8 @@ class _NewFollowersSmartTileState
       }
     });
 
+    final user = ref.watch(currentUserProvider);
+
     return NewFollowersTile(
       followers: state.followers,
       isLoading: state.isLoading && state.followers.isEmpty,
@@ -830,7 +824,15 @@ class _NewFollowersSmartTileState
               .read(newFollowersProvider.notifier)
               .fetchFollowers(babyProfileId: babyProfileId, forceRefresh: true)
           : null,
-      onViewAll: () {},
+      onViewAll: babyProfileId != null && user != null
+          ? () => context.push(
+                AppRoutes.babyProfileFollowers,
+                extra: {
+                  'babyProfileId': babyProfileId,
+                  'currentUserId': user.id,
+                },
+              )
+          : null,
     );
   }
 }
@@ -873,7 +875,7 @@ class _RecentPurchasesSmartTileState
       }
     });
 
-    final maxItems = widget.config.params?['maxItems'] as int? ?? 5;
+    final maxItems = widget.config.params?['maxItems'] as int? ?? 3;
 
     return RecentPurchasesTile(
       purchases: state.purchases,
@@ -1045,8 +1047,8 @@ class _NewBabyWelcomeSmartTileState
     }
 
     return NewBabyWelcomeTile(
-      babyProfile: state.babyProfile,
-      isLoading: state.isLoading && state.babyProfile == null,
+      babyProfile: state.isLoading ? null : state.babyProfile,
+      isLoading: state.isLoading,
       error: state.error,
       onRefresh: babyProfileId != null
           ? () => _fetch(babyProfileId, forceRefresh: true)

@@ -160,7 +160,9 @@ class _FollowerRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    follower.relationshipLabel ?? follower.userId,
+                    follower.displayName ??
+                        follower.relationshipLabel ??
+                        follower.userId,
                     style: context.textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

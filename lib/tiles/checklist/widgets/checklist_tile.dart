@@ -104,9 +104,8 @@ class ChecklistTile extends StatelessWidget {
       );
     }
 
-    final display = items.take(5).toList();
     return Column(
-      children: display
+      children: items
           .map((item) => _ChecklistRow(item: item, onToggle: onItemToggle))
           .toList(),
     );

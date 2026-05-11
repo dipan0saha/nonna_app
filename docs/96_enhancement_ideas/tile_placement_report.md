@@ -30,14 +30,20 @@ Note: The live Supabase `tile_configs` table can differ from these seed defaults
 ## Seed Placement by Screen and Role
 
 Home (owner)
-- SystemAnnouncementsTile
-- CountdownTile
-- NotificationsTile
-- RegistryHighlightsTile
-- RecentPurchasesTile
-- RecentPhotosTile
-- UpcomingEventsTile
-- ActivityListTile
+- NewBabyWelcomeTile (display_order=5)
+- SystemAnnouncementsTile (display_order=10)
+- CountdownTile (display_order=10)
+- NotificationsTile (display_order=20)
+- ActivityListTile (display_order=30)
+- RecentPhotosTile (display_order=40)
+- RegistryHighlightsTile (display_order=40)
+- RegistryDealsTile (display_order=41)
+- RecentPurchasesTile (display_order=42)
+- UpcomingEventsTile (display_order=60)
+- ChecklistTile (display_order=70)
+- InvitesStatusTile (display_order=80)
+- NewFollowersTile (display_order=90)
+- StorageUsageTile (display_order=100)
 
 Home (follower)
 - SystemAnnouncementsTile
@@ -70,10 +76,7 @@ Fun / Gamification (owner and follower)
 - PredictionVotesTile
 
 ## Tiles Implemented but Not Seeded on Any Screen
-- ChecklistTile
-- InvitesStatusTile
-- NewFollowersTile
-- StorageUsageTile
+_(None — all implemented tiles are now seeded on at least one screen as of May 11, 2026)_
 
 ## Tiles Mentioned but Not Wired
 - RegistryDealsTile is referenced in project documentation but is not present in TileFactory, and lib/tiles/registry_deals/widgets is empty, so it is not currently a functional tile.

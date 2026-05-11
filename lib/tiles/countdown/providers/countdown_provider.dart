@@ -172,6 +172,7 @@ class CountdownNotifier extends Notifier<CountdownState> {
     final profiles = (response as List)
         .map((json) =>
             BabyProfile.fromJson(Map<String, dynamic>.from(json as Map)))
+        .where((profile) => profile.actualBirthDate == null)
         .toList();
 
     return profiles.map((profile) => _calculateCountdown(profile)).toList();

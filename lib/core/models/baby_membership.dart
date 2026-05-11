@@ -26,6 +26,12 @@ class BabyMembership {
   /// Timestamp when the membership was removed (null if active)
   final DateTime? removedAt;
 
+  /// Display name from the joined profiles table (null if not fetched)
+  final String? displayName;
+
+  /// Avatar URL from the joined profiles table (null if not fetched)
+  final String? avatarUrl;
+
   /// Creates a new BabyMembership instance
   const BabyMembership({
     this.id,
@@ -35,6 +41,8 @@ class BabyMembership {
     this.relationshipLabel,
     required this.createdAt,
     this.removedAt,
+    this.displayName,
+    this.avatarUrl,
   });
 
   /// Creates a BabyMembership from a JSON map
@@ -49,6 +57,8 @@ class BabyMembership {
       removedAt: json['removed_at'] != null
           ? DateTime.parse(json['removed_at'] as String)
           : null,
+      displayName: json['display_name'] as String?,
+      avatarUrl: json['avatar_url'] as String?,
     );
   }
 
@@ -62,6 +72,8 @@ class BabyMembership {
       'relationship_label': relationshipLabel,
       'created_at': createdAt.toIso8601String(),
       'removed_at': removedAt?.toIso8601String(),
+      if (displayName != null) 'display_name': displayName,
+      if (avatarUrl != null) 'avatar_url': avatarUrl,
     };
   }
 
@@ -90,6 +102,8 @@ class BabyMembership {
     String? relationshipLabel,
     DateTime? createdAt,
     DateTime? removedAt,
+    String? displayName,
+    String? avatarUrl,
   }) {
     return BabyMembership(
       id: id ?? this.id,
@@ -99,6 +113,8 @@ class BabyMembership {
       relationshipLabel: relationshipLabel ?? this.relationshipLabel,
       createdAt: createdAt ?? this.createdAt,
       removedAt: removedAt ?? this.removedAt,
+      displayName: displayName ?? this.displayName,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
     );
   }
 

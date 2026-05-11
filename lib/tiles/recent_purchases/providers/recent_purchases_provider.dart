@@ -56,7 +56,7 @@ class RecentPurchasesState {
 class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
   // Configuration
   static const String _cacheKeyPrefix = 'recent_purchases';
-  static const int _maxPurchases = 20;
+  static const int _maxPurchases = 3;
 
   List<String> _registryItemIds = [];
 
@@ -187,6 +187,12 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
 
     _registryItemIds = itemIds;
 
+    // Only show purchases from the last 15 days
+    final cutoffDate = DateTime.now()
+        .subtract(const Duration(days: 15))
+        .toUtc()
+        .toIso8601String();
+
     // Then fetch purchases for these items
     final response = await _databaseService
         .select(
@@ -195,6 +201,7 @@ class RecentPurchasesNotifier extends Notifier<RecentPurchasesState> {
               'id, registry_item_id, purchased_by_user_id, purchased_at, note, registry_items(name)',
         )
         .inFilter('registry_item_id', itemIds)
+        .gte('purchased_at', cutoffDate)
         .order('purchased_at', ascending: false)
         .limit(_maxPurchases);
 

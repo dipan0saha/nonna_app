@@ -175,10 +175,39 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
         .order(SupabaseTables.createdAt, ascending: false)
         .limit(_maxFollowers);
 
-    return (response as List)
-        .map((json) =>
-            BabyMembership.fromJson(Map<String, dynamic>.from(json as Map)))
-        .toList();
+    final memberships = response as List<dynamic>;
+    if (memberships.isEmpty) return [];
+
+    // Batch-fetch display names and avatar URLs from profiles
+    final userIds =
+        memberships.map((m) => (m as Map)['user_id'] as String).toList();
+
+    final profilesResponse = await ref
+        .read(databaseServiceProvider)
+        .select(
+          SupabaseTables.userProfiles,
+          columns:
+              '${SupabaseTables.userId}, ${SupabaseTables.displayName}, ${SupabaseTables.avatarUrl}',
+        )
+        .inFilter(SupabaseTables.userId, userIds);
+
+    final profileMap = <String, Map<String, dynamic>>{
+      for (final p in profilesResponse as List<dynamic>)
+        (p as Map)[SupabaseTables.userId] as String:
+            Map<String, dynamic>.from(p),
+    };
+
+    return memberships.map((json) {
+      final memberJson = Map<String, dynamic>.from(json as Map);
+      final profile = profileMap[memberJson['user_id'] as String];
+      if (profile != null) {
+        memberJson[SupabaseTables.displayName] =
+            profile[SupabaseTables.displayName];
+        memberJson[SupabaseTables.avatarUrl] =
+            profile[SupabaseTables.avatarUrl];
+      }
+      return BabyMembership.fromJson(memberJson);
+    }).toList();
   }
 
   /// Load followers from cache

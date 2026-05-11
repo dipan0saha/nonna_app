@@ -1,6 +1,6 @@
 # Nonna App — Project Understanding
 
-**Document Version**: 1.2
+**Document Version**: 1.3
 **Created**: April 28, 2026
 **Last Updated**: May 11, 2026
 **Status**: Living Document
@@ -172,12 +172,33 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 ## Current State (as of April 29, 2026)
 
 ### Recent Implementation Updates (May 2026)
+- **5 UI fixes — Tile polish pass (May 11, 2026)**:
+  - **CountdownTile — no more "Born!" badge**: Provider `_fetchFromDatabase()` now filters out baby profiles where `actual_birth_date IS NOT NULL`. Smart tile (`_CountdownSmartTile`) returns `SizedBox.shrink()` (tile disappears) when `countdowns` is empty and not loading — i.e. once all babies have an actual birth date recorded. Badge text changed from `'Born!'` → `'Overdue'` for pre-birth overdue scenarios.
+  - **RegistryHighlightsTile — removed from home screen**: `tile_configs` row for `screen=home / role=owner / tile_type=RegistryHighlightsTile` set to `is_visible = false` (pure DB update). Tile remains visible on the Registry screen.
+  - **GalleryFavoritesTile — top 3 only, no "View all"**: Display limit changed from 5 → 3 in non-full-view mode (`gallery_favorites_tile.dart`). `onViewAll` callback removed from `_GalleryFavoritesSmartTile` so the "View all" link no longer appears.
+  - **RecentPhotosTile — "View all" navigates to Gallery tab**: `onViewAll` callback simplified to `context.go(AppRoutes.gallery)` — always navigates to the Gallery tab root, replacing the previous conditional logic that pushed `galleryRecent`.
+  - **RecentPurchasesTile — last 15 days, max 3 items**: Provider `_fetchFromDatabase()` adds `.gte('purchased_at', cutoffDate)` (15-day rolling window) and `_maxPurchases` reduced from 20 → 3. Smart tile default `maxItems` changed from 5 → 3.
+- **Bug fixes — NewFollowersTile & ChecklistTile (May 11, 2026)**:
+  - **NewFollowersTile — "View all" now functional**: `_NewFollowersSmartTile` in `TileFactory` previously set `onViewAll: () {}` (no-op). Fixed to `context.push(AppRoutes.babyProfileFollowers, extra: {babyProfileId, currentUserId})` — opens the owner `FollowersManagementScreen`. Only active when both `babyProfileId` and `currentUserId` are non-null.
+  - **NewFollowersTile — display names**: Provider `_fetchFromDatabase()` now batch-fetches `profiles` and merges `display_name`/`avatar_url` into each `BabyMembership`. Model extended with optional `displayName`/`avatarUrl` fields. `_FollowerRow` renders `displayName ?? relationshipLabel ?? userId`.
+  - **ChecklistTile — completed count always showed 0**: `_ChecklistSmartTile` was not passing `completedCount`/`progressPercentage` to `ChecklistTile`. Added both props wired to `state.completedCount` and `state.progressPercentage`.
+  - **ChecklistTile — only 5 of 6 tasks visible**: `_buildBody` did `items.take(5)`. Removed the cap — the checklist renders all items (designed for a fixed onboarding set). Test updated from "shows at most 5 items" to "shows all items without truncation".
+- **4 previously unseeded tiles activated on Home screen (May 11, 2026)**:
+  - `ChecklistTile` ("Getting Started" onboarding checklist) — `display_order=70`, `role=owner`
+  - `InvitesStatusTile` (sent invitation statuses with resend/revoke) — `display_order=80`, `role=owner`
+  - `NewFollowersTile` (recently added followers in last 30 days) — `display_order=90`, `role=owner`
+  - `StorageUsageTile` (cloud storage quota usage) — `display_order=100`, `role=owner`
+  - Change was a **pure `tile_configs` DB update** — no code changes required; all smart wrappers in `TileFactory` were already fully implemented.
 - **`NewBabyWelcomeTile`** added (May 11, 2026):
   - Birth announcement card tile displayed on the owner home screen for exactly **7 days** from `actual_birth_date`.
   - Shows: baby photo/avatar, name, gender chip, birth date, weight (kg), height (cm), and a day-counter badge ("🎉 Born today!" / "🎉 N days old").
   - Auto-hides via `SizedBox.shrink()` once outside the 7-day window — no server-side config change needed.
   - `tile_config`: screen=`home`, role=`owner`, `display_order=5` (appears at the top).
   - Files: `lib/tiles/new_baby_welcome/providers/new_baby_welcome_provider.dart`, `lib/tiles/new_baby_welcome/widgets/new_baby_welcome_tile.dart`.
+- **Bug fix — red screen on baby profile switch (May 12, 2026)**:
+  - **Root cause**: When switching from a profile where `actualBirthDate == null` (baby not yet born) to one within the 7-day welcome window, `_NewBabyWelcomeSmartTileState` called `fetchProfile(newId, forceRefresh: true)`. The provider's `copyWith(isLoading: true)` preserved the old stale `BabyProfile` (with `actualBirthDate == null`). The `!state.isLoading` short-circuit in the smart tile meant it would render `NewBabyWelcomeTile` with the stale profile, and `_WelcomeContent.build()` crashed on `profile.actualBirthDate!` (null check operator on null).
+  - **Fix 1** (`new_baby_welcome_tile.dart`): `_WelcomeContent.build()` — replaced `profile.actualBirthDate!` with a null guard: `final birthDate = profile.actualBirthDate; if (birthDate == null) return const SizedBox.shrink();`.
+  - **Fix 2** (`tile_factory.dart` — `_NewBabyWelcomeSmartTileState`): Changed `babyProfile: state.babyProfile` → `babyProfile: state.isLoading ? null : state.babyProfile` and `isLoading: state.isLoading && state.babyProfile == null` → `isLoading: state.isLoading` — ensures stale data from a previous profile is never passed to the tile during a loading cycle, showing a shimmer instead.
 - **EditBabyProfile screen** now includes Birth Weight (kg) and Birth Height (cm) input fields (`TextFormField` with decimal keyboard).
 - **`baby_profiles` DB schema** extended with `birth_weight_kg NUMERIC(5,3)` and `birth_height_cm NUMERIC(5,1)` (migration `20260510000000_add_birth_measurements_to_baby_profiles.sql`).
 - **`BabyProfile` model** updated: `birthWeightKg` and `birthHeightCm` nullable fields added to constructor, `fromJson`, `toJson`, `copyWith`, `==`, `hashCode`.
@@ -221,7 +242,6 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
 - **Centralized `TileFactory`** — dynamic tile instantiation from Supabase `tile_configs`/`screen_configs` tables mapped to all 19 tile components.
 
 ### Pending (Production Readiness Checklist)
-- Implement `ConsumerStatefulWidget` smart wrappers for remaining tiles inside `TileFactory`.
 - Unit test coverage to 80% minimum (sections 4.1–4.4)
 - Widget, integration, performance, and golden tests (sections 4.2–4.5)
 - App store deployment pipeline

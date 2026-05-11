@@ -135,7 +135,9 @@ class _CountdownRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSpacing.xs),
             ),
             child: Text(
-              countdown.isPastDue ? 'Born!' : '${countdown.daysUntilDueDate}d',
+              countdown.isPastDue
+                  ? 'Overdue'
+                  : '${countdown.daysUntilDueDate}d',
               style: context.textTheme.labelMedium?.copyWith(
                 color: color,
                 fontWeight: FontWeight.bold,

@@ -85,7 +85,8 @@ class _WelcomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final birthDate = profile.actualBirthDate!;
+    final birthDate = profile.actualBirthDate;
+    if (birthDate == null) return const SizedBox.shrink();
     final daysSince = DateTime.now().difference(birthDate).inDays;
     final formattedDate = DateFormat('dd MMM yyyy').format(birthDate);
 
