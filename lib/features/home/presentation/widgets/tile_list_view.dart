@@ -76,7 +76,10 @@ class TileListView extends StatelessWidget {
       key: const Key('tile_list_view'),
       padding: AppSpacing.cardPadding,
       shrinkWrap: shrinkWrap,
-      physics: physics,
+      // Always allow scrolling so RefreshIndicator can trigger even when
+      // content fits on screen; falls back to provided physics otherwise.
+      physics: physics ??
+          (onRefresh != null ? const AlwaysScrollableScrollPhysics() : null),
       itemCount: tiles.length,
       itemBuilder: (context, index) {
         final tile = TileFactory.buildTile(context, tiles[index]);

@@ -303,8 +303,8 @@ class _ActivityListSmartTile extends ConsumerStatefulWidget {
       _ActivityListSmartTileState();
 }
 
-class _ActivityListSmartTileState
-    extends ConsumerState<_ActivityListSmartTile> {
+class _ActivityListSmartTileState extends ConsumerState<_ActivityListSmartTile>
+    with WidgetsBindingObserver {
   Timer? _refreshTimer;
 
   void _refreshEngagement({bool forceRefresh = false}) {
@@ -320,6 +320,7 @@ class _ActivityListSmartTileState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshEngagement();
     });
@@ -332,7 +333,17 @@ class _ActivityListSmartTileState
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Re-fetch when the app resumes from background to clear stale connection
+    // errors (ClientException: Software caused connection abort).
+    if (state == AppLifecycleState.resumed) {
+      _refreshEngagement(forceRefresh: true);
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _refreshTimer?.cancel();
     super.dispose();
   }

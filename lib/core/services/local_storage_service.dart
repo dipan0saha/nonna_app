@@ -92,7 +92,7 @@ class LocalStorageService {
   /// Returns 'light', 'dark', or 'system'
   String get themeMode {
     _ensureInitialized();
-    return _prefs!.getString(_keyThemeMode) ?? 'system';
+    return _prefs!.getString(_keyThemeMode) ?? 'light';
   }
 
   /// Set the theme mode

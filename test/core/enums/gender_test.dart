@@ -52,7 +52,7 @@ void main() {
       test('returns correct display names', () {
         expect(Gender.male.displayName, 'Male');
         expect(Gender.female.displayName, 'Female');
-        expect(Gender.unknown.displayName, 'Unknown');
+        expect(Gender.unknown.displayName, 'Neutral');
       });
 
       test('all display names are non-empty', () {

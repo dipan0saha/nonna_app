@@ -54,9 +54,7 @@ class SettingsNotifier extends Notifier<SettingsState> {
     final theme = storage.themeMode;
     return SettingsState(
       notificationsEnabled: storage.isNotificationsEnabled,
-      darkModeEnabled: theme == 'dark' ||
-          theme == 'system' &&
-              PlatformDispatcher.instance.platformBrightness == Brightness.dark,
+      darkModeEnabled: theme == 'dark',
       language: storage.languageCode ?? 'en',
       fontFamily: storage.fontFamily,
     );

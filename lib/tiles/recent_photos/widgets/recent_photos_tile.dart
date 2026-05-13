@@ -43,16 +43,13 @@ class RecentPhotosTile extends StatelessWidget {
       key: const Key('recent_photos_tile'),
       child: Padding(
         padding: AppSpacing.cardPadding,
-        child: SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(context),
-              AppSpacing.verticalGapS,
-              _buildBody(context),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            AppSpacing.verticalGapS,
+            _buildBody(context),
+          ],
         ),
       ),
     );

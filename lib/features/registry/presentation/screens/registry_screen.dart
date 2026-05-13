@@ -72,9 +72,13 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
     if (babyId != null) {
       final role = await _resolveEffectiveRole(babyId);
 
+      // Always force-refresh on the initial load so the list reflects the
+      // current DB state rather than a potentially stale cache entry. The
+      // cache-first path is kept for subsequent manual refreshes only.
       ref.read(registryScreenProvider.notifier).loadItems(
             babyProfileId: babyId,
             role: role,
+            forceRefresh: true,
           );
     }
   }

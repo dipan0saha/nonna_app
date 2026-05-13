@@ -6,6 +6,8 @@ import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/enums/user_role.dart';
 import '../../../core/models/baby_membership.dart';
+import '../../../core/services/realtime_service.dart';
+import '../../../core/services/realtime_subscription_manager.dart';
 
 /// New Followers provider for the New Followers tile
 ///
@@ -61,13 +63,15 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
       30; // Show followers from last 30 days
 
   String? _subscriptionId;
-  late final _subscriptionManager =
-      ref.read(realtimeSubscriptionManagerProvider);
-  // Store realtime service reference to avoid ref.read() in onDispose
-  late final _realtimeService = ref.read(realtimeServiceProvider);
+  late final RealtimeSubscriptionManager _subscriptionManager;
+  late final RealtimeService _realtimeService;
 
   @override
   NewFollowersState build() {
+    // Eagerly initialize so ref.read() is not called inside onDispose lifecycle
+    _subscriptionManager = ref.read(realtimeSubscriptionManagerProvider);
+    _realtimeService = ref.read(realtimeServiceProvider);
+
     ref.onDispose(() {
       _cancelRealtimeSubscription();
     });

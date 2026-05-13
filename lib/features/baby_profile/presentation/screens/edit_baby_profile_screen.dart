@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/gender.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
@@ -117,7 +118,17 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
     final state = ref.read(babyProfileProvider);
     if (state.saveSuccess) {
       ref.invalidate(userBabyProfilesProvider);
-      widget.onSaved?.call();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Baby profile updated successfully!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      if (widget.onSaved != null) {
+        widget.onSaved!();
+      } else {
+        context.pop();
+      }
     }
   }
 
@@ -131,7 +142,12 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
         if (!mounted) return;
         if (deleted) {
           ref.invalidate(userBabyProfilesProvider);
-          widget.onDeleted?.call();
+          if (!mounted) return;
+          if (widget.onDeleted != null) {
+            widget.onDeleted!();
+          } else {
+            context.pop();
+          }
         }
       },
     );
@@ -199,7 +215,7 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
                     contentPadding: EdgeInsets.zero,
                     title: const Text('Actual Birth Date'),
                     subtitle:
-                        Text(_formatDate(_actualBirthDate) ?? 'Not yet born'),
+                        Text(_formatDate(_actualBirthDate) ?? 'Not born yet'),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () => _pickDate(
                       current: _actualBirthDate,
@@ -262,7 +278,7 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
                   ),
                   AppSpacing.verticalGapS,
                   OutlinedButton(
-                    onPressed: widget.onCancelled,
+                    onPressed: widget.onCancelled ?? () => context.pop(),
                     child: const Text('Cancel'),
                   ),
                   AppSpacing.verticalGapS,
