@@ -706,6 +706,13 @@ class _ChecklistSmartTileState extends ConsumerState<_ChecklistSmartTile> {
       }
     });
 
+    // Hide the tile once all onboarding tasks are completed.
+    if (!state.isLoading &&
+        state.items.isNotEmpty &&
+        state.completedCount == state.items.length) {
+      return const SizedBox.shrink();
+    }
+
     return ChecklistTile(
       items: state.items,
       completedCount: state.completedCount,

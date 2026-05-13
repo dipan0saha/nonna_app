@@ -327,6 +327,8 @@ class SettingsScreen extends ConsumerWidget {
       'Manrope',
       'Quicksand',
       'Rubik',
+      'Source Serif 4',
+      'Lora',
     ];
 
     // Switching to a more modern beautiful bottom sheet for font selection

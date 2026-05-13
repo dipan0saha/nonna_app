@@ -227,9 +227,44 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
           .eq(SupabaseTables.babyProfileId, babyProfileId)
           .order('created_at', ascending: true);
 
-      final memberships = (response as List)
-          .map((json) => BabyMembership.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final rawList = response as List;
+      if (rawList.isEmpty) {
+        if (!ref.mounted) return;
+        state = state.copyWith(memberships: const []);
+        return;
+      }
+
+      // Batch-fetch display names and avatar URLs from profiles
+      final userIds =
+          rawList.map((m) => (m as Map)['user_id'] as String).toList();
+
+      final profilesResponse = await ref
+          .read(databaseServiceProvider)
+          .select(
+            SupabaseTables.userProfiles,
+            columns:
+                '${SupabaseTables.userId}, ${SupabaseTables.displayName}, ${SupabaseTables.avatarUrl}',
+          )
+          .inFilter(SupabaseTables.userId, userIds);
+
+      final profileMap = <String, Map<String, dynamic>>{
+        for (final p in profilesResponse as List<dynamic>)
+          (p as Map)[SupabaseTables.userId] as String:
+              Map<String, dynamic>.from(p),
+      };
+
+      final memberships = rawList.map((json) {
+        final memberJson = Map<String, dynamic>.from(json as Map);
+        final profile = profileMap[memberJson['user_id'] as String];
+        if (profile != null) {
+          memberJson[SupabaseTables.displayName] =
+              profile[SupabaseTables.displayName];
+          memberJson[SupabaseTables.avatarUrl] =
+              profile[SupabaseTables.avatarUrl];
+        }
+        return BabyMembership.fromJson(memberJson);
+      }).toList();
+
       if (!ref.mounted) return;
 
       state = state.copyWith(memberships: memberships);

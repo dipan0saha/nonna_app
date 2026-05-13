@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/performance_limits.dart';
 import '../../../core/constants/supabase_tables.dart';
 import '../../../core/di/providers.dart';
+import '../../../core/enums/user_role.dart';
 import '../../../core/models/baby_membership.dart';
 
 /// New Followers provider for the New Followers tile
@@ -170,6 +171,7 @@ class NewFollowersNotifier extends Notifier<NewFollowersState> {
         .read(databaseServiceProvider)
         .select(SupabaseTables.babyMemberships)
         .eq(SupabaseTables.babyProfileId, babyProfileId)
+        .eq('role', UserRole.follower.toJson())
         .gte(SupabaseTables.createdAt, cutoffDate.toIso8601String())
         .isFilter('removed_at', null) // Only get active members
         .order(SupabaseTables.createdAt, ascending: false)

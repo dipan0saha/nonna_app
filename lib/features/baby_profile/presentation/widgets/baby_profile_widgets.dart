@@ -84,7 +84,7 @@ class FollowerListItem extends StatelessWidget {
         backgroundColor: AppColors.primaryLight,
         child: Icon(Icons.person, color: AppColors.primaryDark),
       ),
-      title: Text(membership.userId),
+      title: Text(membership.displayName ?? membership.userId),
       subtitle: membership.relationshipLabel != null
           ? Text(membership.relationshipLabel!)
           : null,

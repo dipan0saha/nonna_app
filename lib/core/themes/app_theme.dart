@@ -22,7 +22,8 @@ class AppTheme {
   // Light Theme
   // ============================================================
 
-  static TextTheme _getDynamicTextTheme(String fontFamily, TextTheme baseTheme) {
+  static TextTheme _getDynamicTextTheme(
+      String fontFamily, TextTheme baseTheme) {
     switch (fontFamily) {
       case 'Inter':
         return GoogleFonts.interTextTheme(baseTheme);
@@ -44,6 +45,10 @@ class AppTheme {
         return GoogleFonts.quicksandTextTheme(baseTheme);
       case 'Rubik':
         return GoogleFonts.rubikTextTheme(baseTheme);
+      case 'Source Serif 4':
+        return GoogleFonts.sourceSerif4TextTheme(baseTheme);
+      case 'Lora':
+        return GoogleFonts.loraTextTheme(baseTheme);
       case 'Plus Jakarta Sans':
       default:
         return GoogleFonts.plusJakartaSansTextTheme(baseTheme);
