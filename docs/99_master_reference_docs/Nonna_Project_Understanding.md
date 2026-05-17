@@ -210,6 +210,16 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
   - **Engagement Recap — app-resume re-fetch**: `_ActivityListSmartTileState` now mixes in `WidgetsBindingObserver` and overrides `didChangeAppLifecycleState`. On `AppLifecycleState.resumed`, `fetchEngagement(forceRefresh: true)` is triggered, clearing the stale `ClientException: Software caused connection abort` error that appeared when the user returned from another app (the HTTP connection pool goes stale while backgrounded).
   - **Registry list — always fetches fresh on open**: `RegistryScreen._loadRegistryIfReady` now passes `forceRefresh: true`. Previously the provider served stale Hive-cached data on initial mount; if the background sync failed (e.g. due to the Supabase connection issue above) the list permanently showed fewer items than the DB until the user added a new item (which called `loadItems(forceRefresh: true)` explicitly).
   - **Gender label — Neutral instead of Unknown**: `Gender.unknown.displayName` changed from `'Unknown'` → `'Neutral'`. Affects the SegmentedButton in `EditBabyProfileScreen` and the name-suggestion gender picker. Unit test in `gender_test.dart` updated accordingly.
+- **`NewFollowersNotifier` — Riverpod lifecycle assertion fix (May 13, 2026)**:
+  - **Root cause**: `_subscriptionManager` and `_realtimeService` were declared as `late final` fields with inline `ref.read()` initializers. Because `late` fields are lazily evaluated, they were first accessed inside the `onDispose` callback, triggering `ref.read()` during a Riverpod lifecycle — an assertion violation (`_debugCallbackStack == 0`).
+  - **Fix** (`new_followers_provider.dart`): Changed to typed `late final` declarations. Both are now eagerly initialised at the top of `build()`, before `ref.onDispose()` is registered. The dispose closure safely references the stored instances with no `ref.read()` calls at teardown.
+- **2 UI/UX fixes (May 17, 2026)**:
+  - **Edit Baby Profile — direct navigation** (`home_app_bar.dart`): Owners now land directly in `EditBabyProfileScreen` in one tap. The popup menu item routes owners to `/baby-profile/:id/edit` (skipping the intermediate `BabyProfileScreen`). Menu label changes to **"Edit Baby Profile"** (icon: `Icons.edit_outlined`) for owners; followers still see "Baby Profile Info" → `BabyProfileScreen` (read-only).
+  - **Settings Screen cleanup** (`settings_screen.dart`):
+    - Removed "Nonna App User" profile header tile.
+    - Removed "Sign Out" card (and `onSignOut` constructor parameter — `SettingsScreen` is now `const SettingsScreen()`).
+    - Removed "Language" option from Customization section.
+    - **Help & Support** now functional: opens `mailto:support@nonna.app?subject=Nonna%20App%20Support` via `url_launcher`; falls back to a SnackBar if no email client is available.
 - **EditBabyProfile screen** now includes Birth Weight (kg) and Birth Height (cm) input fields (`TextFormField` with decimal keyboard).
 - **`baby_profiles` DB schema** extended with `birth_weight_kg NUMERIC(5,3)` and `birth_height_cm NUMERIC(5,1)` (migration `20260510000000_add_birth_measurements_to_baby_profiles.sql`).
 - **`BabyProfile` model** updated: `birthWeightKg` and `birthHeightCm` nullable fields added to constructor, `fromJson`, `toJson`, `copyWith`, `==`, `hashCode`.
@@ -217,9 +227,9 @@ Routes are defined in `lib/core/router/app_router.dart` using GoRouter with auth
   - `/baby-profile/followers`
   - `/baby-profile/followers/invite`
 - Home app bar actions have been consolidated into a single, cleaner PopupMenuButton containing:
-  - `Create Baby Profile`
-  - `Baby Profile Info`
+  - `Edit Baby Profile` (owners) / `Baby Profile Info` (followers)
   - Owner-only `Manage Followers`
+  - `Add New Baby`
 - Dynamic typography added: users can change the global app font from Settings (supported via Riverpod state driving `GoogleFonts` in `MaterialApp` theme).
 - Baby profile creation flow now immediately:
   - Selects the newly created profile
@@ -420,7 +430,8 @@ These break circular RLS dependencies and are used inside row-level security pol
 
 **Setup:**
 ```bash
-supabase login
+supabase login --token $SUPABASE_ACCESS_TOKEN
+supabase link --project-ref $SUPABASE_PROJECT_ID
 ```
 
 **Query database:**

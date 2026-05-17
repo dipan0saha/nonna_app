@@ -352,10 +352,10 @@ npm install -g supabase
 
 ```bash
 # Login to Supabase
-supabase login
+supabase login --token $SUPABASE_ACCESS_TOKEN
 
 # Link to your project
-supabase link --project-ref [your-project-ref]
+supabase link --project-ref $SUPABASE_PROJECT_ID
 
 # Create Edge Functions directory
 supabase functions new generate-thumbnail

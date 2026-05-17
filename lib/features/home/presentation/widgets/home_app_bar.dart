@@ -165,12 +165,22 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ),
             onSelected: (value) {
               if (value == 'create') {
-                context.push(AppRoutes.babyProfileCreate, extra: {'userId': userId});
+                context.push(AppRoutes.babyProfileCreate,
+                    extra: {'userId': userId});
               } else if (value == 'info' && selectedProfile != null) {
-                context.push(AppRoutes.babyProfile, extra: {
-                  'babyProfileId': selectedProfile.id,
-                  'currentUserId': userId,
-                });
+                if (selectedRole == UserRole.owner) {
+                  // Owners go directly to the edit screen — skips the intermediate info screen
+                  context.push(
+                    AppRoutes.babyProfileEdit
+                        .replaceFirst(':id', selectedProfile.id),
+                    extra: {'currentUserId': userId},
+                  );
+                } else {
+                  context.push(AppRoutes.babyProfile, extra: {
+                    'babyProfileId': selectedProfile.id,
+                    'currentUserId': userId,
+                  });
+                }
               } else if (value == 'followers' && selectedProfile != null) {
                 context.push(AppRoutes.babyProfileFollowers, extra: {
                   'babyProfileId': selectedProfile.id,
@@ -180,13 +190,22 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
             },
             itemBuilder: (BuildContext context) => [
               if (selectedProfile != null)
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'info',
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline, size: 20),
-                      SizedBox(width: 12),
-                      Text('Baby Profile Info'),
+                      Icon(
+                        selectedRole == UserRole.owner
+                            ? Icons.edit_outlined
+                            : Icons.info_outline,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        selectedRole == UserRole.owner
+                            ? 'Edit Baby Profile'
+                            : 'Baby Profile Info',
+                      ),
                     ],
                   ),
                 ),
@@ -201,8 +220,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ],
                   ),
                 ),
-              if (selectedProfile != null)
-                const PopupMenuDivider(),
+              if (selectedProfile != null) const PopupMenuDivider(),
               const PopupMenuItem(
                 value: 'create',
                 child: Row(
