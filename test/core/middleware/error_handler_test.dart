@@ -72,6 +72,16 @@ void main() {
         expect(message, contains('Related data does not exist'));
       });
 
+      test('handles PostgrestException with user-raised P0001 exception', () {
+        final error = PostgrestException(
+          message: 'Maximum two events per day allowed per baby profile',
+          code: 'P0001',
+        );
+        final message = ErrorHandler.mapErrorToMessage(error);
+
+        expect(message, 'Maximum two events per day allowed per baby profile');
+      });
+
       test('handles PostgrestException with not found error', () {
         final error = PostgrestException(
           message: 'No rows found',

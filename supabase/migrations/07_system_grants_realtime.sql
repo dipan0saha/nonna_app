@@ -69,6 +69,7 @@ GRANT INSERT, UPDATE, DELETE ON public.name_suggestion_likes TO authenticated;
 
 -- Notifications and metadata
 GRANT INSERT, UPDATE, DELETE ON public.notifications TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.notifications TO service_role;
 GRANT INSERT, UPDATE, DELETE ON public.notification_preferences TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.activity_events TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.invitations TO authenticated;

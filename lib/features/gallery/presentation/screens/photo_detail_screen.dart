@@ -12,6 +12,7 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 import 'package:nonna_app/features/gallery/presentation/providers/photo_detail_provider.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/photo_comments_provider.dart';
 import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/models/user.dart';
 import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Photo detail screen showing full image, metadata, and squish button.
@@ -62,6 +63,87 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
     _captionController.dispose();
     _commentController.dispose();
     super.dispose();
+  }
+
+  bool _isRasterAvatarUrl(String? url) {
+    if (url == null || url.isEmpty) return false;
+    final lower = url.toLowerCase();
+    return !(lower.endsWith('.svg') ||
+        lower.contains('.svg?') ||
+        lower.endsWith('/svg') ||
+        lower.contains('/svg?'));
+  }
+
+  Future<void> _showSquishUsers() async {
+    final squishCount = ref.read(photoDetailProvider).squishCount;
+    try {
+      final users = await ref
+          .read(photoDetailProvider.notifier)
+          .fetchSquishUsers(photoId: widget.photo.id);
+      if (!mounted) return;
+
+      await showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        isScrollControlled: true,
+        builder: (context) {
+          final title =
+              '$squishCount ${squishCount == 1 ? 'squish' : 'squishes'}';
+          return SafeArea(
+            child: SizedBox(
+              height: 420,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  const Divider(height: 16),
+                  if (users.isEmpty)
+                    const Expanded(
+                      child: Center(child: Text('No squishes yet')),
+                    )
+                  else
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: users.length,
+                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final User user = users[index];
+                          final hasRasterAvatar =
+                              _isRasterAvatarUrl(user.avatarUrl);
+                          final initial = user.displayName.isNotEmpty
+                              ? user.displayName[0].toUpperCase()
+                              : '?';
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: hasRasterAvatar
+                                  ? NetworkImage(user.avatarUrl!)
+                                  : null,
+                              child: hasRasterAvatar ? null : Text(initial),
+                            ),
+                            title: Text(user.displayName),
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Failed to load squishes. Please try again.')),
+      );
+    }
   }
 
   Future<void> _toggleSquish() async {
@@ -144,7 +226,8 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text('Delete Photo'),
-                    content: const Text('Are you sure you want to delete this photo?'),
+                    content: const Text(
+                        'Are you sure you want to delete this photo?'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context, false),
@@ -152,14 +235,17 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(context, true),
-                        child: Text(l10n.common_delete, style: const TextStyle(color: Colors.red)),
+                        child: Text(l10n.common_delete,
+                            style: const TextStyle(color: Colors.red)),
                       ),
                     ],
                   ),
                 );
 
                 if (confirm == true) {
-                  final success = await ref.read(photoDetailProvider.notifier).deletePhoto(photo: widget.photo);
+                  final success = await ref
+                      .read(photoDetailProvider.notifier)
+                      .deletePhoto(photo: widget.photo);
                   if (success && mounted) {
                     Navigator.of(context).pop();
                   }
@@ -318,6 +404,9 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                         squishCount: detailState.squishCount,
                         isSquished: detailState.isSquished,
                         onSquish: detailState.isLoading ? null : _toggleSquish,
+                        onCountTap: detailState.squishCount > 0
+                            ? _showSquishUsers
+                            : null,
                       ),
                       AppSpacing.horizontalGapM,
                       // Comment count icon

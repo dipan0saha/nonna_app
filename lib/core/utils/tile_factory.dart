@@ -785,6 +785,7 @@ class _InvitesStatusSmartTileState
 
     return InvitesStatusTile(
       invitations: state.invitations,
+      pendingCount: state.pendingCount,
       isLoading: state.isLoading && state.invitations.isEmpty,
       error: state.error,
       onRefresh: babyProfileId != null

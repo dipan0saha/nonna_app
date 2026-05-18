@@ -13,6 +13,7 @@ class SquishPhotoWidget extends StatefulWidget {
     required this.squishCount,
     required this.isSquished,
     this.onSquish,
+    this.onCountTap,
   });
 
   /// Number of squishes this photo has received
@@ -23,6 +24,9 @@ class SquishPhotoWidget extends StatefulWidget {
 
   /// Called when the squish button is tapped
   final VoidCallback? onSquish;
+
+  /// Called when the squish count text is tapped (to show who squished)
+  final VoidCallback? onCountTap;
 
   @override
   State<SquishPhotoWidget> createState() => _SquishPhotoWidgetState();
@@ -75,9 +79,17 @@ class _SquishPhotoWidgetState extends State<SquishPhotoWidget>
           ),
         ),
         AppSpacing.horizontalGapXS,
-        Text(
-          '${widget.squishCount} ${widget.squishCount == 1 ? 'squish' : 'squishes'}',
-          style: Theme.of(context).textTheme.bodyMedium,
+        GestureDetector(
+          onTap: widget.onCountTap,
+          child: Text(
+            '${widget.squishCount} ${widget.squishCount == 1 ? 'squish' : 'squishes'}',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  decoration:
+                      widget.onCountTap != null && widget.squishCount > 0
+                          ? TextDecoration.underline
+                          : null,
+                ),
+          ),
         ),
       ],
     );

@@ -78,10 +78,10 @@ void main() {
       expect(find.byKey(const Key('storage_percentage_text')), findsOneWidget);
     });
 
-    testWidgets('shows progress bar when info is provided', (tester) async {
+    testWidgets('shows donut chart when info is provided', (tester) async {
       final info = _makeInfo();
       await tester.pumpWidget(_buildWidget(info: info));
-      expect(find.byKey(const Key('storage_progress_bar')), findsOneWidget);
+      expect(find.byKey(const Key('storage_donut_chart')), findsOneWidget);
     });
 
     testWidgets('shows photo count and available in detail text',

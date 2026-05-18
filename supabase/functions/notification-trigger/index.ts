@@ -37,15 +37,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Initialize Supabase client
-    const supabaseClient = createClient(
+    // Admin client uses service role key to bypass RLS when inserting
+    // notifications on behalf of other users (e.g. owner notifying followers).
+    const adminClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
     // Parse request body
@@ -68,18 +64,19 @@ Deno.serve(async (req) => {
     }
 
     // Store notification in database
+    // Schema: id, recipient_user_id, baby_profile_id, type, payload (jsonb), read_at, created_at
     const notificationData = {
       recipient_user_id: recipientUserId,
-      notification_type: notificationType,
-      title,
-      message,
-      data: data || {},
-      baby_profile_id: babyProfileId,
-      is_read: false,
-      created_at: new Date().toISOString(),
+      baby_profile_id: babyProfileId ?? null,
+      type: notificationType,
+      payload: {
+        title,
+        message,
+        ...(data || {}),
+      },
     };
 
-    const { data: savedNotification, error: dbError } = await supabaseClient
+    const { data: savedNotification, error: dbError } = await adminClient
       .from('notifications')
       .insert(notificationData)
       .select()

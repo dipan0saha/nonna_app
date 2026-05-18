@@ -139,6 +139,11 @@ class ErrorHandler {
     } else if (code == '23503') {
       // Foreign key violation
       return 'Cannot complete operation. Related data does not exist.';
+    } else if (code == 'P0001') {
+      // User-raised exception from DB trigger/function — message is intentionally user-readable
+      return error.message.isNotEmpty
+          ? error.message
+          : 'Operation not allowed.';
     } else if (code == '42P01') {
       // Table does not exist
       return 'Data source not found. Please contact support.';

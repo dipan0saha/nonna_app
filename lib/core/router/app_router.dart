@@ -18,6 +18,7 @@ import 'package:nonna_app/features/profile/presentation/screens/edit_profile_scr
 import 'package:nonna_app/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:nonna_app/features/calendar/presentation/screens/event_detail_screen.dart';
 import 'package:nonna_app/features/calendar/presentation/screens/event_creation_screen.dart';
+import 'package:nonna_app/features/calendar/presentation/screens/event_edit_screen.dart';
 import 'package:nonna_app/features/calendar/presentation/screens/upcoming_events_screen.dart';
 import 'package:nonna_app/features/gallery/presentation/screens/gallery_screen.dart';
 import 'package:nonna_app/features/gallery/presentation/screens/photo_detail_screen.dart';
@@ -50,6 +51,7 @@ abstract class AppRoutes {
   // as the extra payload is not available when the route is deep-linked by URL.
   static const calendarEvent = '/calendar/event/detail';
   static const calendarEventCreate = '/calendar/event/create';
+  static const calendarEventEdit = '/calendar/event/edit';
   static const gallery = '/gallery';
   static const galleryFavorites = '/gallery/favorites';
   static const galleryRecent = '/gallery/recent';
@@ -170,7 +172,8 @@ List<RouteBase> get _routes => [
           currentUserId: _extraString(state, 'currentUserId'),
           onEditTap: () {
             context.push(
-              AppRoutes.babyProfileEdit.replaceFirst(':id', _extraString(state, 'babyProfileId')),
+              AppRoutes.babyProfileEdit
+                  .replaceFirst(':id', _extraString(state, 'babyProfileId')),
               extra: {
                 'currentUserId': _extraString(state, 'currentUserId'),
               },
@@ -306,6 +309,16 @@ List<RouteBase> get _routes => [
                       babyProfileId: _extraString(state, 'babyProfileId'),
                       createdByUserId: _extraString(state, 'createdByUserId'),
                     ),
+                  ),
+                  // Edit escapes the shell → covers the nav bar
+                  GoRoute(
+                    parentNavigatorKey: NavigationService.navigatorKey,
+                    path: 'event/edit',
+                    builder: (context, state) {
+                      final event = state.extra as Event?;
+                      if (event == null) return _missingData('Event');
+                      return EventEditScreen(event: event);
+                    },
                   ),
                 ],
               ),

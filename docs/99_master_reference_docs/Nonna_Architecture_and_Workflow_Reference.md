@@ -237,6 +237,5 @@ Start here for app-wide understanding:
 
 ---
 # Test Login Credentials for automated testing
-
 Email: testuser_nonna@example.com
 Password: Password123!

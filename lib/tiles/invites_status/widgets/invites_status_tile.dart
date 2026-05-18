@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
@@ -117,15 +118,19 @@ class InvitesStatusTile extends StatelessWidget {
 
     final displayInvitations = invitations.take(5).toList();
     return Column(
-      children: displayInvitations
-          .map(
-            (inv) => _InvitationRow(
-              invitation: inv,
-              onResend: onResend,
-              onRevoke: onRevoke,
-            ),
-          )
-          .toList(),
+      children: [
+        _StatusDonutChart(invitations: invitations),
+        AppSpacing.verticalGapS,
+        ...displayInvitations
+            .map(
+              (inv) => _InvitationRow(
+                invitation: inv,
+                onResend: onResend,
+                onRevoke: onRevoke,
+              ),
+            )
+            .toList(),
+      ],
     );
   }
 }
@@ -140,6 +145,148 @@ Color _statusColor(InvitationStatus status) {
       return Colors.red;
     case InvitationStatus.expired:
       return Colors.grey;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Donut chart summarising invitation status breakdown
+// ---------------------------------------------------------------------------
+
+class _StatusDonutChart extends StatefulWidget {
+  const _StatusDonutChart({required this.invitations});
+
+  final List<Invitation> invitations;
+
+  @override
+  State<_StatusDonutChart> createState() => _StatusDonutChartState();
+}
+
+class _StatusDonutChartState extends State<_StatusDonutChart> {
+  int _touchedIndex = -1;
+
+  static const _labelStyle = TextStyle(fontSize: 11, color: Colors.black54);
+
+  @override
+  Widget build(BuildContext context) {
+    final counts = <InvitationStatus, int>{};
+    for (final inv in widget.invitations) {
+      counts[inv.status] = (counts[inv.status] ?? 0) + 1;
+    }
+
+    final total = widget.invitations.length;
+    final sections = _buildSections(counts, total);
+
+    if (sections.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s),
+      child: Column(
+        children: [
+          // Centred donut with total count in the hole
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                height: 150,
+                width: 150,
+                child: PieChart(
+                  PieChartData(
+                    pieTouchData: PieTouchData(
+                      touchCallback: (event, response) {
+                        setState(() {
+                          if (!event.isInterestedForInteractions ||
+                              response == null ||
+                              response.touchedSection == null) {
+                            _touchedIndex = -1;
+                            return;
+                          }
+                          _touchedIndex =
+                              response.touchedSection!.touchedSectionIndex;
+                        });
+                      },
+                    ),
+                    centerSpaceRadius: 40,
+                    sectionsSpace: 2,
+                    sections: sections,
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '$total',
+                    style: context.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'invited',
+                    style: context.textTheme.labelSmall?.copyWith(
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.s),
+          // Horizontally centred legend
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: AppSpacing.m,
+            runSpacing: 4,
+            children: InvitationStatus.values.map((status) {
+              final count = counts[status] ?? 0;
+              if (count == 0) return const SizedBox.shrink();
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: _statusColor(status),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${status.displayName} ($count)',
+                    style: _labelStyle,
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<PieChartSectionData> _buildSections(
+    Map<InvitationStatus, int> counts,
+    int total,
+  ) {
+    if (total == 0) return [];
+    final entries = counts.entries.toList();
+    return List.generate(entries.length, (i) {
+      final status = entries[i].key;
+      final count = entries[i].value;
+      final isTouched = i == _touchedIndex;
+      final pct = count / total * 100;
+      return PieChartSectionData(
+        color: _statusColor(status),
+        value: count.toDouble(),
+        title: isTouched ? '${pct.toStringAsFixed(0)}%' : '',
+        radius: isTouched ? 32 : 26,
+        titleStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      );
+    });
   }
 }
 

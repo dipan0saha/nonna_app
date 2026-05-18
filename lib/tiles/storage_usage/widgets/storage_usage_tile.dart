@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
@@ -119,6 +120,9 @@ class _StorageSummary extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Centred donut chart (used vs available)
+        _StorageDonutChart(info: info, usedColor: barColor),
+        AppSpacing.verticalGapS,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -138,14 +142,6 @@ class _StorageSummary extends StatelessWidget {
           ],
         ),
         AppSpacing.verticalGapXS,
-        LinearProgressIndicator(
-          key: const Key('storage_progress_bar'),
-          value: pct / 100,
-          backgroundColor: AppColors.onSurfaceHint(context.colorScheme)
-              .withValues(alpha: 0.2),
-          valueColor: AlwaysStoppedAnimation<Color>(barColor),
-        ),
-        AppSpacing.verticalGapXS,
         Text(
           '${info.photoCount} photo${info.photoCount == 1 ? '' : 's'} · ${info.availableFormatted} available',
           key: const Key('storage_detail_text'),
@@ -154,6 +150,116 @@ class _StorageSummary extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Donut chart showing used vs available storage
+// ---------------------------------------------------------------------------
+
+class _StorageDonutChart extends StatefulWidget {
+  const _StorageDonutChart({required this.info, required this.usedColor});
+
+  final StorageUsageInfo info;
+  final Color usedColor;
+
+  @override
+  State<_StorageDonutChart> createState() => _StorageDonutChartState();
+}
+
+class _StorageDonutChartState extends State<_StorageDonutChart> {
+  int _touchedIndex = -1;
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = widget.info.usagePercentage.clamp(0.0, 100.0);
+    const availableColor = Color(0xFFBBDEFB); // Material blue-100
+
+    final sections = [
+      PieChartSectionData(
+        color: widget.usedColor,
+        value: widget.info.usedBytes.toDouble(),
+        title: _touchedIndex == 0 ? '${pct.toStringAsFixed(0)}%' : '',
+        radius: _touchedIndex == 0 ? 58 : 52,
+        titleStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      PieChartSectionData(
+        color: availableColor,
+        value: widget.info.availableBytes.toDouble(),
+        title: _touchedIndex == 1 ? '${(100 - pct).toStringAsFixed(0)}%' : '',
+        radius: _touchedIndex == 1 ? 58 : 52,
+        titleStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: Colors.black54,
+        ),
+      ),
+    ];
+
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(
+            key: const Key('storage_donut_chart'),
+            height: 130,
+            width: 130,
+            child: PieChart(
+              PieChartData(
+                pieTouchData: PieTouchData(
+                  touchCallback: (event, response) {
+                    setState(() {
+                      if (!event.isInterestedForInteractions ||
+                          response == null ||
+                          response.touchedSection == null) {
+                        _touchedIndex = -1;
+                        return;
+                      }
+                      _touchedIndex =
+                          response.touchedSection!.touchedSectionIndex;
+                    });
+                  },
+                ),
+                centerSpaceRadius: 0,
+                sectionsSpace: 2,
+                sections: sections,
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          // Mini legend
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  color: widget.usedColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text('Used', style: context.textTheme.labelSmall),
+              const SizedBox(width: AppSpacing.m),
+              Container(
+                width: 9,
+                height: 9,
+                decoration: const BoxDecoration(
+                  color: availableColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text('Available', style: context.textTheme.labelSmall),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

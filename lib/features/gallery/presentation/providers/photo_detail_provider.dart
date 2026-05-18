@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
 import '../../../../core/models/photo.dart';
+import '../../../../core/models/user.dart';
 import '../../../../tiles/gallery_favorites/providers/gallery_favorites_provider.dart';
 import '../../../../tiles/recent_photos/providers/recent_photos_provider.dart';
 import 'gallery_screen_provider.dart';
@@ -204,7 +205,7 @@ class PhotoDetailNotifier extends Notifier<PhotoDetailState> {
       final storage = ref.read(storageServiceProvider);
 
       await db.delete(SupabaseTables.photos).eq('id', photo.id);
-      
+
       try {
         await storage.deleteFile('gallery-photos', photo.storagePath);
         if (photo.thumbnailPath != null) {
@@ -225,6 +226,44 @@ class PhotoDetailNotifier extends Notifier<PhotoDetailState> {
       );
       return false;
     }
+  }
+
+  /// Fetch the list of users who squished a photo, newest first.
+  Future<List<User>> fetchSquishUsers({required String photoId}) async {
+    final db = ref.read(databaseServiceProvider);
+
+    final squishesResponse = await db
+        .select(
+          SupabaseTables.photoSquishes,
+          columns: 'user_id, created_at',
+        )
+        .eq('photo_id', photoId)
+        .order('created_at', ascending: false);
+
+    final userIds = <String>[];
+    for (final json in (squishesResponse as List)) {
+      final userId = json['user_id'] as String?;
+      if (userId != null && !userIds.contains(userId)) {
+        userIds.add(userId);
+      }
+    }
+
+    if (userIds.isEmpty) return const [];
+
+    final profilesResponse = await db
+        .select(SupabaseTables.userProfiles)
+        .inFilter('user_id', userIds);
+
+    final profileById = <String, User>{};
+    for (final json in (profilesResponse as List)) {
+      final user = User.fromJson(Map<String, dynamic>.from(json as Map));
+      profileById[user.userId] = user;
+    }
+
+    return userIds
+        .where((id) => profileById.containsKey(id))
+        .map((id) => profileById[id]!)
+        .toList();
   }
 
   Future<void> refreshRelatedTilesForComments(String babyProfileId) async {
