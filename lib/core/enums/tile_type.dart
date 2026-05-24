@@ -67,7 +67,10 @@ enum TileType {
   nameSuggestions,
 
   /// Prediction votes tile - votes for baby gender/birthdate
-  predictionVotes;
+  predictionVotes,
+
+  /// New baby welcome tile - welcome announcement card
+  newBabyWelcome;
 
   /// Convert the enum to a string representation
   String toJson() => name;
@@ -117,6 +120,8 @@ enum TileType {
         return 'Name Suggestions';
       case TileType.predictionVotes:
         return 'Prediction Votes';
+      case TileType.newBabyWelcome:
+        return 'New Baby Welcome';
     }
   }
 
@@ -157,6 +162,8 @@ enum TileType {
         return 'Baby name suggestions';
       case TileType.predictionVotes:
         return 'Predictions for gender or birthdate';
+      case TileType.newBabyWelcome:
+        return 'Welcome card shown to the owner for 7 days after the baby\'s birth.';
     }
   }
 }

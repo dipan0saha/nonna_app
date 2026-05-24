@@ -28,6 +28,7 @@ class TileListView extends StatelessWidget {
     this.onRetry,
     this.shrinkWrap = false,
     this.physics,
+    this.emptyWidget,
   });
 
   /// List of tile configurations to display
@@ -51,6 +52,10 @@ class TileListView extends StatelessWidget {
   /// Pass scrolling physics (useful when nested inside another View)
   final ScrollPhysics? physics;
 
+  /// Custom widget shown when [tiles] is empty. Falls back to a generic
+  /// empty-state message when not provided.
+  final Widget? emptyWidget;
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -65,11 +70,12 @@ class TileListView extends StatelessWidget {
     }
 
     if (tiles.isEmpty) {
-      return const EmptyState(
-        key: Key('tile_list_view'),
-        message: 'No tiles to display',
-        icon: Icons.dashboard_outlined,
-      );
+      return emptyWidget ??
+          const EmptyState(
+            key: Key('tile_list_view'),
+            message: 'No tiles to display',
+            icon: Icons.dashboard_outlined,
+          );
     }
 
     final content = ListView.builder(

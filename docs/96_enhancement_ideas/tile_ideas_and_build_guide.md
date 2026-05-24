@@ -86,7 +86,9 @@ This doc captures new tile ideas and a practical checklist for building new tile
 - Build a smart wrapper if the tile needs provider orchestration or routing.
 
 ### 7) Tile definition and config
-- Insert the tile into `tile_definitions` (tile_type must match TileFactory case).
+- Insert the tile into `tile_definitions` in Supabase (the `tile_type` column value must match the `TileFactory` switch case name, e.g. `'RecentPhotosTile'`).
+- Add the new tile type case (in camelCase, e.g. `recentPhotos`) to the `TileType` enum in `lib/core/enums/tile_type.dart`.
+- Update the `displayName` and `description` getters inside the `TileType` enum to provide user-friendly values.
 - Add `tile_configs` for each screen/role with `display_order` and `params`.
 - Update `supabase/seed/*.sql` so new environments include the tile.
 
@@ -107,6 +109,7 @@ This doc captures new tile ideas and a practical checklist for building new tile
 - Ensure labels, contrast, and tap targets match accessibility guidelines.
 
 ### 12) Tests
+- Enum tests in `test/core/enums/tile_type_test.dart` (update total length assertion and add inclusion test).
 - Provider tests for fetch/caching behavior.
 - Widget tests for empty/error/loading states.
 - Optional integration tests if the tile affects user flows.

@@ -233,6 +233,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       error: state.error,
       onRefresh: _onRefresh,
       onRetry: () => ref.read(homeScreenProvider.notifier).retry(),
+      emptyWidget: const EmptyState(
+        icon: Icons.add_a_photo_outlined,
+        title: 'Every big moment starts somewhere.',
+        message: 'Add your first photo!',
+        description: 'Tap the + button below to get started.',
+      ),
     );
   }
 }

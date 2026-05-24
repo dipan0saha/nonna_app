@@ -4,7 +4,7 @@ import 'package:nonna_app/core/enums/tile_type.dart';
 void main() {
   group('TileType', () {
     test('has correct number of tile types', () {
-      expect(TileType.values.length, 17);
+      expect(TileType.values.length, 18);
     });
 
     test('contains all expected tile types', () {
@@ -25,6 +25,7 @@ void main() {
       expect(TileType.values, contains(TileType.newFollowers));
       expect(TileType.values, contains(TileType.nameSuggestions));
       expect(TileType.values, contains(TileType.predictionVotes));
+      expect(TileType.values, contains(TileType.newBabyWelcome));
     });
 
     group('toJson and fromJson', () {

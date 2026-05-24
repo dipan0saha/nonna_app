@@ -14,7 +14,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../core/models/tile_config.dart';
 import '../../../../core/utils/tile_loader.dart';
-import '../../../home/presentation/providers/home_screen_provider.dart';
 
 /// Registry Screen Provider for managing registry state
 ///
@@ -73,6 +72,12 @@ class RegistryScreenState {
   final RegistrySort currentSort;
   final String? selectedBabyProfileId;
 
+  /// The effective role for the baby profile currently being viewed.
+  /// Always prefer this over homeScreenProvider.selectedRole inside the
+  /// registry notifier, because dual-role users may have a different global
+  /// role selected on the home screen than their actual role on this profile.
+  final UserRole? currentRole;
+
   const RegistryScreenState({
     this.tiles = const [],
     this.items = const [],
@@ -81,6 +86,7 @@ class RegistryScreenState {
     this.currentFilter = RegistryFilter.all,
     this.currentSort = RegistrySort.priorityHigh,
     this.selectedBabyProfileId,
+    this.currentRole,
   });
 
   RegistryScreenState copyWith({
@@ -91,6 +97,7 @@ class RegistryScreenState {
     RegistryFilter? currentFilter,
     RegistrySort? currentSort,
     String? selectedBabyProfileId,
+    UserRole? currentRole,
   }) {
     return RegistryScreenState(
       tiles: tiles ?? this.tiles,
@@ -101,6 +108,7 @@ class RegistryScreenState {
       currentSort: currentSort ?? this.currentSort,
       selectedBabyProfileId:
           selectedBabyProfileId ?? this.selectedBabyProfileId,
+      currentRole: currentRole ?? this.currentRole,
     );
   }
 
@@ -192,6 +200,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
         isLoading: true,
         error: null,
         selectedBabyProfileId: babyProfileId,
+        currentRole: role,
       );
 
       // We load tile configs first asynchronously so they populate fast
@@ -299,7 +308,11 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
     }
 
     final databaseService = ref.read(databaseServiceProvider);
-    final role = ref.read(homeScreenProvider).selectedRole ?? UserRole.follower;
+    // Use the role that was resolved for the specific baby profile being viewed.
+    // This is critical for dual-role users: homeScreenProvider.selectedRole
+    // reflects the globally selected role (e.g. owner for a different profile),
+    // not necessarily the user's role on THIS profile's registry.
+    final role = state.currentRole ?? UserRole.follower;
     final isOwner = role == UserRole.owner;
 
     try {
@@ -503,23 +516,32 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
 
       if (cachedData == null) return null;
 
+      // Read once outside the map so the provider isn't called for every item.
+      final currentUser = ref.read(currentUserProvider);
+
       return (cachedData as List).map((dynamic json) {
         final map = Map<String, dynamic>.from(json as Map);
         final itemJson = Map<String, dynamic>.from(map['item'] as Map);
         final purchasersJson = map['purchasers'] as List?;
 
+        // Build the purchasers list first so we can reference it below for the
+        // isPurchasedByCurrentUser recomputation.
+        final purchasers = purchasersJson != null
+            ? purchasersJson
+                .map((u) => User.fromJson(Map<String, dynamic>.from(u as Map)))
+                .toList()
+            : <User>[];
+
         return RegistryItemWithStatus(
           item: RegistryItem.fromJson(itemJson),
           isPurchased: map['isPurchased'] as bool,
           purchaseCount: map['purchaseCount'] as int,
-          purchasers: purchasersJson != null
-              ? purchasersJson
-                  .map(
-                      (u) => User.fromJson(Map<String, dynamic>.from(u as Map)))
-                  .toList()
-              : const [],
-          isPurchasedByCurrentUser:
-              map['isPurchasedByCurrentUser'] as bool? ?? false,
+          purchasers: purchasers,
+          // Recompute dynamically from the purchasers list rather than
+          // restoring the cached boolean, which was written under a potentially
+          // different logged-in user and would produce stale results.
+          isPurchasedByCurrentUser: currentUser != null &&
+              purchasers.any((u) => u.userId == currentUser.id),
         );
       }).toList();
     } catch (e) {

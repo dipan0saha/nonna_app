@@ -145,7 +145,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                       AppSpacing.verticalGapXS,
                       Text(
-                        '@${profile.userId.substring(0, 8)}',
+                        ref.watch(authProvider).user?.email ??
+                            '@${profile.userId.substring(0, 8)}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                             ),

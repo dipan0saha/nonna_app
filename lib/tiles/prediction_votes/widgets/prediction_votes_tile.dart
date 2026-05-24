@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/di/providers.dart';
-import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/enums/vote_type.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/tiles/prediction_votes/providers/prediction_votes_provider.dart';
@@ -180,7 +179,9 @@ class _GenderVoteSection extends StatelessWidget {
         votes.where((v) => v.voteType == VoteType.gender).toList();
     final boyCount = genderVotes.where((v) => v.valueText == 'Boy').length;
     final girlCount = genderVotes.where((v) => v.valueText == 'Girl').length;
-    final totalGenderVotes = genderVotes.length;
+    // Use only the sum of displayed categories as the denominator so that
+    // Boy% + Girl% always equals exactly 100%.
+    final totalGenderVotes = boyCount + girlCount;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

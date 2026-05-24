@@ -253,6 +253,12 @@ class _GalleryScreenState extends ConsumerState<GalleryScreen> {
         onRefresh: _onRefresh,
         onRetry: () =>
             ref.read(galleryScreenProvider.notifier).retry(widget.screenId),
+        emptyWidget: const EmptyState(
+          icon: Icons.add_photo_alternate_outlined,
+          title: 'No photos yet',
+          message: 'Add your first photo!',
+          description: 'Tap the + button below to get started.',
+        ),
       ),
     );
   }
