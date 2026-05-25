@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
-import 'package:nonna_app/core/widgets/error_view.dart';
-import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
+import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
 import 'package:nonna_app/core/router/app_router.dart';
@@ -155,44 +154,17 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
               child: const Icon(Icons.add),
             )
           : null,
-      body: RefreshIndicator(
+      body: TileListView(
+        tiles: state.tiles,
+        isLoading: state.isLoading,
+        error: state.error,
         onRefresh: _onRefresh,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            _buildBody(state),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBody(RegistryScreenState state) {
-    if (state.isLoading) {
-      return SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (_, __) => const ShimmerListTile(),
-          childCount: 5,
-        ),
-      );
-    }
-
-    if (state.error != null) {
-      return SliverFillRemaining(
-        child: ErrorView(
-          message: state.error!,
-          onRetry: _onRefresh,
-        ),
-      );
-    }
-
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: TileListView(
-          tiles: state.tiles,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+        onRetry: _loadRegistryIfReady,
+        emptyWidget: const EmptyState(
+          icon: Icons.card_giftcard_outlined,
+          title: 'Your registry is empty',
+          message: 'Add your first item!',
+          description: 'Tap the + button below to get started.',
         ),
       ),
     );

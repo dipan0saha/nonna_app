@@ -41,6 +41,9 @@ const ALWAYS_VISIBLE_TILE_TYPES = new Set<string>([
   "ActivityListTile",
   "StorageUsageTile",
   "SystemAnnouncementsTile",
+  // The RegistryListTile is the primary content surface of the registry screen.
+  // It must always be visible so users can add items to an empty registry.
+  "RegistryListTile",
 ]);
 
 function parseRequestBody(body: JsonMap): TileConfigRequest {

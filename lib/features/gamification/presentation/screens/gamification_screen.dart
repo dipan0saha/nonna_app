@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
@@ -88,36 +87,18 @@ class _GamificationScreenState extends ConsumerState<GamificationScreen> {
       appBar: AppBar(
         title: const Text('Fun & Games'),
       ),
-      body: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : state.error != null
-              ? Center(
-                  child: Padding(
-                    padding: AppSpacing.screenPadding,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          state.error!,
-                          style: const TextStyle(color: Colors.red),
-                          textAlign: TextAlign.center,
-                        ),
-                        AppSpacing.verticalGapM,
-                        ElevatedButton(
-                          onPressed: _onRefresh,
-                          child: const Text('Retry'),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: _onRefresh,
-                  child: TileListView(
-                    tiles: state.tiles,
-                    onRefresh: _onRefresh,
-                  ),
-                ),
+      body: TileListView(
+        tiles: state.tiles,
+        isLoading: state.isLoading,
+        error: state.error,
+        onRefresh: _onRefresh,
+        onRetry: () => _loadData(forceRefresh: true),
+        emptyWidget: const EmptyState(
+          icon: Icons.sports_esports_outlined,
+          title: 'Nothing here yet.',
+          message: 'Add name suggestions or cast your predictions!',
+        ),
+      ),
     );
   }
 }

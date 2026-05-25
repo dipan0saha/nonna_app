@@ -209,7 +209,7 @@ class RegistryScreenNotifier extends Notifier<RegistryScreenState> {
         babyProfileId: babyProfileId,
         screenId: 'registry',
         role: role,
-        forceRefresh: false,
+        forceRefresh: forceRefresh,
       ).then((tiles) {
         if (!ref.mounted) return;
         state = state.copyWith(
