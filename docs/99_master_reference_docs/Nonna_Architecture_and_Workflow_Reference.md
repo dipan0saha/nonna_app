@@ -1,241 +1,182 @@
 # Nonna App - Architecture and Workflow Reference
 
+**Document Version**: 3.0
+**Last Updated**: May 25, 2026
+**Location**: `docs/99_master_reference_docs/Nonna_Architecture_and_Workflow_Reference.md`
+**Status**: Living Document - Fully updated with Version 3.0 standards and unified codebase specifications
+
 ## Purpose
 This document is the fast, implementation-aligned reference for agents and developers who need to understand how the Nonna app works end-to-end before making changes.
 
 Use this document to answer:
-- How the app boots and routes users
-- How tile-driven screens are configured and rendered
-- How Riverpod state, Supabase data, and role-based access interact
-- Which files to read first for each kind of change
+- How the app boots and routes users.
+- How tile-driven screens are configured and rendered.
+- How Riverpod state, Supabase data, and role-based access interact.
+- Which files to read first for each kind of change.
 
 ## Source-of-Truth Priority
 When details conflict, use this order:
-1. [Highest] Live code in `lib/` and `supabase/`
-2. `docs/99_master_reference_docs/Nonna_Project_Understanding.md`
-3. This file
-4. Other docs
-
-## App At A Glance
-- Product: Private baby milestone tracking and family sharing app
-- Roles: `owner` and `follower` (users can be dual-role)
-- Frontend: Flutter + Material 3
-- State: Riverpod v3 (Notifier pattern)
-- Routing: GoRouter v17 with auth redirects and tabbed shell navigation
-- Backend: Supabase Auth + Postgres + Realtime + Storage + Edge Functions
-- Cache: Hive + SharedPreferences via service layer
-
-## Recent Implementation Updates (May 2026)
-- Added full-screen follower-management routes:
-  - `/baby-profile/followers`
-  - `/baby-profile/followers/invite`
-- Home app bar actions (create-profile, baby info, and owner-only manage-followers) have been consolidated into a single PopupMenuButton to reduce visual clutter.
-- Dynamic typography was added, allowing users to switch between 11 premium Google Fonts (e.g., Plus Jakarta Sans, Inter, Montserrat) globally from the settings screen.
-- Registry business logic and RLS policies were updated to allow baby profile owners to unmark/delete ANY registry purchase, not just their own.
-- Baby profile creation now auto-selects the new profile and switches Home to owner role context.
-- Registry role/fab visibility now resolves from live membership (`currentUserRoleForBabyProfileProvider`) for the selected profile.
-- Invitation flow is currently email-only in-app (`invitee_email`), with owner-only revoke support.
-- Sign-out/session handling was hardened to clear OneSignal/Firebase identities before Supabase sign-out.
-
-## Core Architectural Pattern: Dynamic Tile Engine
-The app composes major screens using tile configurations loaded from Supabase tables.
-
-Runtime flow:
-1. Screen/provider requests tile configs for screen + role.
-2. `TileLoader.loadForScreen()` calls Supabase Edge Function `tile-configs` with `{babyProfileId, userRole, screenName}`.
-3. Edge response is cached per `{babyProfileId, screenId, role}` and locally filtered/sorted.
-4. If edge invocation fails, `TileLoader` falls back to direct `tile_configs` join query (`screens` + `tile_definitions`).
-5. Screen state stores `List<TileConfig>`.
-6. `TileListView` iterates through tile configs.
-7. `TileFactory.buildTile()` maps `componentName` to smart tile wrapper.
-8. Smart tile wrapper reads the relevant Riverpod provider and renders a presentational tile widget.
-
-Important implementation note:
-- `tile-configs` is now part of the primary runtime path for tile loading (edge-first with DB fallback).
-- Content-aware hiding is enforced server-side per tile type and tile params (`hideWhenEmpty`).
-
-## Startup Workflow
-Primary files:
-- `lib/main.dart`
-- `lib/core/services/app_initialization_service.dart`
-- `lib/core/di/providers.dart`
-- `lib/core/router/app_router.dart`
-
-Boot sequence:
-1. `main()` initializes Flutter bindings.
-2. `AppInitializationService.initialize()` initializes Supabase/Firebase/OneSignal and related integrations.
-3. App starts inside `ProviderScope` when critical initialization succeeds.
-4. `MyApp` waits on `appInitializationProvider`.
-5. `MaterialApp.router` is created with `routerProvider`.
-6. `GoRouter` applies auth redirects via `RouteGuards.authRedirect`.
-
-## Navigation and Screen Shell Model
-Primary file:
-- `lib/core/router/app_router.dart`
-
-Structure:
-- Auth and full-screen routes live outside shell.
-- Main app uses `StatefulShellRoute.indexedStack` with 5 persistent branches:
-  - Home
-  - Gallery
-  - Calendar
-  - Registry
-  - Fun (Gamification)
-- Each branch has its own navigator key and stack state.
-- Additional full-screen owner flows are routed outside shell for profile collaboration:
-  - Follower management (`/baby-profile/followers`)
-  - Invitation composer (`/baby-profile/followers/invite`)
-
-Auth behavior:
-- Unauthenticated access to protected routes redirects to `/login`.
-- Authenticated users on auth screens redirect to `/home`.
-
-## Roles and Access Model
-Role meaning:
-- `owner`: full create/edit privileges for their baby profile scope
-- `follower`: read-only/limited interaction for followed profiles
-
-Key behavior:
-- Home can show role toggle for dual-role users.
-- Feature screens often infer role from provider state when not passed explicitly.
-- Route guards support role-based restrictions where configured.
-
-## State Management Model (Riverpod)
-Global providers (core DI):
-- Supabase client, auth, database, cache, realtime, storage, analytics, observability
-- Selected baby profile state via `selectedBabyProfileProvider`
-
-Feature providers:
-- `homeScreenProvider`
-- `galleryScreenProvider`
-- `calendarScreenProvider`
-- `registryScreenProvider`
-
-Pattern used broadly:
-1. Provider receives baby profile + role context.
-2. Provider loads cached data first when available.
-3. Provider refreshes from database.
-4. Provider updates state and optional cache.
-5. Provider may subscribe to realtime updates and reconcile state.
-
-## Data Access Rules and Abstractions
-Primary files:
-- `lib/core/services/database_service.dart`
-- `lib/core/constants/supabase_tables.dart`
-
-Implementation rules:
-- Database operations should go through `DatabaseService`.
-- Table/column names should come from `SupabaseTables` constants.
-- Auth/session handling is managed via auth service/providers.
-
-## Home Screen Workflow (Reference Path)
-Primary files:
-- `lib/features/home/presentation/screens/home_screen.dart`
-- `lib/features/home/presentation/providers/home_screen_provider.dart`
-- `lib/features/home/presentation/widgets/tile_list_view.dart`
-- `lib/core/utils/tile_loader.dart`
-- `lib/core/utils/tile_factory.dart`
-
-Detailed flow:
-1. Home screen attempts to resolve selected baby profile and role.
-2. If no selected profile exists, provider auto-selects first membership profile.
-3. Provider loads tile configs for screen `home` using `TileLoader`.
-4. Tile list renders loading/error/empty/content states.
-5. Each tile is instantiated through `TileFactory`.
-6. Smart wrappers fetch tile-specific data and react to baby profile changes.
-
-## Smart Tile Wrapper Pattern
-Smart wrappers are `ConsumerStatefulWidget` classes inside `tile_factory.dart`.
-
-Expected behavior:
-1. In `initState`, fetch initial tile data once context is ready.
-2. Listen for `selectedBabyProfileProvider` changes.
-3. Re-fetch on profile change.
-4. Pass final state to presentational tile widget.
-
-Current tile mapping is implemented for all primary tile types listed in project docs.
-
-## Feature Workflow Snapshots
-Calendar:
-- Loads tile configs for `calendar` screen.
-- Loads and groups events by date.
-- Uses realtime subscription to keep events synchronized.
-
-Registry:
-- Loads tile configs for `registry` screen.
-- Loads registry items and purchase status.
-- Applies filter/sort in state.
-- Uses realtime subscriptions for items and purchases.
-
-Gallery:
-- Loads tile configs by gallery variant screen id (`gallery`, `gallery_favorites`, `gallery_recent`).
-- Refreshes per screen scope and role.
-
-## Backend Architecture Snapshot
-Database groups:
-- User: `profiles`, `user_stats`
-- Baby and access: `baby_profiles`, `baby_memberships`, `invitations`, `owner_update_markers`
-- Photos: `photos`, `photo_squishes`, `photo_comments`, `photo_tags`
-- Calendar: `events`, `event_rsvps`, `event_comments`
-- Registry: `registry_items`, `registry_purchases`
-- Gamification: `votes`, `name_suggestions`, `name_suggestion_likes`
-- Notifications: `notifications`, `notification_preferences`
-- Tile system: `screens`, `tile_definitions`, `tile_configs`
-- Activity/meta: `activity_events`, `app_versions`
-
-Invitation model note:
-- The active invitation schema in app code uses email-based invitations (`invitee_email`) with token/status lifecycle (`pending`, `accepted`, `revoked`, `expired`).
-
-Edge Functions (documented):
-- Implemented: `tile-configs`, `notification-trigger`, `image-processing`
-- Stubs/placeholders: `send-invitation-email`, `send-push-notification`, `generate-thumbnail`
-
-## Inventory Baseline (Current)
-- Domain models: 23 (`lib/core/models/`)
-- Services: 22 (`lib/core/services/`)
-- Tile directories: 19 total in `lib/tiles/` including shared `core`; 18 functional tile feature directories
-
-## Key Risks and Gotchas
-- Doc/code drift may exist around table names, role labels, and edge-function usage paths.
-- `TileLoader` and `TileFactory` are intentionally separate responsibilities; do not merge concerns.
-- Many entities are soft-deleted via `deleted_at`; queries must filter appropriately.
-- Screen-level providers can hold both domain and tile state; verify both paths when debugging.
-- Profile context (`selectedBabyProfileProvider`) drives many reloads across tiles and screens.
-
-## Change Impact Checklist (Before Any Code Edit)
-1. Identify affected feature provider(s), tile provider(s), and smart wrapper(s).
-2. Trace route entry points and role-based behavior for the impacted feature.
-3. Verify database table/column constants and model serialization expectations.
-4. Review cache keys/TTL effects and realtime subscription behavior.
-5. Check cross-screen reuse of the same tile/widget/provider.
-6. Run relevant tests and a build before finalizing.
-
-## Validation Commands
-Use these as baseline checks after meaningful changes:
-- `flutter test`
-- `flutter analyze`
-- `flutter build apk --release`
-
-## Quick File Map For Agents
-Start here for app-wide understanding:
-- `lib/main.dart`
-- `lib/core/router/app_router.dart`
-- `lib/core/di/providers.dart`
-- `lib/core/services/database_service.dart`
-- `lib/core/constants/supabase_tables.dart`
-- `lib/core/utils/tile_loader.dart`
-- `lib/core/utils/tile_factory.dart`
-- `lib/features/home/presentation/providers/home_screen_provider.dart`
-- `lib/features/home/presentation/screens/home_screen.dart`
-- `lib/features/calendar/presentation/providers/calendar_screen_provider.dart`
-- `lib/features/gallery/presentation/providers/gallery_screen_provider.dart`
-- `lib/features/registry/presentation/providers/registry_screen_provider.dart`
-
-## Related Master Docs
-- `docs/99_master_reference_docs/Nonna_Project_Understanding.md`
-- `docs/99_master_reference_docs/Database_Schema_and_Functions.md`
+1. **[Highest]** Live code in `lib/` and `supabase/`
+2. `docs/99_master_reference_docs/Database_Schema_and_Functions.md`
+3. `docs/99_master_reference_docs/App_Structure_Nonna.md`
+4. This file
+5. Other docs
 
 ---
-# Test Login Credentials for automated testing
-Email: testuser_nonna@example.com
-Password: Password123!
+
+## App At A Glance
+- **Product**: Private baby milestone tracking and family sharing app.
+- **Roles**: `owner` and `follower` (users can be dual-role, resolved per baby profile).
+- **Frontend**: Flutter + Material 3.
+- **State**: Riverpod v3 (Notifier pattern).
+- **Routing**: GoRouter v17 with auth redirects and tabbed shell navigation (StatefulShellRoute indexed stacks).
+- **Backend**: Supabase Auth + Postgres + Realtime + Storage + Edge Functions.
+- **Cache**: Hive + SharedPreferences via service layer.
+- **Command Runner**: Unified targets mapped in root `Makefile`.
+
+---
+
+## Recent Implementation Updates (May 2026)
+- **Consolidated Home App Bar**: Consolidated create-profile, baby info, and owner-only manage-followers actions into a single PopupMenuButton to reduce visual clutter.
+- **Fullscreen Follower Routes**: Added `FollowersManagementScreen` (`/baby-profile/followers`) and `InviteFollowersScreen` (`/baby-profile/followers/invite`) outside the shell navigator.
+- **Dynamic Typography**: Integrated 11 premium Google Fonts (e.g., Plus Jakarta Sans, Inter, Montserrat) selectable globally from the Settings screen.
+- **Owner Gift Override**: Updated registry business logic and RLS policies to allow baby profile owners to unmark/delete ANY registry purchase on their baby's profile, regardless of who bought it.
+- **Auto-Selection**: Baby profile creation now auto-selects the new profile and switches Home to owner role context.
+- **Hardened Sign-Out**: Wipes OneSignal and Firebase identities clean before executing Supabase sign-out to prevent credential crossover.
+
+---
+
+## Core Architectural Pattern: Dynamic Tile Engine
+
+The app composes major screens (Home, Gallery, Calendar, Registry, Fun) using tile configurations loaded dynamically.
+
+### Runtime Loader Pipeline:
+1. Screen/provider requests tile configs for `{screenName, role, babyProfileId}`.
+2. `TileLoader.loadForScreen()` triggers an **Edge-First caching query**:
+   * Checks Hive local cache prefix `tile_configs_v3`. If valid and not `forceRefresh`, returns cached JSON.
+   * If cache misses, invokes Supabase Edge Function `tile-configs`.
+   * If Edge function fails or times out, falls back to direct database inner joins on `tile_configs` + `screens` + `tile_definitions`.
+3. Screen state stores `List<TileConfig>`.
+4. `TileListView` iterates through loaded tile configs.
+5. `TileFactory.buildTile()` maps the configuration's `componentName` to the appropriate smart tile wrapper.
+6. The Smart Tile Wrapper watches its active Riverpod provider, fetches data (reacting dynamically to `selectedBabyProfileProvider`), and renders the static, presentational tile widget.
+
+*Note on Visibility*: Content-aware hiding is enforced server-side via `tile-configs` Edge Function based on per-tile empty probes and the `tile_configs.params.hideWhenEmpty` rule.
+
+---
+
+## Startup Workflow
+
+### Primary Files:
+- `lib/main.dart` - Entrypoint initializing bindings and loading initial views.
+- `lib/core/services/app_initialization_service.dart` - Sequences Supabase connectivity, Hive initialization, OneSignal push setup, and Firebase trackers.
+- `lib/core/di/providers.dart` - Dependency injection gateway for core services.
+- `lib/core/router/app_router.dart` - Standardized paths, branch Navigator keys, and GoRouter settings.
+
+### Sequence:
+1. `main()` initializes Flutter bindings and hooks up Sentry/observability error boundaries.
+2. `AppInitializationService.initialize()` connects to Supabase, local storage, and initializes 3rd party SDKs in parallel (fail-open policy).
+3. If initialization succeeds, the app runs inside `ProviderScope` and mounts `MyApp`.
+4. `MyApp` watches `appInitializationProvider`.
+5. `MaterialApp.router` is created via `routerProvider`.
+6. GoRouter refresh listenable watches `isAuthenticatedProvider` to trigger `RouteGuards.authRedirect` redirect evaluations.
+
+---
+
+## Navigation & GoRouter Shell Model
+
+### Routing Structure:
+* **Outside the Shell**:
+  * Auth screens: `/login`, `/signup`, `/role-selection`
+  * Fullscreen screens (parentNavigatorKey = root): `/profile`, `/profile/edit`, `/settings`, `/baby-profile`, `/baby-profile/create`, `/baby-profile/:id/edit`, `/baby-profile/followers`, `/baby-profile/followers/invite`
+  * Complex actions escaping parent nav bar: `/gallery/photo/detail`, `/calendar/event/create`, `/calendar/event/edit`, `/registry/item/create`, `/registry/item/edit`
+* **Inside the Stateful Shell (5 branches)**:
+  * **Branch 0 (Home)**: `/home` rendering dynamic home tiles.
+  * **Branch 1 (Gallery)**: `/gallery` rendering photo grids (with sub-routes `/favorites` and `/recent`).
+  * **Branch 2 (Calendar)**: `/calendar` rendering calendar views (with sub-route `/upcoming` and nested `/event/detail`).
+  * **Branch 3 (Registry)**: `/registry` rendering registry filters (with nested `/item/detail`).
+  * **Branch 4 (Fun)**: `/gamification` rendering follower voting predictions and name suggestions.
+
+---
+
+## Roles and Access Model
+
+### User Association Roles:
+- **`owner`**: Full create/edit privileges (CRUD) for their baby profile. Can invite/revoke followers, delete registry purchases, edit baby info, and see owner-only tiles (`Checklist`, `StorageUsage`, `InvitesStatus`, `NewFollowers`).
+- **`follower`**: Read-only access with interactive integrations. Can squish photos, post comments, RSVP to scheduled events, submit predictions/names, mark registry items as purchased, and see follower-only tiles (`RsvpTasks`, `RegistryList`).
+
+*Note on Dual-Role*: Users can be dual-role (an owner of Baby A and a follower of Baby B). Home screen dynamically switches tile configurations and FAB visibility based on the selected baby profile's membership (`currentUserRoleForBabyProfileProvider`).
+
+---
+
+## State Management Model (Riverpod)
+
+### Dependency Injection Layers:
+* **Core Providers**: Database clients, Auth handles, persistence storage, cache manager.
+* **Context Provider**: `selectedBabyProfileProvider` tracks the active baby profile ID (reloading all subscribed tiles).
+* **Screen Providers**: `homeScreenProvider`, `galleryScreenProvider`, `calendarScreenProvider`, `registryScreenProvider` orchestrate screen-specific configurations.
+* **Tile Providers**: Specialized providers (e.g., `recentPhotosProvider`, `upcomingEventsProvider`) manage data queries, Hive local caches, and Supabase Realtime subscriptions.
+
+---
+
+## Data Access Rules and Abstractions
+
+### Architecture Guidelines:
+* **Omission of Redundant Repositories**: The `lib/core/repositories/interfaces` directory remains empty. Instead, providers query database and client endpoints directly via **DatabaseService** and core models, avoiding boilerplate code.
+* **Standardized Table References**: Table and column names must utilize the string constraints inside **SupabaseTables** constants (`lib/core/constants/supabase_tables.dart`).
+* **Direct Service Invocations**: Data fetching must map through the specialized core services.
+
+---
+
+## Inventory Baseline
+
+* **Domain Models**: **23** active domain models under `lib/core/models/`.
+* **Shared Services**: **22** active shared services under `lib/core/services/` (managing backup, sync, error boundaries, push channels, and storage).
+* **Tile Component Folders**: **20** subdirectories inside `lib/tiles/` (including `core` infrastructure, **18 functional smart tiles**, and the deprecated `registry_deals` folder).
+
+---
+
+## Local Development and CI/CD Guidelines
+
+Standard workflows are consolidated into the project **[Makefile](file:///Users/dipansaha/Neo_Workspace/CodeSpace/Git_Repos/nonna_app/Makefile)**. Do not execute custom scripts:
+
+### Standard Command References:
+* Initialize dependencies: `make deps`
+* compiler analysis: `make analyze`
+* Apply lint fixes: `make lint-fix`
+* Format code: `make format`
+* Run test suites: `make test`
+* Update test reporting: `make test-all`
+* Automated Emulator integration tests: `make test-integration`
+* Build Android APK release: `make build-android`
+* Build iOS Simulator release: `make build-ios`
+
+---
+
+## Key Risks and Gotchas
+- **Deleted Records**: Most entities are soft-deleted via `deleted_at`; queries must filter out non-null deleted markers.
+- **Realtime Leak Prevention**: Always hook up realtime streams utilizing the `RealtimeSubscriptionManager` inside providers to automatically cancel active subscriptions when the provider is disposed.
+- **Empty Placeholders**: Do not add data/domain layers inside feature folders (`lib/features/`). Keep features presentation-focused; delegate database operations to core services or smart tile layers.
+
+---
+
+## Quick File Map For Developers
+* Boot sequence & App launch: `lib/main.dart` -> `lib/core/services/app_initialization_service.dart`
+* Router and navigation stacks: `lib/core/router/app_router.dart`
+* Global dependency injections: `lib/core/di/providers.dart`
+* Decoupled configuration load: `lib/core/utils/tile_loader.dart`
+* Screen dynamic composition: `lib/core/utils/tile_factory.dart`
+* Database connector and tables: `lib/core/services/database_service.dart` -> `lib/core/constants/supabase_tables.dart`
+
+---
+
+## Related Master Docs
+- `docs/99_master_reference_docs/Database_Schema_and_Functions.md`
+- `docs/99_master_reference_docs/App_Structure_Nonna.md`
+- `docs/99_master_reference_docs/Nonna_App_Architecture_Diagrams.md`
+
+---
+
+## Test Login Credentials (Automated Integration Checks)
+* **Email**: `testuser_nonna@example.com`
+* **Password**: `Password123!`

@@ -1,25 +1,26 @@
 # Nonna App Project Structure (Dynamic Tile-Based Architecture)
 
-**Document Version**: 2.5
-**Last Updated**: May 4, 2026
+**Document Version**: 3.0
+**Last Updated**: May 25, 2026
 **Location**: `docs/99_master_reference_docs/App_Structure_Nonna.md`
-**Status**: Living Document - Updated to reflect current implementation state (including in-progress integrations)
+**Status**: Living Document - Updated to reflect the current unified codebase implementation
 
-
-This structure is optimized for the Nonna app's dynamic, tile-based UI with role-driven content, Supabase backend, and support for owner/follower aggregation. Tiles are parameterized, reusable widgets placed at the top level (`lib/tiles/`) for maximum reusability across screens, while features handle screen-specific logic and composition.
+This structure is optimized for the Nonna app's dynamic, tile-based UI with role-driven content, Supabase backend, and support for owner/follower aggregation. Tiles are parameterized, reusable widgets placed at the top level (`lib/tiles/`) for maximum reusability across screens, while screen features (`lib/features/`) are streamlined to handle presentation-layer orchestration, screens, and state providers, leveraging global services and dynamic tiles to fetch and persist data.
 
 ## Current Implementation Status
 
-**IMPORTANT**: This document describes both the **current state** and **planned architecture** of the Nonna App. All core development components have been implemented.
+**IMPORTANT**: All core infrastructure, tiles layer, and features layer are fully implemented.
 
-### Current State (As of April 13, 2026)
-
-Core infrastructure, tiles layer, and features layer are implemented. **Note**: The dynamic `TileFactory` integration in the `HomeScreen` is currently being refactored/implemented; screens currently use a simplified tile list view.
+### Current State (As of May 25, 2026)
+- **18 Active Smart Tiles**: Fully implemented, tested, and integrated via a centralized `TileFactory` which resolves runtime configs.
+- **Centralized Service Architecture**: The app leverages a robust, unified service layer under `lib/core/services/` (22 services) and domain models (23 models).
+- **Streamlined Feature Layer**: Features under `lib/features/` are ultra-lean and presentation-focused, composing tiles and rendering screen widgets. Redundant repository and use case files have been omitted in favor of direct service and Riverpod state provider interactions.
+- **Command Runner Interface**: Standard commands are managed via a centralized `Makefile` at the root of the project, including mock generation, test execution, linting, formatting, and build processes.
 
 ### Recent Implementation Notes (May 2026)
 - Added owner collaboration flows in baby profile feature:
-   - `FollowersManagementScreen` at `/baby-profile/followers`
-   - `InviteFollowersScreen` at `/baby-profile/followers/invite`
+  - `FollowersManagementScreen` at `/baby-profile/followers`
+  - `InviteFollowersScreen` at `/baby-profile/followers/invite`
 - Home app bar actions (`add`, `info`, `followers`) have been consolidated into a cleaner PopupMenuButton.
 - Added dynamic typography, allowing users to choose from 11 top mobile fonts via the Settings screen.
 - Registry business logic and RLS policies updated to allow baby profile owners to delete any registry purchase.
@@ -27,1151 +28,301 @@ Core infrastructure, tiles layer, and features layer are implemented. **Note**: 
 - New profile creation now auto-selects the new profile and refreshes home/profile context.
 - Auth sign-out flow now clears external service user identities before Supabase sign-out.
 
+---
+
+## Directory Tree
 
 ```
 nonna_app/
 ├── lib/
 │   ├── core/                     # Shared across the entire app
 │   │   ├── config/               # Environment configurations
-│   │   ├── constants/            # App-wide constants
-│   │   ├── contracts/            # Shared interfaces
+│   │   ├── constants/            # App-wide constants (strings, table names, limits)
+│   │   ├── contracts/            # Shared interfaces and behaviors (realtime, caching)
 │   │   ├── di/                   # Dependency injection (Riverpod providers)
-│   │   ├── enums/                # Global enums
+│   │   ├── enums/                # Global enums (UserRole, TileType, ScreenName, etc.)
 │   │   ├── examples/             # Example implementations
-│   │   ├── exceptions/           # Custom exception classes
+│   │   ├── exceptions/           # Custom exception classes (network, permission, app)
 │   │   ├── extensions/           # Dart/Flutter extensions
-│   │   ├── middleware/           # App-level middleware
-│   │   ├── mixins/               # Reusable behaviors
-│   │   ├── models/               # Shared domain models
+│   │   ├── middleware/           # App-level middleware (caching, error, RLS validators)
+│   │   ├── mixins/               # Reusable widget behaviors
+│   │   ├── models/               # 23 shared domain models
 │   │   ├── navigation/           # Context-free navigation service
-│   │   ├── network/              # Supabase client and configuration
+│   │   ├── network/              # Supabase client, interceptors, and endpoints
 │   │   ├── providers/            # Global providers
-│   │   ├── repositories/         # Shared repository contracts
-│   │   ├── router/               # App navigation (GoRouter)
-│   │   ├── services/             # Shared services
-│   │   ├── themes/               # App-wide theming
+│   │   ├── repositories/         # [Omitted] Handled directly via Core Services & Providers
+│   │   ├── router/               # App navigation (GoRouter & Route guards)
+│   │   ├── services/             # 22 shared services (auth, database, caching, realtime, etc.)
+│   │   ├── themes/               # App-wide theming, typography, dynamic fonts, tile styles
 │   │   ├── typedefs/             # Type aliases
-│   │   ├── utils/                # Helper functions
-│   │   └── widgets/              # Shared UI widgets
-│   ├── features/                 # Screen-specific features
-│   │   ├── auth/                 # Authentication feature
-│   │   ├── baby_profile/         # Baby profile management
-│   │   ├── calendar/             # Calendar feature
+│   │   ├── utils/                # Helper functions (dates, formats, role checks)
+│   │   └── widgets/              # Shared UI widgets (shimmers, error views, custom buttons)
+│   ├── features/                 # Streamlined, presentation-focused feature modules
+│   │   ├── auth/                 # Authentication presentation (login, signup, role screens)
+│   │   ├── baby_profile/         # Baby profile management (create, edit, follower list, invite)
+│   │   ├── calendar/             # Calendar screen & calendar view widget
 │   │   ├── fun/                  # Legacy/Placeholder feature
-│   │   ├── gallery/              # Photo gallery feature
-│   │   ├── gamification/         # Gamification (name suggestions, voting)
-│   │   ├── home/                 # Home screen feature
+│   │   ├── gallery/              # Photo gallery presentation (grid, photo detail screen)
+│   │   ├── gamification/         # Name suggestions & predictions screen
+│   │   ├── home/                 # Home screen layout (composes tiles via TileFactory)
 │   │   ├── photo_gallery/        # Placeholder/Refactoring feature
-│   │   ├── profile/              # User profile feature
-│   │   ├── registry/             # Registry feature
-│   │   └── settings/             # App settings feature
-│   ├── flutter_gen/              # Generated code
+│   │   ├── profile/              # User profile screens (view, edit)
+│   │   ├── registry/             # Registry presentation (filters, list view, item details)
+│   │   └── settings/             # App settings (typography selectors, configuration)
+│   ├── flutter_gen/              # Generated assets & localization code
 │   ├── l10n/                     # Localization
 │   │   ├── app_en.arb
 │   │   ├── app_es.arb
 │   │   └── l10n.dart
-│   ├── main.dart
-│   └── tiles/                    # Reusable tile widgets
-│       ├── checklist/            # Checklist tiles
-│       ├── core/                 # Shared tile infrastructure
-│       ├── due_date_countdown/   # Due date countdown tile
-│       ├── engagement_recap/     # Engagement recap tile
+│   ├── main.dart                 # App entry point & initialization
+│   └── tiles/                    # 18 reusable, parameterized smart tiles
+│       ├── activity_list/        # Engagement recap/recap card tile
+│       ├── checklist/            # Onboarding checklist tile
+│       ├── core/                 # Shared tile infrastructure (base tile, containers)
+│       ├── countdown/            # Baby due date countdown tile
 │       ├── gallery_favorites/    # Gallery favorites tile
-│       ├── invites_status/       # Invites status tile
-│       ├── new_followers/        # New followers tile
-│       ├── notifications/        # Notifications tile
-│       ├── recent_photos/        # Recent photos tile
-│       ├── recent_purchases/     # Recent purchases tile
-│       ├── registry_deals/       # Registry deals tile
-│       ├── registry_highlights/  # Registry highlights tile
-│       ├── rsvp_tasks/           # RSVP tasks tile
-│       ├── storage_usage/        # Storage usage tile
-│       ├── system_announcements/ # System announcements tile
-│       └── upcoming_events/      # Upcoming events tile
-├── test/                         # Comprehensive test coverage
-│   ├── core/                     # Core layer tests
-│   ├── features/                 # Feature layer tests
-│   ├── tiles/                    # Tile layer tests
-│   └── helpers/                  # Test helpers
-├── docs/                         # Comprehensive documentation
-├── supabase/                     # Supabase configuration, migrations, and tests
-│   ├── migrations/
-│   ├── functions/
-│   ├── tests/                    # Database and RLS tests
-│   └── monitoring/               # Performance monitoring scripts
-├── android/, ios/, linux/, macos/, windows/, web/  # Platform-specific code
-└── scripts/                      # Build, deploy, and utility scripts
-```
-
-**Current Development Status**: Core development components are largely complete as of April 13, 2026.
-- All 15 tile widgets implemented with providers and widget tests.
-- All core feature screens implemented (auth, home, calendar, gallery, registry, profile, baby profile, gamification, settings).
-- Navigation, offline-first, error boundaries, and network failure handling are implemented.
-- **In Progress**: Centralized `TileFactory` and dynamic screen configuration are currently being refactored for better decoupling.
-- Comprehensive test coverage across all layers.
-
-## Architecture Overview
-
-- **Tiles as First-Class Citizens**: Tiles are self-contained, parameterized widgets with embedded query logic and consistent display formats. They live in `lib/tiles/` for easy access across all screens.
-- **Role-Based Behavior**: Owners see editable tiles per baby; followers see aggregated, read-only tiles across all followed babies.
-- **Dynamic Configuration**: TileFactory instantiates tiles based on Supabase configs (`tile_configs`, `screen_configs`), enabling runtime customization.
-- **Modular Features**: Screen features (Home, Calendar, Gallery, etc.) focus on layout and composition, importing tiles as needed.
-- **Supabase Backend**: All data fetching via Supabase with RLS for security, realtime subscriptions for updates.
-- **Riverpod State Management**: Dependency injection and state sharing across tiles and features.
-
-```sh
-nonna_app/
-├── docs/                     # Architecture docs, ADRs, technical requirements
-│   ├── 01_discovery/
-│   │   └── 04_technical_requirements/
-│   │       ├── Technical_Requirements.md
-│   │       └── Tile_System_Design.md
-│   ├── adr/                  # Architecture Decision Records
-│   │   ├── 0001-tile-based-architecture.md
-│   │   ├── 0002-supabase-backend.md
-│   │   └── 0003-riverpod-state-management.md
-│   ├── architecture.md       # Overall architecture documentation
-│   ├── testing.md           # Testing strategy
-│   └── supabase_schema.md   # Database schema and RLS policies
-├── .github/                  # GitHub templates and workflows
-│   ├── workflows/
-│   │   ├── ci.yml           # Flutter test, analyze, build
-│   │   └── deploy.yml       # Deploy to stores
-│   ├── PULL_REQUEST_TEMPLATE.md
-│   └── ISSUE_TEMPLATE/
-├── supabase/                 # Supabase configuration
-│   ├── migrations/          # Database migrations
-│   ├── functions/           # Edge functions
-│   ├── tests/               # Database/RLS unit tests
-│   ├── monitoring/          # Grafana/Dashboards/Monitoring
-│   ├── docs/                # Database-specific documentation
-│   ├── tools/               # Internal DB management tools
-│   ├── config.toml
-│   └── seed/                # Seed data for development
-├── config/                   # Environment files
-│   ├── .env
-│   ├── .env.example
-│   ├── .env.dev
-│   └── .env.prod
-├── lib/
-│   ├── l10n/                 # Localization
-│   │   ├── app_en.arb
-│   │   └── app_es.arb
-│   ├── core/                     # Shared across the entire app
-│   │   ├── models/               # Shared domain models
-│   │   │   ├── user.dart
-│   │   │   ├── baby_profile.dart
-│   │   │   ├── event.dart
-│   │   │   ├── photo.dart
-│   │   │   ├── registry_item.dart
-│   │   │   ├── notification.dart
-│   │   │   ├── tile_config.dart
-│   │   │   └── screen_config.dart
-│   │   ├── repositories/         # Shared repository contracts
-│   │   │   └── interfaces/       # Abstract contracts only
-│   │   │       ├── auth_repository.dart
-│   │   │       ├── user_repository.dart
-│   │   │       ├── baby_profile_repository.dart
-│   │   │       ├── tile_config_repository.dart
-│   │   │       ├── event_repository.dart
-│   │   │       ├── photo_repository.dart
-│   │   │       ├── registry_repository.dart
-│   │   │       └── notification_repository.dart
-│   │   ├── network/              # Supabase client and configuration
-│   │   │   ├── supabase_client.dart
-│   │   │   ├── interceptors/
-│   │   │   │   ├── auth_interceptor.dart
-│   │   │   │   └── logging_interceptor.dart
-│   │   │   └── endpoints/
-│   │   │       ├── auth_endpoints.dart
-│   │   │       ├── tile_endpoints.dart
-│   │   │       ├── event_endpoints.dart
-│   │   │       ├── photo_endpoints.dart
-│   │   │       ├── registry_endpoints.dart
-│   │   │       └── edge_functions.dart
-│   │   ├── utils/                # Helper functions
-│   │   │   ├── date_helpers.dart
-│   │   │   ├── formatters.dart
-│   │   │   ├── validators.dart
-│   │   │   ├── image_helpers.dart
-│   │   │   ├── role_helpers.dart
-│   │   │   └── share_helpers.dart
-│   │   ├── extensions/           # Dart/Flutter extensions
-│   │   │   ├── string_extensions.dart
-│   │   │   ├── context_extensions.dart
-│   │   │   ├── date_extensions.dart
-│   │   │   └── list_extensions.dart
-│   │   ├── mixins/               # Reusable behaviors
-│   │   │   ├── role_aware_mixin.dart      # For role-based logic
-│   │   │   ├── validation_mixin.dart
-│   │   │   └── loading_mixin.dart
-│   │   ├── enums/                # Global enums
-│   │   │   ├── user_role.dart             # owner, follower
-│   │   │   ├── tile_type.dart             # upcoming_events, recent_photos, etc.
-│   │   │   ├── screen_name.dart           # home, calendar, gallery, etc.
-│   │   │   ├── notification_type.dart
-│   │   │   └── event_status.dart
-│   │   ├── typedefs/             # Type aliases
-│   │   │   └── callbacks.dart
-│   │   ├── contracts/            # Shared interfaces
-│   │   │   ├── cacheable.dart
-│   │   │   └── realtime_subscribable.dart
-│   │   ├── di/                   # Dependency injection (Riverpod providers)
-│   │   │   ├── providers.dart            # Global providers (auth, supabase)
-│   │   │   └── service_locator.dart
-│   │   ├── themes/               # App-wide theming
-│   │   │   ├── app_theme.dart
-│   │   │   ├── colors.dart
-│   │   │   ├── text_styles.dart
-│   │   │   └── tile_styles.dart          # Consistent tile styling
-│   │   ├── config/               # Environment configurations
-│   │   │   ├── app_config.dart
-│   │   │   └── environment.dart
-│   │   ├── constants/            # App-wide constants
-│   │   │   ├── strings.dart
-│   │   │   ├── supabase_tables.dart
-│   │   │   └── performance_limits.dart   # Cache TTL, query limits
-│   │   ├── services/             # Shared services
-│   │   │   ├── supabase_service.dart     # Wrapper for Supabase operations
-│   │   │   ├── cache_service.dart        # Hive/Isar caching
-│   │   │   ├── storage_service.dart      # Supabase Storage for photos
-│   │   │   ├── notification_service.dart # Push notifications
-│   │   │   ├── realtime_service.dart     # Supabase realtime subscriptions
-│   │   │   ├── realtime_subscription_manager.dart # Safe lifecycle management for realtime subscriptions
-│   │   │   ├── analytics_service.dart    # Usage tracking
-│   │   │   └── observability_service.dart # Sentry/logging
-│   │   ├── middleware/           # App-level middleware
-│   │   │   ├── error_handler.dart
-│   │   │   ├── cache_manager.dart
-│   │   │   └── rls_validator.dart        # Validate RLS policies
-│   │   ├── exceptions/           # Custom exception classes
-│   │   │   ├── app_exceptions.dart
-│   │   │   ├── supabase_exceptions.dart
-│   │   │   └── permission_exceptions.dart
-│   │   ├── router/               # App navigation (GoRouter)
-│   │   │   ├── app_router.dart
-│   │   │   └── route_guards.dart         # Auth/role guards
-│   │   └── widgets/              # Shared UI widgets
-│   │       ├── loading_indicator.dart
-│   │       ├── error_view.dart
-│   │       ├── empty_state.dart
-│   │       ├── custom_button.dart
-│   │       └── shimmer_placeholder.dart
-│   │
-│   ├── tiles/                    # Reusable tile widgets (top-level for cross-screen use)
-│   │   ├── core/                 # Shared tile infrastructure
-│   │   │   ├── models/
-│   │   │   │   ├── tile_config.dart      # Tile configuration model
-│   │   │   │   ├── tile_params.dart      # Parameters for tile queries
-│   │   │   │   └── tile_state.dart       # Common tile state (loading, error, data)
-│   │   │   ├── widgets/
-│   │   │   │   ├── tile_factory.dart     # [IN PROGRESS] Instantiates tiles based on configs
-│   │   │   │   ├── base_tile.dart        # Abstract base for all tiles
-│   │   │   │   └── tile_container.dart   # Common tile wrapper (padding, styling)
-│   │   │   ├── providers/
-│   │   │   │   ├── tile_config_provider.dart  # Fetches configs from Supabase
-│   │   │   │   └── tile_visibility_provider.dart # Manages visibility flags
-│   │   │   ├── data/
-│   │   │   │   ├── repositories/
-│   │   │   │   │   └── tile_config_repository_impl.dart
-│   │   │   │   └── datasources/
-│   │   │   │       ├── remote/
-│   │   │   │       │   └── tile_config_remote_datasource.dart
-│   │   │   │       └── local/
-│   │   │   │           └── tile_config_cache.dart
-│   │   │   └── test/
-│   │   │       ├── tile_factory_test.dart
-│   │   │       └── tile_config_provider_test.dart
-│   │   │
-│   │   ├── upcoming_events/      # Tile 1: Upcoming Events (Home, Calendar)
-│   │   │   ├── models/
-│   │   │   │   └── upcoming_event.dart
-│   │   │   ├── providers/
-│   │   │   │   └── upcoming_events_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── upcoming_events_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── upcoming_events_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── upcoming_event_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── upcoming_events_tile.dart        # Main tile widget
-│   │   │   │   └── event_item_card.dart             # Individual event UI
-│   │   │   └── test/
-│   │   │       ├── upcoming_events_provider_test.dart
-│   │   │       ├── upcoming_events_datasource_test.dart
-│   │   │       └── upcoming_events_tile_test.dart
-│   │   │
-│   │   ├── recent_photos/        # Tile 2: Recent Photos (Home, Gallery)
-│   │   │   ├── models/
-│   │   │   │   └── recent_photo.dart
-│   │   │   ├── providers/
-│   │   │   │   └── recent_photos_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── recent_photos_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── recent_photos_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── recent_photo_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── recent_photos_tile.dart          # Main tile widget (grid layout)
-│   │   │   │   └── photo_thumbnail.dart             # Photo grid item
-│   │   │   └── test/
-│   │   │       ├── recent_photos_provider_test.dart
-│   │   │       └── recent_photos_tile_test.dart
-│   │   │
-│   │   ├── registry_highlights/  # Tile 3: Registry Highlights (Home, Registry)
-│   │   │   ├── models/
-│   │   │   │   └── registry_highlight.dart
-│   │   │   ├── providers/
-│   │   │   │   └── registry_highlights_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── registry_highlights_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── registry_highlights_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── registry_highlight_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── registry_highlights_tile.dart    # Main tile widget
-│   │   │   │   └── registry_item_card.dart          # Individual item UI
-│   │   │   └── test/
-│   │   │       ├── registry_highlights_provider_test.dart
-│   │   │       └── registry_highlights_tile_test.dart
-│   │   │
-│   │   ├── notifications/        # Tile 4: Notifications (Home)
-│   │   │   ├── models/
-│   │   │   │   └── notification_item.dart
-│   │   │   ├── providers/
-│   │   │   │   └── notifications_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── notifications_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── notifications_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── notification_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── notifications_tile.dart
-│   │   │   │   └── notification_item_card.dart
-│   │   │   └── test/
-│   │   │       ├── notifications_provider_test.dart
-│   │   │       └── notifications_tile_test.dart
-│   │   │
-│   │   ├── invites_status/       # Tile 5: Invitations Status (Home, owner-only)
-│   │   │   ├── models/
-│   │   │   │   └── invite_status.dart
-│   │   │   ├── providers/
-│   │   │   │   └── invites_status_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── invites_status_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── invites_status_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── invite_status_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── invites_status_tile.dart
-│   │   │   │   └── invite_item_card.dart
-│   │   │   └── test/
-│   │   │       ├── invites_status_provider_test.dart
-│   │   │       └── invites_status_tile_test.dart
-│   │   │
-│   │   ├── rsvp_tasks/           # Tile 6: RSVP Tasks (Home, Calendar)
-│   │   │   ├── models/
-│   │   │   │   └── rsvp_task.dart
-│   │   │   ├── providers/
-│   │   │   │   └── rsvp_tasks_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── rsvp_tasks_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── rsvp_tasks_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── rsvp_task_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── rsvp_tasks_tile.dart
-│   │   │   │   └── rsvp_task_card.dart
-│   │   │   └── test/
-│   │   │       ├── rsvp_tasks_provider_test.dart
-│   │   │       └── rsvp_tasks_tile_test.dart
-│   │   │
-│   │   ├── due_date_countdown/   # Tile 7: Due Date Countdown (Home)
-│   │   │   ├── models/
-│   │   │   │   └── due_date_countdown.dart
-│   │   │   ├── providers/
-│   │   │   │   └── due_date_countdown_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── due_date_countdown_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── due_date_countdown_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── due_date_countdown_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── due_date_countdown_tile.dart
-│   │   │   │   └── countdown_display.dart
-│   │   │   └── test/
-│   │   │       ├── due_date_countdown_provider_test.dart
-│   │   │       └── due_date_countdown_tile_test.dart
-│   │   │
-│   │   ├── recent_purchases/     # Tile 8: Recent Purchases (Home, Registry)
-│   │   │   ├── models/
-│   │   │   │   └── recent_purchase.dart
-│   │   │   ├── providers/
-│   │   │   │   └── recent_purchases_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── recent_purchases_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── recent_purchases_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── recent_purchase_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── recent_purchases_tile.dart
-│   │   │   │   └── purchase_item_card.dart
-│   │   │   └── test/
-│   │   │       ├── recent_purchases_provider_test.dart
-│   │   │       └── recent_purchases_tile_test.dart
-│   │   │
-│   │   ├── registry_deals/       # Tile 9: Registry Deals/Recommendations (Registry)
-│   │   │   ├── models/
-│   │   │   │   └── registry_deal.dart
-│   │   │   ├── providers/
-│   │   │   │   └── registry_deals_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── registry_deals_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── registry_deals_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── registry_deal_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── registry_deals_tile.dart
-│   │   │   │   └── deal_item_card.dart
-│   │   │   └── test/
-│   │   │       ├── registry_deals_provider_test.dart
-│   │   │       └── registry_deals_tile_test.dart
-│   │   │
-│   │   ├── engagement_recap/     # Tile 10: Engagement Recap (Home)
-│   │   │   ├── models/
-│   │   │   │   └── engagement_recap.dart
-│   │   │   ├── providers/
-│   │   │   │   └── engagement_recap_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── engagement_recap_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── engagement_recap_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── engagement_recap_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── engagement_recap_tile.dart
-│   │   │   │   └── recap_item_card.dart
-│   │   │   └── test/
-│   │   │       ├── engagement_recap_provider_test.dart
-│   │   │       └── engagement_recap_tile_test.dart
-│   │   │
-│   │   ├── gallery_favorites/    # Tile 11: Gallery Favorites (Gallery)
-│   │   │   ├── models/
-│   │   │   │   └── gallery_favorite.dart
-│   │   │   ├── providers/
-│   │   │   │   └── gallery_favorites_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── gallery_favorites_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── gallery_favorites_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── gallery_favorite_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── gallery_favorites_tile.dart
-│   │   │   │   └── favorite_photo_card.dart
-│   │   │   └── test/
-│   │   │       ├── gallery_favorites_provider_test.dart
-│   │   │       └── gallery_favorites_tile_test.dart
-│   │   │
-│   │   ├── checklist/            # Tile 12: Checklist/Onboarding (Home, owner-only)
-│   │   │   ├── models/
-│   │   │   │   └── checklist_item.dart
-│   │   │   ├── providers/
-│   │   │   │   └── checklist_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── checklist_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── checklist_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── checklist_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── checklist_tile.dart
-│   │   │   │   └── checklist_item_card.dart
-│   │   │   └── test/
-│   │   │       ├── checklist_provider_test.dart
-│   │   │       └── checklist_tile_test.dart
-│   │   │
-│   │   ├── storage_usage/        # Tile 13: Storage Usage (Home, owner-only)
-│   │   │   ├── models/
-│   │   │   │   └── storage_usage.dart
-│   │   │   ├── providers/
-│   │   │   │   └── storage_usage_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── storage_usage_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── storage_usage_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── storage_usage_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── storage_usage_tile.dart
-│   │   │   │   └── usage_display.dart
-│   │   │   └── test/
-│   │   │       ├── storage_usage_provider_test.dart
-│   │   │       └── storage_usage_tile_test.dart
-│   │   │
-│   │   ├── system_announcements/ # Tile 14: System Announcements (Global)
-│   │   │   ├── models/
-│   │   │   │   └── system_announcement.dart
-│   │   │   ├── providers/
-│   │   │   │   └── system_announcements_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── system_announcements_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── system_announcements_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── system_announcement_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── system_announcements_tile.dart
-│   │   │   │   └── announcement_card.dart
-│   │   │   └── test/
-│   │   │       ├── system_announcements_provider_test.dart
-│   │   │       └── system_announcements_tile_test.dart
-│   │   │
-│   │   └── new_followers/        # Tile 15: New Followers (Home, owner-only)
-│   │       ├── models/
-│   │   │   │   └── new_follower.dart
-│   │   │   ├── providers/
-│   │   │   │   └── new_followers_provider.dart
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   ├── remote/
-│   │   │   │   │   │   └── new_followers_datasource.dart
-│   │   │   │   │   └── local/
-│   │   │   │   │       └── new_followers_cache.dart
-│   │   │   │   └── mappers/
-│   │   │   │       └── new_follower_mapper.dart
-│   │   │   ├── widgets/
-│   │   │   │   ├── new_followers_tile.dart
-│   │   │   │   └── follower_card.dart
-│   │   │   └── test/
-│   │   │       ├── new_followers_provider_test.dart
-│   │   │       └── new_followers_tile_test.dart
-│   │
-│   ├── features/             # Screen features (composition & navigation)
-│   │   ├── auth/
-│   │   │   ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   ├── auth_provider.dart
-│   │   │   │   │   └── auth_state.dart
-│   │   │   │   ├── screens/
-│   │   │   │   │   ├── login_screen.dart
-│   │   │   │   │   ├── signup_screen.dart
-│   │   │   │   │   └── role_selection_screen.dart
-│   │   │   │   └── widgets/
-│   │   │   │       └── auth_form_widgets.dart
-│   │   │   ├── data/
-│   │   │   │   ├── models/
-│   │   │   │   │   └── auth_response_dto.dart
-│   │   │   │   ├── mappers/
-│   │   │   │   │   └── auth_mapper.dart
-│   │   │   │   ├── repositories/
-│   │   │   │   │   └── auth_repository_impl.dart
-│   │   │   │   └── datasources/
-│   │   │   │       ├── remote/
-│   │   │   │       │   └── auth_remote_datasource.dart
-│   │   │   │       └── local/
-│   │   │   │           └── auth_local_datasource.dart
-│   │   │   ├── domain/
-│   │   │   │   ├── use_cases/
-│   │   │   │   │   ├── login_use_case.dart
-│   │   │   │   │   ├── signup_use_case.dart
-│   │   │   │   │   └── logout_use_case.dart
-│   │   │   │   └── entities/
-│   │   │   │       └── user_entity.dart
-│   │   │   └── test/
-│   │   │       ├── auth_provider_test.dart
-│   │   │       ├── login_use_case_test.dart
-│   │   │       └── auth_screen_test.dart
-│   │   │
-│   │   ├── home/                 # Home screen (composes tiles)
-│   │   │   ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   └── home_screen_provider.dart    # Fetches tile configs for home
-│   │   │   │   ├── screens/
-│   │   │   │   │   └── home_screen.dart             # Renders tiles via TileFactory
-│   │   │   │   └── widgets/
-│   │   │   │       ├── home_app_bar.dart
-│   │   │   │       └── tile_list_view.dart          # ListView for tiles
-│   │   │   └── test/
-│   │   │       └── home_screen_test.dart
-│   │   │
-│   │   ├── calendar/             # Calendar screen (composes tiles + calendar widget)
-│   │   │   ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   └── calendar_screen_provider.dart
-│   │   │   │   ├── screens/
-│   │   │   │   │   └── calendar_screen.dart         # Renders tiles + calendar widget
-│   │   │   │   └── widgets/
-│   │   │   │       └── calendar_widget.dart
-│   │   │   └── test/
-│   │   │       └── calendar_screen_test.dart
-│   │   │
-│   │   ├── gallery/              # Gallery screen (composes tiles + photo grid)
-│   │   │   ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   └── gallery_screen_provider.dart
-│   │   │   │   ├── screens/
-│   │   │   │   │   ├── gallery_screen.dart
-│   │   │   │   │   └── photo_detail_screen.dart
-│   │   │   │   └── widgets/
-│   │   │   │       └── squish_photo_widget.dart
-│   │   │   └── test/
-│   │   │       └── gallery_screen_test.dart
-│   │   │
-│   │   ├── registry/             # Registry screen (composes tiles + filters)
-│   │   │   ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   └── registry_screen_provider.dart
-│   │   │   │   ├── screens/
-│   │   │   │   │   ├── registry_screen.dart
-│   │   │   │   │   └── registry_item_detail_screen.dart
-│   │   │   │   └── widgets/
-│   │   │   │       └── registry_filter_bar.dart
-│   │   │   ├── data/
-│   │   │   │   ├── models/
-│   │   │   │   │   └── registry_item_dto.dart
-│   │   │   │   ├── mappers/
-│   │   │   │   ├── repositories/
-│   │   │   │   │   └── registry_repository_impl.dart
-│   │   │   │   └── datasources/
-│   │   │   │       ├── remote/
-│   │   │   │       │   └── registry_remote_datasource.dart
-│   │   │   │       └── local/
-│   │   │   │           └── registry_cache.dart
-│   │   │   ├── domain/
-│   │   │   │   ├── use_cases/
-│   │   │   │   │   ├── get_registry_items.dart
-│   │   │   │   │   └── purchase_item.dart
-│   │   │   │   └── entities/
-│   │   │   │       └── registry_item_entity.dart
-│   │   │   └── test/
-│   │   │       ├── registry_repository_impl_test.dart
-│   │   │       ├── get_registry_items_test.dart
-│   │   │       └── registry_screen_test.dart
-│   │   │
-│   │   ├── gamification/         # Gamification (name suggestions, voting)
-│   │   │   ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   └── gamification_provider.dart
-│   │   │   │   └── screens/
-│   │   │   │       └── gamification_screen.dart
-│   │   │   └── test/
-│   │   │       └── gamification_screen_test.dart
-│   │   │
-│   │   ├── settings/             # App settings
-│   │   │   ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   └── settings_provider.dart
-│   │   │   │   └── screens/
-│   │   │   │       └── settings_screen.dart
-│   │   │   └── test/
-│   │   │       └── settings_screen_test.dart
-│   │   │
-│   │   ├── profile/              # User profile management
-│   │   │   ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   └── profile_provider.dart
-│   │   │   │   ├── screens/
-│   │   │   │   │   ├── profile_screen.dart
-│   │   │   │   │   └── edit_profile_screen.dart
-│   │   │   │   └── widgets/
-│   │   │   │       └── profile_widgets.dart
-│   │   │   ├── data/
-│   │   │   │   ├── models/
-│   │   │   │   │   └── profile_dto.dart
-│   │   │   │   ├── mappers/
-│   │   │   │   ├── repositories/
-│   │   │   │   │   └── profile_repository_impl.dart
-│   │   │   │   └── datasources/
-│   │   │   │       ├── remote/
-│   │   │   │       │   └── profile_remote_datasource.dart
-│   │   │   │       └── local/
-│   │   │   │           └── profile_cache.dart
-│   │   │   ├── domain/
-│   │   │   │   ├── use_cases/
-│   │   │   │   │   ├── update_profile.dart
-│   │   │   │   │   └── get_profile.dart
-│   │   │   │   └── entities/
-│   │   │   │       └── profile_entity.dart
-│   │   │   └── test/
-│   │   │       ├── profile_provider_test.dart
-│   │   │       └── profile_screen_test.dart
-│   │   │
-│   │   └── baby_profile/         # Baby profile management
-│   │       ├── presentation/
-│   │   │   │   ├── providers/
-│   │   │   │   │   └── baby_profile_provider.dart
-│   │   │   │   ├── screens/
-│   │   │   │   │   ├── baby_profile_screen.dart
-│   │   │   │   │   ├── create_baby_profile_screen.dart
-│   │   │   │   │   ├── edit_baby_profile_screen.dart
-│   │   │   │   │   ├── invite_followers_screen.dart
-│   │   │   │   │   └── followers_management_screen.dart
-│   │   │   │   └── widgets/
-│   │   │   │   └── baby_profile_widgets.dart
-│   │   │
-│   │   ├── fun/                  # Legacy/Placeholder
-│   │   └── photo_gallery/        # Placeholder/Refactoring
-│   │
-│   ├── main.dart                 # App entry point
-│
-├── test/                         # Unit & widget tests
-│   ├── mocks/                    # Shared mock implementations
-│   │   ├── mock_supabase_client.dart
-│   │   ├── mock_repositories.dart
-│   │   └── mock_datasources.dart
-│   ├── fixtures/                 # Test data
-│   │   ├── tile_configs.json
-│   │   ├── events.json
-│   │   ├── photos.json
-│   │   └── baby_profiles.json
-│   ├── helpers/                  # Test utilities
-│   │   ├── test_helpers.dart
-│   │   ├── riverpod_test_helpers.dart
-│   │   └── pump_app.dart
-│   ├── core/
-│   │   ├── models/
-│   │   ├── services/
-│   │   └── utils/
-│   ├── tiles/                    # Mirror tile structure
-│   │   ├── core/
-│   │   ├── upcoming_events/
-│   │   ├── recent_photos/
-│   │   └── ...
-│   └── features/                 # Mirror feature structure
-│       ├── auth/
-│       ├── home/
-│       ├── calendar/
-│       └── ...
-│
-├── integration_test/             # Full app integration tests
-│   ├── third_party_connectivity_test.dart # Connectivity checks (Firebase, Supabase, etc.)
-│   └── ...                       # Flow-based tests [IN PROGRESS/REFACTORING]
-│
-├── assets/                       # Static resources
-│   ├── images/
-│   │   ├── icons/
-│   │   ├── placeholders/
-│   │   └── onboarding/
-│   ├── fonts/
-│   └── animations/               # Lottie/Rive animations
-│
-├── l10n/                         # Localization files
-│   ├── app_en.arb
-│   └── app_es.arb
-│
-├── scripts/                      # Build and deployment scripts
-│   ├── build.sh
-│   ├── deploy.sh
-│   ├── code_generation.sh        # Run build_runner
-│   └── supabase_migrate.sh       # Run Supabase migrations
-│
-├── pubspec.yaml
-├── analysis_options.yaml
-├── README.md
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── LICENSE
-└── .gitignore
+│       ├── invites_status/       # Followers invitation status tile
+│       ├── name_suggestions/     # Baby name suggestion tile
+│       ├── new_baby_welcome/     # New baby welcome banner tile
+│       ├── new_followers/        # New followers list tile
+│       ├── notifications/        # Social & system notification tile
+│       ├── prediction_votes/     # Baby prediction voting tile
+│       ├── recent_photos/        # Recent photos grid tile
+│       ├── recent_purchases/     # Recent purchases list tile
+│       ├── registry_highlights/  # Featured registry items tile
+│       ├── registry_list/        # Full registry list tile
+│       ├── rsvp_tasks/           # Events requiring RSVP tile
+│       ├── storage_usage/        # Photo storage allocation tile
+│       ├── system_announcements/ # Global system announcements tile
+│       └── upcoming_events/      # Upcoming calendar events tile
+├── test/                         # Comprehensive unit, widget, and mock tests
+│   ├── core/                     # Core layer tests (models, services, utils)
+│   ├── features/                 # Screen-composition & screen provider tests
+│   ├── tiles/                    # Isolated smart tile data & UI tests
+│   └── mocks/                    # Centralized mock definitions (SupaClient, services)
+├── automated_tests/              # Test reporting scripts and summary configurations
+├── supabase/                     # Supabase schema definitions, edge functions, migrations
+├── scripts/                      # DB utilities, l10n setup, test user generation scripts
+├── Makefile                      # Principal local command runner (deps, tests, linting, builds)
+├── run_tests.sh                  # Shell script for running tests
+├── run_all_tests.sh              # Shell script for comprehensive test suites
+├── run_integration_tests.sh      # Shell script for managing simulators & integration tests
+└── pubspec.yaml                  # Flutter package dependencies
 ```
 
 ---
 
-## How It All Works Together
+## Core Architecture Walkthrough
 
-### 1. **App Launch and Initialization**
-   - `main.dart` initializes Supabase client, Riverpod providers, and cache service.
-   - Auth state is restored from cache; if valid, user navigates to Home; otherwise, Login screen.
-   - TileConfigProvider fetches tile configs for the user's role from Supabase (with cache-first strategy).
+### 1. Reusable Smart Tiles (`lib/tiles/`)
+Tiles are first-class citizens in the Nonna app. Each tile is self-contained and encapsulates its own layout, presentation widgets, and Riverpod state controllers.
+* **Smart Wrappers**: Kept inside `lib/core/utils/tile_factory.dart`. They capture global providers (like `selectedBabyProfileProvider` or `currentUserProvider`), watch for changes, fetch fresh data via their respective providers, and delegate presentation rendering to the static tile widget.
+* **Role-Based Flexibility**: Tiles parameterize queries according to the user's role:
+  * **Owners**: Queries target data specific to their baby (e.g., `baby_id = ?`). Editable controls and interactive options are shown.
+  * **Followers**: Queries aggregate data across multiple babies (e.g., `baby_id IN (...)` mapped from followed babies). They see structured read-only representations.
+* **Dynamic Configuration**: Screens fetch tile configurations (`tile_configs` table) and placement orders from Supabase. The `TileFactory` parses the results and constructs the UI at runtime, allowing updates without redeploying the app.
 
-### 2. **Screen Rendering with Tiles**
-   - **User opens Home screen** → `home_screen.dart` calls `HomeScreenProvider`.
-   - Provider fetches screen config from Supabase (e.g., `screen_configs` table filtered by `screen_name='home'` and `role`).
-   - Screen config returns tile IDs and order (e.g., `['upcoming_events', 'recent_photos', 'notifications']`).
-   - TileFactory instantiates tiles based on IDs, passing parameters (`role`, `babyIds`, `limit`).
-   - Each tile executes its own query via its provider/datasource, fetching data from Supabase or cache.
-   - Tiles render in a `ListView` with consistent styling from `tile_container.dart`.
+### 2. Core Shared Infrastructure (`lib/core/`)
 
-### 3. **Tile Data Flow (Example: Upcoming Events Tile)**
-   ```
-   ┌─────────────────────────────────────────────────────────────────┐
-   │ 1. HOME SCREEN REQUESTS TILE                                    │
-   │    Location: features/home/presentation/screens/home_screen.dart│
-   │    Action: TileFactory.create('upcoming_events', params)        │
-   └────────────────────────────┬────────────────────────────────────┘
-                                ↓
-   ┌─────────────────────────────────────────────────────────────────┐
-   │ 2. TILEFACTORY INSTANTIATES TILE                                │
-   │    Location: tiles/core/widgets/tile_factory.dart               │
-   │    Action: return UpcomingEventsTile(params: params)            │
-   └────────────────────────────┬────────────────────────────────────┘
-                                ↓
-   ┌─────────────────────────────────────────────────────────────────┐
-   │ 3. TILE WIDGET BUILDS WITH PROVIDER                             │
-   │    Location: tiles/upcoming_events/widgets/upcoming_events_tile.dart│
-   │    Action: ref.watch(upcomingEventsProvider(params))            │
-   └────────────────────────────┬────────────────────────────────────┘
-                                ↓
-   ┌─────────────────────────────────────────────────────────────────┐
-   │ 4. PROVIDER FETCHES DATA                                        │
-   │    Location: tiles/upcoming_events/providers/upcoming_events_provider.dart│
-   │    Strategy:                                                     │
-   │    - Check cache via UpcomingEventsCache                        │
-   │    - If stale/missing, query Supabase via RemoteDatasource     │
-   │    - For owners: SELECT * FROM events WHERE baby_id = ?         │
-   │    - For followers: SELECT * FROM events WHERE baby_id IN (?)   │
-   │      (aggregates across all followed babies)                    │
-   └────────────────────────────┬────────────────────────────────────┘
-                                ↓
-   ┌─────────────────────────────────────────────────────────────────┐
-   │ 5. DATASOURCE QUERIES SUPABASE                                  │
-   │    Location: tiles/upcoming_events/data/datasources/remote/     │
-   │    Action: supabaseClient.from('events').select()...            │
-   │    Returns: List<Map<String, dynamic>> (DTOs)                   │
-   └────────────────────────────┬────────────────────────────────────┘
-                                ↓
-   ┌─────────────────────────────────────────────────────────────────┐
-   │ 6. MAPPER CONVERTS DTO TO ENTITY                                │
-   │    Location: tiles/upcoming_events/data/mappers/                │
-   │    Action: UpcomingEventMapper.fromDto(dto)                     │
-   │    Returns: UpcomingEvent entity                                │
-   └────────────────────────────┬────────────────────────────────────┘
-                                ↓
-   ┌─────────────────────────────────────────────────────────────────┐
-   │ 7. PROVIDER UPDATES STATE & CACHES DATA                         │
-   │    Location: upcoming_events_provider.dart                      │
-   │    Action: state = AsyncData(events); cache.save(events)        │
-   └────────────────────────────┬────────────────────────────────────┘
-                                ↓
-   ┌─────────────────────────────────────────────────────────────────┐
-   │ 8. TILE WIDGET REBUILDS WITH DATA                               │
-   │    Location: upcoming_events_tile.dart                          │
-   │    Action: Render events in list/card format                    │
-   └─────────────────────────────────────────────────────────────────┘
-   ```
+#### Shared Domain Models (`lib/core/models/`)
+The app utilizes **23 core domain models** to maintain strict type safety across database operations and UI layouts:
+1. `user.dart` - App user representation
+2. `baby_profile.dart` - Baby milestone details
+3. `baby_membership.dart` - User associations with baby profiles
+4. `invitation.dart` - Follower invite structure
+5. `event.dart` - Calendar events
+6. `event_rsvp.dart` - Event RSVPs
+7. `event_comment.dart` - Comments on events
+8. `photo.dart` - Uploaded photo metadata
+9. `photo_tag.dart` - Baby tags in photos
+10. `photo_comment.dart` - Comments on photos
+11. `photo_squish.dart` - Like/Squish engagements
+12. `registry_item.dart` - Baby registry products
+13. `registry_purchase.dart` - Purchase tracking data
+14. `notification.dart` - App social notifications
+15. `system_announcement.dart` - Global push banners
+16. `activity_event.dart` - Logged baby activity metrics
+17. `name_suggestion.dart` - Baby name ideation entries
+18. `name_suggestion_like.dart` - Voting likes on name suggestions
+19. `vote.dart` - Predictions votes
+20. `user_stats.dart` - Social engagements statistics
+21. `owner_update_marker.dart` - Realtime sync markers
+22. `tile_config.dart` - Dynamic tile layout configuration
+23. `screen_config.dart` - Screen mapping coordinates
 
-### 4. **Role-Based Behavior**
-   - **Owners**:
-     - Tiles query data per baby (passed via `babyIds` param).
-     - See editable controls (e.g., add event, upload photo).
-     - Subscribe to realtime updates for their babies via `RealtimeService`.
-   - **Followers**:
-     - Tiles query data across all followed babies (from `user_followers` table).
-     - See read-only content with interaction options (RSVP, like, comment).
-     - Subscribe to per-user channel for aggregated updates.
+#### Shared Services (`lib/core/services/`)
+Data persistence, remote endpoints connectivity, and operational logic are managed via **22 modular core services**:
+1. `supabase_service.dart` - Low-level wrapper for Supabase client operations
+2. `database_service.dart` - Safe database execution, table queries, and error parsing
+3. `auth_service.dart` - Supabase email/password and social login gateway
+4. `local_storage_service.dart` - Key-value offline secure preferences (SharedPreferences)
+5. `cache_service.dart` - Hive caching layer for domain entities
+6. `offline_cache_manager.dart` - Lifecycle and synchronization operations for offline caching
+7. `persistence_strategies.dart` - Cache eviction, TTL, and cache-first lookup rules
+8. `sync_manager.dart` - Bidirectional synchronization queue for offline edits
+9. `realtime_service.dart` - Realtime stream management for table events
+10. `realtime_subscription_manager.dart` - Prevents connection leaks by safely binding streams to provider states
+11. `storage_service.dart` - Uploads/downloads with Supabase Storage buckets
+12. `notification_service.dart` - OneSignal and local device notification integrations
+13. `analytics_service.dart` - Performance measurement and user interaction hooks
+14. `observability_service.dart` - Sentry-like monitoring and app telemetry logs
+15. `force_update_service.dart` - Semantic version checks for mandatory client updates
+16. `app_initialization_service.dart` - Sequence loader for storage, configs, and authentication on launch
+17. `network_error_handler.dart` - Standardized retry limits and socket exception translation
+18. `crash_recovery_handler.dart` - Safe fallback UI restoration when the widget tree breaks
+19. `data_deletion_handler.dart` - Completely clears database tables and local storage nodes
+20. `data_export_handler.dart` - Packages personal data into secure zip/json downloads for user export requests
+21. `state_persistence_manager.dart` - Handles automatic Riverpod state saving during background suspension
+22. `backup_service.dart` - Manages automated triggers to back up local database state offline
 
-### 5. **Realtime Updates**
-   - Owners: Subscribe to `events` table filtered by `baby_id`.
-   - Followers: Subscribe to custom channel broadcasting max timestamp across followed babies.
-   - On update: Provider invalidates cache, refetches data, tile rebuilds.
-
-### 6. **Performance Optimizations**
-   - **Cache-First Strategy**: Tiles load from cache instantly; background refresh if stale.
-   - **Lazy Loading**: `ListView.builder` with pagination for large tile lists.
-   - **Image Optimization**: Thumbnails cached via `CachedNetworkImage`, preloaded for smooth scrolling.
-   - **Riverpod `keepAlive`**: Tile state persists across navigation to avoid refetching.
-
-### 7. **Testing Strategy**
-   - **Tile Unit Tests**: Mock datasources, test provider logic, verify query parameters.
-   - **Tile Widget Tests**: Test UI rendering with mocked state (loading, error, data).
-   - **Feature Integration Tests**: Test screen composition with real TileFactory.
-   - **End-to-End Tests**: Validate full flows (owner adds event → follower sees update).
+#### Omission of Redundant Repositories
+The codebase bypasses the traditional repository abstraction layer (`lib/core/repositories/interfaces` remains empty in practice). Instead, the app uses a clean, modern Riverpod state-management pattern. Screen controllers and smart tiles fetch data directly through their data sources and providers, querying the core database services directly. This eliminates boilerplate, improves readability, and makes testing state controllers straightforward.
 
 ---
 
-## Key Design Decisions
+## Dynamic Tile Processing and Data Flow
 
-### Why Tiles at Top Level (`lib/tiles/`)?
-- **Reusability**: Same tile (e.g., `UpcomingEventsTile`) used on Home, Calendar, and other screens without duplication.
-- **Clarity**: Emphasizes tiles as first-class, parameterized widgets, not nested features.
-- **Simplicity**: Easier imports (`import 'package:nonna_app/tiles/upcoming_events/widgets/upcoming_events_tile.dart'`).
-- **Modularity**: Each tile is self-contained with its own data layer, testable independently.
+The diagram below illustrates how screens render their contents dynamically:
 
-### Why Separate Features for Screens?
-- **Composition**: Screens focus on layout and orchestration, importing tiles as needed.
-- **Screen-Specific Logic**: Some features (e.g., Registry, Gallery) have complex logic beyond tiles (filters, search).
-- **Navigation**: Screen features handle routing and deep linking.
-
-### Tile vs Feature Data Layer
-- **Tiles**: Lightweight, focused on single data entity (e.g., events, photos). Use simple datasources and providers.
-- **Features**: May have complex domain logic (e.g., purchase flow in Registry). Use full repository/use case pattern.
-
----
-
-## Database Changes and Impact
-
-### If a Tile's Data Structure Changes (e.g., adding `location` to events)
-
-**Localized Updates (Tile-Specific)**:
-1. **Supabase Migration**: Add column to `events` table.
-2. **Tile Data Layer**:
-   - Update `tiles/upcoming_events/models/upcoming_event.dart` (add `location` field).
-   - Update `tiles/upcoming_events/data/mappers/upcoming_event_mapper.dart` (map new field).
-   - Update `tiles/upcoming_events/data/datasources/remote/upcoming_events_datasource.dart` (select `location`).
-3. **Tile Widget**: Update `upcoming_events_tile.dart` to display location.
-4. **Tests**: Update fixtures and tests for new field.
-
-**Other Tiles/Features**: Unaffected unless they also query `events` table.
-
-### If a Core Model Changes (e.g., `User` model adds `phoneNumber`)
-
-**Cross-Feature Updates**:
-1. **Supabase Migration**: Add column to `users` table.
-2. **Core Model**: Update `core/models/user.dart`.
-3. **Affected Features**: Update `auth` and `profile` features:
-   - Update DTOs, mappers, datasources in both features.
-   - Update providers and UI if displaying phone number.
-4. **Tiles**: Unaffected unless tiles display user info (e.g., Engagement Recap).
-
-### If a Tile Config Changes (e.g., adding `refresh_interval` param)
-
-**Minimal Impact**:
-1. **Supabase Migration**: Add column to `tile_configs` table.
-2. **Tile Core**: Update `tiles/core/models/tile_config.dart`.
-3. **TileFactory**: Update to pass new param to tiles.
-4. **Individual Tiles**: Optionally use param in providers (e.g., set cache TTL).
-
-**Benefit of Tile Architecture**: Most changes are isolated to tile folders. Cross-tile changes are rare.
-
----
-
-## FAQ
-
-### Q: How do I add a new tile?
-**A**:
-1. Create folder under `lib/tiles/` (e.g., `new_tile/`).
-2. Add `models/`, `providers/`, `data/`, `widgets/`.
-3. Implement datasource with Supabase query.
-4. Create widget extending `BaseTile`.
-5. Update `TileFactory` to handle new tile type.
-6. Add tile to Supabase `tile_configs` table.
-7. Write tests mirroring structure in `test/tiles/`.
-
-### Q: Can the same tile have different queries for different screens?
-**A**: Yes, via parameters. Example:
-- Home: `UpcomingEventsTile(limit: 3, filterByDate: true)`
-- Calendar: `UpcomingEventsTile(limit: 10, filterByDate: false)`
-- Same widget, same query logic, different params.
-
-### Q: How do tiles handle role-based logic?
-**A**: Via `role` param passed from TileFactory. Datasources adjust queries:
-```dart
-if (params.role == UserRole.owner) {
-  query = query.eq('baby_id', params.babyIds.first);
-} else {
-  query = query.in_('baby_id', params.babyIds); // Aggregate across followed babies
-}
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. Home Screen calls Home Screen Provider                   │
+│    Path: lib/features/home/presentation/screens/home_screen.dart│
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 2. HomeScreenProvider queries Supabase / Cache              │
+│    Fetches Active Tile list for context (e.g., ['RecentPhotosTile', ...])│
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 3. Home Screen loops list and calls TileFactory.buildTile() │
+│    Path: lib/core/utils/tile_factory.dart                   │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 4. TileFactory builds Smart Wrapper (e.g., _RecentPhotosSmartTile)│
+│    Passes dynamic layout parameters (e.g., limit, fullView) │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 5. Smart Wrapper watches selected baby and loads state       │
+│    Queries via Riverpod (e.g., recentPhotosProvider)        │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 6. Tile state provider handles fetch                         │
+│    Looks up Hive Cache. If stale/empty, queries Supabase via│
+│    DatabaseService, maps results, updates cache, and yields │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 7. Smart Wrapper builds static Tile (e.g., RecentPhotosTile) │
+│    Renders styled cards inside TileContainer with shimmers  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Q: How do I test a tile independently?
-**A**:
-1. Mock datasource in `test/tiles/tile_name/`.
-2. Test provider logic with mocked data.
-3. Test widget with `ProviderScope` and mocked provider.
-4. Example:
-```dart
-test('should load events for owner', () async {
-  final container = ProviderContainer(
-    overrides: [
-      upcomingEventsProvider.overrideWith((ref) => mockProvider),
-    ],
-  );
-  final events = await container.read(upcomingEventsProvider(params).future);
-  expect(events.length, 3);
-});
-```
+---
 
-### Q: How do screens know which tiles to display?
-**A**: Via Supabase `screen_configs` table:
-- Columns: `screen_name` ('home', 'calendar'), `role`, `tile_ids` (array).
-- Home screen fetches config, gets tile IDs, passes to TileFactory.
+## Detailed Active Tiles Summary
 
-### Q: How do I handle caching for tiles?
-**A**: Each tile datasource has local cache:
-- Check cache in provider: `cache.get(params)`.
-- If stale (> TTL), query Supabase, update cache.
-- Use Hive/Isar for fast local storage.
+Below is the list of the 18 active tiles currently integrated in the Nonna app, including their directory locations:
 
-### Q: What happens if a tile query is slow?
-**A**:
-- Show shimmer placeholder via `tile_state` (loading).
-- Optimize Supabase query (indexes, RLS).
-- Implement pagination for large datasets.
-- Monitor via `ObservabilityService`.
-
-### Q: Can tiles communicate with each other?
-**A**: Generally no (self-contained). But:
-- Share data via global Riverpod providers if needed.
-- Use events/streams for cross-tile updates (e.g., photo upload triggers Recent Photos tile refresh).
+| # | Tile Name | Component Name | Directory Location (`lib/tiles/`) | Description |
+|---|---|---|---|---|
+| 1 | **Recent Photos** | `RecentPhotosTile` | `recent_photos/` | Displays a grid/slider of the latest baby photos with access to gallery comments. |
+| 2 | **Upcoming Events** | `UpcomingEventsTile` | `upcoming_events/` | Lists the baby's upcoming calendar events. |
+| 3 | **Registry Highlights** | `RegistryHighlightsTile` | `registry_highlights/` | Shows featured baby registry items for followers to browse. |
+| 4 | **Registry List** | `RegistryListTile` | `registry_list/` | Renders a full, searchable list of all baby registry additions. |
+| 5 | **Due Date Countdown** | `CountdownTile` | `countdown/` | Tracks the remaining weeks, days, or hours until the baby's expected arrival. |
+| 6 | **Checklist** | `ChecklistTile` | `checklist/` | An onboarding guide detailing setup tasks for baby owners. |
+| 7 | **Engagement Recap** | `ActivityListTile` | `activity_list/` | Displays real-time social metrics showing follower activity, likes, and comment volume. |
+| 8 | **Gallery Favorites** | `GalleryFavoritesTile` | `gallery_favorites/` | Highlights the most squished (liked) photos in the gallery. |
+| 9 | **Invites Status** | `InvitesStatusTile` | `invites_status/` | Tracks the status of pending/accepted invitations (owner only). |
+| 10 | **New Followers** | `NewFollowersTile` | `new_followers/` | Highlights recent family followers who have joined the baby's profile. |
+| 11 | **Notifications** | `NotificationsTile` | `notifications/` | Houses social, RSVP, and system notifications for the current user. |
+| 12 | **Recent Purchases** | `RecentPurchasesTile` | `recent_purchases/` | Lists registry items that have been recently bought by followers. |
+| 13 | **RSVP Tasks** | `RsvpTasksTile` | `rsvp_tasks/` | Flags upcoming baby events that require an RSVP from the follower. |
+| 14 | **Storage Usage** | `StorageUsageTile` | `storage_usage/` | Displays cloud storage metrics for photo and video uploads (owner only). |
+| 15 | **System Announcements**| `SystemAnnouncementsTile` | `system_announcements/` | Renders global banners with important messages or app updates. |
+| 16 | **Name Suggestions** | `NameSuggestionsTile` | `name_suggestions/` | Collects baby name ideas submitted by family members. |
+| 17 | **Prediction Votes** | `PredictionVotesTile` | `prediction_votes/` | Interactive voting card where followers guess details like birth date or gender. |
+| 18 | **New Baby Welcome** | `NewBabyWelcomeTile` | `new_baby_welcome/` | A congratulatory banner displayed to owners for 7 days post-birth. |
 
 ---
 
-## Critical Implementation Checklist
+## Local Development and CI/CD Command Guide
 
-### Architecture Setup
-- [ ] Initialize Supabase project with tables (`tile_configs`, `screen_configs`, `events`, `photos`, etc.)
-- [ ] Set up RLS policies for all tables (owners can edit, followers can read)
-- [ ] Configure Riverpod providers in `core/di/`
-- [ ] Implement TileFactory with initial tile types
-- [ ] Set up cache service (Hive/Isar)
-- [ ] Configure realtime subscriptions for owners and followers
+Nonna app tasks are standardized using a root-level `Makefile`. You should run commands through `make` rather than executing custom scripts:
 
-### Core Development
-- [ ] Implement Supabase client wrapper (`core/network/supabase_client.dart`)
-- [ ] Create base tile classes (`tiles/core/widgets/base_tile.dart`, `tile_container.dart`)
-- [ ] Build TileConfigProvider to fetch configs from Supabase
-- [ ] Implement role-based routing guards
-- [ ] Set up error handling and logging
-
-### Tile Development (Priority Order)
-- [ ] Tile 1: Upcoming Events (most common, cross-screen)
-- [ ] Tile 2: Recent Photos (high engagement)
-- [ ] Tile 3: Registry Highlights (business-critical)
-- [ ] Tile 4: Notifications (user engagement)
-- [ ] Tiles 5-13: Implement based on priority
-
-### Feature Development
-- [ ] Auth feature (login, signup, role selection)
-- [ ] Home screen (tile composition)
-- [ ] Calendar screen (tiles + calendar widget)
-- [ ] Gallery screen (tiles + photo grid)
-- [ ] Registry screen (tiles + filters)
-- [ ] Profile features (user, baby profiles)
-
-### Testing
-- [ ] Unit tests for each tile's provider and datasource
-- [ ] Widget tests for tile UI
-- [ ] Integration tests for screen composition
-- [ ] E2E tests for owner and follower flows
-- [ ] Performance tests (load times, scrolling)
-
-### Performance
-- [ ] Implement caching for all tiles
-- [ ] Optimize Supabase queries (indexes, select specific columns)
-- [ ] Implement lazy loading and pagination
-- [ ] Precache images and thumbnails
-- [ ] Set up monitoring (Sentry, Analytics)
-
-### Documentation
-- [ ] Document tile architecture in `docs/architecture.md`
-- [ ] Create ADRs for major decisions
-- [ ] Write tile development guide
-- [ ] Document Supabase schema and RLS policies
-- [ ] Update README with setup instructions
-
----
-
-## Quick Start Guide
-
-### 1. Clone and Setup
+### 1. Basic Setup & Outlining
 ```bash
-git clone <repo-url>
-cd nonna_app
-flutter pub get
+# Verify your Flutter setup is healthy
+make doctor
+
+# Fetch project dependencies
+make deps
+
+# Clean all build artifacts
+make clean
 ```
 
-### 2. Configure Supabase
+### 2. Format & Analysis
 ```bash
-# Install Supabase CLI
-brew install supabase/tap/supabase
+# Format the entire Dart codebase
+make format
 
-# Initialize and link to project
-supabase init
-supabase link --project-ref <your-project-ref>
+# Run Flutter compiler analysis (enforces zero-warnings policy)
+make analyze
 
-# Run migrations
-supabase db push
+# Run dart fix to auto-apply lint resolutions
+make lint-fix
 ```
 
-### 3. Set Up Environment
+### 3. Running Unit and Widget Tests
 ```bash
-cp config/.env.example config/.env.dev
-# Edit .env.dev with Supabase URL and anon key
+# Run unit and widget tests with coverage metrics
+make test
+
+# Generate HTML coverage report
+make coverage-report
 ```
 
-### 4. Run Code Generation
+### 4. Continuous Integration
 ```bash
-./scripts/code_generation.sh
+# Run the automated test runner (categorized runner that outputs updates to automated_tests/TEST_COMMANDS.md)
+make test-all
+
+# Run the complete CI pipeline (doctor -> deps -> format -> analyze -> test -> pre-commit check)
+make ci
 ```
 
-### 5. Run App
+### 5. Running Integration Tests (Automated Emulator Orchestration)
 ```bash
-flutter run --dart-define-from-file=config/.env.dev
+# Run full integration suites with automatic simulator setup (recommended)
+make test-integration
+
+# Run integration tests on an already active Android device or emulator
+make test-integration-android
+
+# Run integration tests on an already active iOS Simulator
+make test-integration-ios
 ```
 
-### 6. Create a New Tile
+### 6. Executing App Builds
 ```bash
-# Example: Creating "Activity Feed" tile
-mkdir -p lib/tiles/activity_feed/{models,providers,data/{datasources/{remote,local},mappers},widgets}
-mkdir -p test/tiles/activity_feed
+# Release APK for Android
+make build-android
 
-# Follow tile template structure
-# Update TileFactory to register new tile
-# Add config to Supabase tile_configs table
+# Simulator app bundle for iOS
+make build-ios
+
+# Production deployment files for Web
+make build-web
 ```
-
----
-
-## Best Practices
-
-### Tile Development
-- **Keep Queries Simple**: One tile, one primary query. Complex joins should be in Supabase views.
-- **Parameterize Everything**: Role, baby IDs, limits—all via params, not hardcoded.
-- **Cache Aggressively**: Default TTL 5 minutes for tiles, 1 hour for configs.
-- **Test Thoroughly**: Unit tests for datasources, widget tests for UI, integration tests for flows.
-
-### Performance
-- **Optimize Queries**: Use indexes, select only needed columns, paginate large datasets.
-- **Lazy Load**: Use `ListView.builder`, not `ListView` with all tiles at once.
-- **Monitor**: Track query times, cache hit rates, error rates via observability service.
-
-### Code Quality
-- **Consistent Naming**: `TileName` + `Provider`/`Datasource`/`Tile` (e.g., `UpcomingEventsProvider`).
-- **Follow Structure**: Every tile has same folder structure—no exceptions.
-- **Document**: Add comments for complex queries or business logic.
-
-### Collaboration
-- **Tile Ownership**: Assign tiles to developers; they own tests and updates.
-- **Code Reviews**: Focus on query efficiency, RLS compliance, and test coverage.
-- **ADRs**: Document architectural decisions in `docs/adr/`.
-
----
-
-This structure ensures the Nonna app is scalable, maintainable, and performant, with tiles as reusable building blocks for dynamic, role-driven UIs. 🚀
