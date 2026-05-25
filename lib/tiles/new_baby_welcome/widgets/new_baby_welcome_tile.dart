@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/gender.dart';
@@ -46,7 +47,7 @@ class NewBabyWelcomeTile extends StatelessWidget {
           children: [
             TileHeader(
               icon: TileIcons.newBabyWelcome,
-              title: 'Welcome, Little One!',
+              title: AppLocalizations.of(context).tile_welcome_title,
               iconColor: AppColors.secondary,
             ),
             AppSpacing.verticalGapS,
@@ -88,7 +89,8 @@ class _WelcomeContent extends StatelessWidget {
     final birthDate = profile.actualBirthDate;
     if (birthDate == null) return const SizedBox.shrink();
     final daysSince = DateTime.now().difference(birthDate).inDays;
-    final formattedDate = DateFormat('dd MMM yyyy').format(birthDate);
+    final locale = Localizations.localeOf(context).toString();
+    final formattedDate = DateFormat('dd MMM yyyy', locale).format(birthDate);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +115,7 @@ class _WelcomeContent extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   AppSpacing.verticalGapXS,
-                  _GenderChip(gender: profile.gender),
+                  _GenderChip(gender: profile.gender, context: context),
                 ],
               ),
             ),
@@ -181,18 +183,19 @@ class _BabyAvatar extends StatelessWidget {
 }
 
 class _GenderChip extends StatelessWidget {
-  const _GenderChip({required this.gender});
+  const _GenderChip({required this.gender, required this.context});
 
   final Gender gender;
+  final BuildContext context;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext _) {
     return Chip(
       padding: const EdgeInsets.symmetric(horizontal: 2),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       avatar: Icon(gender.icon, size: 14, color: gender.color),
       label: Text(
-        gender.displayName,
+        gender.localizedDisplayName(context),
         style: context.textTheme.labelSmall,
       ),
       backgroundColor: gender.color.withValues(alpha: 0.12),
@@ -263,9 +266,10 @@ class _DayCounterBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final label = daysSince == 0
-        ? '🎉 Born today!'
-        : '🎉 ${daysSince} ${daysSince == 1 ? "day" : "days"} old';
+        ? l10n.tile_welcome_born_today
+        : l10n.tile_welcome_days_old(daysSince);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -333,7 +337,9 @@ class _ErrorView extends StatelessWidget {
                   ?.copyWith(color: AppColors.error)),
         ),
         if (onRetry != null)
-          TextButton(onPressed: onRetry, child: const Text('Retry')),
+          TextButton(
+              onPressed: onRetry,
+              child: Text(AppLocalizations.of(context).common_retry)),
       ],
     );
   }

@@ -610,5 +610,136 @@
   "gallery_captionUpdatedSuccess": "Caption updated successfully!",
   "@gallery_captionUpdatedSuccess": {
     "description": "Success message shown after caption update"
+  },
+
+  "gender_male": "Male",
+  "@gender_male": {
+    "description": "Male gender display name"
+  },
+  "gender_female": "Female",
+  "@gender_female": {
+    "description": "Female gender display name"
+  },
+  "gender_neutral": "Neutral",
+  "@gender_neutral": {
+    "description": "Neutral/unknown gender display name"
+  },
+  "tile_welcome_title": "Welcome, Little One!",
+  "@tile_welcome_title": {
+    "description": "Title of the new baby welcome tile"
+  },
+  "tile_welcome_born_today": "🎉 Born today!",
+  "@tile_welcome_born_today": {
+    "description": "Label when the baby is born today"
+  },
+  "tile_welcome_days_old": "{count, plural, =1{🎉 1 day old} other{🎉 {count} days old}}",
+  "@tile_welcome_days_old": {
+    "description": "Label displaying how many days old the baby is",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "tile_predictions_title": "Prediction Votes",
+  "@tile_predictions_title": {
+    "description": "Title of the prediction votes tile"
+  },
+  "tile_predictions_help_text": "When do you think the baby will arrive?",
+  "@tile_predictions_help_text": {
+    "description": "Help text inside birthdate prediction date picker dialog"
+  },
+  "tile_predictions_gender_title": "Gender Prediction",
+  "@tile_predictions_gender_title": {
+    "description": "Subheading for gender prediction section"
+  },
+  "tile_predictions_gender_your_vote": "Your vote: {gender}",
+  "@tile_predictions_gender_your_vote": {
+    "description": "Displays the user's gender prediction vote",
+    "placeholders": {
+      "gender": {
+        "type": "String",
+        "example": "Boy"
+      }
+    }
+  },
+  "tile_predictions_gender_boy": "Boy",
+  "@tile_predictions_gender_boy": {
+    "description": "Label for Boy gender option"
+  },
+  "tile_predictions_gender_girl": "Girl",
+  "@tile_predictions_gender_girl": {
+    "description": "Label for Girl gender option"
+  },
+  "tile_predictions_birthdate_title": "Birthdate Prediction",
+  "@tile_predictions_birthdate_title": {
+    "description": "Subheading for birthdate prediction section"
+  },
+  "tile_predictions_birthdate_your_vote": "Your vote: {date}",
+  "@tile_predictions_birthdate_your_vote": {
+    "description": "Displays the user's birthdate prediction vote",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "May 25, 2026"
+      }
+    }
+  },
+  "tile_predictions_birthdate_change": "Change your prediction",
+  "@tile_predictions_birthdate_change": {
+    "description": "Button label to change birthdate prediction"
+  },
+  "tile_predictions_birthdate_pick": "Pick a date",
+  "@tile_predictions_birthdate_pick": {
+    "description": "Button label to pick a birthdate prediction"
+  },
+  "tile_predictions_summary": "Total: {genderCount, plural, =1{1 gender vote} other{{genderCount} gender votes}}, {birthdateCount, plural, =1{1 birthdate vote} other{{birthdateCount} birthdate votes}}",
+  "@tile_predictions_summary": {
+    "description": "Summary string of total votes cast",
+    "placeholders": {
+      "genderCount": {
+        "type": "int",
+        "example": "5"
+      },
+      "birthdateCount": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "tile_activity_title": "Engagement Recap",
+  "@tile_activity_title": {
+    "description": "Title of the activity list/engagement recap tile"
+  },
+  "tile_activity_period": "{count}d",
+  "@tile_activity_period": {
+    "description": "Displays lookback period options (e.g. 7d, 30d, 90d)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "tile_activity_squishes": "Squishes",
+  "@tile_activity_squishes": {
+    "description": "Label for photo squish reactions metric"
+  },
+  "tile_activity_comments": "Comments",
+  "@tile_activity_comments": {
+    "description": "Label for comments metric"
+  },
+  "tile_activity_rsvps": "RSVPs",
+  "@tile_activity_rsvps": {
+    "description": "Label for event RSVPs metric"
+  },
+  "tile_activity_total": "Total",
+  "@tile_activity_total": {
+    "description": "Label for total engagement metrics"
+  },
+  "tile_activity_empty": "No engagement data yet",
+  "@tile_activity_empty": {
+    "description": "Empty state label when no activity exists"
   }
 }

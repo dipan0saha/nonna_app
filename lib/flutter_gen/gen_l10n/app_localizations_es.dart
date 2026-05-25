@@ -405,4 +405,105 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get gallery_captionUpdatedSuccess =>
       '¡Descripción actualizada con éxito!';
+
+  @override
+  String get gender_male => 'Masculino';
+
+  @override
+  String get gender_female => 'Femenino';
+
+  @override
+  String get gender_neutral => 'Neutro';
+
+  @override
+  String get tile_welcome_title => '¡Bienvenido, pequeño!';
+
+  @override
+  String get tile_welcome_born_today => '🎉 ¡Nació hoy!';
+
+  @override
+  String tile_welcome_days_old(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '🎉 $count días de edad',
+      one: '🎉 1 día de edad',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tile_predictions_title => 'Votos de Predicción';
+
+  @override
+  String get tile_predictions_help_text => '¿Cuándo crees que llegará el bebé?';
+
+  @override
+  String get tile_predictions_gender_title => 'Predicción de Género';
+
+  @override
+  String tile_predictions_gender_your_vote(String gender) {
+    return 'Tu voto: $gender';
+  }
+
+  @override
+  String get tile_predictions_gender_boy => 'Niño';
+
+  @override
+  String get tile_predictions_gender_girl => 'Niña';
+
+  @override
+  String get tile_predictions_birthdate_title =>
+      'Predicción de Fecha de Nacimiento';
+
+  @override
+  String tile_predictions_birthdate_your_vote(String date) {
+    return 'Tu voto: $date';
+  }
+
+  @override
+  String get tile_predictions_birthdate_change => 'Cambiar tu predicción';
+
+  @override
+  String get tile_predictions_birthdate_pick => 'Elige una fecha';
+
+  @override
+  String tile_predictions_summary(int genderCount, int birthdateCount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      genderCount,
+      locale: localeName,
+      other: '$genderCount votos de género',
+      one: '1 voto de género',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      birthdateCount,
+      locale: localeName,
+      other: '$birthdateCount votos de fecha',
+      one: '1 voto de fecha',
+    );
+    return 'Total: $_temp0, $_temp1';
+  }
+
+  @override
+  String get tile_activity_title => 'Resumen de Interacción';
+
+  @override
+  String tile_activity_period(int count) {
+    return '${count}d';
+  }
+
+  @override
+  String get tile_activity_squishes => 'Apachurrones';
+
+  @override
+  String get tile_activity_comments => 'Comentarios';
+
+  @override
+  String get tile_activity_rsvps => 'Confirmaciones';
+
+  @override
+  String get tile_activity_total => 'Total';
+
+  @override
+  String get tile_activity_empty => 'Aún no hay datos de interacción';
 }

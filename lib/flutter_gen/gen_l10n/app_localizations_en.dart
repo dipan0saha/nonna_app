@@ -397,4 +397,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gallery_captionUpdatedSuccess => 'Caption updated successfully!';
+
+  @override
+  String get gender_male => 'Male';
+
+  @override
+  String get gender_female => 'Female';
+
+  @override
+  String get gender_neutral => 'Neutral';
+
+  @override
+  String get tile_welcome_title => 'Welcome, Little One!';
+
+  @override
+  String get tile_welcome_born_today => '🎉 Born today!';
+
+  @override
+  String tile_welcome_days_old(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '🎉 $count days old',
+      one: '🎉 1 day old',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tile_predictions_title => 'Prediction Votes';
+
+  @override
+  String get tile_predictions_help_text =>
+      'When do you think the baby will arrive?';
+
+  @override
+  String get tile_predictions_gender_title => 'Gender Prediction';
+
+  @override
+  String tile_predictions_gender_your_vote(String gender) {
+    return 'Your vote: $gender';
+  }
+
+  @override
+  String get tile_predictions_gender_boy => 'Boy';
+
+  @override
+  String get tile_predictions_gender_girl => 'Girl';
+
+  @override
+  String get tile_predictions_birthdate_title => 'Birthdate Prediction';
+
+  @override
+  String tile_predictions_birthdate_your_vote(String date) {
+    return 'Your vote: $date';
+  }
+
+  @override
+  String get tile_predictions_birthdate_change => 'Change your prediction';
+
+  @override
+  String get tile_predictions_birthdate_pick => 'Pick a date';
+
+  @override
+  String tile_predictions_summary(int genderCount, int birthdateCount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      genderCount,
+      locale: localeName,
+      other: '$genderCount gender votes',
+      one: '1 gender vote',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      birthdateCount,
+      locale: localeName,
+      other: '$birthdateCount birthdate votes',
+      one: '1 birthdate vote',
+    );
+    return 'Total: $_temp0, $_temp1';
+  }
+
+  @override
+  String get tile_activity_title => 'Engagement Recap';
+
+  @override
+  String tile_activity_period(int count) {
+    return '${count}d';
+  }
+
+  @override
+  String get tile_activity_squishes => 'Squishes';
+
+  @override
+  String get tile_activity_comments => 'Comments';
+
+  @override
+  String get tile_activity_rsvps => 'RSVPs';
+
+  @override
+  String get tile_activity_total => 'Total';
+
+  @override
+  String get tile_activity_empty => 'No engagement data yet';
 }

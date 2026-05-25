@@ -361,8 +361,10 @@ Supabase Edge Functions are deployed under `supabase/functions/` to execute secu
 * **Usage**: Generates a secure token hash, inserts a record into the `invitations` table, templates the invitation email, and sends the deep link to the follower.
 
 ### 4. `generate-thumbnail`
-* **Purpose**: Automated background downsizing for media files.
-* **Usage**: Triggers upon uploads to the Supabase Storage bucket, creating low-resolution thumbnail equivalents to optimize loading performance.
+* **Purpose**: Automated server-side thumbnail generation for gallery photos.
+* **Usage**: Accepts `{ bucket, path, recordId?, table? }`. Downloads the original image from Supabase Storage, decodes and cover-resizes it to 300×300 px using `imagescript` WASM (JPEG quality 80), uploads the resulting `_thumb.jpg` to the same bucket folder, and optionally updates the `thumbnail_path` column of the specified table row. Upload is idempotent via `upsert: true`.
+* **Library**: `imagescript@1.2.15` (pure Deno/WASM — no native binaries required).
+* **Column fix**: Writes to `thumbnail_path` (matching the `photos` table schema). The legacy stub incorrectly targeted `thumbnail_url`.
 
 ### 5. `image-processing`
 * **Purpose**: Extracts image geometries and dimensions.

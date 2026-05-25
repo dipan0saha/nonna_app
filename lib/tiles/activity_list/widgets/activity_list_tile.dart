@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/themes/colors.dart';
@@ -66,7 +67,7 @@ class ActivityListTile extends StatelessWidget {
 
     return TileHeader(
       icon: TileIcons.activityList,
-      title: 'Engagement Recap',
+      title: AppLocalizations.of(context).tile_activity_title,
       actions: actions,
     );
   }
@@ -112,7 +113,7 @@ class _PeriodSelector extends StatelessWidget {
           .map(
             (d) => ButtonSegment<int>(
               value: d,
-              label: Text('${d}d'),
+              label: Text(AppLocalizations.of(context).tile_activity_period(d)),
             ),
           )
           .toList(),
@@ -133,34 +134,35 @@ class _MetricsSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         _MetricChip(
           key: const Key('squishes_metric'),
           icon: Icons.favorite,
-          label: 'Squishes',
+          label: l10n.tile_activity_squishes,
           value: metrics.photoSquishes,
           color: Colors.pink,
         ),
         _MetricChip(
           key: const Key('comments_metric'),
           icon: Icons.chat_bubble_outline,
-          label: 'Comments',
+          label: l10n.tile_activity_comments,
           value: metrics.photoComments,
           color: Colors.blue,
         ),
         _MetricChip(
           key: const Key('rsvps_metric'),
           icon: Icons.event_available,
-          label: 'RSVPs',
+          label: l10n.tile_activity_rsvps,
           value: metrics.eventRSVPs,
           color: Colors.green,
         ),
         _MetricChip(
           key: const Key('total_metric'),
           icon: Icons.bar_chart,
-          label: 'Total',
+          label: l10n.tile_activity_total,
           value: metrics.totalEngagement,
           color: AppColors.primary,
         ),
@@ -226,7 +228,7 @@ class _EmptyEngagement extends StatelessWidget {
             ),
             AppSpacing.verticalGapXS,
             Text(
-              'No engagement data yet',
+              AppLocalizations.of(context).tile_activity_empty,
               style: context.textTheme.bodySmall?.copyWith(
                 color: AppColors.onSurfaceHint(context.colorScheme),
               ),

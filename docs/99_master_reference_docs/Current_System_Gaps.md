@@ -16,7 +16,7 @@ This document provides a comprehensive technical audit and a non-technical plain
 | **Routing** | Deep-Link / Push Notification routing crash on null `extra` payloads. | **High** | App crashes or shows "not found" pages when deep-linked or launched via notifications. |
 | **Architecture** | Dead boilerplate folders, ghost feature/tile directories, and misplaced test folders. | **Medium** | 35+ empty directories across `lib/features/` and `lib/tiles/`; ghost duplicates of active features; test files inside `lib/` that are never run by `flutter test` and are compiled into release builds. |
 | **Testing** | Missing isolated tests for 4 newly added smart tiles. | **Medium** | Risk of regression bugs on gamification and welcome cards. |
-| **Edge Functions** | Functioning backend stub in the `generate-thumbnail` function. | **Low** | Stale/Mocked thumbnail paths are saved without actual image resizing. |
+| ~~**Edge Functions**~~ | ~~Functioning backend stub in the `generate-thumbnail` function.~~ | ~~**Low**~~ | ✅ **RESOLVED (May 2026)** — Real `imagescript` WASM resize (300×300 JPEG, quality 80) implemented. Correct `thumbnail_path` column written. 9 unit tests passing. |
 | **Localization** | Hardcoded English strings on newer features and tiles. | **Medium** | Broken translations for Spanish users. |
 | **Offline Sync** | Stale caches on cellular socket reconnect. | **Medium** | Users see outdated data until a manual pull-to-refresh is executed. |
 | **Growth** | Limited email-only invitation acquisition loops. | **Low** | High friction for parent owners to invite family members. |
@@ -44,67 +44,43 @@ This document provides a comprehensive technical audit and a non-technical plain
 
 ---
 
-### 2. Architectural Folder Drift (Medium Severity)
+### 2. ~~Architectural Folder Drift~~ ✅ RESOLVED (June 2026)
 * **Underlying Code**: `lib/features/`, `lib/tiles/`
-* **Technical Detail**: The codebase has shifted to a presentation-focused feature structure where screen widgets and Riverpod state controllers directly query core services. However, the directory tree contains three distinct categories of structural debt:
-
-  **A. Empty architectural scaffolding inside active feature directories (35 total empty dirs):**
-  The following folders exist but contain zero Dart files, implying a Clean Architecture domain/use case layer that the codebase does not implement:
-  * `lib/features/auth/data/datasources/local/` and `remote/` (empty)
-  * `lib/features/auth/data/mappers/`, `data/models/`, `data/repositories/` (empty)
-  * `lib/features/auth/models/entities/`, `models/use_cases/` (empty)
-  * `lib/features/registry/data/datasources/local/` and `remote/` (empty)
-  * `lib/features/registry/data/mappers/`, `data/models/`, `data/repositories/` (empty)
-  * `lib/features/registry/domain/entities/`, `domain/use_cases/` (empty)
-  * `lib/features/profile/data/datasources/local/` and `remote/` (empty)
-  * `lib/features/profile/data/mappers/`, `data/models/`, `data/repositories/` (empty)
-  * `lib/features/profile/domain/entities/`, `domain/use_cases/` (empty)
-
-  **B. Ghost top-level feature and tile directories (the most severe category):**
-  These are entirely empty top-level directories that appear to be abandoned duplicates of active features. All their subdirectories contain zero Dart files:
-  * `lib/features/fun/` — empty ghost directory; the active gamification screen lives in `lib/features/gamification/`. All subdirs (`presentation/screens/`, `presentation/providers/`, `presentation/widgets/`, `test/`) are empty.
-  * `lib/features/photo_gallery/` — empty ghost directory; the active gallery screen lives in `lib/features/gallery/`. All subdirs (`presentation/screens/`, `presentation/providers/`, `presentation/widgets/`, `test/`) are empty.
-  * `lib/tiles/registry_deals/` — empty ghost tile directory. The tile has no Dart files, is absent from `TileLoader._supportedComponentNames`, and is not wired into `TileFactory.buildTile()`. Its corresponding `test/tiles/registry_deals/` is equally empty.
-
-  **C. Misplaced `test/` directories inside `lib/features/` (8 directories):**
-  Every active feature directory contains an empty `test/` subfolder inside the source tree:
-  * `lib/features/auth/test/`, `lib/features/calendar/test/`, `lib/features/gallery/test/`
-  * `lib/features/home/test/`, `lib/features/profile/test/`, `lib/features/registry/test/`
-  * `lib/features/fun/test/`, `lib/features/photo_gallery/test/`
-  Tests placed inside `lib/` are **not** discovered by `flutter test` (which scans the project-level `test/` directory). More critically, any Dart files placed there would be compiled into the release APK/IPA, inflating binary size.
-
-* **Why it's a Gap**: Category A creates structural noise and implies an architecture the codebase does not follow. Category B is a more serious risk — a developer could accidentally create new code inside `lib/features/fun/` or `lib/features/photo_gallery/` believing it is the active feature, when it is not. Category C is a testing reliability risk: any test written inside `lib/features/*/test/` would silently never run.
-* **Resolution Plan**:
-  1. Prune all empty subfolders in `auth/`, `registry/`, and `profile/` (Category A). Keep only `presentation/screens/`, `presentation/providers/`, and `presentation/widgets/`.
-  2. Delete the ghost top-level directories `lib/features/fun/`, `lib/features/photo_gallery/`, and `lib/tiles/registry_deals/` along with `test/tiles/registry_deals/` (Category B).
-  3. Delete all 8 `lib/features/*/test/` directories (Category C). All tile and feature tests already live correctly under the project-level `test/` directory.
+* **What Was Fixed**:
+  * **Phase 1 — Ghost top-level directories (Category B):** Deleted `lib/features/fun/`, `lib/features/photo_gallery/`, and `lib/tiles/registry_deals/`. These were entirely empty directories with no Dart files. `test/tiles/registry_deals/` had already been deleted as part of Gap #3 resolution.
+  * **Phase 2 — Misplaced `test/` dirs in `lib/` (Category C):** Deleted 21 empty `test/` subdirectories that had been placed inside the source tree across `lib/features/` (auth, calendar, gallery, home, profile, registry) and `lib/tiles/` (activity_list, checklist, core, countdown, gallery_favorites, invites_status, new_followers, notifications, recent_photos, recent_purchases, registry_highlights, rsvp_tasks, storage_usage, system_announcements, upcoming_events). Any Dart files placed there would have been compiled into the release APK and silently skipped by `flutter test`.
+  * **Phase 3 — Empty feature scaffold (Category A):** Deleted empty `data/` and `models/`/`domain/` trees from `lib/features/auth/`, `lib/features/profile/`, and `lib/features/registry/`. Each now contains only `presentation/`.
+  * **Phase 4 — Empty tile scaffold (Category A):** Deleted empty `data/` and `models/` trees from 15 active tile directories (activity_list, checklist, core, countdown, gallery_favorites, invites_status, new_followers, notifications, recent_photos, recent_purchases, registry_highlights, rsvp_tasks, storage_usage, system_announcements, upcoming_events). Also deleted the empty `lib/tiles/registry_list/providers/` stub.
+  * **Verification**: `find lib/features lib/tiles -type d -empty` returns zero results. Zero errors in `lib/` from `flutter analyze`. Release APK builds clean (65.5 MB). All 43 tile unit tests continue to pass. App validated on emulator-5554.
+* **Files Changed**: ~121 empty directories deleted across `lib/features/`, `lib/tiles/`. Zero Dart source files modified.
 
 ---
 
-### 3. Missing Isolated Tile Test Suites (Medium Severity)
+### 3. ~~Missing Isolated Tile Test Suites~~ ✅ RESOLVED (May 2026)
 * **Underlying Code**: `lib/tiles/` -> `name_suggestions`, `prediction_votes`, `new_baby_welcome`, `registry_list`
-* **Technical Detail**: The codebase tests 14 active tiles with isolated unit and widget tests under `test/tiles/` (e.g., `checklist`, `countdown`, `recent_photos`). However, the 4 newly added smart tiles do not have dedicated test folders:
-  * `test/tiles/name_suggestions/` (missing)
-  * `test/tiles/prediction_votes/` (missing)
-  * `test/tiles/new_baby_welcome/` (missing)
-  * `test/tiles/registry_list/` (missing)
-
-  Note: `test/tiles/registry_deals/` exists as a directory but contains zero Dart files. It corresponds to the ghost tile `lib/tiles/registry_deals/` (see Gap 2, Category B) and should be deleted, not populated.
-* **Why it's a Gap**: These tiles are currently only tested implicitly inside feature screen widget tests (such as `gamification_screen_test.dart`). If developers make isolated changes to these tiles, regressions could easily bypass layout boundary checks and crash the parent widget trees.
-* **Resolution Plan**: Create dedicated, isolated test suites mirroring the established tile testing structure. Mock their respective providers and write widget tests verifying shimmers, empty states, and interactive inputs. Simultaneously delete the empty `test/tiles/registry_deals/` directory.
+* **What Was Fixed**:
+  * Deleted the empty ghost directory `test/tiles/registry_deals/` (matched the ghost tile `lib/tiles/registry_deals/` in Gap 2, Category B).
+  * Created 4 isolated widget test suites, each with ~10 coverage assertions:
+    * `test/tiles/new_baby_welcome/widgets/new_baby_welcome_tile_test.dart` — 11 tests. StatelessWidget, wrapped in `MaterialApp` with `AppLocalizations` delegates. Tests: key, shimmer, error + retry callback, null profile → SizedBox.shrink, name/weight/height display, born-today badge, singular/plural day counter.
+    * `test/tiles/prediction_votes/widgets/prediction_votes_tile_test.dart` — 9 tests. ConsumerStatefulWidget; providers overridden via `ProviderScope`. Fakes: `_FakePredictionVotesNotifier`, `_FakeAuthNotifier`, `_FakeSelectedBabyProfileNotifier`. Tests: key, loading indicator, error, Boy/Girl buttons, "Pick a date" vs "Change your prediction" birthdate label, vote summary hidden/shown.
+    * `test/tiles/name_suggestions/widgets/name_suggestions_tile_test.dart` — 9 tests. ConsumerStatefulWidget; same provider override pattern. Tests: key, loading, error, empty state, suggestion rows with `Key('name_suggestion_<id>')`, add button toggle, form fields + gender chips, title header.
+    * `test/tiles/registry_list/widgets/registry_list_tile_test.dart` — 12 tests. ConsumerWidget; uses `MaterialApp.router` + `GoRouter` to satisfy `context.push()` calls. Providers: `registryScreenProvider` + `homeScreenProvider` overridden. Tests: shimmer when loading, no root key during load, correct key when loaded, Available/Purchased section headers, item name, lock/undo/check_circle_outline purchase icons, empty state.
+  * All **43 tests pass** (`flutter test test/tiles/new_baby_welcome/ test/tiles/prediction_votes/ test/tiles/name_suggestions/ test/tiles/registry_list/`).
+* **Files Changed**: 4 new test files created; `test/tiles/registry_deals/` deleted.
 
 ---
 
-### 4. Stubbed Media Transformation in Edge Functions (Low Severity)
+### 4. ~~Stubbed Media Transformation in Edge Functions~~ ✅ RESOLVED (May 2026)
 * **Underlying Code**: `supabase/functions/generate-thumbnail/index.ts`
-* **Technical Detail**: The edge function `generate-thumbnail` handles bucket trigger uploads but acts as a functional stub:
-  ```typescript
-  // Let's pretend it generated something perfectly.
-  const fakeThumbnailPath = `${path.split('.')[0]}_thumb.jpg`;
-  ```
-  It writes the mock path directly to the database column without executing any Deno/Sharp or WASM-based binary image transformation.
-* **Why it's a Gap**: The mobile client attempts to render optimized thumbnails using paths provided by the database. Since these thumbnails don't actually exist on Supabase Storage, the loading of these images will fail, forcing a fallback to full-size, unoptimized image assets, which harms memory and network performance.
-* **Resolution Plan**: Implement actual server-side image resizing inside `generate-thumbnail` using a lightweight Deno WASM resizing library or integrate with a dedicated media transformation service, then write the actual transformed binary back to the storage bucket.
+* **What Was Fixed**:
+  * Replaced the fake path stub with a real pipeline: download from Storage → `imagescript` WASM decode → cover-resize to 300×300 → JPEG encode at quality 80 → upload to Storage → update `thumbnail_path` DB column.
+  * Fixed the wrong DB column name (`thumbnail_url` → `thumbnail_path`) matching the `photos` table schema and `Photo` Flutter model.
+  * Added proper HTTP 400 validation for missing `bucket`/`path` fields; processing errors now return HTTP 500 (not 400).
+  * Replaced the single stub assertion test with 9 behavioural unit tests (path derivation × 4, request validation × 3, response shape × 1, optional fields × 1) — all passing.
+  * Added `imagescript` import map entry to `deno.json`.
+  * Upload uses `upsert: true` for idempotent retries.
+* **Files Changed**: `supabase/functions/generate-thumbnail/deno.json`, `index.ts`, `index.test.ts`.
+* **Flutter client**: No changes required — `gallery_screen.dart` / `StorageService.uploadPhotoWithThumbnail()` already write `thumbnail_path` correctly via the client-side path.
 
 ---
 

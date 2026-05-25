@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Gender enumeration
 ///
@@ -70,6 +71,21 @@ enum Gender {
         return Colors.pink;
       case Gender.unknown:
         return Colors.grey;
+    }
+  }
+}
+
+/// Localized extension to resolve gender display names from BuildContext.
+extension GenderL10n on Gender {
+  String localizedDisplayName(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    switch (this) {
+      case Gender.male:
+        return l10n.gender_male;
+      case Gender.female:
+        return l10n.gender_female;
+      case Gender.unknown:
+        return l10n.gender_neutral;
     }
   }
 }

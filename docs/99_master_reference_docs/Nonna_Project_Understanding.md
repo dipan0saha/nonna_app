@@ -1,7 +1,7 @@
 # Nonna App — Project Understanding
 
-**Document Version**: 3.0 **Last Updated**: May 25, 2026 **Status**: Living
-Document - Fully aligned with Version 3.0 codebase specifications
+**Document Version**: 3.1 **Last Updated**: June 2026 **Status**: Living
+Document - Fully aligned with Version 3.1 codebase specifications
 
 ---
 
@@ -75,7 +75,7 @@ lib/
 │   ├── upcoming_events/
 │   ├── recent_photos/
 │   ├── registry_highlights/
-│   └── ... (19 total including core)
+│   └── ... (18 total including core)
 └── features/      # Screen composition & presentation (Home, Calendar, Gallery, etc.)
     ├── auth/
     ├── home/       # Composes tiles into a scrollable list view via TileFactory
@@ -222,6 +222,7 @@ auth-guard redirects.
 | `lib/core/models/baby_profile.dart`                                              | Core baby profile model (extended with `birthWeightKg`, `birthHeightCm`)                  |
 | `lib/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart`   | Edit profile screen (extended with weight/height input fields)                            |
 | `supabase/functions/`                                                            | Serverless Edge Functions (TypeScript/Deno)                                               |
+
 
 ---
 
@@ -373,7 +374,7 @@ environment:
 | `image-processing`       | Implemented | Accepts `{imageUrl, bucketName, filePath, operations}`. Handles metadata dimension extractions and EXIF evaluations.                                                                                                                                 |
 | `send-invitation-email`  | Implemented | Dispatches follower invitations externally. Integrates dynamically with **Resend API** and **SendGrid API** using authorization secrets.                                                                                                             |
 | `send-push-notification` | Implemented | Direct push dispatcher. Connects directly to **OneSignal REST API** via `ONESIGNAL_APP_ID` + `ONESIGNAL_REST_API_KEY` (features mock fallback on missing credentials).                                                                               |
-| `generate-thumbnail`     | Implemented | Background thumbnail transformation stub. Processes Storage uploads, creating thumbnail assets and updating DB rows under `SUPABASE_SERVICE_ROLE_KEY`.                                                                                               |
+| `generate-thumbnail`     | Implemented | Real server-side thumbnail generation using `imagescript` WASM. Downloads original image from Storage, cover-resizes to 300×300 JPEG (quality 80), uploads `_thumb.jpg` sibling, and writes `thumbnail_path` to the `photos` DB row under `SUPABASE_SERVICE_ROLE_KEY`. Idempotent via `upsert: true`.                                                                                               |
 
 ---
 

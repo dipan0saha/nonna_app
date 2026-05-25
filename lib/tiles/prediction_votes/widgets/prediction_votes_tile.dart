@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/di/providers.dart';
@@ -65,7 +66,7 @@ class _PredictionVotesSmartTileState
       initialDate: now.add(const Duration(days: 30)),
       firstDate: now,
       lastDate: now.add(const Duration(days: 365)),
-      helpText: 'When do you think the baby will arrive?',
+      helpText: AppLocalizations.of(context).tile_predictions_help_text,
     );
 
     if (picked != null && mounted) {
@@ -100,7 +101,7 @@ class _PredictionVotesSmartTileState
             // ── Header ──
             TileHeader(
               icon: TileIcons.predictionVotes,
-              title: 'Prediction Votes',
+              title: AppLocalizations.of(context).tile_predictions_title,
               titleStyle: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -172,7 +173,13 @@ class _GenderVoteSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final currentValue = userVote?.valueText;
+    final translatedGenderValue = currentValue == 'Boy'
+        ? l10n.tile_predictions_gender_boy
+        : currentValue == 'Girl'
+            ? l10n.tile_predictions_gender_girl
+            : currentValue;
 
     // Count gender votes
     final genderVotes =
@@ -191,7 +198,7 @@ class _GenderVoteSection extends StatelessWidget {
             const Icon(Icons.face, size: 20, color: AppColors.secondary),
             const SizedBox(width: 8),
             Text(
-              'Gender Prediction',
+              l10n.tile_predictions_gender_title,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -203,7 +210,8 @@ class _GenderVoteSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
-              'Your vote: $currentValue',
+              l10n.tile_predictions_gender_your_vote(
+                  translatedGenderValue ?? ''),
               style: TextStyle(
                 color: AppColors.primaryDark,
                 fontWeight: FontWeight.w500,
@@ -215,7 +223,7 @@ class _GenderVoteSection extends StatelessWidget {
           children: [
             Expanded(
               child: _GenderButton(
-                label: 'Boy',
+                label: l10n.tile_predictions_gender_boy,
                 icon: Icons.male,
                 color: Colors.blue,
                 isSelected: currentValue == 'Boy',
@@ -228,7 +236,7 @@ class _GenderVoteSection extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: _GenderButton(
-                label: 'Girl',
+                label: l10n.tile_predictions_gender_girl,
                 icon: Icons.female,
                 color: Colors.pink,
                 isSelected: currentValue == 'Girl',
@@ -335,7 +343,9 @@ class _BirthdateVoteSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final currentDate = userVote?.valueDate;
+    final locale = Localizations.localeOf(context).toString();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,7 +356,7 @@ class _BirthdateVoteSection extends StatelessWidget {
                 size: 20, color: AppColors.secondary),
             const SizedBox(width: 8),
             Text(
-              'Birthdate Prediction',
+              l10n.tile_predictions_birthdate_title,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -358,7 +368,9 @@ class _BirthdateVoteSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
-              'Your vote: ${DateFormat.yMMMd().format(currentDate)}',
+              l10n.tile_predictions_birthdate_your_vote(
+                DateFormat.yMMMd(locale).format(currentDate),
+              ),
               style: TextStyle(
                 color: AppColors.primaryDark,
                 fontWeight: FontWeight.w500,
@@ -379,7 +391,9 @@ class _BirthdateVoteSection extends StatelessWidget {
                   )
                 : const Icon(Icons.event),
             label: Text(
-              currentDate != null ? 'Change your prediction' : 'Pick a date',
+              currentDate != null
+                  ? l10n.tile_predictions_birthdate_change
+                  : l10n.tile_predictions_birthdate_pick,
             ),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -405,6 +419,7 @@ class _VoteSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
 
     // Aggregate votes by type
     final genderVotes =
@@ -417,8 +432,7 @@ class _VoteSummary extends StatelessWidget {
         Icon(Icons.bar_chart, size: 18, color: AppColors.gray500),
         const SizedBox(width: 6),
         Text(
-          'Total: $genderVotes gender vote${genderVotes == 1 ? '' : 's'}, '
-          '$birthdateVotes birthdate vote${birthdateVotes == 1 ? '' : 's'}',
+          l10n.tile_predictions_summary(genderVotes, birthdateVotes),
           style: theme.textTheme.bodySmall?.copyWith(
             color: AppColors.gray500,
           ),

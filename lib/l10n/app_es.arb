@@ -610,5 +610,136 @@
   "gallery_captionUpdatedSuccess": "¡Descripción actualizada con éxito!",
   "@gallery_captionUpdatedSuccess": {
     "description": "Mensaje de éxito mostrado después de actualizar la descripción"
+  },
+
+  "gender_male": "Masculino",
+  "@gender_male": {
+    "description": "Nombre para mostrar del género masculino"
+  },
+  "gender_female": "Femenino",
+  "@gender_female": {
+    "description": "Nombre para mostrar del género femenino"
+  },
+  "gender_neutral": "Neutro",
+  "@gender_neutral": {
+    "description": "Nombre para mostrar del género neutro"
+  },
+  "tile_welcome_title": "¡Bienvenido, pequeño!",
+  "@tile_welcome_title": {
+    "description": "Título de la tarjeta de bienvenida del nuevo bebé"
+  },
+  "tile_welcome_born_today": "🎉 ¡Nació hoy!",
+  "@tile_welcome_born_today": {
+    "description": "Etiqueta cuando el bebé nace el día de hoy"
+  },
+  "tile_welcome_days_old": "{count, plural, =1{🎉 1 día de edad} other{🎉 {count} días de edad}}",
+  "@tile_welcome_days_old": {
+    "description": "Etiqueta que muestra cuántos días de edad tiene el bebé",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "tile_predictions_title": "Votos de Predicción",
+  "@tile_predictions_title": {
+    "description": "Título de la tarjeta de votos de predicción"
+  },
+  "tile_predictions_help_text": "¿Cuándo crees que llegará el bebé?",
+  "@tile_predictions_help_text": {
+    "description": "Texto de ayuda dentro del diálogo para elegir la fecha de predicción"
+  },
+  "tile_predictions_gender_title": "Predicción de Género",
+  "@tile_predictions_gender_title": {
+    "description": "Subtítulo para la sección de predicción de género"
+  },
+  "tile_predictions_gender_your_vote": "Tu voto: {gender}",
+  "@tile_predictions_gender_your_vote": {
+    "description": "Muestra el voto de predicción de género del usuario",
+    "placeholders": {
+      "gender": {
+        "type": "String",
+        "example": "Niño"
+      }
+    }
+  },
+  "tile_predictions_gender_boy": "Niño",
+  "@tile_predictions_gender_boy": {
+    "description": "Etiqueta para la opción de género Niño"
+  },
+  "tile_predictions_gender_girl": "Niña",
+  "@tile_predictions_gender_girl": {
+    "description": "Etiqueta para la opción de género Niña"
+  },
+  "tile_predictions_birthdate_title": "Predicción de Fecha de Nacimiento",
+  "@tile_predictions_birthdate_title": {
+    "description": "Subtítulo para la sección de predicción de fecha de nacimiento"
+  },
+  "tile_predictions_birthdate_your_vote": "Tu voto: {date}",
+  "@tile_predictions_birthdate_your_vote": {
+    "description": "Muestra el voto de predicción de fecha del usuario",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "25 may 2026"
+      }
+    }
+  },
+  "tile_predictions_birthdate_change": "Cambiar tu predicción",
+  "@tile_predictions_birthdate_change": {
+    "description": "Etiqueta del botón para cambiar la predicción de fecha"
+  },
+  "tile_predictions_birthdate_pick": "Elige una fecha",
+  "@tile_predictions_birthdate_pick": {
+    "description": "Etiqueta del botón para elegir una predicción de fecha"
+  },
+  "tile_predictions_summary": "Total: {genderCount, plural, =1{1 voto de género} other{{genderCount} votos de género}}, {birthdateCount, plural, =1{1 voto de fecha} other{{birthdateCount} votos de fecha}}",
+  "@tile_predictions_summary": {
+    "description": "Resumen de los votos totales realizados",
+    "placeholders": {
+      "genderCount": {
+        "type": "int",
+        "example": "5"
+      },
+      "birthdateCount": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "tile_activity_title": "Resumen de Interacción",
+  "@tile_activity_title": {
+    "description": "Título de la tarjeta de resumen de interacción"
+  },
+  "tile_activity_period": "{count}d",
+  "@tile_activity_period": {
+    "description": "Muestra las opciones de periodo de búsqueda (ej. 7d, 30d, 90d)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "tile_activity_squishes": "Apachurrones",
+  "@tile_activity_squishes": {
+    "description": "Etiqueta para la métrica de reacciones de apachurrón/abrazo"
+  },
+  "tile_activity_comments": "Comentarios",
+  "@tile_activity_comments": {
+    "description": "Etiqueta para la métrica de comentarios"
+  },
+  "tile_activity_rsvps": "Confirmaciones",
+  "@tile_activity_rsvps": {
+    "description": "Etiqueta para la métrica de confirmaciones de eventos"
+  },
+  "tile_activity_total": "Total",
+  "@tile_activity_total": {
+    "description": "Etiqueta para la métrica total de interacciones"
+  },
+  "tile_activity_empty": "Aún no hay datos de interacción",
+  "@tile_activity_empty": {
+    "description": "Etiqueta de estado vacío cuando no hay interacciones"
   }
 }

@@ -787,6 +787,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Caption updated successfully!'**
   String get gallery_captionUpdatedSuccess;
+
+  /// Male gender display name
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get gender_male;
+
+  /// Female gender display name
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get gender_female;
+
+  /// Neutral/unknown gender display name
+  ///
+  /// In en, this message translates to:
+  /// **'Neutral'**
+  String get gender_neutral;
+
+  /// Title of the new baby welcome tile
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, Little One!'**
+  String get tile_welcome_title;
+
+  /// Label when the baby is born today
+  ///
+  /// In en, this message translates to:
+  /// **'🎉 Born today!'**
+  String get tile_welcome_born_today;
+
+  /// Label displaying how many days old the baby is
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{🎉 1 day old} other{🎉 {count} days old}}'**
+  String tile_welcome_days_old(int count);
+
+  /// Title of the prediction votes tile
+  ///
+  /// In en, this message translates to:
+  /// **'Prediction Votes'**
+  String get tile_predictions_title;
+
+  /// Help text inside birthdate prediction date picker dialog
+  ///
+  /// In en, this message translates to:
+  /// **'When do you think the baby will arrive?'**
+  String get tile_predictions_help_text;
+
+  /// Subheading for gender prediction section
+  ///
+  /// In en, this message translates to:
+  /// **'Gender Prediction'**
+  String get tile_predictions_gender_title;
+
+  /// Displays the user's gender prediction vote
+  ///
+  /// In en, this message translates to:
+  /// **'Your vote: {gender}'**
+  String tile_predictions_gender_your_vote(String gender);
+
+  /// Label for Boy gender option
+  ///
+  /// In en, this message translates to:
+  /// **'Boy'**
+  String get tile_predictions_gender_boy;
+
+  /// Label for Girl gender option
+  ///
+  /// In en, this message translates to:
+  /// **'Girl'**
+  String get tile_predictions_gender_girl;
+
+  /// Subheading for birthdate prediction section
+  ///
+  /// In en, this message translates to:
+  /// **'Birthdate Prediction'**
+  String get tile_predictions_birthdate_title;
+
+  /// Displays the user's birthdate prediction vote
+  ///
+  /// In en, this message translates to:
+  /// **'Your vote: {date}'**
+  String tile_predictions_birthdate_your_vote(String date);
+
+  /// Button label to change birthdate prediction
+  ///
+  /// In en, this message translates to:
+  /// **'Change your prediction'**
+  String get tile_predictions_birthdate_change;
+
+  /// Button label to pick a birthdate prediction
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get tile_predictions_birthdate_pick;
+
+  /// Summary string of total votes cast
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {genderCount, plural, =1{1 gender vote} other{{genderCount} gender votes}}, {birthdateCount, plural, =1{1 birthdate vote} other{{birthdateCount} birthdate votes}}'**
+  String tile_predictions_summary(int genderCount, int birthdateCount);
+
+  /// Title of the activity list/engagement recap tile
+  ///
+  /// In en, this message translates to:
+  /// **'Engagement Recap'**
+  String get tile_activity_title;
+
+  /// Displays lookback period options (e.g. 7d, 30d, 90d)
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d'**
+  String tile_activity_period(int count);
+
+  /// Label for photo squish reactions metric
+  ///
+  /// In en, this message translates to:
+  /// **'Squishes'**
+  String get tile_activity_squishes;
+
+  /// Label for comments metric
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get tile_activity_comments;
+
+  /// Label for event RSVPs metric
+  ///
+  /// In en, this message translates to:
+  /// **'RSVPs'**
+  String get tile_activity_rsvps;
+
+  /// Label for total engagement metrics
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get tile_activity_total;
+
+  /// Empty state label when no activity exists
+  ///
+  /// In en, this message translates to:
+  /// **'No engagement data yet'**
+  String get tile_activity_empty;
 }
 
 class _AppLocalizationsDelegate
