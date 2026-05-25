@@ -14,7 +14,7 @@ This document provides a comprehensive technical audit and a non-technical plain
 | Area | Gap Description | Severity | Impact |
 |---|---|---|---|
 | **Routing** | Deep-Link / Push Notification routing crash on null `extra` payloads. | **High** | App crashes or shows "not found" pages when deep-linked or launched via notifications. |
-| **Architecture** | Dead boilerplate folders and architectural drift in lean feature directories. | **Medium** | Visual clutter and confusion in `lib/features/` directories. |
+| **Architecture** | Dead boilerplate folders, ghost feature/tile directories, and misplaced test folders. | **Medium** | 35+ empty directories across `lib/features/` and `lib/tiles/`; ghost duplicates of active features; test files inside `lib/` that are never run by `flutter test` and are compiled into release builds. |
 | **Testing** | Missing isolated tests for 4 newly added smart tiles. | **Medium** | Risk of regression bugs on gamification and welcome cards. |
 | **Edge Functions** | Functioning backend stub in the `generate-thumbnail` function. | **Low** | Stale/Mocked thumbnail paths are saved without actual image resizing. |
 | **Localization** | Hardcoded English strings on newer features and tiles. | **Medium** | Broken translations for Spanish users. |
@@ -45,28 +45,53 @@ This document provides a comprehensive technical audit and a non-technical plain
 ---
 
 ### 2. Architectural Folder Drift (Medium Severity)
-* **Underlying Code**: `lib/features/` (`auth/`, `registry/`, `profile/`, etc.)
-* **Technical Detail**: The codebase has shifted to a presentation-focused feature structure where screen widgets and Riverpod state controllers directly query core services. However, multiple feature directories still host extensive, completely empty folder structures representing unused architectural patterns:
-  * `lib/features/auth/data/datasources/remote/` (empty)
-  * `lib/features/auth/data/mappers/` (empty)
-  * `lib/features/auth/data/repositories/` (empty)
-  * `lib/features/auth/models/entities/` (empty)
-  * `lib/features/auth/models/use_cases/` (empty)
-  * Similar empty folders exist under `registry/` and `profile/`.
-* **Why it's a Gap**: It creates structural noise and confusion for developers. It implies the codebase follows a Clean Architecture domain/use case layer, when it actually implements a highly simplified, presentation-focused Riverpod service model.
-* **Resolution Plan**: Prune all completely empty subfolders. Keep `lib/features/` directories strictly restricted to `presentation/screens/`, `presentation/widgets/`, and `presentation/providers/`.
+* **Underlying Code**: `lib/features/`, `lib/tiles/`
+* **Technical Detail**: The codebase has shifted to a presentation-focused feature structure where screen widgets and Riverpod state controllers directly query core services. However, the directory tree contains three distinct categories of structural debt:
+
+  **A. Empty architectural scaffolding inside active feature directories (35 total empty dirs):**
+  The following folders exist but contain zero Dart files, implying a Clean Architecture domain/use case layer that the codebase does not implement:
+  * `lib/features/auth/data/datasources/local/` and `remote/` (empty)
+  * `lib/features/auth/data/mappers/`, `data/models/`, `data/repositories/` (empty)
+  * `lib/features/auth/models/entities/`, `models/use_cases/` (empty)
+  * `lib/features/registry/data/datasources/local/` and `remote/` (empty)
+  * `lib/features/registry/data/mappers/`, `data/models/`, `data/repositories/` (empty)
+  * `lib/features/registry/domain/entities/`, `domain/use_cases/` (empty)
+  * `lib/features/profile/data/datasources/local/` and `remote/` (empty)
+  * `lib/features/profile/data/mappers/`, `data/models/`, `data/repositories/` (empty)
+  * `lib/features/profile/domain/entities/`, `domain/use_cases/` (empty)
+
+  **B. Ghost top-level feature and tile directories (the most severe category):**
+  These are entirely empty top-level directories that appear to be abandoned duplicates of active features. All their subdirectories contain zero Dart files:
+  * `lib/features/fun/` — empty ghost directory; the active gamification screen lives in `lib/features/gamification/`. All subdirs (`presentation/screens/`, `presentation/providers/`, `presentation/widgets/`, `test/`) are empty.
+  * `lib/features/photo_gallery/` — empty ghost directory; the active gallery screen lives in `lib/features/gallery/`. All subdirs (`presentation/screens/`, `presentation/providers/`, `presentation/widgets/`, `test/`) are empty.
+  * `lib/tiles/registry_deals/` — empty ghost tile directory. The tile has no Dart files, is absent from `TileLoader._supportedComponentNames`, and is not wired into `TileFactory.buildTile()`. Its corresponding `test/tiles/registry_deals/` is equally empty.
+
+  **C. Misplaced `test/` directories inside `lib/features/` (8 directories):**
+  Every active feature directory contains an empty `test/` subfolder inside the source tree:
+  * `lib/features/auth/test/`, `lib/features/calendar/test/`, `lib/features/gallery/test/`
+  * `lib/features/home/test/`, `lib/features/profile/test/`, `lib/features/registry/test/`
+  * `lib/features/fun/test/`, `lib/features/photo_gallery/test/`
+  Tests placed inside `lib/` are **not** discovered by `flutter test` (which scans the project-level `test/` directory). More critically, any Dart files placed there would be compiled into the release APK/IPA, inflating binary size.
+
+* **Why it's a Gap**: Category A creates structural noise and implies an architecture the codebase does not follow. Category B is a more serious risk — a developer could accidentally create new code inside `lib/features/fun/` or `lib/features/photo_gallery/` believing it is the active feature, when it is not. Category C is a testing reliability risk: any test written inside `lib/features/*/test/` would silently never run.
+* **Resolution Plan**:
+  1. Prune all empty subfolders in `auth/`, `registry/`, and `profile/` (Category A). Keep only `presentation/screens/`, `presentation/providers/`, and `presentation/widgets/`.
+  2. Delete the ghost top-level directories `lib/features/fun/`, `lib/features/photo_gallery/`, and `lib/tiles/registry_deals/` along with `test/tiles/registry_deals/` (Category B).
+  3. Delete all 8 `lib/features/*/test/` directories (Category C). All tile and feature tests already live correctly under the project-level `test/` directory.
 
 ---
 
 ### 3. Missing Isolated Tile Test Suites (Medium Severity)
 * **Underlying Code**: `lib/tiles/` -> `name_suggestions`, `prediction_votes`, `new_baby_welcome`, `registry_list`
-* **Technical Detail**: The codebase comprehensively tests the original 14 tiles (e.g., `checklist`, `countdown`, `recent_photos`) with isolated unit and widget tests under `test/tiles/`. However, the 4 newly added smart tiles do not have dedicated test folders:
+* **Technical Detail**: The codebase tests 14 active tiles with isolated unit and widget tests under `test/tiles/` (e.g., `checklist`, `countdown`, `recent_photos`). However, the 4 newly added smart tiles do not have dedicated test folders:
   * `test/tiles/name_suggestions/` (missing)
   * `test/tiles/prediction_votes/` (missing)
   * `test/tiles/new_baby_welcome/` (missing)
   * `test/tiles/registry_list/` (missing)
+
+  Note: `test/tiles/registry_deals/` exists as a directory but contains zero Dart files. It corresponds to the ghost tile `lib/tiles/registry_deals/` (see Gap 2, Category B) and should be deleted, not populated.
 * **Why it's a Gap**: These tiles are currently only tested implicitly inside feature screen widget tests (such as `gamification_screen_test.dart`). If developers make isolated changes to these tiles, regressions could easily bypass layout boundary checks and crash the parent widget trees.
-* **Resolution Plan**: Create dedicated, isolated test suites mirroring the established tile testing structure. Mock their respective providers and write widget tests verifying shimmers, empty states, and interactive inputs.
+* **Resolution Plan**: Create dedicated, isolated test suites mirroring the established tile testing structure. Mock their respective providers and write widget tests verifying shimmers, empty states, and interactive inputs. Simultaneously delete the empty `test/tiles/registry_deals/` directory.
 
 ---
 
@@ -87,7 +112,8 @@ This document provides a comprehensive technical audit and a non-technical plain
 * **Underlying Code**: `lib/l10n/app_es.arb` and hardcoded widget parameters
 * **Technical Detail**: The app supports bilingual localization (English and Spanish). However, many of the newer screens and tiles have hardcoded English strings in their files:
   * `NewBabyWelcomeTile` values (e.g., `"Born today!"`, `"N days old"`) are hardcoded.
-  * `prediction_votes_tile.dart` values (e.g., `"Engagement Recap"`, `"neutral"`) bypass the localization files.
+  * `prediction_votes_tile.dart` values (e.g., `"neutral"`) bypass the localization files.
+  * `activity_list_tile.dart` values (e.g., `"Engagement Recap"`) are hardcoded directly in the widget, not in `app_en.arb`.
 * **Why it's a Gap**: Spanish users will see broken and untranslated English components scattered throughout their screens, degrading the user experience.
 * **Resolution Plan**: Extract all hardcoded strings from widgets and providers, add them as key-value pairs inside `app_en.arb` and `app_es.arb`, and resolve them dynamically via `AppLocalizations.of(context)`.
 
@@ -126,10 +152,10 @@ This section translates the technical issues identified above into plain languag
 * **Why it happens**: When you tap a notification, the app opens that specific screen directly, but it expects the previous screen to "hand over" the photo details. Since there was no previous screen, there's no data, and the app fails.
 * **The Fix**: Teach the app how to find the photo or event by itself using its unique ID code, instead of expecting another screen to pass it along.
 
-### 2. Empty Code Drawers
-* **The Problem**: The app's codebase has multiple empty folders inside it that are designed for a complicated system structure we don't actually use.
-* **Why it happens**: It's like having a filing cabinet with dozens of empty, labeled drawers. It doesn't break the app, but it makes it confusing for new developers who are trying to find where files actually belong.
-* **The Fix**: Delete the empty folders and keep the structure clean, neat, and simple.
+### 2. Empty Code Drawers & Ghost Feature Folders
+* **The Problem**: The app's codebase contains two types of structural clutter. First, there are dozens of empty folders designed for a complicated system structure we don't actually use (like labeled filing cabinet drawers with nothing in them). Second — and more dangerous — there are two entire "ghost" feature sections (`fun/` and `photo_gallery/`) that look like real parts of the app but are completely empty imposters of the actual working sections (`gamification/` and `gallery/`). There is also a ghost registry tile (`registry_deals/`) that has a folder but no code at all.
+* **Why it happens**: Early development scaffolded a Clean Architecture structure that was later simplified. The ghost directories were likely early naming attempts before the final feature names were settled. The empty test folders inside `lib/` were created by mistake — tests should live in the project-level `test/` folder, not inside the source code folder.
+* **The Fix**: Delete all empty folders. Delete the ghost feature directories (`fun/`, `photo_gallery/`) and the ghost tile (`registry_deals/`). Remove the misplaced test folders from inside the source code directory.
 
 ### 3. Missing Feature Check-Ups
 * **The Problem**: We added 4 excellent new features recently (the congratulations welcome banner, baby gender guessing, baby name suggestions, and the full registry page), but we didn't write dedicated automated check-ups (tests) specifically for them.
