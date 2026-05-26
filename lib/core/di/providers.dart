@@ -17,6 +17,9 @@ import '../services/realtime_service.dart';
 import '../services/realtime_subscription_manager.dart';
 import '../services/storage_service.dart';
 import '../services/app_initialization_service.dart';
+import '../services/sync_manager.dart';
+import 'network_status_notifier.dart';
+import 'connectivity_wrapper.dart';
 
 /// Global providers for dependency injection throughout the app
 ///
@@ -139,6 +142,35 @@ final notificationServiceProvider = Provider<NotificationService>((ref) {
   return NotificationService.instance;
 });
 
+/// Provides the sync manager
+///
+/// Wraps [SyncManager] in a Riverpod [Provider], initialises its background
+/// sync timer on first access, and disposes it when the provider is destroyed.
+final syncManagerProvider = Provider<SyncManager>((ref) {
+  final realtimeService = ref.watch(realtimeServiceProvider);
+  final manager = SyncManager(realtimeService: realtimeService);
+  unawaited(manager.initialize());
+  ref.onDispose(() => unawaited(manager.dispose()));
+  return manager;
+});
+
+/// Provides a thin wrapper around [Connectivity] for testability.
+///
+/// Override this in tests with a [FakeConnectivityWrapper] to control the
+/// stream without hitting platform channels.
+final connectivityWrapperProvider = Provider<ConnectivityWrapper>(
+  (ref) => DefaultConnectivityWrapper(),
+);
+
+/// Provides the current online/offline status.
+///
+/// Backed by [NetworkStatusNotifier] which monitors [Connectivity] streams.
+/// Intentionally NOT autoDispose — must survive screen navigation so it can
+/// detect reconnection events throughout the entire app session.
+final isOnlineProvider = NotifierProvider<NetworkStatusNotifier, bool>(
+  NetworkStatusNotifier.new,
+);
+
 // ==========================================
 // Monitoring & Analytics
 // ==========================================
@@ -205,6 +237,11 @@ final appInitializationProvider = FutureProvider<bool>((ref) async {
     final names = result.warnings.join(', ');
     debugPrint('⚠️ Optional startup integrations failed: $names');
   }
+
+  // Eagerly activate background sync + connectivity monitoring after Supabase
+  // is initialized (syncManagerProvider depends on supabaseClientProvider).
+  ref.read(syncManagerProvider);
+  ref.read(isOnlineProvider);
 
   // Initialize cache service - using ref.watch for reactivity
   final cacheService = ref.watch(cacheServiceProvider);

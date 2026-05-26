@@ -7,33 +7,43 @@ import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/utils/gallery_image_url_resolver.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/features/gallery/presentation/widgets/squish_photo_widget.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/photo_detail_provider.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/photo_comments_provider.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/models/user.dart';
-import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
-/// Photo detail screen showing full image, metadata, and squish button.
+import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 class PhotoDetailScreen extends ConsumerStatefulWidget {
   const PhotoDetailScreen({
     super.key,
-    required this.photo,
-  });
+    this.photo,
+    this.photoId,
+  }) : assert(
+          photo != null || photoId != null,
+          'Either photo or photoId must be supplied',
+        );
 
-  final Photo photo;
+  final Photo? photo;
+  final String? photoId;
 
   @override
   ConsumerState<PhotoDetailScreen> createState() => _PhotoDetailScreenState();
 }
 
 class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
+  // Resolved photo (populated from widget.photo or fetched by photoId)
+  Photo? _resolvedPhoto;
+  bool _isLoadingPhoto = false;
+  String? _resolveError;
+
   // Caption editing state
   bool _isEditingCaption = false;
-  late TextEditingController _captionController;
+  TextEditingController? _captionController;
   String? _currentCaption;
-  late final Future<String> _imageUrlFuture;
+  Future<String>? _imageUrlFuture;
 
   // Comment state
   final TextEditingController _commentController = TextEditingController();
@@ -43,24 +53,53 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _currentCaption = widget.photo.caption;
-    _captionController = TextEditingController(text: _currentCaption);
-    _imageUrlFuture = _resolveDisplayUrl(widget.photo.storagePath);
+    if (widget.photo != null) {
+      _initializeWithPhoto(widget.photo!);
+    } else {
+      _isLoadingPhoto = true;
+      _fetchPhoto();
+    }
+  }
 
-    // Load comments
+  void _initializeWithPhoto(Photo photo) {
+    _resolvedPhoto = photo;
+    _currentCaption = photo.caption;
+    _captionController = TextEditingController(text: _currentCaption);
+    _imageUrlFuture = _resolveDisplayUrl(photo.storagePath);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final userId = ref.read(authProvider).user?.id;
       ref.read(photoDetailProvider.notifier).initialize(
-            photo: widget.photo,
+            photo: photo,
             userId: userId,
           );
-      ref.read(photoCommentsProvider.notifier).loadComments(widget.photo.id);
+      ref.read(photoCommentsProvider.notifier).loadComments(photo.id);
     });
+  }
+
+  Future<void> _fetchPhoto() async {
+    try {
+      final databaseService = ref.read(databaseServiceProvider);
+      final response = await databaseService
+          .select(SupabaseTables.photos)
+          .eq(SupabaseTables.id, widget.photoId!)
+          .single();
+      if (!mounted) return;
+      final photo = Photo.fromJson(response);
+      _initializeWithPhoto(photo);
+      setState(() => _isLoadingPhoto = false);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _resolveError = e.toString();
+        _isLoadingPhoto = false;
+      });
+    }
   }
 
   @override
   void dispose() {
-    _captionController.dispose();
+    _captionController?.dispose();
     _commentController.dispose();
     super.dispose();
   }
@@ -79,7 +118,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
     try {
       final users = await ref
           .read(photoDetailProvider.notifier)
-          .fetchSquishUsers(photoId: widget.photo.id);
+          .fetchSquishUsers(photoId: _resolvedPhoto!.id);
       if (!mounted) return;
 
       await showModalBottomSheet<void>(
@@ -149,7 +188,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   Future<void> _toggleSquish() async {
     final userId = ref.read(authProvider).user?.id;
     final success = await ref.read(photoDetailProvider.notifier).toggleSquish(
-          photo: widget.photo,
+          photo: _resolvedPhoto!,
           userId: userId,
         );
     if (!success) {
@@ -163,14 +202,14 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   }
 
   Future<void> _updateCaption() async {
-    final newCaption = _captionController.text.trim();
+    final newCaption = _captionController!.text.trim();
     if (newCaption == _currentCaption) {
       setState(() => _isEditingCaption = false);
       return;
     }
 
     final updated = await ref.read(photoDetailProvider.notifier).updateCaption(
-          photo: widget.photo,
+          photo: _resolvedPhoto!,
           caption: newCaption,
         );
     if (!updated) {
@@ -206,13 +245,21 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingPhoto) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_resolveError != null) {
+      return Scaffold(
+          body: Center(child: Text('Failed to load photo: $_resolveError')));
+    }
     final l10n = AppLocalizations.of(context);
     final detailState = ref.watch(photoDetailProvider);
-    final commentsState = ref.watch(photoCommentsProvider)[widget.photo.id] ??
+    final commentsState =
+        ref.watch(photoCommentsProvider)[_resolvedPhoto!.id] ??
         const PhotoCommentsState();
     final commentCount = commentsState.comments.isNotEmpty
         ? commentsState.comments.length
-        : widget.photo.commentCount;
+        : _resolvedPhoto!.commentCount;
 
     return Scaffold(
       appBar: AppBar(
@@ -245,7 +292,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                 if (confirm == true) {
                   final success = await ref
                       .read(photoDetailProvider.notifier)
-                      .deletePhoto(photo: widget.photo);
+                      .deletePhoto(photo: _resolvedPhoto!);
                   if (success && mounted) {
                     Navigator.of(context).pop();
                   }
@@ -323,7 +370,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                   if (_isEditingCaption) ...[
                     TextField(
                       key: const Key('caption_edit_field'),
-                      controller: _captionController,
+                      controller: _captionController!,
                       maxLines: 3,
                       decoration: InputDecoration(
                         hintText: l10n.gallery_captionHint,
@@ -346,7 +393,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                           onPressed: detailState.isSavingCaption
                               ? null
                               : () {
-                                  _captionController.text =
+                                  _captionController!.text =
                                       _currentCaption ?? '';
                                   setState(() => _isEditingCaption = false);
                                 },
@@ -368,8 +415,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                     ),
                   ],
                   AppSpacing.verticalGapM,
-                  // Tags
-                  if (widget.photo.tags.isNotEmpty) ...[
+                  if (_resolvedPhoto!.tags.isNotEmpty) ...[
                     Text(
                       l10n.gallery_tagsLabel,
                       style: Theme.of(context).textTheme.titleSmall,
@@ -378,7 +424,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                     Wrap(
                       spacing: AppSpacing.xs,
                       runSpacing: AppSpacing.xs,
-                      children: widget.photo.tags
+                      children: _resolvedPhoto!.tags
                           .map(
                             (tag) => Chip(
                               key: Key('photo_tag_$tag'),
@@ -392,7 +438,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                   // Uploaded date
                   Text(
                     l10n.gallery_uploadedDate(
-                      DateFormat('MMM d, yyyy').format(widget.photo.createdAt),
+                      DateFormat('MMM d, yyyy').format(_resolvedPhoto!.createdAt),
                     ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
@@ -448,7 +494,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   }
 
   Widget _buildCommentsSection(AppLocalizations l10n) {
-    final commentsState = ref.watch(photoCommentsProvider)[widget.photo.id] ??
+    final commentsState = ref.watch(photoCommentsProvider)[_resolvedPhoto!.id] ??
         const PhotoCommentsState();
     final currentUser = ref.watch(authProvider).user;
     final isOwner = ref.watch(photoDetailProvider).isOwner;
@@ -603,11 +649,11 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
 
     if (_isEditingComment && _editingCommentId != null) {
       final updated = await notifier.updateComment(
-          photoId: widget.photo.id, commentId: _editingCommentId!, body: body);
+          photoId: _resolvedPhoto!.id, commentId: _editingCommentId!, body: body);
       if (!updated) return;
     } else {
       final added = await notifier.addComment(
-          photoId: widget.photo.id, userId: userId, body: body);
+          photoId: _resolvedPhoto!.id, userId: userId, body: body);
       if (!added) return;
 
       _refreshParentProviders();
@@ -649,7 +695,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
     if (confirm == true) {
       final deleted = await ref
           .read(photoCommentsProvider.notifier)
-          .deleteComment(photoId: widget.photo.id, commentId: commentId);
+          .deleteComment(photoId: _resolvedPhoto!.id, commentId: commentId);
       if (!deleted) return;
 
       _refreshParentProviders();
@@ -659,6 +705,6 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   void _refreshParentProviders() {
     ref
         .read(photoDetailProvider.notifier)
-        .refreshRelatedTilesForComments(widget.photo.babyProfileId);
+        .refreshRelatedTilesForComments(_resolvedPhoto!.babyProfileId);
   }
 }

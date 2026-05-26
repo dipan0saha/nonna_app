@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
@@ -15,14 +17,62 @@ import 'package:url_launcher/url_launcher.dart';
 /// Registry item detail screen showing full info, purchase status, and actions.
 ///
 /// **Functional Requirements**: Section 3.6.2 - Main App Screens Part II
-class RegistryItemDetailScreen extends ConsumerWidget {
+class RegistryItemDetailScreen extends ConsumerStatefulWidget {
   const RegistryItemDetailScreen({
     super.key,
-    required this.item,
-  });
+    this.item,
+    this.itemId,
+  }) : assert(
+          item != null || itemId != null,
+          'Either item or itemId must be supplied',
+        );
 
-  /// The registry item to display
-  final RegistryItem item;
+  /// The registry item to display (optional; fetched by itemId if null)
+  final RegistryItem? item;
+  final String? itemId;
+
+  @override
+  ConsumerState<RegistryItemDetailScreen> createState() =>
+      _RegistryItemDetailScreenState();
+}
+
+class _RegistryItemDetailScreenState
+    extends ConsumerState<RegistryItemDetailScreen> {
+  RegistryItem? _resolvedItem;
+  bool _isLoadingItem = false;
+  String? _resolveError;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.item != null) {
+      _resolvedItem = widget.item;
+    } else {
+      _isLoadingItem = true;
+      _fetchItem();
+    }
+  }
+
+  Future<void> _fetchItem() async {
+    try {
+      final databaseService = ref.read(databaseServiceProvider);
+      final response = await databaseService
+          .select(SupabaseTables.registryItems)
+          .eq(SupabaseTables.id, widget.itemId!)
+          .single();
+      if (!mounted) return;
+      setState(() {
+        _resolvedItem = RegistryItem.fromJson(response);
+        _isLoadingItem = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _resolveError = e.toString();
+        _isLoadingItem = false;
+      });
+    }
+ }
 
   bool _isRasterAvatarUrl(String? url) {
     if (url == null || url.isEmpty) return false;
@@ -42,7 +92,16 @@ class RegistryItemDetailScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    if (_isLoadingItem) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_resolveError != null) {
+      return Scaffold(
+          body: Center(
+              child: Text('Failed to load registry item: $_resolveError')));
+    }
+    final item = _resolvedItem!;
     final state = ref.watch(registryScreenProvider);
     final itemWithStatus =
         state.items.cast<RegistryItemWithStatus?>().firstWhere(
@@ -69,8 +128,8 @@ class RegistryItemDetailScreen extends ConsumerWidget {
               icon: const Icon(Icons.edit),
               onPressed: () async {
                 final updated = await context.push<bool>(
-                  AppRoutes.registryItemEdit,
-                  extra: item,
+                  AppRoutes.registryItemEditRoute(_resolvedItem!.id),
+                  extra: _resolvedItem,
                 );
 
                 if (updated == true) {

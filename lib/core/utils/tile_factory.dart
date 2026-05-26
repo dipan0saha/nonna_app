@@ -182,7 +182,7 @@ class _RecentPhotosSmartTileState
       isLoading: state.isLoading && state.photos.isEmpty,
       error: state.error,
       fullView: fullView,
-      onPhotoTap: (photo) => context.push(AppRoutes.galleryPhoto, extra: photo),
+      onPhotoTap: (photo) => context.push(AppRoutes.galleryPhotoRoute(photo.id), extra: photo),
       onRefresh: babyProfileId != null
           ? () => ref
               .read(recentPhotosProvider.notifier)
@@ -550,7 +550,7 @@ class _GalleryFavoritesSmartTileState
       isLoading: state.isLoading && state.favorites.isEmpty,
       error: state.error,
       fullView: fullView,
-      onPhotoTap: (photo) => context.push(AppRoutes.galleryPhoto, extra: photo),
+      onPhotoTap: (photo) => context.push(AppRoutes.galleryPhotoRoute(photo.id), extra: photo),
       onSquishTap: _showSquishUsers,
       onRefresh: babyProfileId != null
           ? () => ref
@@ -606,7 +606,7 @@ class _UpcomingEventsSmartTileState
       isLoading: state.isLoading && state.events.isEmpty,
       error: state.error,
       onEventTap: (event) {
-        context.push(AppRoutes.calendarEvent, extra: event);
+        context.push(AppRoutes.calendarEventRoute(event.id), extra: event);
       },
       onRefresh: () {
         if (babyProfileId != null) {

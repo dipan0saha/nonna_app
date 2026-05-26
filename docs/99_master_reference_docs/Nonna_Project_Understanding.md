@@ -1,6 +1,6 @@
 # Nonna App — Project Understanding
 
-**Document Version**: 3.1 **Last Updated**: June 2026 **Status**: Living
+**Document Version**: 3.3 **Last Updated**: May 2026 **Status**: Living
 Document - Fully aligned with Version 3.1 codebase specifications
 
 ---
@@ -133,7 +133,7 @@ simultaneously (dual-role).
 | Data Persistence         | `CacheService`, `LocalStorageService`                                                    |
 | Realtime & Notifications | `RealtimeService`, `RealtimeSubscriptionManager`, `NotificationService`                  |
 | Monitoring & Analytics   | `AnalyticsService`, `ObservabilityService`                                               |
-| Offline & Sync           | `OfflineCacheManager`, `SyncManager`, `StatePersistenceManager`, `PersistenceStrategies` |
+| Offline & Sync           | `OfflineCacheManager`, `SyncManager`, `StatePersistenceManager`, `PersistenceStrategies`, `NetworkStatusNotifier`, `ConnectivityWrapper` |
 | Recovery & Compliance    | `CrashRecoveryHandler`, `BackupService`, `DataExportHandler`, `DataDeletionHandler`      |
 | App Lifecycle            | `AppInitializationService`, `ForceUpdateService`, `NetworkErrorHandler`                  |
 
@@ -169,6 +169,11 @@ simultaneously (dual-role).
 Routes are defined in `lib/core/router/app_router.dart` using GoRouter with
 auth-guard redirects.
 
+Detail/edit routes embed `:id` path slugs so they survive deep links, push
+notification launches, and OS background restores. Use the static URL builder
+helpers on `AppRoutes` (e.g. `AppRoutes.galleryPhotoRoute(id)`) as navigation
+targets — never the raw constants directly.
+
 | Route Constant         | Path                             | Screen                     |
 | ---------------------- | -------------------------------- | -------------------------- |
 | `home`                 | `/home`                          | HomeScreen                 |
@@ -179,13 +184,13 @@ auth-guard redirects.
 | `profileEdit`          | `/profile/edit`                  | EditProfileScreen          |
 | `calendar`             | `/calendar`                      | CalendarScreen             |
 | `calendarUpcoming`     | `/calendar/upcoming`             | UpcomingEventsScreen       |
-| `calendarEvent`        | `/calendar/event/detail`         | EventDetailScreen          |
+| `calendarEvent`        | `/calendar/event/:id`            | EventDetailScreen          |
 | `calendarEventCreate`  | `/calendar/event/create`         | EventCreationScreen        |
-| `calendarEventEdit`    | `/calendar/event/edit`           | EventEditScreen            |
+| `calendarEventEdit`    | `/calendar/event/:id/edit`       | EventEditScreen            |
 | `gallery`              | `/gallery`                       | GalleryScreen              |
 | `galleryFavorites`     | `/gallery/favorites`             | GalleryScreen (Favorites)  |
 | `galleryRecent`        | `/gallery/recent`                | GalleryScreen (Recent)     |
-| `galleryPhoto`         | `/gallery/photo/detail`          | PhotoDetailScreen          |
+| `galleryPhoto`         | `/gallery/photo/:id`             | PhotoDetailScreen          |
 | `gamification`         | `/gamification`                  | GamificationScreen         |
 | `settings`             | `/settings`                      | SettingsScreen             |
 | `babyProfile`          | `/baby-profile`                  | BabyProfileScreen          |
@@ -194,9 +199,9 @@ auth-guard redirects.
 | `babyProfileFollowers` | `/baby-profile/followers`        | FollowersManagementScreen  |
 | `babyProfileInvite`    | `/baby-profile/followers/invite` | InviteFollowersScreen      |
 | `registry`             | `/registry`                      | RegistryScreen             |
-| `registryItem`         | `/registry/item/detail`          | RegistryItemDetailScreen   |
+| `registryItem`         | `/registry/item/:id`             | RegistryItemDetailScreen   |
 | `registryItemCreate`   | `/registry/item/create`          | RegistryItemCreationScreen |
-| `registryItemEdit`     | `/registry/item/edit`            | RegistryItemEditScreen     |
+| `registryItemEdit`     | `/registry/item/:id/edit`        | RegistryItemEditScreen     |
 
 ---
 
@@ -222,7 +227,6 @@ auth-guard redirects.
 | `lib/core/models/baby_profile.dart`                                              | Core baby profile model (extended with `birthWeightKg`, `birthHeightCm`)                  |
 | `lib/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart`   | Edit profile screen (extended with weight/height input fields)                            |
 | `supabase/functions/`                                                            | Serverless Edge Functions (TypeScript/Deno)                                               |
-
 
 ---
 

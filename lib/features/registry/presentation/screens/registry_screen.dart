@@ -127,6 +127,15 @@ class _RegistryScreenState extends ConsumerState<RegistryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Reload when the selected baby profile changes. Required because
+    // StatefulShellRoute.indexedStack keeps this widget alive across tab
+    // switches, so initState/didUpdateWidget never re-run on profile changes.
+    ref.listen<String?>(selectedBabyProfileProvider, (previous, next) {
+      if (previous != next && next != null) {
+        _loadRegistryIfReady();
+      }
+    });
+
     final state = ref.watch(registryScreenProvider);
     final selectedBabyId =
         widget.babyProfileId ?? ref.watch(selectedBabyProfileProvider);

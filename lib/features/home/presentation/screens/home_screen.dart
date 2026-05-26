@@ -15,6 +15,7 @@ import 'package:nonna_app/features/home/presentation/providers/home_screen_provi
 import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
 import 'package:nonna_app/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
+import 'package:nonna_app/core/widgets/offline_indicator.dart';
 
 /// Home screen
 ///
@@ -182,6 +183,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       body: Column(
         children: [
+          // Offline indicator — shown when device has no network connectivity.
+          // isOnlineProvider is non-autoDispose so it survives navigation.
+          OfflineIndicator(
+            isOffline: !ref.watch(isOnlineProvider),
+            onRetry: () => ref.read(homeScreenProvider.notifier).refresh(),
+          ),
           // Role toggle for dual-role users
           if (isDualRole && userRole != null)
             _RoleToggle(

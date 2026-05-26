@@ -18,13 +18,18 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 class EventDetailScreen extends ConsumerStatefulWidget {
   const EventDetailScreen({
     super.key,
-    required this.event,
+    this.event,
+    this.eventId,
     this.userRole,
     this.onEditTap,
     this.onDeleteTap,
-  });
+  }) : assert(
+          event != null || eventId != null,
+          'Either event or eventId must be supplied',
+        );
 
-  final Event event;
+  final Event? event;
+  final String? eventId;
   final UserRole? userRole;
   final VoidCallback? onEditTap;
   final VoidCallback? onDeleteTap;
@@ -35,14 +40,43 @@ class EventDetailScreen extends ConsumerStatefulWidget {
 
 class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   late Event _event;
+  bool _isLoadingEvent = false;
+  String? _resolveError;
   List<_RsvpEntry> _rsvps = [];
   bool _loadingRsvps = true;
 
   @override
   void initState() {
     super.initState();
-    _event = widget.event;
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadRsvps());
+    if (widget.event != null) {
+      _event = widget.event!;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _loadRsvps());
+    } else {
+      _isLoadingEvent = true;
+      _fetchEvent();
+    }
+  }
+
+  Future<void> _fetchEvent() async {
+    try {
+      final databaseService = ref.read(databaseServiceProvider);
+      final response = await databaseService
+          .select(SupabaseTables.events)
+          .eq(SupabaseTables.id, widget.eventId!)
+          .single();
+      if (!mounted) return;
+      setState(() {
+        _event = Event.fromJson(response);
+        _isLoadingEvent = false;
+      });
+      _loadRsvps();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _resolveError = e.toString();
+        _isLoadingEvent = false;
+      });
+    }
   }
 
   Future<void> _deleteEvent(BuildContext context) async {
@@ -137,6 +171,13 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingEvent) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_resolveError != null) {
+      return Scaffold(
+          body: Center(child: Text('Failed to load event: $_resolveError')));
+    }
     final dateFormat = DateFormat('EEE, MMM d, yyyy – h:mm a');
     final currentUserId = ref.watch(authProvider).user?.id;
     final bool isOwner =
@@ -155,7 +196,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               onPressed: widget.onEditTap ??
                   () async {
                     final result = await context.push<Event>(
-                      AppRoutes.calendarEventEdit,
+                      AppRoutes.calendarEventEditRoute(_event.id),
                       extra: _event,
                     );
                     if (result is Event && mounted) {

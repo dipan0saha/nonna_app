@@ -1,7 +1,7 @@
 # Nonna App — Current System Gaps Analysis
 
-**Document Version**: 2.0
-**Date**: May 25, 2026
+**Document Version**: 2.1
+**Date**: May 26, 2026
 **Location**: `docs/99_master_reference_docs/Current_System_Gaps.md`
 **Status**: Living Document - Fully updated with Technical and Plain Language sections
 
@@ -13,12 +13,12 @@ This document provides a comprehensive technical audit and a non-technical plain
 
 | Area | Gap Description | Severity | Impact |
 |---|---|---|---|
-| **Routing** | Deep-Link / Push Notification routing crash on null `extra` payloads. | **High** | App crashes or shows "not found" pages when deep-linked or launched via notifications. |
+| ~~**Routing**~~ | ~~Deep-Link / Push Notification routing crash on null `extra` payloads.~~ | ~~**High**~~ | ✅ **RESOLVED (May 2026)** — ID-embedded routes + hybrid constructor pattern implemented across all 5 detail/edit screens. |
 | **Architecture** | Dead boilerplate folders, ghost feature/tile directories, and misplaced test folders. | **Medium** | 35+ empty directories across `lib/features/` and `lib/tiles/`; ghost duplicates of active features; test files inside `lib/` that are never run by `flutter test` and are compiled into release builds. |
 | **Testing** | Missing isolated tests for 4 newly added smart tiles. | **Medium** | Risk of regression bugs on gamification and welcome cards. |
 | ~~**Edge Functions**~~ | ~~Functioning backend stub in the `generate-thumbnail` function.~~ | ~~**Low**~~ | ✅ **RESOLVED (May 2026)** — Real `imagescript` WASM resize (300×300 JPEG, quality 80) implemented. Correct `thumbnail_path` column written. 9 unit tests passing. |
 | **Localization** | Hardcoded English strings on newer features and tiles. | **Medium** | Broken translations for Spanish users. |
-| **Offline Sync** | Stale caches on cellular socket reconnect. | **Medium** | Users see outdated data until a manual pull-to-refresh is executed. |
+| ~~**Offline Sync**~~ | ~~Stale caches on cellular socket reconnect.~~ | ~~**Medium**~~ | ✅ **RESOLVED (May 2026)** — `connectivity_plus` integrated via `NetworkStatusNotifier` + `ConnectivityWrapper`. Offline banner, silent cache retention, and per-tile error suppression all implemented and emulator-validated. |
 | **Growth** | Limited email-only invitation acquisition loops. | **Low** | High friction for parent owners to invite family members. |
 | **CI/CD** | Absence of unified mobile cloud-testing setup. | **High** | Undetected device-specific layout and crash regressions on native runs. |
 
@@ -26,21 +26,20 @@ This document provides a comprehensive technical audit and a non-technical plain
 
 ## 🔍 Detailed Gap Analysis & Technical Breakdowns
 
-### 1. Routing Deep-Link Vulnerabilities (High Severity)
-* **Underlying Code**: `lib/core/router/app_router.dart`
-* **Technical Detail**: Detail screens for Calendar events (`AppRoutes.calendarEvent`), photo gallery details (`AppRoutes.galleryPhoto`), and registry gift details (`AppRoutes.registryItem`) are configured to read full domain entities (e.g. `Event`, `Photo`, `RegistryItem`) directly from the GoRouter `state.extra` parameter:
-  ```dart
-  GoRoute(
-    path: 'photo/detail',
-    builder: (context, state) {
-      final photo = state.extra as Photo?;
-      if (photo == null) return _missingData('Photo');
-      return PhotoDetailScreen(photo: photo);
-    },
-  )
-  ```
-* **Why it's a Gap**: The `extra` payload is an in-memory object only available during in-app programmatic navigation. If a user launches the app from a native push notification, deep-links from an invitation email, or if the operating system kills and restores the app in the background, `state.extra` becomes `null`. This results in the app permanently displaying the `_missingData` page ("Photo not found").
-* **Resolution Plan**: Refactor the router paths to use unique identifier slugs (e.g., `/gallery/photo/:id`). Update the detail screens to read the `:id` parameter and fetch the entity from the cache or database during screen initialization (`initState`).
+### 1. ~~Routing Deep-Link Vulnerabilities~~ ✅ RESOLVED (May 2026)
+* **Underlying Code**: `lib/core/router/app_router.dart`, 5 detail/edit screens, 4 call-site files
+* **What Was Fixed**:
+  * **`AppRoutes` constants** updated to embed `:id` path slugs for all 5 problematic routes:
+    * `calendarEvent` → `/calendar/event/:id`, `calendarEventEdit` → `/calendar/event/:id/edit`
+    * `galleryPhoto` → `/gallery/photo/:id`
+    * `registryItem` → `/registry/item/:id`, `registryItemEdit` → `/registry/item/:id/edit`
+  * **5 static URL builder helpers** added to `AppRoutes` (`galleryPhotoRoute`, `calendarEventRoute`, `calendarEventEditRoute`, `registryItemRoute`, `registryItemEditRoute`) — all call sites use these.
+  * **Route ordering fixed**: Static `event/create` and `item/create` routes now appear before their dynamic `:id` siblings to prevent GoRouter matching `create` as an ID.
+  * **5 screens adapted** with hybrid constructor (`entity?` + `entityId?` + assert): `PhotoDetailScreen`, `EventDetailScreen`, `EventEditScreen`, `RegistryItemDetailScreen` (also converted from `ConsumerWidget` → `ConsumerStatefulWidget`), `RegistryItemEditScreen`. Each screen branches in `initState()`: if the entity is available (in-app navigation via `extra`), initializes instantly; if only `entityId` is present (deep link / OS restore), fetches from DB via `DatabaseService` + `SupabaseTables` constants.
+  * **7 navigation call sites** updated across 4 files to use ID-embedded URLs — `tile_factory.dart` (×3), `upcoming_events_screen.dart` (×1), `registry_list_tile.dart` (×2), `onesignal_config.dart` (×2). The `onesignal_config.dart` bug (passing raw String IDs as `extra`) is fixed as a side effect — push notification deep-links now work correctly.
+  * **`_missingData` orphan** helper removed from `app_router.dart` (no longer needed).
+* **Verification**: Zero analyzer errors/warnings in all 10 modified files. Release APK builds clean (65.5 MB). App validated on `emulator-5554`.
+* **Files Changed**: `lib/core/router/app_router.dart`, `lib/core/config/onesignal_config.dart`, `lib/core/utils/tile_factory.dart`, `lib/features/calendar/presentation/screens/event_detail_screen.dart`, `lib/features/calendar/presentation/screens/event_edit_screen.dart`, `lib/features/calendar/presentation/screens/upcoming_events_screen.dart`, `lib/features/gallery/presentation/screens/photo_detail_screen.dart`, `lib/features/registry/presentation/screens/registry_item_detail_screen.dart`, `lib/features/registry/presentation/screens/registry_item_edit_screen.dart`, `lib/tiles/registry_list/widgets/registry_list_tile.dart`.
 
 ---
 
@@ -95,11 +94,18 @@ This document provides a comprehensive technical audit and a non-technical plain
 
 ---
 
-### 6. Cellular Network Reconnection Limits (Medium Severity)
-* **Underlying Code**: `lib/core/services/realtime_service.dart` and `lib/core/utils/tile_loader.dart`
-* **Technical Detail**: While `RealtimeSubscriptionManager` prevents active connection leaks, the database synchronization layer does not explicitly handle network state transitions.
-* **Why it's a Gap**: If a user walks into a dead zone (e.g., an elevator) and reconnects to cellular service, the persistent socket connection might disconnect and fail to automatically re-subscribe or pull missed database delta-logs. The user will continue to see stale caches without knowing they are disconnected unless they execute a manual pull-to-refresh.
-* **Resolution Plan**: Integrate the `connectivity_plus` package inside `SyncManager`. Detect network reconnection events to automatically trigger state invalidations and refresh active screen subscriptions.
+### 6. ~~Cellular Network Reconnection Limits~~ ✅ RESOLVED (May 2026)
+* **Underlying Code (was)**: `lib/core/services/realtime_service.dart` and `lib/core/utils/tile_loader.dart`
+* **Resolution**:
+  * Added `connectivity_plus: ^6.1.5` to `pubspec.yaml`.
+  * Created `lib/core/di/connectivity_wrapper.dart` — a thin `ConnectivityWrapper` abstraction over `Connectivity.onConnectivityChanged` to enable full test isolation.
+  * Created `lib/core/di/network_status_notifier.dart` — a non-autoDispose `Notifier<bool>` (`NetworkStatusNotifier`) that translates `ConnectivityResult` changes into a single boolean `isOnlineProvider`. Exposes a `markOffline()` method so providers can immediately flag an offline state on HTTP failure without waiting for the OS connectivity event (which can lag 100–500 ms or never fire on emulators).
+  * Added three providers to `lib/core/di/providers.dart`: `connectivityWrapperProvider`, `isOnlineProvider`, and `syncManagerProvider`. All three are eagerly activated inside `appInitializationProvider` **after** `AppInitializationService.initialize()` completes to avoid a Supabase-not-initialized crash.
+  * Wired `OfflineIndicator` as the first child of the `Column` in `lib/features/home/presentation/screens/home_screen.dart`.
+  * Updated `loadTiles()` and `refresh()` catch blocks in `home_screen_provider.dart` to detect `SocketException` and call `markOffline()` — no `state.error` is set for network failures, so tiles retain their last-seen cached data.
+  * Converted `InlineErrorView` in `lib/core/widgets/error_view.dart` from `StatelessWidget` to `ConsumerWidget`. It now returns `SizedBox.shrink()` when `isOnlineProvider` is false, suppressing per-tile error boxes across all 14 tile widgets simultaneously.
+  * **Tests**: `test/helpers/fake_connectivity_wrapper.dart` (new test helper), `test/core/di/network_status_notifier_test.dart` (7 unit tests), `test/features/home/home_screen_offline_test.dart` (4 widget tests) — all 11 passing.
+* **Emulator Validation**: App launches clean → home tiles load → disabling WiFi shows red banner, tiles retain last cached data, no inline error boxes → re-enabling WiFi hides banner and triggers silent background refresh.
 
 ---
 

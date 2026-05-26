@@ -11,10 +11,15 @@ import 'package:nonna_app/core/models/registry_item.dart';
 class RegistryItemEditScreen extends ConsumerStatefulWidget {
   const RegistryItemEditScreen({
     super.key,
-    required this.item,
-  });
+    this.item,
+    this.itemId,
+  }) : assert(
+          item != null || itemId != null,
+          'Either item or itemId must be supplied',
+        );
 
-  final RegistryItem item;
+  final RegistryItem? item;
+  final String? itemId;
 
   @override
   ConsumerState<RegistryItemEditScreen> createState() =>
@@ -23,10 +28,14 @@ class RegistryItemEditScreen extends ConsumerStatefulWidget {
 
 class _RegistryItemEditScreenState
     extends ConsumerState<RegistryItemEditScreen> {
+  RegistryItem? _resolvedItem;
+  bool _isLoadingItem = false;
+  String? _resolveError;
+
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _nameController;
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _linkController;
+  TextEditingController? _nameController;
+  TextEditingController? _descriptionController;
+  TextEditingController? _linkController;
   late int _priority;
   bool _isSaving = false;
   String? _saveError;
@@ -34,18 +43,48 @@ class _RegistryItemEditScreenState
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.item.name);
+    if (widget.item != null) {
+      _initializeWithItem(widget.item!);
+    } else {
+      _isLoadingItem = true;
+      _fetchItem();
+    }
+  }
+
+  void _initializeWithItem(RegistryItem item) {
+    _resolvedItem = item;
+    _nameController = TextEditingController(text: item.name);
     _descriptionController =
-        TextEditingController(text: widget.item.description ?? '');
-    _linkController = TextEditingController(text: widget.item.linkUrl ?? '');
-    _priority = widget.item.priority;
+        TextEditingController(text: item.description ?? '');
+    _linkController = TextEditingController(text: item.linkUrl ?? '');
+    _priority = item.priority;
+  }
+
+  Future<void> _fetchItem() async {
+    try {
+      final databaseService = ref.read(databaseServiceProvider);
+      final response = await databaseService
+          .select(SupabaseTables.registryItems)
+          .eq(SupabaseTables.id, widget.itemId!)
+          .single();
+      if (!mounted) return;
+      final item = RegistryItem.fromJson(response);
+      _initializeWithItem(item);
+      setState(() => _isLoadingItem = false);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _resolveError = e.toString();
+        _isLoadingItem = false;
+      });
+    }
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
-    _linkController.dispose();
+    _nameController?.dispose();
+    _descriptionController?.dispose();
+    _linkController?.dispose();
     super.dispose();
   }
 
@@ -61,16 +100,16 @@ class _RegistryItemEditScreenState
       await ref
           .read(databaseServiceProvider)
           .update(SupabaseTables.registryItems, {
-        'name': _nameController.text.trim(),
-        'description': _descriptionController.text.trim().isNotEmpty
-            ? _descriptionController.text.trim()
+        'name': _nameController!.text.trim(),
+        'description': _descriptionController!.text.trim().isNotEmpty
+            ? _descriptionController!.text.trim()
             : null,
-        'link_url': _linkController.text.trim().isNotEmpty
-            ? _linkController.text.trim()
+        'link_url': _linkController!.text.trim().isNotEmpty
+            ? _linkController!.text.trim()
             : null,
         'priority': _priority,
         'updated_at': DateTime.now().toIso8601String(),
-      }).eq('id', widget.item.id);
+      }).eq('id', _resolvedItem!.id);
 
       if (!mounted) return;
       context.pop(true);
@@ -97,6 +136,14 @@ class _RegistryItemEditScreenState
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingItem) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_resolveError != null) {
+      return Scaffold(
+          body: Center(
+              child: Text('Failed to load registry item: $_resolveError')));
+    }
     final fieldStyle =
         TextStyle(color: Theme.of(context).colorScheme.onSurface);
 
@@ -110,7 +157,7 @@ class _RegistryItemEditScreenState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
-                controller: _nameController,
+                controller: _nameController!,
                 style: fieldStyle,
                 decoration: _fieldDecoration(context, 'Item Name'),
                 textInputAction: TextInputAction.next,
@@ -120,7 +167,7 @@ class _RegistryItemEditScreenState
               ),
               AppSpacing.verticalGapM,
               TextFormField(
-                controller: _descriptionController,
+                controller: _descriptionController!,
                 style: fieldStyle,
                 decoration: _fieldDecoration(context, 'Description (optional)'),
                 maxLines: 3,
@@ -128,7 +175,7 @@ class _RegistryItemEditScreenState
               ),
               AppSpacing.verticalGapM,
               TextFormField(
-                controller: _linkController,
+                controller: _linkController!,
                 style: fieldStyle,
                 decoration: _fieldDecoration(
                   context,

@@ -88,7 +88,7 @@ class _UpcomingEventsScreenState extends ConsumerState<UpcomingEventsScreen> {
                 isLoading: state.isLoading && state.events.isEmpty,
                 fullView: true,
                 onEventTap: (event) =>
-                    context.push(AppRoutes.calendarEvent, extra: event),
+                    context.push(AppRoutes.calendarEventRoute(event.id), extra: event),
               ),
           ],
         ),

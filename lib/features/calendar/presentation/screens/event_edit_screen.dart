@@ -10,19 +10,31 @@ import 'package:nonna_app/core/models/event.dart';
 ///
 /// **Functional Requirements**: Section 3.6.4 - Additional Feature Screens
 class EventEditScreen extends ConsumerStatefulWidget {
-  const EventEditScreen({super.key, required this.event});
+  const EventEditScreen({
+    super.key,
+    this.event,
+    this.eventId,
+  }) : assert(
+          event != null || eventId != null,
+          'Either event or eventId must be supplied',
+        );
 
-  final Event event;
+  final Event? event;
+  final String? eventId;
 
   @override
   ConsumerState<EventEditScreen> createState() => _EventEditScreenState();
 }
 
 class _EventEditScreenState extends ConsumerState<EventEditScreen> {
+  Event? _resolvedEvent;
+  bool _isLoadingEvent = false;
+  String? _resolveError;
+
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _titleController;
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _locationController;
+  TextEditingController? _titleController;
+  TextEditingController? _descriptionController;
+  TextEditingController? _locationController;
   late DateTime _startsAt;
   DateTime? _endsAt;
   bool _isSaving = false;
@@ -31,20 +43,50 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.event.title);
+    if (widget.event != null) {
+      _initializeWithEvent(widget.event!);
+    } else {
+      _isLoadingEvent = true;
+      _fetchEvent();
+    }
+  }
+
+  void _initializeWithEvent(Event event) {
+    _resolvedEvent = event;
+    _titleController = TextEditingController(text: event.title);
     _descriptionController =
-        TextEditingController(text: widget.event.description ?? '');
+        TextEditingController(text: event.description ?? '');
     _locationController =
-        TextEditingController(text: widget.event.location ?? '');
-    _startsAt = widget.event.startsAt;
-    _endsAt = widget.event.endsAt;
+        TextEditingController(text: event.location ?? '');
+    _startsAt = event.startsAt;
+    _endsAt = event.endsAt;
+  }
+
+  Future<void> _fetchEvent() async {
+    try {
+      final databaseService = ref.read(databaseServiceProvider);
+      final response = await databaseService
+          .select(SupabaseTables.events)
+          .eq(SupabaseTables.id, widget.eventId!)
+          .single();
+      if (!mounted) return;
+      final event = Event.fromJson(response);
+      _initializeWithEvent(event);
+      setState(() => _isLoadingEvent = false);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _resolveError = e.toString();
+        _isLoadingEvent = false;
+      });
+    }
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    _locationController.dispose();
+    _titleController?.dispose();
+    _descriptionController?.dispose();
+    _locationController?.dispose();
     super.dispose();
   }
 
@@ -115,40 +157,40 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
     try {
       final databaseService = ref.read(databaseServiceProvider);
       await databaseService.update(SupabaseTables.events, {
-        'title': _titleController.text.trim(),
-        'description': _descriptionController.text.trim().isEmpty
+        'title': _titleController!.text.trim(),
+        'description': _descriptionController!.text.trim().isEmpty
             ? null
-            : _descriptionController.text.trim(),
-        'location': _locationController.text.trim().isEmpty
+            : _descriptionController!.text.trim(),
+        'location': _locationController!.text.trim().isEmpty
             ? null
-            : _locationController.text.trim(),
+            : _locationController!.text.trim(),
         'starts_at': _startsAt.toUtc().toIso8601String(),
         'ends_at': _endsAt?.toUtc().toIso8601String(),
         'updated_at': DateTime.now().toUtc().toIso8601String(),
-      }).eq(SupabaseTables.id, widget.event.id);
+      }).eq(SupabaseTables.id, _resolvedEvent!.id);
 
       if (!mounted) return;
 
       // Build the updated event to pass back so the detail screen
       // can refresh immediately without waiting for a DB round-trip.
       final updatedEvent = Event(
-        id: widget.event.id,
-        babyProfileId: widget.event.babyProfileId,
-        createdByUserId: widget.event.createdByUserId,
-        title: _titleController.text.trim(),
-        description: _descriptionController.text.trim().isEmpty
+        id: _resolvedEvent!.id,
+        babyProfileId: _resolvedEvent!.babyProfileId,
+        createdByUserId: _resolvedEvent!.createdByUserId,
+        title: _titleController!.text.trim(),
+        description: _descriptionController!.text.trim().isEmpty
             ? null
-            : _descriptionController.text.trim(),
-        location: _locationController.text.trim().isEmpty
+            : _descriptionController!.text.trim(),
+        location: _locationController!.text.trim().isEmpty
             ? null
-            : _locationController.text.trim(),
+            : _locationController!.text.trim(),
         startsAt: _startsAt,
         endsAt: _endsAt,
-        videoLink: widget.event.videoLink,
-        coverPhotoUrl: widget.event.coverPhotoUrl,
-        createdAt: widget.event.createdAt,
+        videoLink: _resolvedEvent!.videoLink,
+        coverPhotoUrl: _resolvedEvent!.coverPhotoUrl,
+        createdAt: _resolvedEvent!.createdAt,
         updatedAt: DateTime.now().toUtc(),
-        deletedAt: widget.event.deletedAt,
+        deletedAt: _resolvedEvent!.deletedAt,
       );
       Navigator.of(context).pop(updatedEvent);
     } catch (e) {
@@ -161,8 +203,13 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final dateFormat = DateFormat('EEE, MMM d, yyyy \u2013 h:mm a');
+  Widget build(BuildContext context) {    if (_isLoadingEvent) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_resolveError != null) {
+      return Scaffold(
+          body: Center(child: Text('Failed to load event: $_resolveError')));
+    }    final dateFormat = DateFormat('EEE, MMM d, yyyy \u2013 h:mm a');
 
     return Scaffold(
       key: const Key('event_edit_screen'),
@@ -176,7 +223,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
             children: [
               TextFormField(
                 key: const Key('edit_event_title_field'),
-                controller: _titleController,
+                controller: _titleController!,
                 decoration: const InputDecoration(
                   labelText: 'Event Title',
                   border: OutlineInputBorder(),
@@ -188,7 +235,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
               AppSpacing.verticalGapM,
               TextFormField(
                 key: const Key('edit_event_description_field'),
-                controller: _descriptionController,
+                controller: _descriptionController!,
                 decoration: const InputDecoration(
                   labelText: 'Description (optional)',
                   border: OutlineInputBorder(),
@@ -199,7 +246,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
               AppSpacing.verticalGapM,
               TextFormField(
                 key: const Key('edit_event_location_field'),
-                controller: _locationController,
+                controller: _locationController!,
                 decoration: const InputDecoration(
                   labelText: 'Location (optional)',
                   border: OutlineInputBorder(),

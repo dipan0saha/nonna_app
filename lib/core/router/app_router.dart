@@ -46,16 +46,25 @@ abstract class AppRoutes {
   static const profileEdit = '/profile/edit';
   static const calendar = '/calendar';
   static const calendarUpcoming = '/calendar/upcoming';
-  // Note: event/photo/registry detail routes rely on state.extra (object passed
-  // during in-app navigation) and therefore do not include a path `:id` segment,
-  // as the extra payload is not available when the route is deep-linked by URL.
-  static const calendarEvent = '/calendar/event/detail';
+  // Detail/edit routes use :id path parameters so they work from deep-links,
+  // push notifications, and OS background restores — not just in-app navigation.
+  // Use the static helper methods below (e.g. galleryPhotoRoute) as navigation
+  // targets; the constants with `:id` are GoRoute path patterns only.
+  static const calendarEvent = '/calendar/event/:id';
   static const calendarEventCreate = '/calendar/event/create';
-  static const calendarEventEdit = '/calendar/event/edit';
+  static const calendarEventEdit = '/calendar/event/:id/edit';
   static const gallery = '/gallery';
   static const galleryFavorites = '/gallery/favorites';
   static const galleryRecent = '/gallery/recent';
-  static const galleryPhoto = '/gallery/photo/detail';
+  static const galleryPhoto = '/gallery/photo/:id';
+
+  // Navigation helper methods — embed the actual entity ID into the URL.
+  // Always use these for context.push() / NavigationService.pushTo() calls.
+  static String galleryPhotoRoute(String id) => '/gallery/photo/$id';
+  static String calendarEventRoute(String id) => '/calendar/event/$id';
+  static String calendarEventEditRoute(String id) => '/calendar/event/$id/edit';
+  static String registryItemRoute(String id) => '/registry/item/$id';
+  static String registryItemEditRoute(String id) => '/registry/item/$id/edit';
   static const gamification = '/gamification';
   static const settings = '/settings';
   static const babyProfile = '/baby-profile';
@@ -64,9 +73,9 @@ abstract class AppRoutes {
   static const babyProfileFollowers = '/baby-profile/followers';
   static const babyProfileInvite = '/baby-profile/followers/invite';
   static const registry = '/registry';
-  static const registryItem = '/registry/item/detail';
+  static const registryItem = '/registry/item/:id';
   static const registryItemCreate = '/registry/item/create';
-  static const registryItemEdit = '/registry/item/edit';
+  static const registryItemEdit = '/registry/item/:id/edit';
 }
 
 // ---------------------------------------------------------------------------
@@ -99,11 +108,6 @@ class RouterRefreshNotifier extends ChangeNotifier {
 /// Riverpod listeners (see [routerProvider]) call [routerRefreshNotifier.notify]
 /// when auth state changes so the router re-runs its redirect.
 final routerRefreshNotifier = RouterRefreshNotifier();
-
-/// Helper to show a simple "not found" placeholder when route data is missing.
-Widget _missingData(String label) => Scaffold(
-      body: Center(child: Text('$label not found')),
-    );
 
 /// Extracts a [String] value from the [GoRouterState.extra] map by [key].
 ///
@@ -268,11 +272,11 @@ List<RouteBase> get _routes => [
                   // Detail escapes the shell → full-screen, nav bar hidden
                   GoRoute(
                     parentNavigatorKey: NavigationService.navigatorKey,
-                    path: 'photo/detail',
+                    path: 'photo/:id',
                     builder: (context, state) {
                       final photo = state.extra as Photo?;
-                      if (photo == null) return _missingData('Photo');
-                      return PhotoDetailScreen(photo: photo);
+                      final id = state.pathParameters['id'] ?? '';
+                      return PhotoDetailScreen(photo: photo, photoId: id);
                     },
                   ),
                 ],
@@ -292,16 +296,8 @@ List<RouteBase> get _routes => [
                     path: 'upcoming',
                     builder: (context, state) => const UpcomingEventsScreen(),
                   ),
-                  // Detail stays nested → nav bar remains visible
-                  GoRoute(
-                    path: 'event/detail',
-                    builder: (context, state) {
-                      final event = state.extra as Event?;
-                      if (event == null) return _missingData('Event');
-                      return EventDetailScreen(event: event);
-                    },
-                  ),
-                  // Creation escapes the shell → covers the nav bar
+                  // Creation stays before the dynamic :id route so GoRouter
+                  // matches it as a static path without ambiguity.
                   GoRoute(
                     parentNavigatorKey: NavigationService.navigatorKey,
                     path: 'event/create',
@@ -310,14 +306,24 @@ List<RouteBase> get _routes => [
                       createdByUserId: _extraString(state, 'createdByUserId'),
                     ),
                   ),
+                  // Detail stays nested → nav bar remains visible.
+                  // :id must come AFTER the static 'event/create' route.
+                  GoRoute(
+                    path: 'event/:id',
+                    builder: (context, state) {
+                      final event = state.extra as Event?;
+                      final id = state.pathParameters['id'] ?? '';
+                      return EventDetailScreen(event: event, eventId: id);
+                    },
+                  ),
                   // Edit escapes the shell → covers the nav bar
                   GoRoute(
                     parentNavigatorKey: NavigationService.navigatorKey,
-                    path: 'event/edit',
+                    path: 'event/:id/edit',
                     builder: (context, state) {
                       final event = state.extra as Event?;
-                      if (event == null) return _missingData('Event');
-                      return EventEditScreen(event: event);
+                      final id = state.pathParameters['id'] ?? '';
+                      return EventEditScreen(event: event, eventId: id);
                     },
                   ),
                 ],
@@ -333,16 +339,7 @@ List<RouteBase> get _routes => [
                 path: AppRoutes.registry,
                 builder: (context, state) => const RegistryScreen(),
                 routes: [
-                  // Detail stays nested → nav bar remains visible
-                  GoRoute(
-                    path: 'item/detail',
-                    builder: (context, state) {
-                      final item = state.extra as RegistryItem?;
-                      if (item == null) return _missingData('Registry item');
-                      return RegistryItemDetailScreen(item: item);
-                    },
-                  ),
-                  // Creation escapes the shell → covers the nav bar
+                  // Creation stays before the dynamic :id route (static wins).
                   GoRoute(
                     parentNavigatorKey: NavigationService.navigatorKey,
                     path: 'item/create',
@@ -351,13 +348,23 @@ List<RouteBase> get _routes => [
                       createdByUserId: _extraString(state, 'createdByUserId'),
                     ),
                   ),
+                  // Detail stays nested → nav bar remains visible.
+                  // :id must come AFTER the static 'item/create' route.
                   GoRoute(
-                    parentNavigatorKey: NavigationService.navigatorKey,
-                    path: 'item/edit',
+                    path: 'item/:id',
                     builder: (context, state) {
                       final item = state.extra as RegistryItem?;
-                      if (item == null) return _missingData('Registry item');
-                      return RegistryItemEditScreen(item: item);
+                      final id = state.pathParameters['id'] ?? '';
+                      return RegistryItemDetailScreen(item: item, itemId: id);
+                    },
+                  ),
+                  GoRoute(
+                    parentNavigatorKey: NavigationService.navigatorKey,
+                    path: 'item/:id/edit',
+                    builder: (context, state) {
+                      final item = state.extra as RegistryItem?;
+                      final id = state.pathParameters['id'] ?? '';
+                      return RegistryItemEditScreen(item: item, itemId: id);
                     },
                   ),
                 ],

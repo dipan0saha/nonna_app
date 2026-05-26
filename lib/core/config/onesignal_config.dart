@@ -63,7 +63,7 @@ class OneSignalConfig {
         case 'new_comment':
         case 'photo_squish':
           if (photoId != null) {
-            NavigationService.pushTo(AppRoutes.galleryPhoto, extra: photoId);
+            NavigationService.pushTo(AppRoutes.galleryPhotoRoute(photoId));
           } else {
             NavigationService.goTo(AppRoutes.gallery);
           }
@@ -72,7 +72,7 @@ class OneSignalConfig {
         case 'event_reminder':
         case 'new_event':
           if (eventId != null) {
-            NavigationService.pushTo(AppRoutes.calendarEvent, extra: eventId);
+            NavigationService.pushTo(AppRoutes.calendarEventRoute(eventId));
           } else {
             NavigationService.goTo(AppRoutes.calendar);
           }

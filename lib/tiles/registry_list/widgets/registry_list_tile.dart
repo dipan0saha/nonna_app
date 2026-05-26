@@ -74,7 +74,7 @@ class RegistryListSmartTile extends ConsumerWidget {
                     (itemWithStatus) => _RegistryItemRow(
                       itemWithStatus: itemWithStatus,
                       isOwner: isOwner,
-                      onTap: () => context.push(AppRoutes.registryItem,
+                      onTap: () => context.push(AppRoutes.registryItemRoute(itemWithStatus.item.id),
                           extra: itemWithStatus.item),
                       onTogglePurchase: () => ref
                           .read(registryScreenProvider.notifier)
@@ -92,7 +92,7 @@ class RegistryListSmartTile extends ConsumerWidget {
                       (itemWithStatus) => _RegistryItemRow(
                         itemWithStatus: itemWithStatus,
                         isOwner: isOwner,
-                        onTap: () => context.push(AppRoutes.registryItem,
+                        onTap: () => context.push(AppRoutes.registryItemRoute(itemWithStatus.item.id),
                             extra: itemWithStatus.item),
                         onTogglePurchase: () => ref
                             .read(registryScreenProvider.notifier)

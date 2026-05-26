@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show SocketException;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -121,6 +122,10 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
         lastRefreshed: DateTime.now(),
       );
 
+      // Confirm connectivity is restored. Required when the OS connectivity
+      // event doesn't fire (e.g., Android emulators) after markOffline().
+      ref.read(isOnlineProvider.notifier).markOnline();
+
       unawaited(_warmSecondaryScreenTileCaches(
         babyProfileId: babyProfileId,
         role: role,
@@ -129,6 +134,15 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
       debugPrint('✅ Loaded ${tiles.length} tiles for home screen');
     } catch (e) {
       if (!ref.mounted) return;
+      if (_isNetworkError(e)) {
+        // Mark offline immediately so OfflineIndicator shows without waiting
+        // for the connectivity_plus stream (which fires 100–500 ms later).
+        // Tiles remain visible; no error state is set.
+        ref.read(isOnlineProvider.notifier).markOffline();
+        state = state.copyWith(isLoading: false);
+        debugPrint('⚠️  loadTiles skipped (offline): $e');
+        return;
+      }
       final errorMessage = 'Failed to load home screen: $e';
       debugPrint('❌ $errorMessage');
       state = state.copyWith(
@@ -202,8 +216,20 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
         lastRefreshed: DateTime.now(),
       );
 
+      // Confirm connectivity is restored. Required when the OS connectivity
+      // event doesn't fire (e.g., Android emulators) after markOffline().
+      ref.read(isOnlineProvider.notifier).markOnline();
+
       debugPrint('✅ Refreshed ${tiles.length} tiles');
     } catch (e) {
+      if (!ref.mounted) return;
+      if (_isNetworkError(e)) {
+        // Mark offline immediately — OfflineIndicator communicates the status.
+        ref.read(isOnlineProvider.notifier).markOffline();
+        state = state.copyWith(isRefreshing: false);
+        debugPrint('⚠️  refresh skipped (offline): $e');
+        return;
+      }
       debugPrint('❌ Failed to refresh home screen: $e');
       state = state.copyWith(
         isRefreshing: false,
@@ -308,6 +334,13 @@ class HomeScreenNotifier extends Notifier<HomeScreenState> {
       debugPrint('⚠️  Failed warming Registry/Fun tile caches: $e');
     }
   }
+
+  /// Returns true when [e] is a network-layer failure (no connectivity).
+  ///
+  /// Matches dart:io [SocketException] directly and the string representation
+  /// of [ClientException] wrapping one (produced by the http package).
+  bool _isNetworkError(Object e) =>
+      e is SocketException || e.toString().contains('SocketException');
 }
 
 /// Home screen provider

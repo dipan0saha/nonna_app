@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/utils/accessibility_helpers.dart';
@@ -91,7 +93,12 @@ class ErrorView extends StatelessWidget {
 }
 
 /// A compact error view for displaying errors inline.
-class InlineErrorView extends StatelessWidget {
+///
+/// When the device is offline ([isOnlineProvider] is false), this widget
+/// returns an empty box — the [OfflineIndicator] banner on the home screen
+/// already communicates the connection status, so per-tile error messages
+/// would be redundant and confusing.
+class InlineErrorView extends ConsumerWidget {
   /// Creates an inline error view.
   const InlineErrorView({
     super.key,
@@ -106,7 +113,11 @@ class InlineErrorView extends StatelessWidget {
   final VoidCallback? onRetry;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Suppress tile-level errors when offline — the OfflineIndicator banner
+    // already tells the user why content is unavailable.
+    if (!ref.watch(isOnlineProvider)) return const SizedBox.shrink();
+
     return Container(
       padding: AppSpacing.compactPadding,
       decoration: BoxDecoration(
