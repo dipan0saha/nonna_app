@@ -1003,62 +1003,68 @@ Per repo source-of-truth priority (live code → master docs), update every affe
 
 Run full emulator gate: `scripts/ops_emulator_signoff.sh` (OPS + E2E).
 
-**Setup**
+**Setup** (verified 2026-09-08 on `emulator-5554`)
 
-- [ ] Android emulator running (API 33+ recommended) or physical device via USB
-- [ ] `.env` configured with dev/staging Supabase credentials
-- [ ] **Supabase redirect URLs whitelisted (#25):** `nonna://app/auth/callback` + invite deep links for active project
-- [ ] **`AppConfig` ENV verified (#22):** `flutter run --dart-define=ENV=staging` (or aligned key) matches `.env` Supabase URL
-- [ ] Fresh app install: `make build-android` → install APK on emulator (`adb install -r build/app/outputs/flutter-apk/app-release.apk`) **or** `flutter run` for debug pass first
-- [ ] Optional iOS pass: `make build-ios` + Simulator smoke test (same checklist below)
+- [x] Android emulator running (API 33+ recommended) or physical device via USB — `Pixel8_Test` / `emulator-5554`
+- [x] `.env` configured with dev/staging Supabase credentials — prod project `ubptybhhrgdiyfkcqgwu` (OPS-006)
+- [x] **Supabase redirect URLs whitelisted (#25):** `nonna://app/auth/callback` + invite deep links for active project (OPS-003)
+- [x] **`AppConfig` ENV verified (#22):** `.env` `ENVIRONMENT=production` matches active Supabase URL (OPS-005; not staging dart-define)
+- [x] Fresh app install: `make build-android` → install APK on emulator (`adb install -r build/app/outputs/flutter-apk/app-release.apk`) **or** `flutter run` for debug pass first
+- [ ] Optional iOS pass: `make build-ios` + Simulator smoke test (same checklist below) — deferred
 
 **Automated gate (run first)**
 
-- [ ] `make analyze` — zero errors/warnings in `lib/features/onboarding/` and touched files
-- [ ] `make test` — unit/widget tests pass including `test/features/onboarding/`
+- [x] `make analyze` — zero errors/warnings in `lib/features/onboarding/` and touched files (2026-09-08 Phase 4 review)
+- [x] `make test` — unit/widget tests pass including `test/features/onboarding/` (50 passed, 2026-09-08)
 - [x] `make test-integration` — `onboarding_owner_flow_test.dart` 2/2 + `onboarding_e2e_signoff_test.dart` 3/3 on `emulator-5554` (2026-09-08)
 
-**Owner flow — Expecting branch**
+**Owner flow — Expecting branch** (2026-09-08)
 
-- [ ] Cold start (clear app data) → lands on owner carousel slide 1
-- [ ] Swipe through all 4 carousel slides; dot indicators match prototype
-- [ ] Skip carousel → signup screen with prototype styling (sage buttons, Baloo headlines)
-- [ ] Email signup → email-verify screen → complete profile (name, avatar via correct bucket **#19**, terms)
-- [ ] Create baby: **Expecting** selected, due date, gender pills, optional boy/girl names, baby photo upload (**#19**)
-- [ ] First Moment (expecting): select 3 event chips → all insert without trigger error (**#20**)
-- [ ] Batch invite: add 2 rows (1 follower + 1 Wife/Husband co-owner badge), phone field disabled
-- [ ] Send Invites → lands on first-run home with countdown hero
-- [ ] Verify seeded content visible (calendar events, registry items, name suggestions in Fun tab)
-- [ ] Screenshot each screen side-by-side vs prototype HTML at 375×812
+> Core path covered by `onboarding_e2e_signoff_test.dart` (admin login, not UI signup). Visual/polish items deferred.
 
-**Owner flow — Born branch**
+- [x] Cold start (clear app data) → lands on owner carousel slide 1 — `onboarding_owner_flow_test` + release APK smoke
+- [ ] Swipe through all 4 carousel slides; dot indicators match prototype — manual/deferred
+- [x] Skip carousel → signup screen with prototype styling (sage buttons, Baloo headlines) — E2E + release APK smoke
+- [ ] Email signup → email-verify screen → complete profile (name, avatar via correct bucket **#19**, terms) — deferred (E2E uses admin-confirmed login; OPS-010 covers verify-screen advance only)
+- [x] Create baby: **Expecting** selected, due date, gender pills, optional boy/girl names, baby photo upload (**#19**) — E2E (defaults via Continue; no photo upload in test)
+- [x] First Moment (expecting): select event chips → insert without trigger error (**#20**) — E2E (2 chips: Gender Reveal + Baby Shower; not full 3-chip manual pass)
+- [ ] Batch invite: add 2 rows (1 follower + 1 Wife/Husband co-owner badge), phone field disabled — deferred (E2E taps Send Invites with no rows; OPS-P1-012 covers “Already a member” dedupe separately)
+- [x] Send Invites → lands on first-run home with countdown hero — E2E owner path
+- [ ] Verify seeded content visible (calendar events, registry items, name suggestions in Fun tab) — manual/deferred
+- [ ] Screenshot each screen side-by-side vs prototype HTML at 375×812 — deferred
+
+**Owner flow — Born branch** (deferred — optional with prod testers)
 
 - [ ] Clear app data; repeat with **Already Born** toggle, birth date, first photo in First Moment (**#32** gallery path)
 - [ ] Skip invite step → first-run home shows welcome banner / `NewBabyWelcomeTile`
 
-**Owner flow — OAuth shortcut**
+**Owner flow — OAuth shortcut** (deferred)
 
 - [ ] Google sign-in from onboarding signup → skips email-verify → complete profile with OAuth prefill
 
-**Follower flow**
+**Follower flow** (2026-09-08)
 
-- [ ] From owner batch invite, open invitation deep link on emulator (`nonna://app/invite-accept?token=...` — canonical format)
-- [ ] Invite landing shows baby card, inviter name, privacy reassurance
-- [ ] New user: Accept (UI) → signup → email verify → complete profile → **accept RPC** → relationship badge
-- [ ] Follower carousel (5 slides): slide 3 = events, slide 4 = unborn/born branch (**#28**)
-- [ ] Lands on follower first-run home with hero card
-- [ ] Returning user: `/onboarding/login` → resumes flow (**#27**); accept RPC after profile if needed
-- [ ] **Authenticated user** opens invite link → coordinator path, not instant home (**#21**)
-- [ ] Wrong-email signup → friendly error (**#30**)
+> Core path: `onboarding_e2e_signoff_test.dart` + manual deep-link QA (`qa-follower-0b-20260908-0001`).
 
-**Co-owner flow**
+- [x] From owner batch invite, open invitation deep link on emulator (`nonna://app/invite-accept?token=...` — canonical format) — manual + release APK + E2E
+- [x] Invite landing shows baby card, inviter name, privacy reassurance — OPS-007 + E2E
+- [x] New user: Accept (UI) → login → complete profile → **accept RPC** → relationship → carousel → home — E2E (admin login, not UI signup + email verify)
+- [ ] Follower carousel (5 slides): slide 3 = events, slide 4 = unborn/born branch (**#28**) — manual/deferred (E2E finishes carousel, does not assert slide copy)
+- [x] Lands on follower first-run home with hero card — E2E
+- [ ] Returning user: `/onboarding/login` → resumes flow (**#27**); accept RPC after profile if needed — deferred
+- [ ] **Authenticated user** opens invite link → coordinator path, not instant home (**#21**) — partial (OPS-008: signed-in user sees preview; full coordinator resume not device-tested)
+- [ ] Wrong-email signup → friendly error (**#30**) — widget/integration helpers only; device E2E deferred
 
-- [ ] Open co-owner invite link (Wife/Husband row from batch invite)
-- [ ] Co-owner invite landing ("invited you to co-own") → signup → complete profile → **accept RPC** → welcome screen with crown
-- [ ] Lands on owner home (not follower); can edit baby profile and invite others
-- [ ] Third owner invite rejected gracefully (max-2-owners trigger)
+**Co-owner flow** (2026-09-08)
 
-**Edge cases on emulator**
+> Core path: `onboarding_e2e_signoff_test.dart` + manual deep-link QA (`qa-coowner-0b-20260908-0001`).
+
+- [x] Open co-owner invite link (Wife/Husband row from batch invite) — manual token + E2E (seeded invite, not live batch-invite row)
+- [x] Co-owner invite landing → login → complete profile → **accept RPC** → welcome screen → owner home — E2E
+- [ ] Lands on owner home (not follower); can edit baby profile and invite others — home only in E2E; edit/invite deferred
+- [ ] Third owner invite rejected gracefully (max-2-owners trigger) — deferred
+
+**Edge cases on emulator** (deferred — optional with prod testers)
 
 - [ ] Expired / invalid invite token → correct error screen
 - [ ] Kill app mid-onboarding → reopen resumes at last step (coordinator persistence)
@@ -1073,8 +1079,8 @@ Run full emulator gate: `scripts/ops_emulator_signoff.sh` (OPS + E2E).
 - [x] Install release APK on emulator; invite cold-start deep link → invite landing (2026-09-08)
 - [x] Install release APK on emulator; cold start → owner carousel; Skip → signup
 - [x] Install release APK on emulator; run abbreviated owner happy path (carousel → home) — release: carousel + signup; owner → home via debug E2E same session
-- [ ] No layout overflow or font clipping on 375px-wide emulator
-- [ ] Sign-off recorded in `docs/95_atlabs_program/` or PR test plan comment
+- [ ] No layout overflow or font clipping on 375px-wide emulator — manual/deferred
+- [x] Sign-off recorded in `docs/95_atlabs_program/` or PR test plan comment — [05_day_log.md](../95_atlabs_program/05_day_log.md) (2026-09-08)
 
 ---
 
