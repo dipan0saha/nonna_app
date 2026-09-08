@@ -128,20 +128,35 @@ class AuthService {
     }
   }
 
-  /// Resend verification email
+  /// Resend verification email (requires an active session).
   Future<void> resendVerificationEmail() async {
     try {
       if (currentUser?.email == null) {
         throw Exception('No user email found');
       }
+      await resendSignupVerificationEmail(currentUser!.email!);
+    } catch (e) {
+      final message = ErrorHandler.mapErrorToMessage(e);
+      debugPrint('❌ Error resending verification email: $message');
+      throw Exception(message);
+    }
+  }
+
+  /// Resend signup verification email without a session (#23).
+  Future<void> resendSignupVerificationEmail(String email) async {
+    try {
+      final trimmed = email.trim();
+      if (trimmed.isEmpty) {
+        throw Exception('Email is required');
+      }
       await _supabase.auth.resend(
         type: OtpType.signup,
-        email: currentUser!.email!,
+        email: trimmed,
         emailRedirectTo: _authEmailRedirectUrl,
       );
     } catch (e) {
       final message = ErrorHandler.mapErrorToMessage(e);
-      debugPrint('❌ Error resending verification email: $message');
+      debugPrint('❌ Error resending signup verification email: $message');
       throw Exception(message);
     }
   }

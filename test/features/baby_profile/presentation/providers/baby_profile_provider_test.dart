@@ -359,6 +359,8 @@ void main() {
     group('createProfile', () {
       test('creates baby profile successfully', () async {
         final notifier = container.read(babyProfileProvider.notifier);
+        when(mockDatabaseService.select(any))
+            .thenAnswer((_) => FakePostgrestBuilder([sampleProfile.toJson()]));
         when(mockDatabaseService.insert(any, any))
             .thenAnswer((_) async => [sampleProfile.toJson()]);
 

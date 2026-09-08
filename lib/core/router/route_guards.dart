@@ -2,75 +2,154 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_types.dart';
 
 /// Type alias for GoRouter redirect callbacks.
 typedef RedirectFn = String? Function(
     BuildContext context, GoRouterState state);
 
 /// Route guards for GoRouter navigation.
-///
-/// **Functional Requirements**: Section 3.30 - Navigation & Routing
-///
-/// Provides redirect functions that can be passed to [GoRouter.redirect] or
-/// individual [GoRoute.redirect] to protect routes based on auth state and
-/// user role.
 class RouteGuards {
   RouteGuards._();
 
-  static const _authRoutes = {'/login', '/signup', '/role-selection'};
+  static const _legacyAuthRoutes = {
+    '/login',
+    '/signup',
+    '/role-selection',
+  };
 
-  /// Returns a redirect function that enforces authentication.
-  ///
-  /// - Unauthenticated users accessing protected routes → `/login?from=<url>`
-  /// - Authenticated users accessing auth routes → `/home` or preserved `from`
+  static bool isPublicRoute(String location) =>
+      OnboardingRoutes.isPublicPath(location);
+
+  static bool isLegacyAuthRoute(String location) =>
+      _legacyAuthRoutes.contains(location);
+
+  static bool isOnboardingRoute(String location) =>
+      OnboardingRoutes.isOnboardingPath(location);
+
+  /// Core redirect logic shared by [authRedirect] and [redirectForLocation].
+  static String? resolveRedirect({
+    required bool isAuthenticated,
+    required String location,
+    required bool onboardingCompleted,
+    required bool hasActiveCoordinatorStep,
+    String? coordinatorResumeRoute,
+    bool hasPendingInvite = false,
+    OnboardingPath invitePath = OnboardingPath.follower,
+    bool hasBabyMemberships = false,
+  }) {
+    if (!isAuthenticated) {
+      if (isPublicRoute(location)) return null;
+      if (hasPendingInvite) {
+        final inviteRoute = invitePath == OnboardingPath.coOwner
+            ? OnboardingRoutes.coOwnerInvite
+            : OnboardingRoutes.followerInvite;
+        if (location != inviteRoute) return inviteRoute;
+        return null;
+      }
+      if (location != OnboardingRoutes.ownerCarousel) {
+        return OnboardingRoutes.ownerCarousel;
+      }
+      return null;
+    }
+
+    if (onboardingCompleted) {
+      if (isOnboardingRoute(location)) {
+        return '/home';
+      }
+      if (isLegacyAuthRoute(location) &&
+          location != '/login' &&
+          location != OnboardingRoutes.login) {
+        return '/home';
+      }
+      return null;
+    }
+
+    // Allow invite deep-link entry and landing screens during onboarding.
+    if (location == OnboardingRoutes.inviteAccept) {
+      return null;
+    }
+
+    if (hasPendingInvite) {
+      final inviteRoute = invitePath == OnboardingPath.coOwner
+          ? OnboardingRoutes.coOwnerInvite
+          : OnboardingRoutes.followerInvite;
+      if (location == inviteRoute) {
+        return null;
+      }
+    }
+
+    if (hasActiveCoordinatorStep && coordinatorResumeRoute != null) {
+      if (location != coordinatorResumeRoute) {
+        return coordinatorResumeRoute;
+      }
+      return null;
+    }
+
+    if (isLegacyAuthRoute(location) || location == OnboardingRoutes.login) {
+      return null;
+    }
+
+    if (location == '/home') {
+      if (hasBabyMemberships) return null;
+      return OnboardingRoutes.ownerCarousel;
+    }
+
+    if (!isOnboardingRoute(location)) {
+      return OnboardingRoutes.ownerCarousel;
+    }
+
+    return null;
+  }
+
+  /// Returns a redirect function that enforces authentication and onboarding.
   static RedirectFn get authRedirect => (context, state) {
         final container = ProviderScope.containerOf(context);
         final isAuthenticated = container.read(isAuthenticatedProvider);
-        final onAuthRoute = _authRoutes.contains(state.matchedLocation);
+        final location = state.matchedLocation;
+        final coordinator = container.read(onboardingCoordinatorProvider);
+        final storage = container.read(localStorageServiceProvider);
+        final onboardingCompleted =
+            storage.isInitialized && storage.isOnboardingCompleted;
 
-        if (!isAuthenticated && !onAuthRoute) {
-          final from = Uri.encodeComponent(state.uri.toString());
-          return '/login?from=$from';
-        }
-
-        if (isAuthenticated && onAuthRoute) {
-          final from = state.uri.queryParameters['from'];
-          if (from != null && from.isNotEmpty) {
-            try {
-              final decoded = Uri.decodeComponent(from);
-              final decodedPath = Uri.parse(decoded).path;
-              if (!_authRoutes.contains(decodedPath)) {
-                return decoded;
-              }
-            } catch (_) {
-              // Fall back to home when an invalid from parameter is provided.
-            }
-          }
-          return '/home';
-        }
-
-        return null;
+        return resolveRedirect(
+          isAuthenticated: isAuthenticated,
+          location: location,
+          onboardingCompleted: onboardingCompleted,
+          hasActiveCoordinatorStep: coordinator.hasActiveStep,
+          coordinatorResumeRoute: coordinator.resumeRoute,
+          hasPendingInvite: coordinator.pendingInviteToken != null,
+          invitePath: coordinator.path,
+          hasBabyMemberships: container.read(userHasBabyMembershipsProvider),
+        );
       };
 
-  /// Stateless redirect helper — useful when [isAuthenticated] is already known
-  /// (e.g., inside a Riverpod [Provider] where `ref.watch` is available).
-  static String? redirectIfNotAuthenticated(
+  /// Stateless redirect helper for unit tests.
+  static String? redirectForLocation(
     bool isAuthenticated,
-    GoRouterState state,
-  ) =>
-      redirectForLocation(isAuthenticated, state.matchedLocation);
-
-  /// Location-string variant of [redirectIfNotAuthenticated].
-  ///
-  /// Useful for unit tests that cannot easily construct a [GoRouterState].
-  static String? redirectForLocation(bool isAuthenticated, String location) {
-    final onAuthRoute = _authRoutes.contains(location);
-
-    if (!isAuthenticated && !onAuthRoute) return '/login';
-    if (isAuthenticated && onAuthRoute) return '/home';
-    return null;
+    String location, {
+    bool onboardingCompleted = false,
+    bool hasActiveCoordinatorStep = false,
+    String? coordinatorResumeRoute,
+    bool hasPendingInvite = false,
+    OnboardingPath invitePath = OnboardingPath.follower,
+    bool hasBabyMemberships = false,
+  }) {
+    return resolveRedirect(
+      isAuthenticated: isAuthenticated,
+      location: location,
+      onboardingCompleted: onboardingCompleted,
+      hasActiveCoordinatorStep: hasActiveCoordinatorStep,
+      coordinatorResumeRoute: coordinatorResumeRoute,
+      hasPendingInvite: hasPendingInvite,
+      invitePath: invitePath,
+      hasBabyMemberships: hasBabyMemberships,
+    );
   }
 
   /// Returns a redirect function that sends users to `/login` only when
@@ -86,30 +165,6 @@ class RouteGuards {
         return null;
       };
 
-  /// Returns a redirect function that enforces role-based access.
-  ///
-  /// [roleProvider] must be a Riverpod provider that returns the current user's
-  /// [UserRole] (or `null` when unauthenticated / role not yet loaded).
-  ///
-  /// Users whose current role is not in [allowedRoles] are redirected to
-  /// [fallbackPath] (defaults to `/home`).
-  ///
-  /// Unauthenticated users are always redirected to `/login`.
-  ///
-  /// For unit tests use [redirectForRole] which avoids the need for a
-  /// [BuildContext].
-  ///
-  /// Example:
-  /// ```dart
-  /// GoRoute(
-  ///   path: '/owner-only',
-  ///   redirect: RouteGuards.requiresRole(
-  ///     currentUserRoleProvider,
-  ///     allowedRoles: [UserRole.owner],
-  ///   ),
-  ///   builder: (_, __) => OwnerOnlyScreen(),
-  /// )
-  /// ```
   static RedirectFn requiresRole(
     Provider<UserRole?> roleProvider, {
     required List<UserRole> allowedRoles,
@@ -127,12 +182,6 @@ class RouteGuards {
         );
       };
 
-  /// Pure role-based redirect helper — useful for unit tests that cannot
-  /// easily construct a [BuildContext] with a [ProviderScope].
-  ///
-  /// - Unauthenticated → `/login`
-  /// - Authenticated but role not in [allowedRoles] → [fallbackPath]
-  /// - Authenticated and role allowed → `null` (no redirect)
   static String? redirectForRole(
     bool isAuthenticated,
     UserRole? currentRole,

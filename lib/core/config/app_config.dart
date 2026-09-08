@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 /// Application configuration
 ///
 /// **Functional Requirements**: Section 3.3 - Configuration Management for Utils & Helpers
@@ -20,9 +22,14 @@ class AppConfig {
 
   /// Current app environment
   static AppEnvironment get environment {
-    // This can be configured via build flavors or environment variables
-    // For now, default to production
-    const String env = String.fromEnvironment('ENV', defaultValue: 'prod');
+    // Prefer dart-define ENV; fall back to .env ENVIRONMENT when loaded.
+    const String envFromDefine =
+        String.fromEnvironment('ENV', defaultValue: '');
+    final env = envFromDefine.isNotEmpty
+        ? envFromDefine
+        : (dotenv.isInitialized
+            ? (dotenv.env['ENVIRONMENT'] ?? 'prod')
+            : 'prod');
 
     switch (env.toLowerCase()) {
       case 'dev':

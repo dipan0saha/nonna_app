@@ -7,7 +7,8 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('3. Dashboard Integration Tests', () {
-    testWidgets('Verify essential tiles are visible', (WidgetTester tester) async {
+    testWidgets('Verify essential tiles are visible',
+        (WidgetTester tester) async {
       await startAppAndLogin(tester);
 
       // Ensure we are on the Home screen
@@ -18,13 +19,14 @@ void main() {
       }
     });
 
-    testWidgets('Ensure scrolling and layout boundaries', (WidgetTester tester) async {
-       await startAppAndLogin(tester);
-       final tileList = find.byKey(const Key('tile_list_view'));
-       if (tileList.evaluate().isNotEmpty) {
-         await tester.drag(tileList, const Offset(0, -300));
-         await tester.pumpAndSettle();
-       }
+    testWidgets('Ensure scrolling and layout boundaries',
+        (WidgetTester tester) async {
+      await startAppAndLogin(tester);
+      final tileList = find.byKey(const Key('tile_list_view'));
+      if (tileList.evaluate().isNotEmpty) {
+        await tester.drag(tileList, const Offset(0, -300));
+        await tester.pumpAndSettle();
+      }
     });
   });
 }

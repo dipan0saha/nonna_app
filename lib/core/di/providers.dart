@@ -17,6 +17,7 @@ import '../services/realtime_service.dart';
 import '../services/realtime_subscription_manager.dart';
 import '../services/storage_service.dart';
 import '../services/app_initialization_service.dart';
+import '../services/deep_link_service.dart';
 import '../services/sync_manager.dart';
 import 'network_status_notifier.dart';
 import 'connectivity_wrapper.dart';
@@ -231,6 +232,8 @@ final appInitializationProvider = FutureProvider<bool>((ref) async {
   if (!result.success) {
     throw StateError(result.criticalError ?? 'Initialization failed');
   }
+
+  await DeepLinkService.processPendingAuthCallback();
 
   if (result.hasWarnings) {
     // Optional services should not block app startup.

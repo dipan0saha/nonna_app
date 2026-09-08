@@ -7,7 +7,8 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('2. Baby Profile Integration Tests', () {
-    testWidgets('Navigate to creation wizard, fill details and save', (WidgetTester tester) async {
+    testWidgets('Navigate to creation wizard, fill details and save',
+        (WidgetTester tester) async {
       await startAppAndLogin(tester);
 
       // If we are at the empty home state, tap 'Create Profile'
@@ -18,8 +19,12 @@ void main() {
       }
 
       // Verify we are on the creation screen (assuming we were at home)
-      if (find.byKey(const Key('create_baby_profile_screen')).evaluate().isNotEmpty) {
-        expect(find.byKey(const Key('create_baby_profile_screen')), findsOneWidget);
+      if (find
+          .byKey(const Key('create_baby_profile_screen'))
+          .evaluate()
+          .isNotEmpty) {
+        expect(find.byKey(const Key('create_baby_profile_screen')),
+            findsOneWidget);
 
         // Fill details
         final nameField = find.byType(TextFormField);
@@ -33,9 +38,10 @@ void main() {
       }
     });
 
-    testWidgets('Verify Baby Profile selector in header', (WidgetTester tester) async {
-       await startAppAndLogin(tester);
-       // Test logic for profile selector
+    testWidgets('Verify Baby Profile selector in header',
+        (WidgetTester tester) async {
+      await startAppAndLogin(tester);
+      // Test logic for profile selector
     });
   });
 }

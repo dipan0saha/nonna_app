@@ -8,6 +8,9 @@ import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/invite_accept_provider.dart';
 
 /// Screen that resolves and accepts invitation links.
+///
+/// **Deprecated:** Route `/invite-accept` now uses [OnboardingInviteAcceptWrapper].
+/// Kept for reference until Phase 2 removes legacy navigation paths.
 class InviteAcceptScreen extends ConsumerStatefulWidget {
   const InviteAcceptScreen({
     super.key,

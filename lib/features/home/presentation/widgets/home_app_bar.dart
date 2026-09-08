@@ -27,6 +27,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
     // data from [authProvider] instead.
     this.babyProfileName,
     this.notificationCount = 0,
+    this.showFirstRunBellDot = false,
     this.onNotificationTap,
     this.onSettingsTap,
     this.onBabyProfileTap,
@@ -34,6 +35,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   final String? babyProfileName;
   final int notificationCount;
+  final bool showFirstRunBellDot;
   final VoidCallback? onNotificationTap;
   final VoidCallback? onSettingsTap;
   final VoidCallback? onBabyProfileTap;
@@ -154,8 +156,24 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
         loading: () => _buildTitle(context, 'Nonna'),
         error: (_, __) => _buildTitle(context, 'Nonna'),
       ),
-      // Actions — avatar + chevron → profile
+      // Actions — bell (first-run) + menu + avatar
       actions: [
+        if (showFirstRunBellDot)
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              IconButton(
+                key: const Key('home_first_run_bell'),
+                icon: const Icon(Icons.notifications_outlined),
+                onPressed: onNotificationTap ?? () {},
+              ),
+              const Positioned(
+                right: 10,
+                top: 10,
+                child: CircleAvatar(radius: 4, backgroundColor: Colors.red),
+              ),
+            ],
+          ),
         if (userId.isNotEmpty)
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),

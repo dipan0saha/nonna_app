@@ -1,7 +1,7 @@
 # Nonna App Project Structure (Dynamic Tile-Based Architecture)
 
-**Document Version**: 3.0
-**Last Updated**: May 25, 2026
+**Document Version**: 3.1
+**Last Updated**: September 8, 2026
 **Location**: `docs/99_master_reference_docs/App_Structure_Nonna.md`
 **Status**: Living Document - Updated to reflect the current unified codebase implementation
 
@@ -11,11 +11,18 @@ This structure is optimized for the Nonna app's dynamic, tile-based UI with role
 
 **IMPORTANT**: All core infrastructure, tiles layer, and features layer are fully implemented.
 
-### Current State (As of May 25, 2026)
+### Current State (As of September 8, 2026)
 - **18 Active Smart Tiles**: Fully implemented, tested, and integrated via a centralized `TileFactory` which resolves runtime configs.
+- **Prototype onboarding feature**: `lib/features/onboarding/presentation/` — owner/follower/co-owner first-run flows with coordinator persistence and isolated `OnboardingTheme`.
 - **Centralized Service Architecture**: The app leverages a robust, unified service layer under `lib/core/services/` (22 services) and domain models (23 models).
 - **Streamlined Feature Layer**: Features under `lib/features/` are ultra-lean and presentation-focused, composing tiles and rendering screen widgets. Redundant repository and use case files have been omitted in favor of direct service and Riverpod state provider interactions.
 - **Command Runner Interface**: Standard commands are managed via a centralized `Makefile` at the root of the project, including mock generation, test execution, linting, formatting, and build processes.
+
+### Recent Implementation Notes (September 2026)
+- Added `lib/features/onboarding/presentation/` — screens, providers, widgets, utils for prototype onboarding (no separate data/domain layer).
+- Added `lib/core/themes/onboarding_theme.dart` and `lib/core/constants/first_moment_presets.dart`.
+- `route_guards.dart` + `onboardingCoordinatorProvider` gate access to `/home` until onboarding complete.
+- `/role-selection` deprecated; redirects to `/onboarding/owner/carousel`.
 
 ### Recent Implementation Notes (May 2026)
 - Added owner collaboration flows in baby profile feature:
@@ -37,7 +44,7 @@ nonna_app/
 ├── lib/
 │   ├── core/                     # Shared across the entire app
 │   │   ├── config/               # Environment configurations
-│   │   ├── constants/            # App-wide constants (strings, table names, limits)
+│   │   ├── constants/            # App-wide constants (strings, table names, limits, first_moment_presets)
 │   │   ├── contracts/            # Shared interfaces and behaviors (realtime, caching)
 │   │   ├── di/                   # Dependency injection (Riverpod providers)
 │   │   ├── enums/                # Global enums (UserRole, TileType, ScreenName, etc.)
@@ -53,7 +60,7 @@ nonna_app/
 │   │   ├── repositories/         # [Omitted] Handled directly via Core Services & Providers
 │   │   ├── router/               # App navigation (GoRouter & Route guards)
 │   │   ├── services/             # 22 shared services (auth, database, caching, realtime, etc.)
-│   │   ├── themes/               # App-wide theming, typography, dynamic fonts, tile styles
+│   │   ├── themes/               # App-wide theming + onboarding_theme.dart (isolated prototype palette)
 │   │   ├── typedefs/             # Type aliases
 │   │   ├── utils/                # Helper functions (dates, formats, role checks)
 │   │   └── widgets/              # Shared UI widgets (shimmers, error views, custom buttons)
@@ -65,6 +72,13 @@ nonna_app/
 │   │   ├── gallery/              # Photo gallery presentation (grid, photo detail screen)
 │   │   ├── gamification/         # Name suggestions & predictions screen
 │   │   ├── home/                 # Home screen layout (composes tiles via TileFactory)
+│   │   ├── onboarding/           # Prototype first-run flows (presentation-only)
+│   │   │   └── presentation/
+│   │   │       ├── providers/    # coordinator, routes, types, first_run_home
+│   │   │       ├── screens/      # owner / follower / coowner / shared
+│   │   │       ├── widgets/      # scaffold, carousel, fields, invite rows
+│   │   │       ├── utils/        # auth, invite, baby, analytics helpers
+│   │   │       └── l10n/         # onboarding string helpers
 │   │   ├── photo_gallery/        # Placeholder/Refactoring feature
 │   │   ├── profile/              # User profile screens (view, edit)
 │   │   ├── registry/             # Registry presentation (filters, list view, item details)
@@ -98,6 +112,7 @@ nonna_app/
 ├── test/                         # Comprehensive unit, widget, and mock tests
 │   ├── core/                     # Core layer tests (models, services, utils)
 │   ├── features/                 # Screen-composition & screen provider tests
+│   │   └── onboarding/           # Coordinator, helpers, deep-link unit tests
 │   ├── tiles/                    # Isolated smart tile data & UI tests
 │   └── mocks/                    # Centralized mock definitions (SupaClient, services)
 ├── automated_tests/              # Test reporting scripts and summary configurations

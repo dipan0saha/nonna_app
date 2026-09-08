@@ -741,5 +741,35 @@
   "tile_activity_empty": "No engagement data yet",
   "@tile_activity_empty": {
     "description": "Empty state label when no activity exists"
-  }
+  },
+
+  "onboarding_owner_carousel_slide1_title": "Your baby's story, in one private place",
+  "@onboarding_owner_carousel_slide1_title": {
+    "description": "Owner carousel slide 1 headline"
+  },
+  "onboarding_owner_carousel_slide1_body": "Photos, updates, and everything in between, visible only to the people you invite.",
+  "onboarding_owner_carousel_slide2_title": "Everyone gets to feel close",
+  "onboarding_owner_carousel_slide2_body": "Grandparents, aunts, uncles, and friends can follow along, no matter how far away they live.",
+  "onboarding_owner_carousel_slide3_title": "Celebrate every milestone together",
+  "onboarding_owner_carousel_slide3_body": "Calendar events, a shared registry, and fun ways to mark the big days.",
+  "onboarding_owner_carousel_slide4_title": "Never lose a moment",
+  "onboarding_owner_carousel_slide4_body": "Every photo and comment, saved in one safe place, for good.",
+  "onboarding_carousel_next": "Next",
+  "onboarding_carousel_get_started": "Get Started",
+  "onboarding_skip": "Skip",
+  "onboarding_signup_title": "Create your account",
+  "onboarding_signup_email_label": "Email",
+  "onboarding_signup_password_label": "Password",
+  "onboarding_signup_create_account": "Create Account",
+  "onboarding_signup_login_prompt": "Already have an account? ",
+  "onboarding_signup_login_action": "Log in",
+  "onboarding_oauth_google": "Continue with Google",
+  "onboarding_oauth_facebook": "Continue with Facebook",
+  "onboarding_batch_invite_title": "Invite family & friends",
+  "onboarding_batch_invite_send": "Send Invites",
+  "onboarding_batch_invite_skip": "Skip for now",
+  "onboarding_follower_accept": "Accept Invitation",
+  "onboarding_coowner_accept": "Accept & Join as Owner",
+  "onboarding_wrong_email_title": "This invite isn't for your account",
+  "onboarding_wrong_email_switch": "Sign out & switch account"
 }

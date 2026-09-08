@@ -17,7 +17,7 @@ serve(async (req) => {
   }
 
   try {
-    const { email, inviterName, babyName, inviteUrl } = await req.json()
+    const { email, inviterName, babyName, inviteUrl, invitedRole } = await req.json()
 
     if (!email || !inviterName || !babyName || !inviteUrl) {
       return new Response(
@@ -29,8 +29,13 @@ serve(async (req) => {
       )
     }
 
-    const subject = `You're invited to follow ${babyName}!`
-    const html = `<h2>Welcome to Nonna App!</h2><p>${inviterName} has invited you to follow their baby profile for ${babyName}.</p><p>Click <a href="${inviteUrl}">here</a> to join!</p>`
+    const isCoOwner = invitedRole === 'owner'
+    const subject = isCoOwner
+      ? `You're invited to co-own ${babyName}'s profile!`
+      : `You're invited to follow ${babyName}!`
+    const html = isCoOwner
+      ? `<h2>Welcome to Nonna App!</h2><p>${inviterName} has invited you to co-own their baby profile for ${babyName}.</p><p>Click <a href="${inviteUrl}">here</a> to join as a co-owner!</p>`
+      : `<h2>Welcome to Nonna App!</h2><p>${inviterName} has invited you to follow their baby profile for ${babyName}.</p><p>Click <a href="${inviteUrl}">here</a> to join!</p>`
 
     if (RESEND_API_KEY) {
       const resendRes = await fetch('https://api.resend.com/emails', {

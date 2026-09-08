@@ -1,7 +1,7 @@
 # Nonna App - Architecture Diagrams
 
-**Document Version**: 3.0
-**Last Updated**: May 25, 2026
+**Document Version**: 3.1
+**Last Updated**: September 8, 2026
 **Location**: `docs/99_master_reference_docs/Nonna_App_Architecture_Diagrams.md`
 **Status**: Living Document - Fully updated with GoRouter v17 and decoupled TileLoader pipeline
 
@@ -89,13 +89,30 @@ The app uses `StatefulShellRoute.indexedStack` to maintain **5 independent navig
 
 ```mermaid
 flowchart TD
-  Root[/ /] -->|Initial Redirect| Home[/home/]
+  Root[/ /] -->|Guards| OnboardingEntry[/onboarding/owner/carousel/]
 
-  subgraph AuthRoutes[Auth Routes - Outside Shell]
-    Login[/login/]
-    Signup[/signup/]
-    RoleSelect[/role-selection/]
+  subgraph OnboardingRoutes[Onboarding Routes - Outside Shell]
+    OwnerCarousel[owner/carousel]
+    Signup[signup / login / email-verify]
+    Profile[complete-profile]
+    OwnerPath[owner/create-baby → first-moment → invite]
+    FollowerPath[follower/invite → confirm-relationship → carousel]
+    CoOwnerPath[coowner/invite → welcome]
+    InviteAccept[/invite-accept/]
   end
+
+  subgraph AuthRoutes[Legacy Auth - Outside Shell]
+    Login[/login/]
+    SignupLegacy[/signup/]
+    RoleSelect[/role-selection/ → carousel]
+  end
+
+  OnboardingEntry --> OnboardingRoutes
+  InviteAccept --> FollowerPath
+  InviteAccept --> CoOwnerPath
+  OwnerPath -->|complete| Home[/home/]
+  FollowerPath --> Home
+  CoOwnerPath --> Home
 
   subgraph Shell[StatefulShellRoute Shell Navigator]
     direction TB
@@ -144,8 +161,45 @@ flowchart TD
   end
 
   Root --> AuthRoutes
-  Root --> Shell
+  Root --> OnboardingRoutes
+  Home --> Shell
   Shell --> Fullscreen
+```
+
+---
+
+## 8) Prototype Onboarding Flow (September 2026)
+
+Three entry paths share auth + complete-profile steps; coordinator persists progress in `LocalStorageService`.
+
+```mermaid
+flowchart TD
+  subgraph Owner[Owner Path]
+    OC[Owner Carousel] --> SU[Signup / Login]
+    SU --> EV[Email Verify]
+    EV --> CP[Complete Profile]
+    CP --> CB[Create Baby]
+    CB --> FM[First Moment]
+    FM --> BI[Batch Invite]
+    BI --> H1[/home/]
+  end
+
+  subgraph Follower[Follower Path]
+    IA1[Invite Deep Link] --> FI[Follower Invite Preview]
+    FI --> SU2[Signup / Login]
+    SU2 --> CP2[Complete Profile]
+    CP2 --> CR[Confirm Relationship]
+    CR --> FC[Follower Carousel]
+    FC --> H2[/home/]
+  end
+
+  subgraph CoOwner[Co-owner Path]
+    IA2[Invite Deep Link] --> COI[Co-owner Invite]
+    COI --> SU3[Signup / Login]
+    SU3 --> CP3[Complete Profile]
+    CP3 --> CW[Co-owner Welcome]
+    CW --> H3[/home/]
+  end
 ```
 
 ---

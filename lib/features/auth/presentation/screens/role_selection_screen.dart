@@ -6,15 +6,9 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 
 /// Role selection screen shown to first-time users after sign-up.
 ///
-/// **Functional Requirements**: Section 3.6.1 - Authentication Screens
-/// Reference: docs/Core_development_component_identification.md
-///
-/// Users choose whether to:
-///   - Create a new baby profile (owner / primary caregiver)
-///   - Follow / join an existing baby profile (family / friend)
-///
-/// Navigation is handled via callbacks so the screen remains testable
-/// without a router.
+/// **Deprecated:** Replaced by prototype onboarding (`/onboarding/owner/carousel`).
+/// Route `/role-selection` redirects to owner carousel. Kept for widget tests.
+@Deprecated('Use onboarding owner carousel flow instead.')
 class RoleSelectionScreen extends ConsumerStatefulWidget {
   const RoleSelectionScreen({
     super.key,

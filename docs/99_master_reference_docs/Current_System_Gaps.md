@@ -1,7 +1,7 @@
 # Nonna App — Current System Gaps Analysis
 
-**Document Version**: 2.1
-**Date**: May 26, 2026
+**Document Version**: 2.2
+**Date**: September 8, 2026
 **Location**: `docs/99_master_reference_docs/Current_System_Gaps.md`
 **Status**: Living Document - Fully updated with Technical and Plain Language sections
 
@@ -19,7 +19,8 @@ This document provides a comprehensive technical audit and a non-technical plain
 | ~~**Edge Functions**~~ | ~~Functioning backend stub in the `generate-thumbnail` function.~~ | ~~**Low**~~ | ✅ **RESOLVED (May 2026)** — Real `imagescript` WASM resize (300×300 JPEG, quality 80) implemented. Correct `thumbnail_path` column written. 9 unit tests passing. |
 | **Localization** | Hardcoded English strings on newer features and tiles. | **Medium** | Broken translations for Spanish users. |
 | ~~**Offline Sync**~~ | ~~Stale caches on cellular socket reconnect.~~ | ~~**Medium**~~ | ✅ **RESOLVED (May 2026)** — `connectivity_plus` integrated via `NetworkStatusNotifier` + `ConnectivityWrapper`. Offline banner, silent cache retention, and per-tile error suppression all implemented and emulator-validated. |
-| **Growth** | Limited email-only invitation acquisition loops. | **Low** | High friction for parent owners to invite family members. |
+| ~~**Onboarding**~~ | ~~No prototype first-run flow for owner/follower/co-owner.~~ | ~~**High**~~ | ✅ **RESOLVED (September 2026)** — `lib/features/onboarding/`; coordinator + theme; see §7b. |
+| **Growth** | Email-only invitation acquisition (phone/contacts still disabled in prototype UI). | **Low** | Batch invite added during onboarding; SMS/contacts/QR not yet implemented. |
 | **CI/CD** | Absence of unified mobile cloud-testing setup. | **High** | Undetected device-specific layout and crash regressions on native runs. |
 
 ---
@@ -110,10 +111,19 @@ This document provides a comprehensive technical audit and a non-technical plain
 ---
 
 ### 7. Email-Only Follower Invitations (Low Severity)
-* **Underlying Code**: `lib/features/baby_profile/presentation/screens/invite_followers_screen.dart`
-* **Technical Detail**: Follower invitation flows are restricted to email verification lookups (`invitee_email`). 
+* **Underlying Code**: `lib/features/baby_profile/presentation/screens/invite_followers_screen.dart`, `lib/features/onboarding/presentation/screens/owner/onboarding_batch_invite_screen.dart`
+* **Technical Detail**: Follower invitation flows are restricted to email verification lookups (`invitee_email`). Onboarding batch invite adds multi-row email invites with co-owner (Wife/Husband) badges; **phone field is disabled** in prototype UI.
 * **Why it's a Gap**: Inviting grandparents, friends, and family via manually typed email addresses introduces high friction. Modern growth loops rely on quick contacts book syncs, SMS text deep links, and quick-scan QR codes to onboarding followers instantly.
 * **Resolution Plan**: Extend `send-invitation-email` or add a new link-generator endpoint. Allow owners to generate short deep-link URLs that can be copied and sent via text or WhatsApp.
+
+---
+
+### 7b. ~~Prototype Onboarding Flow~~ ✅ RESOLVED (September 2026)
+* **Underlying Code**: `lib/features/onboarding/presentation/`, `lib/core/themes/onboarding_theme.dart`, `lib/core/router/route_guards.dart`
+* **What Was Fixed**: Owner carousel → auth → profile → create baby → first moment → batch invite → first-run home; follower and co-owner invite deep-link paths; coordinator persistence; `OnboardingTheme` isolated from main shell.
+* **Deprecated**: `RoleSelectionScreen` — `/role-selection` redirects to `/onboarding/owner/carousel`.
+* **Terms checkbox (#34)**: UI-only on `OnboardingCompleteProfileScreen`; no `terms_accepted_at` column persisted (documented here).
+* **Device sign-off (September 2026):** ✅ Emulator E2E 3/3; release APK smoke (build + carousel + Skip → signup); OPS-P1-012 + OPS-010 automated; release invite cold-start. **Optional:** OPS-010 real signup email tap; manual edge cases.
 
 ---
 

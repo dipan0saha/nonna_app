@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/config/app_config.dart';
+import '../../../../core/utils/invitation_link_helpers.dart';
 import '../../../../core/constants/performance_limits.dart';
 import '../../../../core/constants/supabase_tables.dart';
 import '../../../../core/di/providers.dart';
@@ -342,23 +342,47 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
         'gender': gender?.toJson() ?? Gender.unknown.toJson(),
         'profile_photo_url': profilePhotoUrl,
         'default_last_name_source': defaultLastNameSource,
+        'created_by': userId,
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       };
 
+      String? createdProfileId;
       final response = await databaseService.insert(
           SupabaseTables.babyProfiles, profileData);
 
       final profile = BabyProfile.fromJson(response.first);
+      createdProfileId = profile.id;
 
-      // Create owner membership
-      await databaseService.insert(SupabaseTables.babyMemberships, {
-        'baby_profile_id': profile.id,
-        'user_id': userId,
-        'role': UserRole.owner.name,
-        'created_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-      });
+      // Confirm post-insert SELECT works under RLS (#51).
+      final verified = await databaseService
+          .select(SupabaseTables.babyProfiles)
+          .eq('id', profile.id)
+          .maybeSingle();
+      if (verified == null) {
+        throw Exception('Baby profile created but could not be read back');
+      }
+
+      try {
+        await databaseService.insert(SupabaseTables.babyMemberships, {
+          'baby_profile_id': profile.id,
+          'user_id': userId,
+          'role': UserRole.owner.name,
+          'created_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+      } catch (membershipError) {
+        try {
+          await databaseService
+              .delete(SupabaseTables.babyProfiles)
+              .eq('id', profile.id);
+        } catch (cleanupError) {
+          debugPrint(
+            '⚠️ Failed to clean up orphan baby profile $createdProfileId: $cleanupError',
+          );
+        }
+        rethrow;
+      }
       if (!ref.mounted) return null;
 
       state = state.copyWith(
@@ -549,11 +573,76 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
     }
   }
 
-  /// Send a follower invitation by email.
+  /// Returns a skip/warn message if the email should not be invited (#29).
+  Future<String?> inviteSkipReasonForEmail({
+    required String babyProfileId,
+    required String email,
+  }) async {
+    final trimmed = email.trim();
+    if (trimmed.isEmpty) return null;
+    if (!_isValidEmail(trimmed)) return 'Enter a valid email address';
+
+    final normalized = trimmed.toLowerCase();
+    final databaseService = ref.read(databaseServiceProvider);
+
+    if (await _isEmailActiveMember(
+      babyProfileId: babyProfileId,
+      email: normalized,
+      databaseService: databaseService,
+    )) {
+      return 'Already a member';
+    }
+
+    final pending = await databaseService
+        .select(SupabaseTables.invitations, columns: 'id')
+        .eq(SupabaseTables.babyProfileId, babyProfileId)
+        .eq('invitee_email', normalized)
+        .eq(SupabaseTables.status, InvitationStatus.pending.toJson())
+        .maybeSingle();
+    if (pending != null) return 'Already invited';
+
+    final accepted = await databaseService
+        .select(SupabaseTables.invitations, columns: 'id')
+        .eq(SupabaseTables.babyProfileId, babyProfileId)
+        .eq('invitee_email', normalized)
+        .eq(SupabaseTables.status, InvitationStatus.accepted.toJson())
+        .maybeSingle();
+    if (accepted != null) return 'Already a member';
+
+    return null;
+  }
+
+  /// Server-side membership check by email (#29) — bypasses RLS via RPC.
+  Future<bool> _isEmailActiveMember({
+    required String babyProfileId,
+    required String email,
+    required DatabaseService databaseService,
+  }) async {
+    try {
+      final result = await databaseService.rpc(
+        'check_baby_membership_by_email',
+        params: {
+          'p_baby_profile_id': babyProfileId,
+          'p_email': email,
+        },
+      );
+      return result == true;
+    } catch (e) {
+      debugPrint('⚠️ check_baby_membership_by_email failed: $e');
+      return false;
+    }
+  }
+
+  /// Send a follower or co-owner invitation by email.
+  ///
+  /// Invitations expire after 7 days ([Duration(days: 7)]).
   Future<Invitation> sendInvitation({
     required String babyProfileId,
     required String invitedByUserId,
     required String email,
+    String? inviteeName,
+    String? relationshipLabel,
+    UserRole invitedRole = UserRole.follower,
   }) async {
     final trimmedEmail = email.trim();
     if (trimmedEmail.isEmpty) {
@@ -573,6 +662,14 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       throw Exception('Only profile owners can invite followers');
     }
 
+    if (await _isEmailActiveMember(
+      babyProfileId: babyProfileId,
+      email: normalizedEmail,
+      databaseService: databaseService,
+    )) {
+      throw Exception('This email is already a member of this baby profile');
+    }
+
     final existingPending = await databaseService
         .select(SupabaseTables.invitations, columns: 'id')
         .eq(SupabaseTables.babyProfileId, babyProfileId)
@@ -584,6 +681,17 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       throw Exception('An active invitation already exists for this email');
     }
 
+    final existingAccepted = await databaseService
+        .select(SupabaseTables.invitations, columns: 'id')
+        .eq(SupabaseTables.babyProfileId, babyProfileId)
+        .eq('invitee_email', normalizedEmail)
+        .eq(SupabaseTables.status, InvitationStatus.accepted.toJson())
+        .maybeSingle();
+
+    if (existingAccepted != null) {
+      throw Exception('This email is already a member of this baby profile');
+    }
+
     final now = DateTime.now();
     final tokenHash = const Uuid().v4();
     final response = await databaseService.insert(SupabaseTables.invitations, {
@@ -591,6 +699,11 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       SupabaseTables.babyProfileId: babyProfileId,
       'invited_by_user_id': invitedByUserId,
       'invitee_email': normalizedEmail,
+      if (inviteeName != null && inviteeName.trim().isNotEmpty)
+        'invitee_name': inviteeName.trim(),
+      if (relationshipLabel != null && relationshipLabel.trim().isNotEmpty)
+        'relationship_label': relationshipLabel.trim(),
+      'invited_role': invitedRole.toJson(),
       'token_hash': tokenHash,
       'expires_at': now.add(const Duration(days: 7)).toIso8601String(),
       SupabaseTables.status: InvitationStatus.pending.toJson(),
@@ -605,6 +718,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
         invitation: invitation,
         babyProfileId: babyProfileId,
         invitedByUserId: invitedByUserId,
+        invitedRole: invitedRole,
       );
     } catch (e) {
       try {
@@ -626,6 +740,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
     required Invitation invitation,
     required String babyProfileId,
     required String invitedByUserId,
+    required UserRole invitedRole,
   }) async {
     final databaseService = ref.read(databaseServiceProvider);
     final supabaseClient = ref.read(supabaseClientProvider);
@@ -639,8 +754,10 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
       babyProfileId: babyProfileId,
     );
 
-    final inviteUrl =
-        AppConfig.getFullUrl('/invite?token=${invitation.tokenHash}');
+    final inviteUrl = InvitationLinkHelpers.buildInviteAcceptUrl(
+      invitation.tokenHash,
+      invitedRole: invitedRole,
+    );
 
     final response = await supabaseClient.functions.invoke(
       'send-invitation-email',
@@ -649,6 +766,7 @@ class BabyProfileNotifier extends Notifier<BabyProfileState> {
         'inviterName': inviterName,
         'babyName': babyName,
         'inviteUrl': inviteUrl,
+        'invitedRole': invitedRole.toJson(),
       },
     );
 

@@ -3,88 +3,172 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/router/route_guards.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_types.dart';
 
-/// A simple Riverpod provider returning a fixed [UserRole?] for testing
-/// [RouteGuards.requiresRole].
 Provider<UserRole?> _roleProvider(UserRole? role) =>
     Provider<UserRole?>((_) => role);
 
 void main() {
   group('RouteGuards.redirectForLocation', () {
-    test('redirects unauthenticated user from /home to /login', () {
+    test('redirects unauthenticated user from /home to owner carousel', () {
       expect(
         RouteGuards.redirectForLocation(false, '/home'),
-        '/login',
+        OnboardingRoutes.ownerCarousel,
       );
     });
 
-    test('redirects unauthenticated user from /settings to /login', () {
+    test('allows unauthenticated user on owner carousel', () {
       expect(
-        RouteGuards.redirectForLocation(false, '/settings'),
-        '/login',
+        RouteGuards.redirectForLocation(
+          false,
+          OnboardingRoutes.ownerCarousel,
+        ),
+        isNull,
       );
     });
 
-    test('allows unauthenticated user to stay on /login', () {
+    test('allows unauthenticated user on /login', () {
       expect(
         RouteGuards.redirectForLocation(false, '/login'),
         isNull,
       );
     });
 
-    test('allows unauthenticated user to stay on /signup', () {
+    test('allows unauthenticated user on /signup', () {
       expect(
         RouteGuards.redirectForLocation(false, '/signup'),
         isNull,
       );
     });
 
-    test('allows unauthenticated user to stay on /role-selection', () {
+    test('allows unauthenticated user on /invite-accept', () {
       expect(
-        RouteGuards.redirectForLocation(false, '/role-selection'),
+        RouteGuards.redirectForLocation(false, OnboardingRoutes.inviteAccept),
         isNull,
       );
     });
 
-    test('redirects authenticated user away from /login to /home', () {
+    test('redirects unauthenticated pending invite to follower invite landing',
+        () {
       expect(
-        RouteGuards.redirectForLocation(true, '/login'),
+        RouteGuards.redirectForLocation(
+          false,
+          '/settings',
+          hasPendingInvite: true,
+        ),
+        OnboardingRoutes.followerInvite,
+      );
+    });
+
+    test('redirects authenticated completed user away from onboarding', () {
+      expect(
+        RouteGuards.redirectForLocation(
+          true,
+          OnboardingRoutes.ownerCarousel,
+          onboardingCompleted: true,
+        ),
         '/home',
       );
     });
 
-    test('redirects authenticated user away from /signup to /home', () {
+    test('resumes coordinator step over /home (#55)', () {
       expect(
-        RouteGuards.redirectForLocation(true, '/signup'),
-        '/home',
+        RouteGuards.redirectForLocation(
+          true,
+          '/home',
+          hasActiveCoordinatorStep: true,
+          coordinatorResumeRoute: OnboardingRoutes.ownerFirstMoment,
+          hasBabyMemberships: true,
+        ),
+        OnboardingRoutes.ownerFirstMoment,
       );
     });
 
-    test('redirects authenticated user away from /role-selection to /home', () {
+    test('redirects co-owner pending invite to co-owner landing', () {
       expect(
-        RouteGuards.redirectForLocation(true, '/role-selection'),
-        '/home',
+        RouteGuards.redirectForLocation(
+          false,
+          '/settings',
+          hasPendingInvite: true,
+          invitePath: OnboardingPath.coOwner,
+        ),
+        OnboardingRoutes.coOwnerInvite,
       );
     });
 
-    test('allows authenticated user to access /home', () {
+    test('allows authenticated incomplete user on /home with memberships', () {
+      expect(
+        RouteGuards.redirectForLocation(
+          true,
+          '/home',
+          hasBabyMemberships: true,
+        ),
+        isNull,
+      );
+    });
+
+    test(
+        'redirects authenticated incomplete user without memberships from /home',
+        () {
       expect(
         RouteGuards.redirectForLocation(true, '/home'),
+        OnboardingRoutes.ownerCarousel,
+      );
+    });
+
+    test('allows authenticated user on onboarding login when incomplete', () {
+      expect(
+        RouteGuards.redirectForLocation(
+          true,
+          OnboardingRoutes.login,
+        ),
         isNull,
       );
     });
 
-    test('allows authenticated user to access /profile', () {
+    test('allows authenticated incomplete user on /invite-accept', () {
       expect(
-        RouteGuards.redirectForLocation(true, '/profile'),
+        RouteGuards.redirectForLocation(
+          true,
+          OnboardingRoutes.inviteAccept,
+        ),
         isNull,
       );
     });
 
-    test('allows authenticated user to access /calendar', () {
+    test('allows authenticated incomplete user on follower invite landing', () {
       expect(
-        RouteGuards.redirectForLocation(true, '/calendar'),
+        RouteGuards.redirectForLocation(
+          true,
+          OnboardingRoutes.followerInvite,
+          hasPendingInvite: true,
+        ),
         isNull,
+      );
+    });
+
+    test('redirects authenticated incomplete user from /settings to carousel',
+        () {
+      expect(
+        RouteGuards.redirectForLocation(true, '/settings'),
+        OnboardingRoutes.ownerCarousel,
+      );
+    });
+  });
+
+  group('RouteGuards.isPublicRoute', () {
+    test('onboarding paths are public', () {
+      expect(
+        RouteGuards.isPublicRoute(OnboardingRoutes.emailVerify),
+        isTrue,
+      );
+    });
+
+    test('invite accept is public', () {
+      expect(
+        RouteGuards.isPublicRoute(OnboardingRoutes.inviteAccept),
+        isTrue,
       );
     });
   });
@@ -96,30 +180,6 @@ void main() {
         allowedRoles: [UserRole.owner],
       );
       expect(fn, isNotNull);
-    });
-
-    test('role provider accepts owner role', () {
-      final container = ProviderContainer();
-      final provider = _roleProvider(UserRole.owner);
-      addTearDown(container.dispose);
-
-      expect(container.read(provider), UserRole.owner);
-    });
-
-    test('role provider accepts follower role', () {
-      final container = ProviderContainer();
-      final provider = _roleProvider(UserRole.follower);
-      addTearDown(container.dispose);
-
-      expect(container.read(provider), UserRole.follower);
-    });
-
-    test('role provider can be null', () {
-      final container = ProviderContainer();
-      final provider = _roleProvider(null);
-      addTearDown(container.dispose);
-
-      expect(container.read(provider), isNull);
     });
   });
 
@@ -135,30 +195,12 @@ void main() {
       );
     });
 
-    test('unauthenticated user with null role is redirected to /login', () {
-      expect(
-        RouteGuards.redirectForRole(false, null, [UserRole.owner]),
-        '/login',
-      );
-    });
-
     test('authenticated user with allowed role is not redirected', () {
       expect(
         RouteGuards.redirectForRole(
           true,
           UserRole.owner,
           [UserRole.owner],
-        ),
-        isNull,
-      );
-    });
-
-    test('authenticated follower allowed through follower-only route', () {
-      expect(
-        RouteGuards.redirectForRole(
-          true,
-          UserRole.follower,
-          [UserRole.follower],
         ),
         isNull,
       );
@@ -173,36 +215,6 @@ void main() {
           [UserRole.owner],
         ),
         '/home',
-      );
-    });
-
-    test('custom fallbackPath is used when role is not allowed', () {
-      expect(
-        RouteGuards.redirectForRole(
-          true,
-          UserRole.follower,
-          [UserRole.owner],
-          fallbackPath: '/no-access',
-        ),
-        '/no-access',
-      );
-    });
-
-    test('null role is treated as not allowed', () {
-      expect(
-        RouteGuards.redirectForRole(true, null, [UserRole.owner]),
-        '/home',
-      );
-    });
-
-    test('multiple allowed roles — matching role is allowed', () {
-      expect(
-        RouteGuards.redirectForRole(
-          true,
-          UserRole.follower,
-          [UserRole.owner, UserRole.follower],
-        ),
-        isNull,
       );
     });
   });

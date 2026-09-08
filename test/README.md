@@ -208,3 +208,15 @@ test('uses cache when available', () async {
 
 ---
 
+## Onboarding tests (September 2026)
+
+| Location | Purpose |
+| -------- | ------- |
+| `test/features/onboarding/` | Unit/widget tests — coordinator, helpers, analytics, deep-link normalization |
+| `test/core/services/deep_link_service_test.dart` | Auth callback URI parsing (PKCE + hash fallback) |
+| `integration_test/onboarding_owner_flow_test.dart` | Emulator: cold-start carousel + invite route helper |
+| `integration_test/ops_device_signoff_test.dart` | Emulator OPS sign-off (OPS-010 verify advance, OPS-P1-012 batch dedupe) — requires `--dart-define=SUPABASE_URL` + service role key |
+
+Run onboarding unit tests: `flutter test test/features/onboarding/ test/core/services/deep_link_service_test.dart`
+
+---

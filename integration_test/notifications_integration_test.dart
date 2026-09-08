@@ -9,7 +9,7 @@ void main() {
   group('8. Notifications Integration Tests', () {
     testWidgets('Verify notifications visibility', (WidgetTester tester) async {
       await startAppAndLogin(tester);
-      
+
       final notificationBtn = find.byKey(const Key('notification_icon_button'));
       if (notificationBtn.evaluate().isNotEmpty) {
         await tester.tap(notificationBtn);

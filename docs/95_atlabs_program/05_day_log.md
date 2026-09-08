@@ -181,16 +181,19 @@ _Capture sprint learnings that should update Nonna strategy:_
 |------|---------|--------|
 | 2026-09-07 | Use `lanonnaapp@gmail.com` for all AltaLab | Updated docs |
 | 2026-09-07 | Core Track only; don't share internal build status externally | External positioning table in baseline doc |
+| 2026-09-08 | Onboarding ready for prod testers | Release APK smoke ✅ (`flutter build apk --release`); carousel + Skip → signup on release; owner E2E → `/home` re-validated. OPS-010 real email tap optional. |
+
+### Onboarding emulator sign-off (2026-09-08)
+
+- **Automated:** `onboarding_owner_flow_test.dart` → **2/2**; `onboarding_e2e_signoff_test.dart` → **3/3** (owner/follower/co-owner to `/home`)
+- **Manual UI (debug APK):** follower invite (`qa-follower-0b-20260908-0001`), co-owner invite (`qa-coowner-0b-20260908-0001`), owner carousel cold start — all ✅
+- **OPS-010:** automated `ops_device_signoff_test.dart` ✅ (verify screen → complete profile via admin OTP); real cold-start email tap still optional
+- **OPS-P1-012:** automated `ops_device_signoff_test.dart` ✅ — batch invite shows **Already a member** on emulator
+- **Release APK invite cold-start:** ✅ fixed — `DeepLinkService.captureColdStartLink()` + manifest intent filters; verified `nonna://app/invite-accept?token=...` → invite landing
+- **Release APK smoke:** `flutter build apk --release` ✅; cold start → carousel ✅; Skip → Create Account ✅; owner → `/home` re-validated via `onboarding_e2e_signoff_test.dart` (debug harness — Flutter cannot drive release integration tests)
+- **Pending:** optional OPS-010 real signup email tap; manual edge cases
+- **Phase 4 docs:** master reference docs updated 2026-09-08 (onboarding routes, RPCs, diagrams, gaps)
 
 ---
 
-## Blockers
-
-| Blocker | Owner | Status |
-|---------|-------|--------|
-| Day 1 assignment text not yet in repo | Dipan | Open |
-| Track assessment result not recorded | Dipan | Open |
-
----
-
-*Last updated: 2026-09-07*
+*Last updated: 2026-09-08*

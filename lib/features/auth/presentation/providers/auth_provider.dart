@@ -253,6 +253,19 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
+  /// Resend signup verification without an active session (#23).
+  Future<bool> resendSignupVerificationEmail(String email) async {
+    try {
+      await ref.read(authServiceProvider).resendSignupVerificationEmail(email);
+      return true;
+    } catch (e) {
+      if (!ref.mounted) return false;
+      debugPrint('❌ Resend verification error: $e');
+      state = AuthState.error(e.toString());
+      return false;
+    }
+  }
+
   /// Sign in with Google
   Future<void> signInWithGoogle() async {
     try {

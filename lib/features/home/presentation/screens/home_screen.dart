@@ -12,7 +12,11 @@ import 'package:nonna_app/core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
+import 'package:nonna_app/core/constants/supabase_tables.dart';
+import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
+import 'package:nonna_app/features/home/presentation/widgets/first_run_home_widgets.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/first_run_home_provider.dart';
 import 'package:nonna_app/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:nonna_app/features/home/presentation/widgets/tile_list_view.dart';
 import 'package:nonna_app/core/widgets/offline_indicator.dart';
@@ -70,6 +74,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final Map<String, Map<String, dynamic>> _babyProfileCache = {};
+
   @override
   void initState() {
     super.initState();
@@ -149,6 +155,65 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
   }
 
+  Future<void> _loadBabyProfileRow(String babyProfileId) async {
+    if (_babyProfileCache.containsKey(babyProfileId)) return;
+    try {
+      final row = await ref
+          .read(databaseServiceProvider)
+          .select(SupabaseTables.babyProfiles)
+          .eq('id', babyProfileId)
+          .maybeSingle();
+      if (!mounted || row == null) return;
+      setState(() => _babyProfileCache[babyProfileId] = row);
+    } catch (e) {
+      debugPrint('⚠️ Failed to load baby profile for first-run home: $e');
+    }
+  }
+
+  Future<void> _announceArrival({
+    required String babyProfileId,
+    required String babyName,
+  }) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now(),
+    );
+    if (picked == null) return;
+
+    final userId = ref.read(authProvider).user?.id;
+    if (userId == null) return;
+
+    final notifier = ref.read(babyProfileProvider.notifier);
+    await notifier.loadProfile(
+      babyProfileId: babyProfileId,
+      currentUserId: userId,
+    );
+    final cached = _babyProfileCache[babyProfileId];
+    await notifier.updateProfile(
+      babyProfileId: babyProfileId,
+      name: babyName,
+      actualBirthDate: picked,
+      expectedBirthDate: cached?['expected_birth_date'] != null
+          ? DateTime.parse(cached!['expected_birth_date'] as String)
+          : null,
+    );
+    await _loadBabyProfileRow(babyProfileId);
+  }
+
+  int? _daysToDue(DateTime? expectedDate) {
+    if (expectedDate == null) return null;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final due = DateTime(
+      expectedDate.year,
+      expectedDate.month,
+      expectedDate.day,
+    );
+    return due.difference(today).inDays;
+  }
+
   Future<void> _onRefresh() async {
     await ref.read(homeScreenProvider.notifier).onPullToRefresh();
   }
@@ -169,6 +234,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
 
     final state = ref.watch(homeScreenProvider);
+    final babyProfileId = state.selectedBabyProfileId ??
+        widget.babyProfileId ??
+        ref.read(selectedBabyProfileProvider);
+    final firstRunState = ref.watch(firstRunHomeProvider);
+    final isFirstRun = firstRunState.isFirstRunFor(babyProfileId);
+    if (isFirstRun && babyProfileId != null) {
+      unawaited(_loadBabyProfileRow(babyProfileId));
+    }
     // Resolve role and dual-role flag from provider state then constructor fallback.
     final userRole = state.selectedRole ?? widget.userRole;
     final isDualRole = widget.isDualRole;
@@ -177,6 +250,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: HomeAppBar(
         babyProfileName: widget.babyProfileName,
         notificationCount: widget.notificationCount,
+        showFirstRunBellDot: isFirstRun,
         onNotificationTap: widget.onNotificationTap,
         onSettingsTap: widget.onSettingsTap,
         onBabyProfileTap: widget.onBabyProfileTap,
@@ -234,7 +308,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return TileListView(
+    final profiles = ref.watch(userBabyProfilesProvider).asData?.value ?? [];
+    final babyName = profiles
+            .where((p) => p.id == babyProfileId)
+            .map((p) => p.name)
+            .firstOrNull ??
+        'Baby';
+    final firstRunState = ref.watch(firstRunHomeProvider);
+    final isFirstRun = firstRunState.isFirstRunFor(babyProfileId);
+    final cached = _babyProfileCache[babyProfileId];
+    final actualBirth = cached?['actual_birth_date'] as String?;
+    final expectedBirth = cached?['expected_birth_date'] as String?;
+    final isBorn = actualBirth != null;
+    final expectedDate =
+        expectedBirth != null ? DateTime.parse(expectedBirth) : null;
+    final isFollowerFirstRun = isFirstRun && userRole == UserRole.follower;
+
+    final tileList = TileListView(
       tiles: state.tiles,
       isLoading: state.isLoading,
       error: state.error,
@@ -246,6 +336,59 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         message: 'Add your first photo!',
         description: 'Tap the + button below to get started.',
       ),
+    );
+
+    if (!isFirstRun) return tileList;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (!isBorn)
+          FirstRunHeroCard(
+            babyName: babyName,
+            daysToDue: _daysToDue(expectedDate),
+            onAnnounceArrival: userRole == UserRole.owner
+                ? () => _announceArrival(
+                      babyProfileId: babyProfileId,
+                      babyName: babyName,
+                    )
+                : null,
+            onInviteTap: userRole == UserRole.owner
+                ? () => context.push(
+                      AppRoutes.babyProfileFollowers,
+                      extra: {
+                        'babyProfileId': babyProfileId,
+                        'currentUserId': ref.read(authProvider).user?.id ?? '',
+                      },
+                    )
+                : null,
+          )
+        else
+          FirstRunWelcomeBanner(babyName: babyName),
+        if (isFollowerFirstRun)
+          FollowerFirstRunQuickActions(
+            isBorn: isBorn,
+            onGalleryTap: () => context.go(AppRoutes.gallery),
+            onVoteTap: () => context.go(AppRoutes.gamification),
+          ),
+        FirstRunEmptyInsightCard(
+          title: isBorn ? 'Recent Activity' : 'Family Insight',
+          message: isBorn
+              ? 'Photos, events, and updates from your circle will show up here.'
+              : 'Invite family to start building your shared timeline.',
+          actionLabel: isBorn ? null : 'Invite',
+          onAction: isBorn
+              ? null
+              : () => context.push(
+                    AppRoutes.babyProfileFollowers,
+                    extra: {
+                      'babyProfileId': babyProfileId,
+                      'currentUserId': ref.read(authProvider).user?.id ?? '',
+                    },
+                  ),
+        ),
+        Expanded(child: tileList),
+      ],
     );
   }
 }

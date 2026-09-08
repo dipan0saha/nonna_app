@@ -498,4 +498,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tile_activity_empty => 'No engagement data yet';
+
+  @override
+  String get onboarding_owner_carousel_slide1_title =>
+      'Your baby\'s story, in one private place';
+
+  @override
+  String get onboarding_owner_carousel_slide1_body =>
+      'Photos, updates, and everything in between, visible only to the people you invite.';
+
+  @override
+  String get onboarding_owner_carousel_slide2_title =>
+      'Everyone gets to feel close';
+
+  @override
+  String get onboarding_owner_carousel_slide2_body =>
+      'Grandparents, aunts, uncles, and friends can follow along, no matter how far away they live.';
+
+  @override
+  String get onboarding_owner_carousel_slide3_title =>
+      'Celebrate every milestone together';
+
+  @override
+  String get onboarding_owner_carousel_slide3_body =>
+      'Calendar events, a shared registry, and fun ways to mark the big days.';
+
+  @override
+  String get onboarding_owner_carousel_slide4_title => 'Never lose a moment';
+
+  @override
+  String get onboarding_owner_carousel_slide4_body =>
+      'Every photo and comment, saved in one safe place, for good.';
+
+  @override
+  String get onboarding_carousel_next => 'Next';
+
+  @override
+  String get onboarding_carousel_get_started => 'Get Started';
+
+  @override
+  String get onboarding_skip => 'Skip';
+
+  @override
+  String get onboarding_signup_title => 'Create your account';
+
+  @override
+  String get onboarding_signup_email_label => 'Email';
+
+  @override
+  String get onboarding_signup_password_label => 'Password';
+
+  @override
+  String get onboarding_signup_create_account => 'Create Account';
+
+  @override
+  String get onboarding_signup_login_prompt => 'Already have an account? ';
+
+  @override
+  String get onboarding_signup_login_action => 'Log in';
+
+  @override
+  String get onboarding_oauth_google => 'Continue with Google';
+
+  @override
+  String get onboarding_oauth_facebook => 'Continue with Facebook';
+
+  @override
+  String get onboarding_batch_invite_title => 'Invite family & friends';
+
+  @override
+  String get onboarding_batch_invite_send => 'Send Invites';
+
+  @override
+  String get onboarding_batch_invite_skip => 'Skip for now';
+
+  @override
+  String get onboarding_follower_accept => 'Accept Invitation';
+
+  @override
+  String get onboarding_coowner_accept => 'Accept & Join as Owner';
+
+  @override
+  String get onboarding_wrong_email_title =>
+      'This invite isn\'t for your account';
+
+  @override
+  String get onboarding_wrong_email_switch => 'Sign out & switch account';
 }

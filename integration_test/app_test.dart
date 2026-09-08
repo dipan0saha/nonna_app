@@ -14,9 +14,9 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Nonna App Master Integration Test Suite', () {
-    // We execute these in a specific hierarchical order 
+    // We execute these in a specific hierarchical order
     // to prevent cascading dependency failures.
-    
+
     auth.main();
     baby_profile.main();
     dashboard.main();

@@ -428,4 +428,40 @@ class AnalyticsService {
       debugPrint('❌ Error logging screen view: $e');
     }
   }
+
+  // ==========================================
+  // Onboarding Events
+  // ==========================================
+
+  /// Log when an onboarding step is viewed (#53).
+  Future<void> logOnboardingStepViewed({
+    required String step,
+    required String path,
+  }) async {
+    if (!_isEnabled) return;
+    try {
+      await _analytics?.logEvent(
+        name: 'onboarding_step_viewed',
+        parameters: {
+          'step': step,
+          'path': path,
+        },
+      );
+    } catch (e) {
+      debugPrint('❌ Error logging onboarding step viewed: $e');
+    }
+  }
+
+  /// Log when onboarding wizard completes (#53).
+  Future<void> logOnboardingCompleted({required String path}) async {
+    if (!_isEnabled) return;
+    try {
+      await _analytics?.logEvent(
+        name: 'onboarding_completed',
+        parameters: {'path': path},
+      );
+    } catch (e) {
+      debugPrint('❌ Error logging onboarding completed: $e');
+    }
+  }
 }

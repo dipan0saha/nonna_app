@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:nonna_app/core/config/app_config.dart';
+import 'package:nonna_app/core/utils/invitation_link_helpers.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:nonna_app/core/services/analytics_service.dart';
 
@@ -47,7 +48,7 @@ class ShareHelpers {
 
   /// Generate invitation link
   static String generateInvitationLink(String invitationCode) {
-    return '${AppConfig.deepLinkScheme}://invite-accept?token=$invitationCode';
+    return InvitationLinkHelpers.buildInviteAcceptUrl(invitationCode);
   }
 
   // ============================================================

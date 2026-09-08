@@ -7,10 +7,10 @@ import 'package:nonna_app/core/models/event.dart';
 import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
 import 'package:nonna_app/core/navigation/navigation_service.dart';
+import 'package:nonna_app/core/services/deep_link_service.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:nonna_app/features/auth/presentation/screens/signup_screen.dart';
-import 'package:nonna_app/features/auth/presentation/screens/role_selection_screen.dart';
 import 'package:nonna_app/features/home/presentation/screens/home_screen.dart';
 import 'package:nonna_app/features/home/presentation/screens/main_shell_screen.dart';
 import 'package:nonna_app/features/profile/presentation/screens/profile_screen.dart';
@@ -28,12 +28,32 @@ import 'package:nonna_app/features/baby_profile/presentation/screens/baby_profil
 import 'package:nonna_app/features/baby_profile/presentation/screens/create_baby_profile_screen.dart';
 import 'package:nonna_app/features/baby_profile/presentation/screens/edit_baby_profile_screen.dart';
 import 'package:nonna_app/features/baby_profile/presentation/screens/followers_management_screen.dart';
-import 'package:nonna_app/features/baby_profile/presentation/screens/invite_accept_screen.dart';
 import 'package:nonna_app/features/baby_profile/presentation/screens/invite_followers_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_detail_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_creation_screen.dart';
 import 'package:nonna_app/features/registry/presentation/screens/registry_item_edit_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_types.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/owner/owner_carousel_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/owner/onboarding_create_baby_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/owner/onboarding_first_moment_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/owner/onboarding_batch_invite_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/follower/onboarding_follower_invite_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/follower/onboarding_relationship_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/follower/follower_carousel_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_wrong_email_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/coowner/onboarding_coowner_invite_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/coowner/onboarding_coowner_welcome_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_placeholder_screens.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_signup_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_login_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_email_verify_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_complete_profile_screen.dart';
+import 'package:nonna_app/features/onboarding/presentation/utils/onboarding_auth_helpers.dart';
+import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_scaffold.dart';
+
+import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 
 import 'route_guards.dart';
 
@@ -74,6 +94,21 @@ abstract class AppRoutes {
   static const babyProfileFollowers = '/baby-profile/followers';
   static const babyProfileInvite = '/baby-profile/followers/invite';
   static const inviteAccept = '/invite-accept';
+  static const onboardingOwnerCarousel = '/onboarding/owner/carousel';
+  static const onboardingSignup = '/onboarding/signup';
+  static const onboardingLogin = '/onboarding/login';
+  static const onboardingEmailVerify = '/onboarding/email-verify';
+  static const onboardingCompleteProfile = '/onboarding/complete-profile';
+  static const onboardingOwnerCreateBaby = '/onboarding/owner/create-baby';
+  static const onboardingOwnerFirstMoment = '/onboarding/owner/first-moment';
+  static const onboardingOwnerInvite = '/onboarding/owner/invite';
+  static const onboardingFollowerInvite = '/onboarding/follower/invite';
+  static const onboardingCoOwnerInvite = '/onboarding/coowner/invite';
+  static const onboardingConfirmRelationship =
+      '/onboarding/follower/confirm-relationship';
+  static const onboardingFollowerCarousel = '/onboarding/follower/carousel';
+  static const onboardingCoOwnerWelcome = '/onboarding/coowner/welcome';
+  static const onboardingWrongEmail = '/onboarding/wrong-email';
   static const registry = '/registry';
   static const registryItem = '/registry/item/:id';
   static const registryItemCreate = '/registry/item/create';
@@ -119,6 +154,8 @@ String _extraString(GoRouterState state, String key, [String fallback = '']) {
   return extra?[key] as String? ?? fallback;
 }
 
+Widget _onboardingPage(Widget child) => OnboardingThemeScope(child: child);
+
 List<RouteBase> get _routes => [
       // -----------------------------------------------------------------------
       // Root redirect
@@ -145,7 +182,94 @@ List<RouteBase> get _routes => [
       ),
       GoRoute(
         path: AppRoutes.roleSelection,
-        builder: (context, state) => const RoleSelectionScreen(),
+        redirect: (context, state) => AppRoutes.onboardingOwnerCarousel,
+      ),
+
+      // -----------------------------------------------------------------------
+      // Onboarding routes — outside shell, prototype theme
+      // -----------------------------------------------------------------------
+      GoRoute(
+        path: AppRoutes.onboardingOwnerCarousel,
+        builder: (context, state) =>
+            _onboardingPage(const OwnerCarouselScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingSignup,
+        builder: (context, state) => _onboardingPage(
+          OnboardingSignupScreen(
+            path: onboardingPathFromRoute(state.uri),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingLogin,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingLoginScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingEmailVerify,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingEmailVerifyScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingCompleteProfile,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingCompleteProfileScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingOwnerCreateBaby,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingCreateBabyScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingOwnerFirstMoment,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingFirstMomentScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingOwnerInvite,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingBatchInviteScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingFollowerInvite,
+        builder: (context, state) =>
+            _onboardingPage(const OnboardingFollowerInviteScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingCoOwnerInvite,
+        builder: (context, state) =>
+            _onboardingPage(const OnboardingCoOwnerInviteScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingConfirmRelationship,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingRelationshipScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingFollowerCarousel,
+        builder: (context, state) => _onboardingPage(
+          const FollowerCarouselScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingWrongEmail,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingWrongEmailScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.onboardingCoOwnerWelcome,
+        builder: (context, state) => _onboardingPage(
+          const OnboardingCoOwnerWelcomeScreen(),
+        ),
       ),
 
       // -----------------------------------------------------------------------
@@ -235,8 +359,13 @@ List<RouteBase> get _routes => [
       GoRoute(
         parentNavigatorKey: NavigationService.navigatorKey,
         path: AppRoutes.inviteAccept,
-        builder: (context, state) => InviteAcceptScreen(
-          token: state.uri.queryParameters['token'] ?? '',
+        builder: (context, state) => _onboardingPage(
+          OnboardingInviteAcceptWrapper(
+            token: state.uri.queryParameters['token'] ?? '',
+            invitePath: OnboardingRoutes.invitePathFromQuery(
+              state.uri.queryParameters,
+            ),
+          ),
         ),
       ),
 
@@ -409,7 +538,8 @@ List<RouteBase> get _routes => [
 ///   auth state changes.
 final appRouter = GoRouter(
   navigatorKey: NavigationService.navigatorKey,
-  initialLocation: AppRoutes.home,
+  initialLocation:
+      DeepLinkService.initialRoute ?? AppRoutes.onboardingOwnerCarousel,
   refreshListenable: routerRefreshNotifier,
   redirect: RouteGuards.authRedirect,
   routes: _routes,
@@ -423,6 +553,15 @@ final appRouter = GoRouter(
 /// (e.g., sends a newly signed-in user to /home or a signed-out user to /login).
 final routerProvider = Provider<GoRouter>((ref) {
   ref.listen<bool>(isAuthenticatedProvider, (_, __) {
+    routerRefreshNotifier.notify();
+  });
+  ref.listen(onboardingCoordinatorProvider, (_, __) {
+    routerRefreshNotifier.notify();
+  });
+  ref.listen(isOnboardingCompletedProvider, (_, __) {
+    routerRefreshNotifier.notify();
+  });
+  ref.listen(userHasBabyMembershipsProvider, (_, __) {
     routerRefreshNotifier.notify();
   });
   return appRouter;

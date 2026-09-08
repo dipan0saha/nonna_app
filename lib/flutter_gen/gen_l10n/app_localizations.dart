@@ -931,6 +931,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No engagement data yet'**
   String get tile_activity_empty;
+
+  /// Owner carousel slide 1 headline
+  ///
+  /// In en, this message translates to:
+  /// **'Your baby\'s story, in one private place'**
+  String get onboarding_owner_carousel_slide1_title;
+
+  /// No description provided for @onboarding_owner_carousel_slide1_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos, updates, and everything in between, visible only to the people you invite.'**
+  String get onboarding_owner_carousel_slide1_body;
+
+  /// No description provided for @onboarding_owner_carousel_slide2_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone gets to feel close'**
+  String get onboarding_owner_carousel_slide2_title;
+
+  /// No description provided for @onboarding_owner_carousel_slide2_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Grandparents, aunts, uncles, and friends can follow along, no matter how far away they live.'**
+  String get onboarding_owner_carousel_slide2_body;
+
+  /// No description provided for @onboarding_owner_carousel_slide3_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Celebrate every milestone together'**
+  String get onboarding_owner_carousel_slide3_title;
+
+  /// No description provided for @onboarding_owner_carousel_slide3_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar events, a shared registry, and fun ways to mark the big days.'**
+  String get onboarding_owner_carousel_slide3_body;
+
+  /// No description provided for @onboarding_owner_carousel_slide4_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Never lose a moment'**
+  String get onboarding_owner_carousel_slide4_title;
+
+  /// No description provided for @onboarding_owner_carousel_slide4_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Every photo and comment, saved in one safe place, for good.'**
+  String get onboarding_owner_carousel_slide4_body;
+
+  /// No description provided for @onboarding_carousel_next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboarding_carousel_next;
+
+  /// No description provided for @onboarding_carousel_get_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get onboarding_carousel_get_started;
+
+  /// No description provided for @onboarding_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboarding_skip;
+
+  /// No description provided for @onboarding_signup_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get onboarding_signup_title;
+
+  /// No description provided for @onboarding_signup_email_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get onboarding_signup_email_label;
+
+  /// No description provided for @onboarding_signup_password_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get onboarding_signup_password_label;
+
+  /// No description provided for @onboarding_signup_create_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get onboarding_signup_create_account;
+
+  /// No description provided for @onboarding_signup_login_prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get onboarding_signup_login_prompt;
+
+  /// No description provided for @onboarding_signup_login_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get onboarding_signup_login_action;
+
+  /// No description provided for @onboarding_oauth_google.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get onboarding_oauth_google;
+
+  /// No description provided for @onboarding_oauth_facebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Facebook'**
+  String get onboarding_oauth_facebook;
+
+  /// No description provided for @onboarding_batch_invite_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite family & friends'**
+  String get onboarding_batch_invite_title;
+
+  /// No description provided for @onboarding_batch_invite_send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Invites'**
+  String get onboarding_batch_invite_send;
+
+  /// No description provided for @onboarding_batch_invite_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now'**
+  String get onboarding_batch_invite_skip;
+
+  /// No description provided for @onboarding_follower_accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept Invitation'**
+  String get onboarding_follower_accept;
+
+  /// No description provided for @onboarding_coowner_accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept & Join as Owner'**
+  String get onboarding_coowner_accept;
+
+  /// No description provided for @onboarding_wrong_email_title.
+  ///
+  /// In en, this message translates to:
+  /// **'This invite isn\'t for your account'**
+  String get onboarding_wrong_email_title;
+
+  /// No description provided for @onboarding_wrong_email_switch.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out & switch account'**
+  String get onboarding_wrong_email_switch;
 }
 
 class _AppLocalizationsDelegate

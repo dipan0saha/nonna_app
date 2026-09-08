@@ -1,4 +1,5 @@
 import '../enums/invitation_status.dart';
+import '../enums/user_role.dart';
 
 /// Invitation model representing an invitation to join a baby profile
 ///
@@ -16,6 +17,15 @@ class Invitation {
 
   /// Email address of the invitee
   final String inviteeEmail;
+
+  /// Optional display name for the invitee (onboarding batch invite)
+  final String? inviteeName;
+
+  /// Relationship label stored on membership when accepted
+  final String? relationshipLabel;
+
+  /// Role granted on accept (`owner` for co-owner, `follower` otherwise)
+  final UserRole invitedRole;
 
   /// Hashed token for secure invitation acceptance
   final String tokenHash;
@@ -44,6 +54,9 @@ class Invitation {
     required this.babyProfileId,
     required this.invitedByUserId,
     required this.inviteeEmail,
+    this.inviteeName,
+    this.relationshipLabel,
+    this.invitedRole = UserRole.follower,
     required this.tokenHash,
     required this.expiresAt,
     this.status = InvitationStatus.pending,
@@ -60,6 +73,11 @@ class Invitation {
       babyProfileId: json['baby_profile_id'] as String,
       invitedByUserId: json['invited_by_user_id'] as String,
       inviteeEmail: json['invitee_email'] as String,
+      inviteeName: json['invitee_name'] as String?,
+      relationshipLabel: json['relationship_label'] as String?,
+      invitedRole: UserRole.fromJson(
+        (json['invited_role'] as String?) ?? UserRole.follower.name,
+      ),
       tokenHash: json['token_hash'] as String,
       expiresAt: DateTime.parse(json['expires_at'] as String),
       status: InvitationStatus.fromJson(json['status'] as String),
@@ -79,6 +97,9 @@ class Invitation {
       'baby_profile_id': babyProfileId,
       'invited_by_user_id': invitedByUserId,
       'invitee_email': inviteeEmail,
+      if (inviteeName != null) 'invitee_name': inviteeName,
+      if (relationshipLabel != null) 'relationship_label': relationshipLabel,
+      'invited_role': invitedRole.toJson(),
       'token_hash': tokenHash,
       'expires_at': expiresAt.toIso8601String(),
       'status': status.toJson(),
@@ -131,6 +152,9 @@ class Invitation {
     String? babyProfileId,
     String? invitedByUserId,
     String? inviteeEmail,
+    String? inviteeName,
+    String? relationshipLabel,
+    UserRole? invitedRole,
     String? tokenHash,
     DateTime? expiresAt,
     InvitationStatus? status,
@@ -144,6 +168,9 @@ class Invitation {
       babyProfileId: babyProfileId ?? this.babyProfileId,
       invitedByUserId: invitedByUserId ?? this.invitedByUserId,
       inviteeEmail: inviteeEmail ?? this.inviteeEmail,
+      inviteeName: inviteeName ?? this.inviteeName,
+      relationshipLabel: relationshipLabel ?? this.relationshipLabel,
+      invitedRole: invitedRole ?? this.invitedRole,
       tokenHash: tokenHash ?? this.tokenHash,
       expiresAt: expiresAt ?? this.expiresAt,
       status: status ?? this.status,
@@ -163,6 +190,9 @@ class Invitation {
         other.babyProfileId == babyProfileId &&
         other.invitedByUserId == invitedByUserId &&
         other.inviteeEmail == inviteeEmail &&
+        other.inviteeName == inviteeName &&
+        other.relationshipLabel == relationshipLabel &&
+        other.invitedRole == invitedRole &&
         other.tokenHash == tokenHash &&
         other.expiresAt == expiresAt &&
         other.status == status &&
@@ -178,6 +208,9 @@ class Invitation {
         babyProfileId.hashCode ^
         invitedByUserId.hashCode ^
         inviteeEmail.hashCode ^
+        inviteeName.hashCode ^
+        relationshipLabel.hashCode ^
+        invitedRole.hashCode ^
         tokenHash.hashCode ^
         expiresAt.hashCode ^
         status.hashCode ^

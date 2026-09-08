@@ -15,7 +15,9 @@ void main() {
       expect(AppRoutes.gamification, '/gamification');
       expect(AppRoutes.settings, '/settings');
       expect(AppRoutes.babyProfile, '/baby-profile');
-      expect(AppRoutes.registry, '/registry');
+      expect(AppRoutes.inviteAccept, '/invite-accept');
+      expect(AppRoutes.onboardingOwnerCarousel, '/onboarding/owner/carousel');
+      expect(AppRoutes.onboardingLogin, '/onboarding/login');
     });
 
     test('detail routes do not contain path parameters', () {
@@ -32,9 +34,7 @@ void main() {
       expect(appRouter, isNotNull);
     });
 
-    test('starts at the home route', () {
-      // GoRouter stores the initial location in routerDelegate; we verify
-      // the configured value matches AppRoutes.home.
+    test('starts at the onboarding carousel route', () {
       expect(appRouter.routerDelegate, isNotNull);
       expect(appRouter.routerDelegate.currentConfiguration, isNotNull);
     });

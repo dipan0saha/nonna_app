@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:nonna_app/core/constants/onboarding_storage_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Local storage service for managing user preferences and app settings
@@ -16,7 +17,7 @@ class LocalStorageService {
   bool get isInitialized => _isInitialized;
 
   // Storage keys
-  static const String _keyOnboardingCompleted = 'onboarding_completed';
+  static const String _keyOnboardingCompleted = OnboardingStorageKeys.completed;
   static const String _keyThemeMode = 'theme_mode';
   static const String _keyFontFamily = 'font_family';
   static const String _keyLanguageCode = 'language_code';
@@ -27,6 +28,10 @@ class LocalStorageService {
   static const String _keyAuthToken = 'auth_token';
   static const String _keyRefreshToken = 'refresh_token';
   static const String _keyBiometricEnabled = 'biometric_enabled';
+
+  /// Keys preserved across [clearAll] so sign-out does not erase in-progress onboarding.
+  static const Set<String> onboardingProtectedKeys =
+      OnboardingStorageKeys.protectedKeys;
 
   // ==========================================
   // Initialization
@@ -81,6 +86,14 @@ class LocalStorageService {
   Future<void> setOnboardingCompleted(bool completed) async {
     _ensureInitialized();
     await _prefs!.setBool(_keyOnboardingCompleted, completed);
+  }
+
+  /// Clear transient coordinator keys after onboarding completes.
+  Future<void> clearOnboardingCoordinatorState() async {
+    _ensureInitialized();
+    for (final key in OnboardingStorageKeys.coordinatorKeys) {
+      await _prefs!.remove(key);
+    }
   }
 
   // ==========================================
@@ -359,7 +372,12 @@ class LocalStorageService {
   /// Clear all preferences (except secure storage)
   Future<void> clearPreferences() async {
     _ensureInitialized();
-    await _prefs!.clear();
+    final keys = _prefs!.getKeys().toList();
+    for (final key in keys) {
+      if (!onboardingProtectedKeys.contains(key)) {
+        await _prefs!.remove(key);
+      }
+    }
   }
 
   /// Clear all secure storage

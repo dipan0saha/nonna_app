@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/widgets/app_bottom_nav_bar.dart';
 import 'package:nonna_app/core/widgets/app_navigation_rail.dart';
 import 'package:nonna_app/core/widgets/responsive_scaffold.dart';
+import 'package:nonna_app/features/onboarding/presentation/providers/first_run_home_provider.dart';
 
 /// Shell screen that hosts the 5 persistent tab destinations.
-///
-/// Rendered by [StatefulShellRoute.indexedStack] in [app_router.dart].
-/// Receives [navigationShell] from GoRouter, which:
-/// - Acts as the [body] (renders the active branch's navigator content)
-/// - Exposes [currentIndex] for the selected tab
-/// - Exposes [goBranch] for programmatic tab switching
-///
-/// Navigation chrome (bottom bar / rail) is delegated to [ResponsiveScaffold],
-/// which automatically switches between [AppBottomNavBar] on mobile and
-/// [AppNavigationRail] on tablet (≥ 600 dp).
-class MainShellScreen extends StatelessWidget {
+class MainShellScreen extends ConsumerWidget {
   const MainShellScreen({
     super.key,
     required this.navigationShell,
@@ -24,26 +17,33 @@ class MainShellScreen extends StatelessWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  void _onTabTap(int index) {
-    // initialLocation: true returns the user to the top of the branch stack
-    // when re-tapping the already-active tab (mirrors standard iOS/Android behaviour).
+  void _onTabTap(WidgetRef ref, int index) {
+    final current = navigationShell.currentIndex;
+    if (current == 0 && index != 0) {
+      final babyId = ref.read(selectedBabyProfileProvider);
+      final firstRun = ref.read(firstRunHomeProvider);
+      if (babyId != null && firstRun.isFirstRunFor(babyId)) {
+        ref.read(firstRunHomeProvider.notifier).dismissForBaby(babyId);
+      }
+    }
+
     navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
+      initialLocation: index == current,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ResponsiveScaffold(
       body: navigationShell,
       bottomNavigationBar: AppBottomNavBar(
         selectedIndex: navigationShell.currentIndex,
-        onTap: _onTabTap,
+        onTap: (index) => _onTabTap(ref, index),
       ),
       navigationRail: AppNavigationRail(
         selectedIndex: navigationShell.currentIndex,
-        onDestinationSelected: _onTabTap,
+        onDestinationSelected: (index) => _onTabTap(ref, index),
       ),
     );
   }

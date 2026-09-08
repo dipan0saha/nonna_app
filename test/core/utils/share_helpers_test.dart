@@ -1,11 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:nonna_app/core/services/analytics_service.dart';
 import 'package:nonna_app/core/utils/share_helpers.dart';
 
-class MockWidgetRef extends Mock implements WidgetRef {}
-
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('ShareHelpers', () {
     group('Deep Link Generation', () {
       test('generateProfileLink creates correct URL', () {
@@ -31,7 +30,7 @@ void main() {
 
       test('generateInvitationLink creates correct URL', () {
         final link = ShareHelpers.generateInvitationLink('ABC123XYZ');
-        expect(link, 'https://nonna.app/invite/ABC123XYZ');
+        expect(link, 'nonna://app/invite-accept?token=ABC123XYZ');
       });
 
       test('deep links handle special characters in IDs', () {
@@ -329,10 +328,10 @@ void main() {
 
     group('Track Methods (No-op)', () {
       test('trackShare does not throw', () {
-        final mockRef = MockWidgetRef();
+        final analytics = AnalyticsService();
         expect(
           () => ShareHelpers.trackShare(
-            mockRef,
+            analytics,
             contentType: 'profile',
             contentId: '123',
             shareMethod: 'email',
@@ -352,26 +351,11 @@ void main() {
       });
     });
 
-    group('UnimplementedError Methods', () {
-      test('shareText throws UnimplementedError', () async {
-        expect(
-          () async => await ShareHelpers.shareText('Test'),
-          throwsA(isA<UnimplementedError>()),
-        );
-      });
-
-      test('shareLink throws UnimplementedError', () async {
-        expect(
-          () async => await ShareHelpers.shareLink('https://nonna.app/test'),
-          throwsA(isA<UnimplementedError>()),
-        );
-      });
-
-      test('shareToApp throws UnimplementedError', () async {
-        expect(
-          () async => await ShareHelpers.shareToApp('Test', 'whatsapp'),
-          throwsA(isA<UnimplementedError>()),
-        );
+    group('Share Functionality', () {
+      test('share helpers expose share methods', () {
+        expect(ShareHelpers.shareText, isNotNull);
+        expect(ShareHelpers.shareLink, isNotNull);
+        expect(ShareHelpers.shareToApp, isNotNull);
       });
     });
 

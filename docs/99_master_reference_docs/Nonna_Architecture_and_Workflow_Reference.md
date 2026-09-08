@@ -1,7 +1,7 @@
 # Nonna App - Architecture and Workflow Reference
 
-**Document Version**: 3.0
-**Last Updated**: May 25, 2026
+**Document Version**: 3.1
+**Last Updated**: September 8, 2026
 **Location**: `docs/99_master_reference_docs/Nonna_Architecture_and_Workflow_Reference.md`
 **Status**: Living Document - Fully updated with Version 3.0 standards and unified codebase specifications
 
@@ -35,6 +35,13 @@ When details conflict, use this order:
 - **Command Runner**: Unified targets mapped in root `Makefile`.
 
 ---
+
+## Recent Implementation Updates (September 2026)
+- **Prototype onboarding**: Owner/follower/co-owner first-run flows under `lib/features/onboarding/presentation/` with `onboardingCoordinatorProvider` persistence and `OnboardingTheme` scope on all `/onboarding/*` routes.
+- **Cold-start entry**: `initialLocation` → `/onboarding/owner/carousel`; `route_guards.dart` gates `/home` until onboarding complete.
+- **Invite deep links**: `/invite-accept?token=` → `get_invitation_preview` RPC (anon-safe) → path-specific invite screens → `accept_invitation` RPC.
+- **Batch invite dedupe**: `check_baby_membership_by_email` RPC skips existing members on `OnboardingBatchInviteScreen`.
+- **Deprecated**: `/role-selection` redirects to owner carousel; legacy `/login` and `/signup` remain for non-onboarding entry.
 
 ## Recent Implementation Updates (May 2026)
 - **Consolidated Home App Bar**: Consolidated create-profile, baby info, and owner-only manage-followers actions into a single PopupMenuButton to reduce visual clutter.
@@ -79,7 +86,7 @@ The app composes major screens (Home, Gallery, Calendar, Registry, Fun) using ti
 3. If initialization succeeds, the app runs inside `ProviderScope` and mounts `MyApp`.
 4. `MyApp` watches `appInitializationProvider`.
 5. `MaterialApp.router` is created via `routerProvider`.
-6. GoRouter refresh listenable watches `isAuthenticatedProvider` to trigger `RouteGuards.authRedirect` redirect evaluations.
+6. GoRouter refresh listenable watches `isAuthenticatedProvider`, `onboardingCoordinatorProvider`, and `isOnboardingCompletedProvider` to re-evaluate `RouteGuards.authRedirect`.
 
 ---
 
@@ -87,7 +94,9 @@ The app composes major screens (Home, Gallery, Calendar, Registry, Fun) using ti
 
 ### Routing Structure:
 * **Outside the Shell**:
-  * Auth screens: `/login`, `/signup`, `/role-selection`
+  * **Onboarding (prototype)**: `/onboarding/*` (carousel, signup, login, email-verify, complete-profile, owner create-baby / first-moment / batch-invite, follower/co-owner invite paths, wrong-email). Wrapped in `OnboardingThemeScope`. All public while onboarding incomplete.
+  * **Invite accept**: `/invite-accept?token=` (public; resumes follower/co-owner path)
+  * Legacy auth: `/login`, `/signup`, `/role-selection` (redirects to owner carousel)
   * Fullscreen screens (parentNavigatorKey = root): `/profile`, `/profile/edit`, `/settings`, `/baby-profile`, `/baby-profile/create`, `/baby-profile/:id/edit`, `/baby-profile/followers`, `/baby-profile/followers/invite`
   * Complex actions escaping parent nav bar: `/gallery/photo/detail`, `/calendar/event/create`, `/calendar/event/edit`, `/registry/item/create`, `/registry/item/edit`
 * **Inside the Stateful Shell (5 branches)**:
@@ -115,6 +124,7 @@ The app composes major screens (Home, Gallery, Calendar, Registry, Fun) using ti
 * **Core Providers**: Database clients, Auth handles, persistence storage, cache manager.
 * **Context Provider**: `selectedBabyProfileProvider` tracks the active baby profile ID (reloading all subscribed tiles).
 * **Screen Providers**: `homeScreenProvider`, `galleryScreenProvider`, `calendarScreenProvider`, `registryScreenProvider` orchestrate screen-specific configurations.
+* **Onboarding Providers**: `onboardingCoordinatorProvider` (path/step persistence), `inviteAcceptProvider` (preview + accept RPCs), `firstRunHomeProvider` (post-onboarding home state).
 * **Tile Providers**: Specialized providers (e.g., `recentPhotosProvider`, `upcomingEventsProvider`) manage data queries, Hive local caches, and Supabase Realtime subscriptions.
 
 ---
@@ -162,7 +172,9 @@ Standard workflows are consolidated into the project **[Makefile](file:///Users/
 
 ## Quick File Map For Developers
 * Boot sequence & App launch: `lib/main.dart` -> `lib/core/services/app_initialization_service.dart`
-* Router and navigation stacks: `lib/core/router/app_router.dart`
+* Router and navigation stacks: `lib/core/router/app_router.dart` + `lib/core/router/route_guards.dart`
+* Onboarding coordinator & routes: `lib/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart`, `onboarding_routes.dart`
+* Onboarding theme: `lib/core/themes/onboarding_theme.dart`
 * Global dependency injections: `lib/core/di/providers.dart`
 * Decoupled configuration load: `lib/core/utils/tile_loader.dart`
 * Screen dynamic composition: `lib/core/utils/tile_factory.dart`

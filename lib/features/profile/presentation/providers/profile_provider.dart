@@ -238,6 +238,75 @@ class ProfileNotifier extends Notifier<ProfileState> {
     }
   }
 
+  /// Creates or updates the user profile (#31).
+  Future<void> upsertProfile({
+    required String userId,
+    required String displayName,
+    String? avatarUrl,
+  }) async {
+    try {
+      state =
+          state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
+
+      if (displayName.trim().isEmpty) {
+        throw Exception('Display name is required');
+      }
+      if (displayName.length > 100) {
+        throw Exception('Display name must be 100 characters or less');
+      }
+
+      final now = DateTime.now().toIso8601String();
+      final database = ref.read(databaseServiceProvider);
+      final existing = await database
+          .select(SupabaseTables.userProfiles)
+          .eq('user_id', userId)
+          .maybeSingle();
+      if (!ref.mounted) return;
+
+      final profileData = <String, dynamic>{
+        'display_name': displayName.trim(),
+        'updated_at': now,
+      };
+      if (avatarUrl != null) {
+        profileData['avatar_url'] = avatarUrl;
+      }
+
+      if (existing == null) {
+        await database.insert(SupabaseTables.userProfiles, {
+          'user_id': userId,
+          'display_name': displayName.trim(),
+          'avatar_url': avatarUrl,
+          'created_at': now,
+          'updated_at': now,
+        });
+      } else {
+        await database
+            .update(SupabaseTables.userProfiles, profileData)
+            .eq('user_id', userId);
+      }
+
+      await loadProfile(userId: userId, forceRefresh: true);
+      if (!ref.mounted) return;
+
+      state = state.copyWith(
+        isSaving: false,
+        saveSuccess: true,
+      );
+
+      await ref.read(authProvider.notifier).refreshSession();
+      debugPrint('✅ Profile upserted successfully');
+    } catch (e) {
+      if (!ref.mounted) return;
+      final errorMessage = 'Failed to save profile: $e';
+      debugPrint('❌ $errorMessage');
+      state = state.copyWith(
+        isSaving: false,
+        saveError: errorMessage,
+        saveSuccess: false,
+      );
+    }
+  }
+
   /// Upload avatar
   Future<String?> uploadAvatar({
     required String userId,

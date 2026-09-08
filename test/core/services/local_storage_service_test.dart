@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nonna_app/core/constants/onboarding_storage_keys.dart';
 import 'package:nonna_app/core/services/local_storage_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   group('LocalStorageService', () {
@@ -138,6 +140,34 @@ void main() {
           () async => await localStorage.setBiometricEnabled(true),
           throwsStateError,
         );
+      });
+    });
+
+    group('clearPreferences onboarding protection', () {
+      test('preserves onboarding keys when clearing preferences', () async {
+        SharedPreferences.setMockInitialValues({});
+        final service = LocalStorageService();
+        await service.initialize();
+
+        await service.setString(OnboardingStorageKeys.path, 'owner');
+        await service.setString(OnboardingStorageKeys.step, 'signup');
+        await service.setString(
+            OnboardingStorageKeys.pendingInviteToken, 'tok');
+        await service.setBool(OnboardingStorageKeys.usedOAuth, true);
+        await service.setOnboardingCompleted(false);
+        await service.setString('theme_mode', 'dark');
+
+        await service.clearPreferences();
+
+        expect(service.getString(OnboardingStorageKeys.path), 'owner');
+        expect(service.getString(OnboardingStorageKeys.step), 'signup');
+        expect(
+          service.getString(OnboardingStorageKeys.pendingInviteToken),
+          'tok',
+        );
+        expect(service.getBool(OnboardingStorageKeys.usedOAuth), isTrue);
+        expect(service.isOnboardingCompleted, isFalse);
+        expect(service.getString('theme_mode'), isNull);
       });
     });
   });

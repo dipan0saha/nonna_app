@@ -5,15 +5,15 @@ import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'core/di/providers.dart';
 import 'core/router/app_router.dart';
+import 'core/services/deep_link_service.dart';
 import 'core/themes/app_theme.dart';
+import 'core/widgets/deep_link_listener.dart';
 import 'features/settings/presentation/providers/settings_provider.dart';
 import 'l10n/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Start rendering immediately; heavy integrations are initialized via
-  // appInitializationProvider so startup work does not block first frame.
+  await DeepLinkService.captureColdStartLink();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -29,24 +29,27 @@ class MyApp extends ConsumerWidget {
         final router = ref.watch(routerProvider);
         final settings = ref.watch(settingsProvider);
 
-        return MaterialApp.router(
-          routerConfig: router,
-          title: 'Nonna App',
-          theme: AppTheme.getLightTheme(settings.fontFamily),
-          darkTheme: AppTheme.getDarkTheme(settings.fontFamily),
-          themeMode:
-              settings.darkModeEnabled ? ThemeMode.dark : ThemeMode.light,
-          themeAnimationDuration: Duration.zero,
+        return DeepLinkListener(
+          router: router,
+          child: MaterialApp.router(
+            routerConfig: router,
+            title: 'Nonna App',
+            theme: AppTheme.getLightTheme(settings.fontFamily),
+            darkTheme: AppTheme.getDarkTheme(settings.fontFamily),
+            themeMode:
+                settings.darkModeEnabled ? ThemeMode.dark : ThemeMode.light,
+            themeAnimationDuration: Duration.zero,
 
-          // Localization configuration
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: L10n.all,
-          localeResolutionCallback: L10n.localeResolutionCallback,
+            // Localization configuration
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: L10n.all,
+            localeResolutionCallback: L10n.localeResolutionCallback,
+          ),
         );
       },
       loading: () => const MaterialApp(

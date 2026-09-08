@@ -20,7 +20,12 @@ Future<void> startApp(WidgetTester tester) async {
   FlutterError.onError = originalOnError;
 
   await tester.pumpWidget(const ProviderScope(child: app.MyApp()));
-  await tester.pumpAndSettle();
+  for (var i = 0; i < 30; i++) {
+    await tester.pump(const Duration(milliseconds: 200));
+  }
+
+  // Restore again after first frames — app init may reset the handler.
+  FlutterError.onError = originalOnError;
 
   if (!result.success) {
     debugPrint('Initialization failed: ${result.criticalError}');

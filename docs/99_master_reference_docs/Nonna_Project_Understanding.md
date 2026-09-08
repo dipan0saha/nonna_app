@@ -1,6 +1,6 @@
 # Nonna App — Project Understanding
 
-**Document Version**: 3.3 **Last Updated**: May 2026 **Status**: Living
+**Document Version**: 3.4 **Last Updated**: September 2026 **Status**: Living
 Document - Fully aligned with Version 3.1 codebase specifications
 
 ---
@@ -85,8 +85,11 @@ lib/
     ├── baby_profile/
     ├── gamification/
     ├── profile/
-    └── settings/
+    ├── settings/
+    └── onboarding/   # Prototype first-run flows (owner / follower / co-owner)
 ```
+
+**Onboarding (September 2026):** Cold start lands on `/onboarding/owner/carousel`. Routes use `OnboardingTheme` (isolated from main shell). State is persisted by `onboardingCoordinatorProvider` (path, step, invite token, created baby id). `/role-selection` redirects to owner carousel (`RoleSelectionScreen` deprecated).
 
 **Key design decision**: Tiles live at `lib/tiles/` (not inside features) so
 they can be reused across any screen. Each tile is completely self-contained
@@ -179,7 +182,22 @@ targets — never the raw constants directly.
 | `home`                 | `/home`                          | HomeScreen                 |
 | `login`                | `/login`                         | LoginScreen                |
 | `signup`               | `/signup`                        | SignupScreen               |
-| `roleSelection`        | `/role-selection`                | RoleSelectionScreen        |
+| `roleSelection`        | `/role-selection`                | Redirect → `/onboarding/owner/carousel` (deprecated) |
+| `onboardingOwnerCarousel` | `/onboarding/owner/carousel`  | OwnerCarouselScreen        |
+| `onboardingSignup`     | `/onboarding/signup`             | OnboardingSignupScreen (`?path=owner\|follower\|coOwner`) |
+| `onboardingLogin`      | `/onboarding/login`              | OnboardingLoginScreen      |
+| `onboardingEmailVerify`| `/onboarding/email-verify`       | OnboardingEmailVerifyScreen |
+| `onboardingCompleteProfile` | `/onboarding/complete-profile` | OnboardingCompleteProfileScreen |
+| `onboardingOwnerCreateBaby` | `/onboarding/owner/create-baby` | OnboardingCreateBabyScreen |
+| `onboardingOwnerFirstMoment` | `/onboarding/owner/first-moment` | OnboardingFirstMomentScreen |
+| `onboardingOwnerInvite` | `/onboarding/owner/invite`      | OnboardingBatchInviteScreen |
+| `onboardingFollowerInvite` | `/onboarding/follower/invite` | OnboardingFollowerInviteScreen |
+| `onboardingCoOwnerInvite` | `/onboarding/coowner/invite`   | OnboardingCoOwnerInviteScreen |
+| `onboardingConfirmRelationship` | `/onboarding/follower/confirm-relationship` | OnboardingRelationshipScreen |
+| `onboardingFollowerCarousel` | `/onboarding/follower/carousel` | FollowerCarouselScreen |
+| `onboardingCoOwnerWelcome` | `/onboarding/coowner/welcome` | OnboardingCoOwnerWelcomeScreen |
+| `onboardingWrongEmail` | `/onboarding/wrong-email`        | OnboardingWrongEmailScreen |
+| `inviteAccept`         | `/invite-accept`                 | Invite accept wrapper (`?token=&role=`) |
 | `profile`              | `/profile`                       | ProfileScreen              |
 | `profileEdit`          | `/profile/edit`                  | EditProfileScreen          |
 | `calendar`             | `/calendar`                      | CalendarScreen             |
@@ -203,6 +221,16 @@ targets — never the raw constants directly.
 | `registryItemCreate`   | `/registry/item/create`          | RegistryItemCreationScreen |
 | `registryItemEdit`     | `/registry/item/:id/edit`        | RegistryItemEditScreen     |
 
+**Onboarding flows (high level)**
+
+| Path | Steps after auth |
+| ---- | ---------------- |
+| **Owner** | Carousel → signup/login → email verify → complete profile → create baby → first moment (optional events/registry chips) → batch invite → `/home` (first-run home) |
+| **Follower** | `/invite-accept` → follower invite preview → signup/login → complete profile → confirm relationship → follower carousel → `/home` |
+| **Co-owner** | `/invite-accept` (role from `invited_role` in DB) → co-owner invite → signup/login → complete profile → co-owner welcome → `/home` |
+
+`initialLocation` is `/onboarding/owner/carousel`. `route_guards.dart` redirects unauthenticated users to onboarding or pending invite; completed onboarding cannot return to `/onboarding/*`.
+
 ---
 
 ## Key Files Reference
@@ -211,6 +239,11 @@ targets — never the raw constants directly.
 | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `lib/main.dart`                                                                  | Entry point — initializes Supabase/Firebase/OneSignal, launches with `ProviderScope`      |
 | `lib/core/router/app_router.dart`                                                | GoRouter config with all named routes and auth redirect guards                            |
+| `lib/core/router/route_guards.dart`                                              | Onboarding completion gate, invite resume, legacy `/role-selection` handling              |
+| `lib/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart` | Persists onboarding path/step; resume after deep link or app restart                 |
+| `lib/core/themes/onboarding_theme.dart`                                          | Isolated sage/peach onboarding palette (`OnboardingThemeScope`)                         |
+| `lib/core/constants/first_moment_presets.dart`                                   | Preset events/registry chips for owner first-moment step                                  |
+| `lib/features/baby_profile/presentation/providers/invite_accept_provider.dart`     | `get_invitation_preview` + `accept_invitation` RPC orchestration                        |
 | `lib/core/utils/tile_factory.dart`                                               | Core utility for dynamic tile instantiation from Supabase configs                         |
 | `lib/core/utils/tile_loader.dart`                                                | Decoupled utility for fetching tile layout configurations (edge-first strategy)           |
 | `lib/features/home/presentation/screens/home_screen.dart`                        | Main screen composing tiles via `TileListView`                                            |
@@ -247,7 +280,7 @@ targets — never the raw constants directly.
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | `baby_profiles`        | `id`, `name`, `default_last_name_source`, `expected_birth_date`, `actual_birth_date`, `gender`, `profile_photo_url`, `birth_weight_kg`, `birth_height_cm`, `deleted_at` | Core baby record; soft-deleted; birth weight/height added May 2026              |
 | `baby_memberships`     | `id`, `baby_profile_id`, `user_id`, `role` (`owner`/`follower`), `relationship_label`, `removed_at`                                                                     | Links users to babies with role; max 2 owners enforced by trigger; soft-removed |
-| `invitations`          | `id`, `baby_profile_id`, `invited_by_user_id`, `invitee_email`, `token_hash`, `expires_at`, `status` (`pending`/`accepted`/`revoked`/`expired`)                         | Token-based email invitations to join a baby profile                            |
+| `invitations`          | `id`, `baby_profile_id`, `invited_by_user_id`, `invitee_email`, `invitee_name`, `relationship_label`, `invited_role` (`owner`/`follower`), `token_hash`, `expires_at`, `status`, `accepted_at`, `accepted_by_user_id` | Token-based email invitations; co-owner invites use `invited_role='owner'` |
 | `owner_update_markers` | `id`, `baby_profile_id` (UNIQUE), `tiles_last_updated_at`, `reason`                                                                                                     | Timestamp of last content change per baby; drives tile cache invalidation       |
 
 #### Photo Gallery
@@ -363,6 +396,9 @@ policies:
 | `is_photo_owner(user_id, photo_id)`                  | Returns true if user is an owner for the baby profile the photo belongs to        |
 | `is_event_member(user_id, event_id)`                 | Returns true if user is a member of the baby profile the event belongs to         |
 | `is_registry_item_member(user_id, registry_item_id)` | Returns true if user is a member of the baby profile the registry item belongs to |
+| `get_invitation_preview(p_token_hash)`             | SECURITY DEFINER; anon + authenticated — safe preview fields for invite deep links   |
+| `accept_invitation(p_token_hash)`                  | Authenticated accept; inserts `baby_memberships` with `invited_role` + updates invitation |
+| `check_baby_membership_by_email(p_baby_profile_id, p_email)` | Owner-only; batch invite dedupe (`Already a member`)                        |
 
 ---
 
