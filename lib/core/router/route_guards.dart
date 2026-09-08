@@ -23,12 +23,35 @@ class RouteGuards {
 
   /// Returns a redirect function that enforces authentication.
   ///
-  /// - Unauthenticated users accessing protected routes → `/login`
-  /// - Authenticated users accessing auth routes → `/home`
+  /// - Unauthenticated users accessing protected routes → `/login?from=<url>`
+  /// - Authenticated users accessing auth routes → `/home` or preserved `from`
   static RedirectFn get authRedirect => (context, state) {
         final container = ProviderScope.containerOf(context);
         final isAuthenticated = container.read(isAuthenticatedProvider);
-        return redirectIfNotAuthenticated(isAuthenticated, state);
+        final onAuthRoute = _authRoutes.contains(state.matchedLocation);
+
+        if (!isAuthenticated && !onAuthRoute) {
+          final from = Uri.encodeComponent(state.uri.toString());
+          return '/login?from=$from';
+        }
+
+        if (isAuthenticated && onAuthRoute) {
+          final from = state.uri.queryParameters['from'];
+          if (from != null && from.isNotEmpty) {
+            try {
+              final decoded = Uri.decodeComponent(from);
+              final decodedPath = Uri.parse(decoded).path;
+              if (!_authRoutes.contains(decodedPath)) {
+                return decoded;
+              }
+            } catch (_) {
+              // Fall back to home when an invalid from parameter is provided.
+            }
+          }
+          return '/home';
+        }
+
+        return null;
       };
 
   /// Stateless redirect helper — useful when [isAuthenticated] is already known

@@ -47,7 +47,7 @@ class ShareHelpers {
 
   /// Generate invitation link
   static String generateInvitationLink(String invitationCode) {
-    return AppConfig.getFullUrl('/invite/$invitationCode');
+    return '${AppConfig.deepLinkScheme}://invite-accept?token=$invitationCode';
   }
 
   // ============================================================
