@@ -1,6 +1,6 @@
 # Day 1 — AltaLab Submission Draft
 
-**Status:** DRAFT — complete after Track Assessment and Evolve assignment review  
+**Status:** DRAFT — complete after Track Assessment and Evolve assignment review
 **Founder:** Dipan Saha · **Product:** Nonna
 
 ---

@@ -81,10 +81,12 @@ class PredictionVotesNotifier extends Notifier<PredictionVotesState> {
       if (!ref.mounted) return;
 
       final votes = rawData.map((json) => Vote.fromJson(json)).toList();
-      state = state.copyWith(isLoading: false, isSubmitting: false, votes: votes);
+      state =
+          state.copyWith(isLoading: false, isSubmitting: false, votes: votes);
     } catch (e) {
       if (!ref.mounted) return;
-      state = state.copyWith(isLoading: false, isSubmitting: false, error: e.toString());
+      state = state.copyWith(
+          isLoading: false, isSubmitting: false, error: e.toString());
     }
   }
 
@@ -108,12 +110,10 @@ class PredictionVotesNotifier extends Notifier<PredictionVotesState> {
 
       if (existingVote != null) {
         // Update existing vote
-        await db
-            .update(SupabaseTables.votes, {
-              'value_text': genderValue,
-              'is_anonymous': isAnonymous,
-            })
-            .eq('id', existingVote.id);
+        await db.update(SupabaseTables.votes, {
+          'value_text': genderValue,
+          'is_anonymous': isAnonymous,
+        }).eq('id', existingVote.id);
       } else {
         // Insert new vote
         await db.insert(SupabaseTables.votes, {
@@ -129,15 +129,13 @@ class PredictionVotesNotifier extends Notifier<PredictionVotesState> {
 
       // Reload to reflect changes
       if (_currentBabyProfileId != null) {
-        await load(
-            babyProfileId: _currentBabyProfileId!, forceRefresh: true);
+        await load(babyProfileId: _currentBabyProfileId!, forceRefresh: true);
       }
       return true;
     } catch (e) {
       if (!ref.mounted) return false;
       debugPrint('❌ Failed to vote gender: $e');
-      state = state.copyWith(
-          isSubmitting: false, error: 'Failed to vote: $e');
+      state = state.copyWith(isSubmitting: false, error: 'Failed to vote: $e');
       return false;
     }
   }
@@ -162,13 +160,11 @@ class PredictionVotesNotifier extends Notifier<PredictionVotesState> {
 
       if (existingVote != null) {
         // Update existing vote
-        await db
-            .update(SupabaseTables.votes, {
-              'value_date':
-                  '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
-              'is_anonymous': isAnonymous,
-            })
-            .eq('id', existingVote.id);
+        await db.update(SupabaseTables.votes, {
+          'value_date':
+              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'is_anonymous': isAnonymous,
+        }).eq('id', existingVote.id);
       } else {
         // Insert new vote
         await db.insert(SupabaseTables.votes, {
@@ -185,15 +181,13 @@ class PredictionVotesNotifier extends Notifier<PredictionVotesState> {
 
       // Reload to reflect changes
       if (_currentBabyProfileId != null) {
-        await load(
-            babyProfileId: _currentBabyProfileId!, forceRefresh: true);
+        await load(babyProfileId: _currentBabyProfileId!, forceRefresh: true);
       }
       return true;
     } catch (e) {
       if (!ref.mounted) return false;
       debugPrint('❌ Failed to vote birthdate: $e');
-      state = state.copyWith(
-          isSubmitting: false, error: 'Failed to vote: $e');
+      state = state.copyWith(isSubmitting: false, error: 'Failed to vote: $e');
       return false;
     }
   }

@@ -106,7 +106,8 @@ class GamificationNotifier extends Notifier<GamificationState> {
       return _defaultTiles(role);
     }
 
-    final filteredTiles = tiles.where((t) => t.componentName != 'EngagementRecapTile').toList();
+    final filteredTiles =
+        tiles.where((t) => t.componentName != 'EngagementRecapTile').toList();
 
     final componentNames =
         filteredTiles.map((t) => t.componentName).whereType<String>().toSet();

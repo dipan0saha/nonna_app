@@ -1,8 +1,8 @@
 # AltaLab Sprint — Day Log (Living Document)
 
-**Founder:** Dipan Saha · **Product:** Nonna (La Nonna)  
-**AltaLab email:** `lanonnaapp@gmail.com`  
-**Track:** Core Track (all chapters)  
+**Founder:** Dipan Saha · **Product:** Nonna (La Nonna)
+**AltaLab email:** `lanonnaapp@gmail.com`
+**Track:** Core Track (all chapters)
 **Cohort:** Fall 2026 · **Deadline:** Sep 27, 2026 23:59 PT
 
 > Agents: update this file every session. This is the primary handoff artifact.
@@ -36,8 +36,8 @@
 
 ## Day 1 — Sep 7, 2026 (Monday)
 
-**Status:** 🟡 In progress  
-**Track:** **Core Track**  
+**Status:** 🟡 In progress
+**Track:** **Core Track**
 **Evolve login:** `lanonnaapp@gmail.com`
 
 ### Assignment Prompt
@@ -80,7 +80,7 @@ _Paste from Evolve when available._
 
 ## Day 2 — Sep 10, 2026 (Thursday)
 
-**Status:** ⬜ Not started  
+**Status:** ⬜ Not started
 **Track:** _TBD_
 
 ### Assignment Prompt
@@ -96,7 +96,7 @@ _Paste from Evolve when available._
 
 ## Day 3 — Sep 14, 2026 (Monday)
 
-**Status:** ⬜ Not started  
+**Status:** ⬜ Not started
 **Track:** _TBD_
 
 ### Assignment Prompt
@@ -112,7 +112,7 @@ _Paste from Evolve when available._
 
 ## Day 4 — Sep 17, 2026 (Thursday)
 
-**Status:** ⬜ Not started  
+**Status:** ⬜ Not started
 **Track:** _TBD_
 
 ### Assignment Prompt
@@ -128,7 +128,7 @@ _Paste from Evolve when available._
 
 ## Day 5 — Sep 21, 2026 (Monday)
 
-**Status:** ⬜ Not started  
+**Status:** ⬜ Not started
 **Track:** _TBD_
 
 ### Assignment Prompt
@@ -144,7 +144,7 @@ _Paste from Evolve when available._
 
 ## Day 6 — Sep 24, 2026 (Wednesday)
 
-**Status:** ⬜ Not started  
+**Status:** ⬜ Not started
 **Track:** Shared (no Core/Focused split for final chapter)
 
 ### Assignment Prompt

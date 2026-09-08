@@ -7,7 +7,7 @@ Use this document when completing AltaLab sprint assignments. It has two layers:
 
 Full technical detail lives in `docs/99_master_reference_docs/`.
 
-**AltaLab email:** `lanonnaapp@gmail.com`  
+**AltaLab email:** `lanonnaapp@gmail.com`
 **Track:** Core Track (all chapters)
 
 ---

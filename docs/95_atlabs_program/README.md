@@ -1,12 +1,12 @@
 # AltaLab Program — Nonna (La Nonna)
 
-**Cohort:** Fall 2026  
-**Founder:** Dipan Saha  
-**Product:** Nonna — private family platform for baby milestone tracking and sharing  
-**Stage 1:** Online Sprint (Sep 7 – Sep 27, 2026)  
-**AltaLab email:** `lanonnaapp@gmail.com` (use for Evolve, Telegram, and all cohort communication)  
-**Platform:** [Evolve](https://evolve.altalab.ai)  
-**Track preference:** **Core Track** (all chapters)  
+**Cohort:** Fall 2026
+**Founder:** Dipan Saha
+**Product:** Nonna — private family platform for baby milestone tracking and sharing
+**Stage 1:** Online Sprint (Sep 7 – Sep 27, 2026)
+**AltaLab email:** `lanonnaapp@gmail.com` (use for Evolve, Telegram, and all cohort communication)
+**Platform:** [Evolve](https://evolve.altalab.ai)
+**Track preference:** **Core Track** (all chapters)
 **Support:** n.bogachev@altair.vc · AltaLab Telegram group
 
 ---

@@ -136,7 +136,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   _selectedImage != null
                       ? CircleAvatar(
                           radius: 48,
-                          backgroundImage: kIsWeb ? NetworkImage(_selectedImage!.path) : FileImage(File(_selectedImage!.path)) as ImageProvider,
+                          backgroundImage: kIsWeb
+                              ? NetworkImage(_selectedImage!.path)
+                              : FileImage(File(_selectedImage!.path))
+                                  as ImageProvider,
                         )
                       : ProfileAvatar(
                           avatarUrl: state.profile?.avatarUrl,

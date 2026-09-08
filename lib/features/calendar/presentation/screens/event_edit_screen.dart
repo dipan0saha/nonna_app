@@ -56,8 +56,7 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
     _titleController = TextEditingController(text: event.title);
     _descriptionController =
         TextEditingController(text: event.description ?? '');
-    _locationController =
-        TextEditingController(text: event.location ?? '');
+    _locationController = TextEditingController(text: event.location ?? '');
     _startsAt = event.startsAt;
     _endsAt = event.endsAt;
   }
@@ -203,13 +202,15 @@ class _EventEditScreenState extends ConsumerState<EventEditScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {    if (_isLoadingEvent) {
+  Widget build(BuildContext context) {
+    if (_isLoadingEvent) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     if (_resolveError != null) {
       return Scaffold(
           body: Center(child: Text('Failed to load event: $_resolveError')));
-    }    final dateFormat = DateFormat('EEE, MMM d, yyyy \u2013 h:mm a');
+    }
+    final dateFormat = DateFormat('EEE, MMM d, yyyy \u2013 h:mm a');
 
     return Scaffold(
       key: const Key('event_edit_screen'),

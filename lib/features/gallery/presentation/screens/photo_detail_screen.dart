@@ -16,6 +16,7 @@ import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/models/user.dart';
 
 import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
+
 class PhotoDetailScreen extends ConsumerStatefulWidget {
   const PhotoDetailScreen({
     super.key,
@@ -256,7 +257,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
     final detailState = ref.watch(photoDetailProvider);
     final commentsState =
         ref.watch(photoCommentsProvider)[_resolvedPhoto!.id] ??
-        const PhotoCommentsState();
+            const PhotoCommentsState();
     final commentCount = commentsState.comments.isNotEmpty
         ? commentsState.comments.length
         : _resolvedPhoto!.commentCount;
@@ -438,7 +439,8 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                   // Uploaded date
                   Text(
                     l10n.gallery_uploadedDate(
-                      DateFormat('MMM d, yyyy').format(_resolvedPhoto!.createdAt),
+                      DateFormat('MMM d, yyyy')
+                          .format(_resolvedPhoto!.createdAt),
                     ),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
@@ -494,8 +496,9 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
   }
 
   Widget _buildCommentsSection(AppLocalizations l10n) {
-    final commentsState = ref.watch(photoCommentsProvider)[_resolvedPhoto!.id] ??
-        const PhotoCommentsState();
+    final commentsState =
+        ref.watch(photoCommentsProvider)[_resolvedPhoto!.id] ??
+            const PhotoCommentsState();
     final currentUser = ref.watch(authProvider).user;
     final isOwner = ref.watch(photoDetailProvider).isOwner;
 
@@ -649,7 +652,9 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
 
     if (_isEditingComment && _editingCommentId != null) {
       final updated = await notifier.updateComment(
-          photoId: _resolvedPhoto!.id, commentId: _editingCommentId!, body: body);
+          photoId: _resolvedPhoto!.id,
+          commentId: _editingCommentId!,
+          body: body);
       if (!updated) return;
     } else {
       final added = await notifier.addComment(

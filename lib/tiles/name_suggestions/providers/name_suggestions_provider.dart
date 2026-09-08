@@ -41,8 +41,7 @@ class NameSuggestionsState {
   /// Check if the current user has liked a specific suggestion
   bool hasUserLiked(String suggestionId, String userId) {
     return likes.any(
-      (like) =>
-          like.nameSuggestionId == suggestionId && like.userId == userId,
+      (like) => like.nameSuggestionId == suggestionId && like.userId == userId,
     );
   }
 
@@ -135,7 +134,8 @@ class NameSuggestionsNotifier extends Notifier<NameSuggestionsState> {
       );
     } catch (e) {
       if (!ref.mounted) return;
-      state = state.copyWith(isLoading: false, isSubmitting: false, error: e.toString());
+      state = state.copyWith(
+          isLoading: false, isSubmitting: false, error: e.toString());
     }
   }
 
@@ -190,8 +190,8 @@ class NameSuggestionsNotifier extends Notifier<NameSuggestionsState> {
       );
 
       // Check if user already has a like in this gender category
-      final existingLike = state.userLikeForGender(
-          userId, suggestion.gender, state.suggestions);
+      final existingLike =
+          state.userLikeForGender(userId, suggestion.gender, state.suggestions);
 
       if (existingLike != null) {
         if (existingLike.nameSuggestionId == suggestionId) {
@@ -222,15 +222,13 @@ class NameSuggestionsNotifier extends Notifier<NameSuggestionsState> {
 
       // Reload to reflect changes
       if (_currentBabyProfileId != null) {
-        await load(
-            babyProfileId: _currentBabyProfileId!, forceRefresh: true);
+        await load(babyProfileId: _currentBabyProfileId!, forceRefresh: true);
       }
       return true;
     } catch (e) {
       if (!ref.mounted) return false;
       debugPrint('❌ Failed to like name suggestion: $e');
-      state = state.copyWith(
-          isSubmitting: false, error: 'Failed to vote: $e');
+      state = state.copyWith(isSubmitting: false, error: 'Failed to vote: $e');
       return false;
     }
   }

@@ -72,7 +72,7 @@ class _RegistryItemDetailScreenState
         _isLoadingItem = false;
       });
     }
- }
+  }
 
   bool _isRasterAvatarUrl(String? url) {
     if (url == null || url.isEmpty) return false;

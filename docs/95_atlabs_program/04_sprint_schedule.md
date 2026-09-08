@@ -1,8 +1,8 @@
 # AltaLab Sprint Schedule — Fall 2026
 
-**Sprint window:** Sep 7 – Sep 27, 2026  
-**Hard deadline:** Sep 27, 23:59 PT (all assignments)  
-**Evolve login:** `lanonnaapp@gmail.com`  
+**Sprint window:** Sep 7 – Sep 27, 2026
+**Hard deadline:** Sep 27, 23:59 PT (all assignments)
+**Evolve login:** `lanonnaapp@gmail.com`
 **Track:** Core Track (all chapters)
 
 ---
