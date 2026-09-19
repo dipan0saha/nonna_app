@@ -36,6 +36,10 @@ Future<void> fdGoToTab(WidgetTester tester, String label) async {
 
 Future<void> fdOpenProfileFromHome(WidgetTester tester) async {
   final avatarButton = find.byKey(const Key('profile_avatar_button'));
+  for (var i = 0; i < 16; i++) {
+    if (avatarButton.evaluate().isNotEmpty) break;
+    await tester.pump(const Duration(milliseconds: 500));
+  }
   expect(
     avatarButton,
     findsOneWidget,

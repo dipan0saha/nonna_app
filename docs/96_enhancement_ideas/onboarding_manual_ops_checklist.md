@@ -1,7 +1,8 @@
 # Onboarding — Manual Ops Checklist
 
 **Purpose:** Track work that cannot be done in code alone (Supabase dashboard, emulator QA, deploys, env config).  
-**Companion doc:** [onboarding_prototype_implementation_plan.md](./onboarding_prototype_implementation_plan.md)
+**Companion doc:** [onboarding_prototype_implementation_plan.md](./onboarding_prototype_implementation_plan.md)  
+**Full emulator QA checklist:** [full_emulator_manual_qa_checklist.md](./full_emulator_manual_qa_checklist.md)
 
 > **Living document:** When a phase introduces manual steps (ops, QA, dashboard config), add a row under **Pending** with phase tag, owner hint, and verification steps. Move items to **Done** when completed (date + who).
 

@@ -1,6 +1,6 @@
 # Nonna App — Project Understanding
 
-**Document Version**: 3.5 **Last Updated**: September 19, 2026 **Status**: Living
+**Document Version**: 3.6 **Last Updated**: September 19, 2026 **Status**: Living
 Document - Fully aligned with Version 3.1 codebase specifications
 
 ---
@@ -321,6 +321,7 @@ targets — never the raw constants directly.
 | `lib/core/themes/colors.dart`                                                    | Prototype palette (`#F6F6F7` scaffold, sage/peach, semantic success/warning/error)        |
 | `pubspec.yaml`                                                                   | Dependency manifest                                                                       |
 | `Makefile`                                                                       | Standard project command runner (CI/CD pipeline, formatting, testing)                     |
+| `.cursor/skills/nonna-app-testing/SKILL.md`                                      | **Cursor agent skill** for QA: `.env`, E2E sign-off, test users, live schema (see `reference.md`) |
 | `supabase/migrations/`                                                           | Database migration scripts                                                                |
 | `supabase/migrations/20260510000000_add_birth_measurements_to_baby_profiles.sql` | Adds `birth_weight_kg` and `birth_height_cm` columns to `baby_profiles`                   |
 | `supabase/seed/06_new_baby_welcome_tile.sql`                                     | Seeds `tile_definitions` + `tile_configs` for `NewBabyWelcomeTile`                        |
@@ -484,6 +485,12 @@ environment:
 | `send-invitation-email`  | Implemented | Dispatches follower invitations externally. Integrates dynamically with **Resend API** and **SendGrid API** using authorization secrets.                                                                                                             |
 | `send-push-notification` | Implemented | Direct push dispatcher. Connects directly to **OneSignal REST API** via `ONESIGNAL_APP_ID` + `ONESIGNAL_REST_API_KEY` (features mock fallback on missing credentials).                                                                               |
 | `generate-thumbnail`     | Implemented | Real server-side thumbnail generation using `imagescript` WASM. Downloads original image from Storage, cover-resizes to 300×300 JPEG (quality 80), uploads `_thumb.jpg` sibling, and writes `thumbnail_path` to the `photos` DB row under `SUPABASE_SERVICE_ROLE_KEY`. Idempotent via `upsert: true`.                                                                                               |
+
+---
+
+## Testing & QA (Cursor agents)
+
+When running or debugging tests (unit/widget, integration, onboarding E2E, manual login accounts, Supabase schema), load the project skill **`nonna-app-testing`**: [`.cursor/skills/nonna-app-testing/SKILL.md`](../../.cursor/skills/nonna-app-testing/SKILL.md). Extended catalogs: [reference.md](../../.cursor/skills/nonna-app-testing/reference.md); agents append verified learnings to [discoveries.md](../../.cursor/skills/nonna-app-testing/discoveries.md). Human checklists: `docs/96_enhancement_ideas/onboarding_manual_ops_checklist.md`, `test/README.md`.
 
 ---
 

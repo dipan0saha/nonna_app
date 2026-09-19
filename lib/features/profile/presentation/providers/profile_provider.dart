@@ -244,6 +244,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
     required String displayName,
     String? avatarUrl,
   }) async {
+    final keepAliveLink = ref.keepAlive();
     try {
       state =
           state.copyWith(isSaving: true, saveError: null, saveSuccess: false);
@@ -304,6 +305,8 @@ class ProfileNotifier extends Notifier<ProfileState> {
         saveError: errorMessage,
         saveSuccess: false,
       );
+    } finally {
+      keepAliveLink.close();
     }
   }
 

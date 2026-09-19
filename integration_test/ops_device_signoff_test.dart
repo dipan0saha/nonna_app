@@ -107,7 +107,18 @@ void main() {
 
       await startApp(tester);
 
-      await tester.tap(find.text('Skip'));
+      final skip = find.text('Skip');
+      if (skip.evaluate().isNotEmpty) {
+        await tester.tap(skip);
+      } else {
+        final primary = find.byKey(
+          const Key('onboarding_owner_carousel_primary'),
+        );
+        for (var i = 0; i < 4 && primary.evaluate().isNotEmpty; i++) {
+          await tester.tap(primary);
+          await _pumpFor(tester, const Duration(milliseconds: 400));
+        }
+      }
       await _pumpFor(tester, const Duration(seconds: 3));
       expect(find.text('Create Account'), findsOneWidget);
       await tester.tap(find.byKey(const Key('onboarding_signup_login_link')));

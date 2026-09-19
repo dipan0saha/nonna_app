@@ -282,6 +282,10 @@ class _OnboardingCompleteProfileScreenState
 
   @override
   Widget build(BuildContext context) {
+    // Keep [profileProvider] alive while this screen is mounted (provider is
+    // autoDispose; upsert only used ref.read and could dispose mid-save).
+    ref.watch(profileProvider);
+
     final isLoading = _isSaving || _isUploadingPhoto;
     final usedOAuth = ref.watch(onboardingCoordinatorProvider).usedOAuth;
     final subtext = usedOAuth

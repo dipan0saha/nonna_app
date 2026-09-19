@@ -41,11 +41,12 @@ class OnboardingInviteExpiredScreen extends ConsumerWidget {
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
-          const Spacer(),
+          const SizedBox(height: 48),
           OnboardingPrimaryButton(
             label: 'Get started',
             onPressed: () => context.go(OnboardingRoutes.ownerCarousel),
           ),
+          const SizedBox(height: 24),
         ],
       ),
     );

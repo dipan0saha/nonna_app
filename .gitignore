@@ -1,3 +1,6 @@
+# Local QA venv (scripts/qa_emulator_preflight.sh)
+.venv-qa/
+
 # Miscellaneous
 *.class
 *.log

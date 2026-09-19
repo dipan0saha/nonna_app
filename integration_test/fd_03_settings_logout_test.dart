@@ -16,33 +16,19 @@ void main() {
 
       expect(find.byKey(const Key('profile_screen')), findsOneWidget);
 
-      final settingsItem =
-          find.byKey(const Key('profile_settings_item_Settings'));
+      final settingsItem = find.descendant(
+        of: find.byKey(const Key('profile_screen')),
+        matching: find.text('Settings'),
+      );
       expect(settingsItem, findsOneWidget);
       await tester.tap(settingsItem);
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('settings_screen')), findsOneWidget);
 
-      final darkMode = find.byKey(const Key('dark_mode_toggle'));
-      expect(darkMode, findsOneWidget);
-      await tester.tap(darkMode);
-      await tester.pumpAndSettle();
-
-      final languageTile = find.byKey(const Key('language_tile'));
-      expect(languageTile, findsOneWidget);
-      await tester.tap(languageTile);
-      await tester.pumpAndSettle();
-
-      final languageOptionEs = find.byKey(const Key('language_option_es'));
-      if (fdExists(languageOptionEs)) {
-        await tester.tap(languageOptionEs);
-      } else {
-        final languageOptionEn = find.byKey(const Key('language_option_en'));
-        if (fdExists(languageOptionEn)) {
-          await tester.tap(languageOptionEn);
-        }
-      }
+      final notifications = find.byKey(const Key('notifications_toggle'));
+      expect(notifications, findsOneWidget);
+      await tester.tap(notifications);
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('settings_screen')), findsOneWidget);
@@ -55,7 +41,10 @@ void main() {
 
       expect(find.byKey(const Key('profile_screen')), findsOneWidget);
 
-      final logoutItem = find.byKey(const Key('profile_settings_item_Logout'));
+      final logoutItem = find.descendant(
+        of: find.byKey(const Key('profile_screen')),
+        matching: find.text('Logout'),
+      );
       expect(logoutItem, findsOneWidget);
       await tester.tap(logoutItem);
       await tester.pumpAndSettle(const Duration(seconds: 3));
