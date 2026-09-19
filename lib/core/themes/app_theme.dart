@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nonna_app/core/themes/app_metrics.dart';
+import 'package:nonna_app/core/themes/flutter_test_detect.dart';
 import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/core/themes/text_styles.dart';
 
 /// Main theme configuration for the Nonna app
@@ -18,46 +21,111 @@ class AppTheme {
   // Prevent instantiation
   AppTheme._();
 
+  static bool get _inFlutterTest => isRunningFlutterTest;
+
+  static TextStyle _inter({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+  }) {
+    if (_inFlutterTest) {
+      return TextStyle(
+        fontFamily: 'Inter',
+        fontFamilyFallback: const ['sans-serif'],
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        height: height,
+      );
+    }
+    return GoogleFonts.inter(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+      height: height,
+    );
+  }
+
+  static TextStyle _baloo2({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+  }) {
+    if (_inFlutterTest) {
+      return TextStyle(
+        fontFamily: 'Baloo 2',
+        fontFamilyFallback: const ['sans-serif'],
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        height: height,
+      );
+    }
+    return GoogleFonts.baloo2(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+      height: height,
+    );
+  }
+
   // ============================================================
   // Light Theme
   // ============================================================
 
-  static TextTheme _getDynamicTextTheme(
-      String fontFamily, TextTheme baseTheme) {
-    switch (fontFamily) {
-      case 'Inter':
-        return GoogleFonts.interTextTheme(baseTheme);
-      case 'Outfit':
-        return GoogleFonts.outfitTextTheme(baseTheme);
-      case 'Poppins':
-        return GoogleFonts.poppinsTextTheme(baseTheme);
-      case 'Roboto':
-        return GoogleFonts.robotoTextTheme(baseTheme);
-      case 'Montserrat':
-        return GoogleFonts.montserratTextTheme(baseTheme);
-      case 'Nunito':
-        return GoogleFonts.nunitoTextTheme(baseTheme);
-      case 'Lato':
-        return GoogleFonts.latoTextTheme(baseTheme);
-      case 'Manrope':
-        return GoogleFonts.manropeTextTheme(baseTheme);
-      case 'Quicksand':
-        return GoogleFonts.quicksandTextTheme(baseTheme);
-      case 'Rubik':
-        return GoogleFonts.rubikTextTheme(baseTheme);
-      case 'Source Serif 4':
-        return GoogleFonts.sourceSerif4TextTheme(baseTheme);
-      case 'Lora':
-        return GoogleFonts.loraTextTheme(baseTheme);
-      case 'Plus Jakarta Sans':
-      default:
-        return GoogleFonts.plusJakartaSansTextTheme(baseTheme);
-    }
+  static TextTheme _brandTextTheme(TextTheme base) {
+    final inter =
+        (_inFlutterTest ? base : GoogleFonts.interTextTheme(base)).apply(
+      bodyColor: AppColors.textPrimary,
+      displayColor: AppColors.textPrimary,
+      fontFamily: _inFlutterTest ? 'Inter' : null,
+    );
+    return inter.copyWith(
+      headlineMedium: _baloo2(
+        fontSize: AppMetrics.headlineSize,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        height: 1.15,
+      ),
+      headlineSmall: _baloo2(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        height: 1.15,
+      ),
+      titleLarge: _baloo2(
+        fontSize: AppMetrics.headlineSize,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+      ),
+      bodyMedium: _inter(
+        fontSize: AppMetrics.supportTextSize,
+        color: AppColors.muted,
+        height: 1.45,
+      ),
+      bodySmall: _inter(
+        fontSize: 13,
+        color: AppColors.muted,
+        height: 1.45,
+      ),
+      labelLarge: _inter(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: AppColors.primaryButtonForeground,
+      ),
+    );
   }
 
-  /// Get the light theme for the app
-  static ThemeData getLightTheme(String fontFamily) {
-    return ThemeData(
+  static ThemeData? _lightThemeCache;
+
+  /// Single light brand theme (onboarding prototype palette).
+  static ThemeData get lightTheme {
+    final cached = _lightThemeCache;
+    if (cached != null) return cached;
+    final textTheme = _brandTextTheme(AppTextStyles.textTheme);
+    return _lightThemeCache = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
 
@@ -65,10 +133,12 @@ class AppTheme {
       colorScheme: _lightColorScheme,
 
       // Typography
-      textTheme: _getDynamicTextTheme(fontFamily, AppTextStyles.textTheme),
+      textTheme: textTheme,
 
       // Scaffold
       scaffoldBackgroundColor: AppColors.background,
+
+      extensions: const [NonnaThemeExtension.light],
 
       // App bar theme
       appBarTheme: _lightAppBarTheme,
@@ -132,23 +202,33 @@ class AppTheme {
 
       // Icon theme
       iconTheme: const IconThemeData(
-        color: AppColors.gray700,
+        color: AppColors.textPrimary,
         size: 24.0,
       ),
       primaryIconTheme: const IconThemeData(
-        color: AppColors.primary,
+        color: AppColors.primaryDark,
         size: 24.0,
       ),
     );
   }
 
+  /// @deprecated Use [lightTheme]. App is light-only.
+  static ThemeData getLightTheme(String fontFamily) => lightTheme;
+
   // ============================================================
   // Dark Theme
   // ============================================================
 
-  /// Get the dark theme for the app
+  static ThemeData? _darkThemeCache;
+
+  /// @deprecated Dark mode not supported; use [lightTheme].
+  static ThemeData get darkTheme => getDarkTheme('Inter');
+
+  /// @deprecated Dark mode not supported; use [lightTheme].
   static ThemeData getDarkTheme(String fontFamily) {
-    return ThemeData(
+    final cached = _darkThemeCache;
+    if (cached != null) return cached;
+    return _darkThemeCache = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
 
@@ -156,7 +236,7 @@ class AppTheme {
       colorScheme: _darkColorScheme,
 
       // Typography
-      textTheme: _getDynamicTextTheme(fontFamily, _darkTextTheme),
+      textTheme: _brandTextTheme(_darkTextTheme),
 
       // Scaffold
       scaffoldBackgroundColor: AppColors.gray900,
@@ -330,30 +410,43 @@ class AppTheme {
     style: ElevatedButton.styleFrom(
       elevation: 0,
       backgroundColor: AppColors.primary,
-      foregroundColor: AppColors.textOnPrimary,
-      disabledBackgroundColor: AppColors.gray200,
+      foregroundColor: AppColors.primaryButtonForeground,
+      disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
       disabledForegroundColor: AppColors.textDisabled,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: AppMetrics.buttonVerticalPadding,
+      ),
       minimumSize: const Size(88, 44),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(AppMetrics.buttonRadius),
       ),
-      textStyle: AppTextStyles.buttonMedium,
+      textStyle: _inter(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: AppColors.primaryButtonForeground,
+      ),
     ),
   );
 
   static final OutlinedButtonThemeData _outlinedButtonTheme =
       OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-      foregroundColor: AppColors.primary,
+      foregroundColor: AppColors.textPrimary,
       disabledForegroundColor: AppColors.textDisabled,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      minimumSize: const Size(88, 44),
-      side: const BorderSide(color: AppColors.primary, width: 1.5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: AppMetrics.buttonVerticalPadding,
       ),
-      textStyle: AppTextStyles.buttonMedium,
+      minimumSize: const Size(88, 44),
+      side: const BorderSide(color: AppColors.border, width: 1.5),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppMetrics.buttonRadius),
+      ),
+      textStyle: _inter(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+      ),
     ),
   );
 
@@ -385,19 +478,19 @@ class AppTheme {
   static final InputDecorationTheme _lightInputDecorationTheme =
       InputDecorationTheme(
     filled: true,
-    fillColor: AppColors.gray100,
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    fillColor: AppColors.surface,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.0),
-      borderSide: const BorderSide(color: AppColors.border, width: 1),
+      borderRadius: BorderRadius.circular(AppMetrics.fieldRadius),
+      borderSide: const BorderSide(color: AppColors.border, width: 1.5),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.0),
-      borderSide: const BorderSide(color: AppColors.border, width: 1),
+      borderRadius: BorderRadius.circular(AppMetrics.fieldRadius),
+      borderSide: const BorderSide(color: AppColors.border, width: 1.5),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.0),
-      borderSide: const BorderSide(color: AppColors.primary, width: 2),
+      borderRadius: BorderRadius.circular(AppMetrics.fieldRadius),
+      borderSide: const BorderSide(color: AppColors.primaryDark, width: 1.5),
     ),
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12.0),
@@ -412,7 +505,10 @@ class AppTheme {
       borderSide: BorderSide(color: AppColors.border.withValues(alpha: 0.5)),
     ),
     labelStyle: AppTextStyles.label,
-    hintStyle: AppTextStyles.placeholder,
+    hintStyle: _inter(
+      color: AppColors.muted,
+      fontSize: AppMetrics.supportTextSize,
+    ),
     errorStyle: AppTextStyles.error,
   );
 
@@ -467,8 +563,8 @@ class AppTheme {
   static const BottomNavigationBarThemeData _bottomNavBarTheme =
       BottomNavigationBarThemeData(
     backgroundColor: AppColors.surface,
-    selectedItemColor: AppColors.primary,
-    unselectedItemColor: AppColors.gray500,
+    selectedItemColor: AppColors.secondaryDark,
+    unselectedItemColor: AppColors.navInactive,
     showSelectedLabels: true,
     showUnselectedLabels: true,
     type: BottomNavigationBarType.fixed,

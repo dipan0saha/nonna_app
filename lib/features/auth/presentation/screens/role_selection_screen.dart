@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 
 /// Role selection screen shown to first-time users after sign-up.
@@ -55,10 +55,10 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(
+              Icon(
                 Icons.child_friendly,
                 size: 72,
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(height: 16),
               Text(
@@ -71,7 +71,7 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                 'Choose your role to personalise your experience',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
               const SizedBox(height: 40),
@@ -176,15 +176,19 @@ class _RoleCard extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: _isSelected ? AppColors.primaryPale : AppColors.surface,
+          color: _isSelected
+              ? context.nonnaTheme.sageTint
+              : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: _isSelected ? AppColors.primary : AppColors.border,
+            color: _isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.outline,
             width: _isSelected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadow,
+              color: Theme.of(context).shadowColor,
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -195,7 +199,9 @@ class _RoleCard extends StatelessWidget {
             Icon(
               icon,
               size: 40,
-              color: _isSelected ? AppColors.primary : AppColors.textSecondary,
+              color: _isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -207,15 +213,15 @@ class _RoleCard extends StatelessWidget {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: _isSelected
-                          ? AppColors.primary
-                          : AppColors.textPrimary,
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     description,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -226,7 +232,9 @@ class _RoleCard extends StatelessWidget {
               _isSelected
                   ? Icons.radio_button_checked
                   : Icons.radio_button_unchecked,
-              color: _isSelected ? AppColors.primary : AppColors.gray400,
+              color: _isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.outline,
             ),
           ],
         ),

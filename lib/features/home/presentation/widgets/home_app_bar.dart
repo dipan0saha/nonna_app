@@ -3,19 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:nonna_app/core/router/app_router.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/features/home/presentation/widgets/home_app_bar_search_dialog.dart';
 
 /// Home screen app bar — prototype design.
 ///
 /// Layout:
 /// - Leading : search icon → opens search
-/// - Title   : "Nonna" in [AppColors.primary] (centered)
+/// - Title   : "Nonna" in sage-dark ([NonnaThemeExtension.sageDark]) (centered)
 /// - Actions : circular user avatar + dropdown chevron → opens profile
 ///
 /// **Functional Requirements**: Section 3.6.2 - Main App Screens Part I
@@ -104,10 +104,12 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
               child: DropdownButton<String>(
                 isExpanded: true,
                 value: selectedProfile.id,
-                icon: const Icon(Icons.keyboard_arrow_down,
-                    color: AppColors.primary),
+                icon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: context.nonnaTheme.sageDark,
+                ),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.primary,
+                      color: context.nonnaTheme.sageDark,
                       fontWeight: FontWeight.bold,
                     ),
                 selectedItemBuilder: (context) {
@@ -167,10 +169,13 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 icon: const Icon(Icons.notifications_outlined),
                 onPressed: onNotificationTap ?? () {},
               ),
-              const Positioned(
+              Positioned(
                 right: 10,
                 top: 10,
-                child: CircleAvatar(radius: 4, backgroundColor: Colors.red),
+                child: CircleAvatar(
+                  radius: 4,
+                  backgroundColor: context.nonnaTheme.peachDark,
+                ),
               ),
             ],
           ),
@@ -264,7 +269,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
               children: [
                 CircleAvatar(
                   radius: 16,
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundImage:
                       avatarUrl != null ? NetworkImage(avatarUrl) : null,
                   child: avatarUrl == null
@@ -292,7 +297,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return Text(
       title,
       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: AppColors.primary,
+            color: context.nonnaTheme.sageDark,
             fontWeight: FontWeight.bold,
           ),
     );

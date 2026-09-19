@@ -8,7 +8,7 @@ import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_types.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/follower/onboarding_follower_invite_screen.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/follower/onboarding_relationship_screen.dart';
-import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_scaffold.dart';
+import 'package:nonna_app/core/themes/app_theme.dart';
 
 class _FakeInviteAcceptNotifier extends InviteAcceptNotifier {
   _FakeInviteAcceptNotifier(this._state);
@@ -37,8 +37,9 @@ void main() {
             ),
           ),
         ],
-        child: const MaterialApp(
-          home: OnboardingThemeScope(child: OnboardingFollowerInviteScreen()),
+        child: MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const OnboardingFollowerInviteScreen(),
         ),
       ),
     );
@@ -68,8 +69,9 @@ void main() {
             OnboardingCoordinatorNotifier.new,
           ),
         ],
-        child: const MaterialApp(
-          home: OnboardingThemeScope(child: OnboardingRelationshipScreen()),
+        child: MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const OnboardingRelationshipScreen(),
         ),
       ),
     );

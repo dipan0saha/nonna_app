@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/user_stats.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/profile/presentation/providers/profile_provider.dart';
 import 'package:nonna_app/features/profile/presentation/widgets/profile_widgets.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nonna_app/core/router/app_router.dart';
+import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 
 /// Profile screen showing user avatar, stats, and settings actions.
 ///
@@ -77,7 +78,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             children: [
               Text(
                 state.error!,
-                style: const TextStyle(color: AppColors.error),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
                 textAlign: TextAlign.center,
               ),
               AppSpacing.verticalGapM,
@@ -208,8 +209,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     _EnhancedListTile(
                       icon: Icons.edit_rounded,
-                      iconColor: Colors.blue.shade600,
-                      backgroundColor: Colors.blue.shade100,
+                      iconColor: context.nonnaTheme.sageDark,
+                      backgroundColor: AppColors.sageTint,
                       title: 'Edit Profile',
                       onTap: widget.onEditTap ??
                           () {
@@ -220,8 +221,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     const _Divider(),
                     _EnhancedListTile(
                       icon: Icons.settings_rounded,
-                      iconColor: Colors.teal.shade600,
-                      backgroundColor: Colors.teal.shade100,
+                      iconColor: context.nonnaTheme.peachDark,
+                      backgroundColor: AppColors.peachTint,
                       title: 'Settings',
                       onTap: widget.onSettingsTap ??
                           () {

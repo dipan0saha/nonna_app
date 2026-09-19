@@ -1,7 +1,7 @@
 # Nonna App - Architecture Diagrams
 
 **Document Version**: 3.1
-**Last Updated**: September 8, 2026
+**Last Updated**: September 19, 2026
 **Location**: `docs/99_master_reference_docs/Nonna_App_Architecture_Diagrams.md`
 **Status**: Living Document - Fully updated with GoRouter v17 and decoupled TileLoader pipeline
 

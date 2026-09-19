@@ -1,7 +1,7 @@
 # Nonna App Project Structure (Dynamic Tile-Based Architecture)
 
 **Document Version**: 3.1
-**Last Updated**: September 8, 2026
+**Last Updated**: September 19, 2026
 **Location**: `docs/99_master_reference_docs/App_Structure_Nonna.md`
 **Status**: Living Document - Updated to reflect the current unified codebase implementation
 
@@ -11,16 +11,17 @@ This structure is optimized for the Nonna app's dynamic, tile-based UI with role
 
 **IMPORTANT**: All core infrastructure, tiles layer, and features layer are fully implemented.
 
-### Current State (As of September 8, 2026)
+### Current State (As of September 19, 2026)
 - **18 Active Smart Tiles**: Fully implemented, tested, and integrated via a centralized `TileFactory` which resolves runtime configs.
-- **Prototype onboarding feature**: `lib/features/onboarding/presentation/` — owner/follower/co-owner first-run flows with coordinator persistence and isolated `OnboardingTheme`.
-- **Centralized Service Architecture**: The app leverages a robust, unified service layer under `lib/core/services/` (22 services) and domain models (23 models).
+- **Prototype onboarding feature**: `lib/features/onboarding/presentation/` — owner/follower/co-owner first-run flows with coordinator persistence; uses global `AppTheme.lightTheme`.
+- **Centralized Service Architecture**: The app leverages a robust, unified service layer under `lib/core/services/` (23 services, including `DeepLinkService`) and domain models (23 models in `lib/core/models/`).
 - **Streamlined Feature Layer**: Features under `lib/features/` are ultra-lean and presentation-focused, composing tiles and rendering screen widgets. Redundant repository and use case files have been omitted in favor of direct service and Riverpod state provider interactions.
 - **Command Runner Interface**: Standard commands are managed via a centralized `Makefile` at the root of the project, including mock generation, test execution, linting, formatting, and build processes.
 
 ### Recent Implementation Notes (September 2026)
 - Added `lib/features/onboarding/presentation/` — screens, providers, widgets, utils for prototype onboarding (no separate data/domain layer).
-- Added `lib/core/themes/onboarding_theme.dart` and `lib/core/constants/first_moment_presets.dart`.
+- Added onboarding presentation module and `lib/core/constants/first_moment_presets.dart`; brand tokens live in `app_theme.dart` / `colors.dart` (see Post-MVP brand unification in onboarding plan).
+- **Global brand theme:** light-only `AppTheme.lightTheme` (Inter + Baloo 2); `#F6F6F7` scaffold; sage-dark home title; peach-dark bottom-nav active; `NonnaThemeExtension` semantic colors. No Settings font/dark-mode pickers.
 - `route_guards.dart` + `onboardingCoordinatorProvider` gate access to `/home` until onboarding complete.
 - `/role-selection` deprecated; redirects to `/onboarding/owner/carousel`.
 
@@ -29,7 +30,7 @@ This structure is optimized for the Nonna app's dynamic, tile-based UI with role
   - `FollowersManagementScreen` at `/baby-profile/followers`
   - `InviteFollowersScreen` at `/baby-profile/followers/invite`
 - Home app bar actions (`add`, `info`, `followers`) have been consolidated into a cleaner PopupMenuButton.
-- Added dynamic typography, allowing users to choose from 11 top mobile fonts via the Settings screen.
+- ~~Added dynamic typography (11 fonts via Settings)~~ — **removed**; app uses fixed Inter + Baloo 2 globally (September 2026 brand unification).
 - Registry business logic and RLS policies updated to allow baby profile owners to delete any registry purchase.
 - Invitation workflow is email-only in current app implementation.
 - New profile creation now auto-selects the new profile and refreshes home/profile context.
@@ -59,8 +60,8 @@ nonna_app/
 │   │   ├── providers/            # Global providers
 │   │   ├── repositories/         # [Omitted] Handled directly via Core Services & Providers
 │   │   ├── router/               # App navigation (GoRouter & Route guards)
-│   │   ├── services/             # 22 shared services (auth, database, caching, realtime, etc.)
-│   │   ├── themes/               # App-wide theming + onboarding_theme.dart (isolated prototype palette)
+│   │   ├── services/             # 23 shared services (auth, database, deep links, caching, realtime, etc.)
+│   │   ├── themes/               # App-wide theming (AppTheme, colors, metrics, NonnaThemeExtension)
 │   │   ├── typedefs/             # Type aliases
 │   │   ├── utils/                # Helper functions (dates, formats, role checks)
 │   │   └── widgets/              # Shared UI widgets (shimmers, error views, custom buttons)
@@ -68,9 +69,8 @@ nonna_app/
 │   │   ├── auth/                 # Authentication presentation (login, signup, role screens)
 │   │   ├── baby_profile/         # Baby profile management (create, edit, follower list, invite)
 │   │   ├── calendar/             # Calendar screen & calendar view widget
-│   │   ├── fun/                  # Legacy/Placeholder feature
 │   │   ├── gallery/              # Photo gallery presentation (grid, photo detail screen)
-│   │   ├── gamification/         # Name suggestions & predictions screen
+│   │   ├── gamification/         # Fun tab — name suggestions & predictions (`/gamification`)
 │   │   ├── home/                 # Home screen layout (composes tiles via TileFactory)
 │   │   ├── onboarding/           # Prototype first-run flows (presentation-only)
 │   │   │   └── presentation/
@@ -79,10 +79,9 @@ nonna_app/
 │   │   │       ├── widgets/      # scaffold, carousel, fields, invite rows
 │   │   │       ├── utils/        # auth, invite, baby, analytics helpers
 │   │   │       └── l10n/         # onboarding string helpers
-│   │   ├── photo_gallery/        # Placeholder/Refactoring feature
 │   │   ├── profile/              # User profile screens (view, edit)
 │   │   ├── registry/             # Registry presentation (filters, list view, item details)
-│   │   └── settings/             # App settings (typography selectors, configuration)
+│   │   └── settings/             # App settings (notifications, help/support)
 │   ├── flutter_gen/              # Generated assets & localization code
 │   ├── l10n/                     # Localization
 │   │   ├── app_en.arb

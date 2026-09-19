@@ -1,6 +1,6 @@
 # Nonna App — Project Understanding
 
-**Document Version**: 3.4 **Last Updated**: September 2026 **Status**: Living
+**Document Version**: 3.5 **Last Updated**: September 19, 2026 **Status**: Living
 Document - Fully aligned with Version 3.1 codebase specifications
 
 ---
@@ -27,6 +27,72 @@ parents (**owners**) share pregnancy and baby updates with family and friends
 | Caching            | Hive + SharedPreferences                                             |
 | Authentication     | Supabase Auth, Google Sign-In, Facebook Auth, LocalAuth (biometrics) |
 | Localization       | Flutter i18n (ARB) — English + Spanish                               |
+
+---
+
+## Brand & Theme
+
+Visual design is aligned with the onboarding prototype
+[`La_Nonna_Onboarding_Prototype2.html`](../../00_requirement_gathering/prototype/La_Nonna_Onboarding_Prototype2.html).
+There is **one global light theme** for onboarding, shell, features, and tiles — no per-route theme override and no user-selectable dark mode or font family.
+
+### Runtime configuration
+
+| Concern | Implementation |
+| -------- | ---------------- |
+| App entry | `lib/main.dart` → `theme: AppTheme.lightTheme`, `themeMode: ThemeMode.light` |
+| Theme assembly | `lib/core/themes/app_theme.dart` (Material 3 `ThemeData`, component themes) |
+| Palette tokens | `lib/core/themes/colors.dart` (`AppColors`) |
+| Brand extension | `lib/core/themes/nonna_theme_extension.dart` — sage/peach tints + semantic colors on `ThemeData.extensions` |
+| Layout metrics | `lib/core/themes/app_metrics.dart` — horizontal padding, radii, headline/support sizes (shared with onboarding) |
+| Legacy | `lib/core/themes/onboarding_theme.dart` — **deprecated** aliases only; do not use for new UI |
+
+### Typography
+
+| Role | Font | Usage |
+| ---- | ---- | ----- |
+| Body, labels, inputs | **Inter** (Google Fonts) | `ThemeData.textTheme`, form copy, tile body text |
+| Display / headlines | **Baloo 2** | App bar titles, onboarding headlines, hero emphasis |
+
+Settings **does not** expose a font picker (removed during September 2026 brand unification).
+
+### Core palette (prototype `:root`)
+
+| Token | Hex | Typical use |
+| ----- | --- | ----------- |
+| Sage (primary) | `#A8C99B` | Primary buttons, accents |
+| Sage dark | `#7FAE6E` | Home “Nonna” title, links, active carousel dots |
+| Sage tint | `#EAF3E4` | Insight cards, icon blobs |
+| Peach (secondary) | `#F5B99B` | Accent surfaces |
+| Peach dark | `#EF9F76` | Bottom nav **selected** tab, notification bell dot |
+| Peach tint | `#FCE8DC` | Warm cards / gradients |
+| Scaffold background | `#F6F6F7` | App-wide scaffold (`AppColors.background`) |
+| Surface | `#FFFFFF` | Cards, sheets, phone-screen areas in prototype |
+| Text | `#2D2D2D` | Primary copy |
+| Muted | `#9B9B9B` | Supporting text |
+| Border | `#E9E9EA` | Dividers, outlines |
+| Primary CTA on sage | `#1C2E17` | Label on filled sage buttons |
+
+Semantic colors (success, warning, info, error) live in `AppColors` and are exposed on `NonnaThemeExtension` for status chips, tiles, and errors. Prefer **`Theme.of(context).colorScheme.error`** for destructive/error text and **`context.nonnaTheme.success` / `.warning`** (or enum `.color` getters backed by `AppColors`) instead of raw `Colors.red` / `Colors.green`.
+
+### Shell chrome (prototype home)
+
+| Element | Spec |
+| ------- | ---- |
+| Bottom navigation | Selected: **peach dark**; unselected: `#B0B0B2` (`AppColors.navInactive`) |
+| Home app bar title | **Sage dark** (not primary sage) |
+| First-run notification dot | **Peach dark** |
+
+### How to style new UI
+
+1. Read colors from **`Theme.of(context).colorScheme`** and **`context.nonnaTheme`** (see `NonnaThemeContext` extension).
+2. Use **`AppMetrics`** for onboarding-aligned spacing and radii where appropriate.
+3. Reserve hard-coded hex for **third-party brand assets** (e.g. Google/Facebook sign-in icons).
+4. Do not wrap routes in a separate `OnboardingTheme` / `Theme` override — onboarding uses the same `AppTheme.lightTheme` as `/home`.
+
+### Settings screen (theme-related)
+
+`SettingsScreen` UI: **push notifications** toggle, **Help & Support** (mailto), and read-only **App version**. It does **not** control theme mode, accent color, typography, or in-app language (language is stored via `SettingsNotifier` / `LocalStorageService` but not shown on this screen; app locale follows device + `l10n`).
 
 ---
 
@@ -89,7 +155,7 @@ lib/
     └── onboarding/   # Prototype first-run flows (owner / follower / co-owner)
 ```
 
-**Onboarding (September 2026):** Cold start lands on `/onboarding/owner/carousel`. Routes use `OnboardingTheme` (isolated from main shell). State is persisted by `onboardingCoordinatorProvider` (path, step, invite token, created baby id). `/role-selection` redirects to owner carousel (`RoleSelectionScreen` deprecated).
+**Onboarding (September 2026):** Cold start lands on `/onboarding/owner/carousel`. Onboarding screens use the same global light theme as the shell (`AppTheme.lightTheme`, `NonnaThemeExtension`, `AppMetrics`). State is persisted by `onboardingCoordinatorProvider` (path, step, invite token, created baby id). `/role-selection` redirects to owner carousel (`RoleSelectionScreen` deprecated).
 
 **Key design decision**: Tiles live at `lib/tiles/` (not inside features) so
 they can be reused across any screen. Each tile is completely self-contained
@@ -118,7 +184,7 @@ simultaneously (dual-role).
 | ------------------------ | ------------------------------------------------------------------------- |
 | User Identity            | `User`, `UserStats`                                                       |
 | Baby Profile             | `BabyProfile`, `BabyMembership`, `Invitation`                             |
-| Tile System              | `TileConfig`, `ScreenConfig`, `TileDefinition`, `TileParams`, `TileState` |
+| Tile System              | `TileConfig`, `ScreenConfig` (`lib/core/models/`); `TileDefinition`, `TileParams`, `TileState` (`lib/tiles/core/models/`) |
 | Calendar & Events        | `Event`, `EventRsvp`, `EventComment`                                      |
 | Registry                 | `RegistryItem`, `RegistryPurchase`                                        |
 | Photo Gallery            | `Photo`, `PhotoSquish`, `PhotoComment`, `PhotoTag`                        |
@@ -128,7 +194,7 @@ simultaneously (dual-role).
 
 ---
 
-## Service Layer (22 services)
+## Service Layer (23 services in `lib/core/services/`)
 
 | Category                 | Services                                                                                 |
 | ------------------------ | ---------------------------------------------------------------------------------------- |
@@ -136,9 +202,11 @@ simultaneously (dual-role).
 | Data Persistence         | `CacheService`, `LocalStorageService`                                                    |
 | Realtime & Notifications | `RealtimeService`, `RealtimeSubscriptionManager`, `NotificationService`                  |
 | Monitoring & Analytics   | `AnalyticsService`, `ObservabilityService`                                               |
-| Offline & Sync           | `OfflineCacheManager`, `SyncManager`, `StatePersistenceManager`, `PersistenceStrategies`, `NetworkStatusNotifier`, `ConnectivityWrapper` |
+| Offline & Sync           | `OfflineCacheManager`, `SyncManager`, `StatePersistenceManager`, `PersistenceStrategies` |
 | Recovery & Compliance    | `CrashRecoveryHandler`, `BackupService`, `DataExportHandler`, `DataDeletionHandler`      |
-| App Lifecycle            | `AppInitializationService`, `ForceUpdateService`, `NetworkErrorHandler`                  |
+| App Lifecycle            | `AppInitializationService`, `ForceUpdateService`, `NetworkErrorHandler`, `DeepLinkService` |
+
+**Related (not in `services/`):** `NetworkStatusNotifier` and `ConnectivityWrapper` live under `lib/core/di/` (`network_status_notifier.dart`, `connectivity_wrapper.dart`).
 
 ---
 
@@ -229,7 +297,7 @@ targets — never the raw constants directly.
 | **Follower** | `/invite-accept` → follower invite preview → signup/login → complete profile → confirm relationship → follower carousel → `/home` |
 | **Co-owner** | `/invite-accept` (role from `invited_role` in DB) → co-owner invite → signup/login → complete profile → co-owner welcome → `/home` |
 
-`initialLocation` is `/onboarding/owner/carousel`. `route_guards.dart` redirects unauthenticated users to onboarding or pending invite; completed onboarding cannot return to `/onboarding/*`.
+`initialLocation` is `DeepLinkService.initialRoute ?? /onboarding/owner/carousel` (cold-start invite/auth links captured in `main()` before `runApp`). `route_guards.dart` redirects unauthenticated users to onboarding or pending invite; completed onboarding cannot return to `/onboarding/*`.
 
 ---
 
@@ -237,11 +305,12 @@ targets — never the raw constants directly.
 
 | File                                                                             | Purpose                                                                                   |
 | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `lib/main.dart`                                                                  | Entry point — initializes Supabase/Firebase/OneSignal, launches with `ProviderScope`      |
+| `lib/main.dart`                                                                  | Entry point — `DeepLinkService.captureColdStartLink()`, then `ProviderScope` + `AppTheme.lightTheme` |
+| `lib/core/services/deep_link_service.dart`                                       | Cold-start / invite deep links; sets GoRouter `initialRoute` when applicable              |
 | `lib/core/router/app_router.dart`                                                | GoRouter config with all named routes and auth redirect guards                            |
 | `lib/core/router/route_guards.dart`                                              | Onboarding completion gate, invite resume, legacy `/role-selection` handling              |
 | `lib/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart` | Persists onboarding path/step; resume after deep link or app restart                 |
-| `lib/core/themes/onboarding_theme.dart`                                          | Isolated sage/peach onboarding palette (`OnboardingThemeScope`)                         |
+| `lib/core/themes/app_theme.dart` + `nonna_theme_extension.dart` + `app_metrics.dart` | Global light theme (Inter + Baloo 2, onboarding brand); `onboarding_theme.dart` deprecated aliases |
 | `lib/core/constants/first_moment_presets.dart`                                   | Preset events/registry chips for owner first-moment step                                  |
 | `lib/features/baby_profile/presentation/providers/invite_accept_provider.dart`     | `get_invitation_preview` + `accept_invitation` RPC orchestration                        |
 | `lib/core/utils/tile_factory.dart`                                               | Core utility for dynamic tile instantiation from Supabase configs                         |
@@ -249,7 +318,7 @@ targets — never the raw constants directly.
 | `lib/features/home/presentation/screens/home_screen.dart`                        | Main screen composing tiles via `TileListView`                                            |
 | `lib/core/services/app_initialization_service.dart`                              | Bootstraps all third-party SDKs with graceful degradation                                 |
 | `lib/core/di/providers.dart`                                                     | Global Riverpod providers (auth, Supabase)                                                |
-| `lib/core/themes/colors.dart`                                                    | App color palette                                                                         |
+| `lib/core/themes/colors.dart`                                                    | Prototype palette (`#F6F6F7` scaffold, sage/peach, semantic success/warning/error)        |
 | `pubspec.yaml`                                                                   | Dependency manifest                                                                       |
 | `Makefile`                                                                       | Standard project command runner (CI/CD pipeline, formatting, testing)                     |
 | `supabase/migrations/`                                                           | Database migration scripts                                                                |

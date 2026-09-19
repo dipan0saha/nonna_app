@@ -18,27 +18,38 @@ class AppColors {
   // Brand Colors (From Demo App)
   // ============================================================
 
-  /// Primary brand color - Sage green as seen in demo
-  static const Color primary = Color(0xFFA8C5AD);
+  /// Primary brand color — sage (onboarding prototype)
+  static const Color primary = Color(0xFFA8C99B);
 
-  /// Darker variant of primary color for hover/pressed states and backgrounds where white text is needed
-  /// Updated to meet WCAG AA contrast requirements for white text (4.5:1)
-  static const Color primaryDark = Color(0xFF5A7F62);
+  /// Darker sage for focus states and accents
+  static const Color primaryDark = Color(0xFF7FAE6E);
 
-  /// Lighter variant of primary color for backgrounds
-  static const Color primaryLight = Color(0xFFD4E4D6);
+  /// Light sage for selected backgrounds
+  static const Color primaryLight = Color(0xFFEAF3E4);
 
-  /// Very light primary for subtle backgrounds
-  static const Color primaryPale = Color(0xFFF0F5F1);
+  /// Very light sage tint
+  static const Color primaryPale = Color(0xFFEAF3E4);
 
-  /// Secondary brand color - Warm peach/coral accent
-  static const Color secondary = Color(0xFFFFB899);
+  /// Secondary brand color — peach (onboarding prototype)
+  static const Color secondary = Color(0xFFF5B99B);
 
-  /// Darker variant of secondary color
-  static const Color secondaryDark = Color(0xFFFF9A6B);
+  /// Darker peach accent
+  static const Color secondaryDark = Color(0xFFEF9F76);
 
-  /// Lighter variant of secondary color
-  static const Color secondaryLight = Color(0xFFFFD6C1);
+  /// Light peach tint
+  static const Color secondaryLight = Color(0xFFFCE8DC);
+
+  /// Sage tint (alias for extension / cards)
+  static const Color sageTint = primaryLight;
+
+  /// Peach tint
+  static const Color peachTint = secondaryLight;
+
+  /// Muted supporting text (prototype)
+  static const Color muted = Color(0xFF9B9B9B);
+
+  /// Primary CTA label on sage buttons
+  static const Color primaryButtonForeground = Color(0xFF1C2E17);
 
   // ============================================================
   // Neutral Colors
@@ -142,17 +153,20 @@ class AppColors {
   // Special Purpose Colors
   // ============================================================
 
-  /// Background color for the app
-  static const Color background = primaryPale;
+  /// App scaffold background (prototype `--bg`)
+  static const Color background = Color(0xFFF6F6F7);
+
+  /// Bottom nav inactive label/icon (prototype `.nav-item`)
+  static const Color navInactive = Color(0xFFB0B0B2);
 
   /// Surface color for cards and elevated elements
   static const Color surface = white;
 
   /// Divider color
-  static const Color divider = gray300;
+  static const Color divider = Color(0xFFE9E9EA);
 
-  /// Border color
-  static const Color border = gray300;
+  /// Border color (prototype)
+  static const Color border = Color(0xFFE9E9EA);
 
   /// Shadow color
   static const Color shadow = Color(0x1A000000);
@@ -170,17 +184,17 @@ class AppColors {
   // Text Colors
   // ============================================================
 
-  /// Primary text color - high emphasis
-  static const Color textPrimary = gray900;
+  /// Primary text color - high emphasis (prototype)
+  static const Color textPrimary = Color(0xFF2D2D2D);
 
   /// Secondary text color - medium emphasis
-  static const Color textSecondary = gray600;
+  static const Color textSecondary = muted;
 
   /// Disabled text color - low emphasis
   static const Color textDisabled = gray400;
 
-  /// Text color on primary background
-  static const Color textOnPrimary = gray900;
+  /// Text color on primary (sage) background
+  static const Color textOnPrimary = primaryButtonForeground;
 
   /// Text color on secondary background
   static const Color textOnSecondary = gray900;

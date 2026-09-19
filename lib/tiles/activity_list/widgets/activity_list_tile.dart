@@ -143,28 +143,28 @@ class _MetricsSummary extends StatelessWidget {
           icon: Icons.favorite,
           label: l10n.tile_activity_squishes,
           value: metrics.photoSquishes,
-          color: Colors.pink,
+          color: AppColors.secondary,
         ),
         _MetricChip(
           key: const Key('comments_metric'),
           icon: Icons.chat_bubble_outline,
           label: l10n.tile_activity_comments,
           value: metrics.photoComments,
-          color: Colors.blue,
+          color: AppColors.info,
         ),
         _MetricChip(
           key: const Key('rsvps_metric'),
           icon: Icons.event_available,
           label: l10n.tile_activity_rsvps,
           value: metrics.eventRSVPs,
-          color: Colors.green,
+          color: AppColors.success,
         ),
         _MetricChip(
           key: const Key('total_metric'),
           icon: Icons.bar_chart,
           label: l10n.tile_activity_total,
           value: metrics.totalEngagement,
-          color: AppColors.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ],
     );
@@ -202,7 +202,7 @@ class _MetricChip extends StatelessWidget {
         Text(
           label,
           style: context.textTheme.labelSmall?.copyWith(
-            color: AppColors.onSurfaceSecondary(context.colorScheme),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
       ],
@@ -224,13 +224,13 @@ class _EmptyEngagement extends StatelessWidget {
             Icon(
               Icons.bar_chart_outlined,
               size: 32,
-              color: AppColors.onSurfaceHint(context.colorScheme),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             AppSpacing.verticalGapXS,
             Text(
               AppLocalizations.of(context).tile_activity_empty,
               style: context.textTheme.bodySmall?.copyWith(
-                color: AppColors.onSurfaceHint(context.colorScheme),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],

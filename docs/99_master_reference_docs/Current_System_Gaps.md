@@ -1,7 +1,7 @@
 # Nonna App — Current System Gaps Analysis
 
 **Document Version**: 2.2
-**Date**: September 8, 2026
+**Date**: September 19, 2026
 **Location**: `docs/99_master_reference_docs/Current_System_Gaps.md`
 **Status**: Living Document - Fully updated with Technical and Plain Language sections
 
@@ -119,8 +119,8 @@ This document provides a comprehensive technical audit and a non-technical plain
 ---
 
 ### 7b. ~~Prototype Onboarding Flow~~ ✅ RESOLVED (September 2026)
-* **Underlying Code**: `lib/features/onboarding/presentation/`, `lib/core/themes/onboarding_theme.dart`, `lib/core/router/route_guards.dart`
-* **What Was Fixed**: Owner carousel → auth → profile → create baby → first moment → batch invite → first-run home; follower and co-owner invite deep-link paths; coordinator persistence; `OnboardingTheme` isolated from main shell.
+* **Underlying Code**: `lib/features/onboarding/presentation/`, `lib/core/themes/app_theme.dart` (+ extension/metrics), `lib/core/router/route_guards.dart`
+* **What Was Fixed**: Owner carousel → auth → profile → create baby → first moment → batch invite → first-run home; follower and co-owner invite deep-link paths; coordinator persistence; prototype palette unified into global light theme (September 2026).
 * **Deprecated**: `RoleSelectionScreen` — `/role-selection` redirects to `/onboarding/owner/carousel`.
 * **Terms checkbox (#34)**: UI-only on `OnboardingCompleteProfileScreen`; no `terms_accepted_at` column persisted (documented here).
 * **Device sign-off (September 2026):** ✅ Emulator E2E 3/3; release APK smoke (build + carousel + Skip → signup); OPS-P1-012 + OPS-010 automated; release invite cold-start. **Optional:** OPS-010 real signup email tap; manual edge cases.

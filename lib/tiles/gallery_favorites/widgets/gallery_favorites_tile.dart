@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/models/photo.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -145,15 +145,15 @@ class _FavoriteRow extends StatelessWidget {
                   imageUrl: photo.thumbnailPath ?? photo.storagePath,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    color: AppColors.background,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: Icon(
                       Icons.photo_outlined,
-                      color: AppColors.primary,
+                      color: Theme.of(context).colorScheme.primary,
                       size: 20,
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    color: AppColors.background,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: Icon(
                       Icons.broken_image_outlined,
                       color: context.colorScheme.error,
@@ -208,12 +208,12 @@ class _SquishBadge extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.favorite, size: 14, color: Colors.pink),
+            Icon(Icons.favorite, size: 14, color: AppColors.secondary),
             AppSpacing.horizontalGapXS,
             Text(
               '$count',
               style: context.textTheme.labelSmall?.copyWith(
-                color: AppColors.onSurfaceSecondary(context.colorScheme),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],

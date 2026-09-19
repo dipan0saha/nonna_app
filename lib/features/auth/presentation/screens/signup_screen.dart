@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/auth/presentation/widgets/auth_form_widgets.dart';
 
@@ -103,10 +102,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(
+              Icon(
                 Icons.child_care,
                 size: 48,
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(height: 8),
               Text(
@@ -119,7 +118,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 'Join nonna to start tracking milestones',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
               const SizedBox(height: 8),
@@ -188,7 +187,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       Text(
                         'You must accept the terms to continue',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppColors.error,
+                              color: Theme.of(context).colorScheme.error,
                             ),
                       ),
                     ],
@@ -251,8 +250,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const TextSpan(text: 'I agree to the '),
                 TextSpan(
                   text: 'Terms of Service',
-                  style: const TextStyle(
-                    color: AppColors.primary,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
                     decoration: TextDecoration.underline,
                   ),
                   recognizer: TapGestureRecognizer()..onTap = widget.onTermsTap,
@@ -260,8 +259,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 const TextSpan(text: ' and '),
                 TextSpan(
                   text: 'Privacy Policy',
-                  style: const TextStyle(
-                    color: AppColors.primary,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
                     decoration: TextDecoration.underline,
                   ),
                   recognizer: TapGestureRecognizer()
@@ -284,10 +283,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.mark_email_read_outlined,
                   size: 80,
-                  color: AppColors.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(height: 24),
                 Text(
@@ -300,7 +299,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   'We sent a verification link to ${_emailController.text.trim()}. '
                   'Please check your inbox and click the link to activate your account.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                   textAlign: TextAlign.center,
                 ),

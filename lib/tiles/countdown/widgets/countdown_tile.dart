@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/tiles/countdown/providers/countdown_provider.dart';
 import 'package:nonna_app/tiles/core/tile_icons.dart';
 import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
@@ -80,16 +81,17 @@ class _CountdownRow extends StatelessWidget {
 
   final BabyCountdown countdown;
 
-  Color _countdownColor(BabyCountdown countdown) {
-    if (countdown.isPastDue) return Colors.red;
-    if (countdown.daysUntilDueDate <= 7) return Colors.orange;
-    if (countdown.daysUntilDueDate <= 30) return Colors.amber;
-    return Colors.green;
+  Color _countdownColor(BuildContext context, BabyCountdown countdown) {
+    final semantic = context.nonnaTheme;
+    if (countdown.isPastDue) return semantic.error;
+    if (countdown.daysUntilDueDate <= 7) return semantic.warning;
+    if (countdown.daysUntilDueDate <= 30) return AppColors.warningDark;
+    return semantic.success;
   }
 
   @override
   Widget build(BuildContext context) {
-    final color = _countdownColor(countdown);
+    final color = _countdownColor(context, countdown);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
@@ -118,7 +120,7 @@ class _CountdownRow extends StatelessWidget {
                 Text(
                   countdown.formattedCountdown,
                   style: context.textTheme.bodySmall?.copyWith(
-                    color: AppColors.onSurfaceSecondary(context.colorScheme),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],

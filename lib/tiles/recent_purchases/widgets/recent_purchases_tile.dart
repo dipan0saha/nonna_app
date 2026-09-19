@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/registry_purchase.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -121,7 +120,8 @@ class _PurchaseRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
         child: Row(
           children: [
-            const Icon(Icons.card_giftcard, size: 20, color: AppColors.primary),
+            Icon(Icons.card_giftcard,
+                size: 20, color: Theme.of(context).colorScheme.primary),
             AppSpacing.horizontalGapS,
             Expanded(
               child: Column(
@@ -139,8 +139,7 @@ class _PurchaseRow extends StatelessWidget {
                     Text(
                       purchase.note!,
                       style: context.textTheme.bodySmall?.copyWith(
-                        color:
-                            AppColors.onSurfaceSecondary(context.colorScheme),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -152,7 +151,7 @@ class _PurchaseRow extends StatelessWidget {
             Text(
               dateStr,
               style: context.textTheme.bodySmall?.copyWith(
-                color: AppColors.onSurfaceHint(context.colorScheme),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],

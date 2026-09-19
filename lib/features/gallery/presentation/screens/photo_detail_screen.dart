@@ -12,7 +12,6 @@ import 'package:nonna_app/features/gallery/presentation/widgets/squish_photo_wid
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/photo_detail_provider.dart';
 import 'package:nonna_app/features/gallery/presentation/providers/photo_comments_provider.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/models/user.dart';
 
 import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
@@ -284,7 +283,8 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                       TextButton(
                         onPressed: () => Navigator.pop(context, true),
                         child: Text(l10n.common_delete,
-                            style: const TextStyle(color: Colors.red)),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.error)),
                       ),
                     ],
                   ),
@@ -460,10 +460,10 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                       // Comment count icon
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.chat_bubble_outline,
                             size: 24,
-                            color: AppColors.secondary,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                           AppSpacing.horizontalGapXS,
                           Text(
@@ -541,11 +541,13 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
                       children: [
                         Text(
                           author.displayName,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primary,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                         Row(
                           children: [
@@ -619,7 +621,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
             IconButton(
               icon: Icon(
                 _isEditingComment ? Icons.check_circle : Icons.send,
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
               onPressed: commentsState.isSubmitting ? null : _submitComment,
             ),
@@ -690,7 +692,7 @@ class _PhotoDetailScreenState extends ConsumerState<PhotoDetailScreen> {
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               l10n.common_delete,
-              style: const TextStyle(color: Colors.red),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ],

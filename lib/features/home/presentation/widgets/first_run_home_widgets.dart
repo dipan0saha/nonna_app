@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 
 /// Expecting-home hero card with countdown (#40).
 class FirstRunHeroCard extends StatelessWidget {
@@ -20,42 +19,42 @@ class FirstRunHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final nonna = context.nonnaTheme;
+    final cs = theme.colorScheme;
+
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [OnboardingColors.sageTint, Colors.white],
+        gradient: LinearGradient(
+          colors: [nonna.sageTint, cs.surface],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: OnboardingColors.border),
+        border: Border.all(color: cs.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Waiting for $babyName',
-            style: GoogleFonts.baloo2(
-              fontSize: 20,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
-              color: OnboardingColors.text,
             ),
           ),
           const SizedBox(height: 8),
           if (daysToDue != null) ...[
             Text(
               '$daysToDue',
-              style: GoogleFonts.baloo2(
+              style: theme.textTheme.headlineMedium?.copyWith(
                 fontSize: 36,
-                fontWeight: FontWeight.w700,
-                color: OnboardingColors.sageDark,
+                color: nonna.sageDark,
               ),
             ),
             Text(
               'Days to due date',
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: OnboardingColors.muted,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: nonna.muted,
               ),
             ),
           ],
@@ -74,10 +73,6 @@ class FirstRunHeroCard extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onInviteTap,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: OnboardingColors.sage,
-                  foregroundColor: OnboardingColors.primaryButtonText,
-                ),
                 child: const Text('Invite family'),
               ),
             ),
@@ -96,14 +91,17 @@ class FirstRunWelcomeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nonna = context.nonnaTheme;
+
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: OnboardingColors.peachTint.withValues(alpha: 0.5),
+        color: nonna.peachTint.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color: OnboardingColors.peachDark.withValues(alpha: 0.4)),
+          color: nonna.peachDark.withValues(alpha: 0.4),
+        ),
       ),
       child: Row(
         children: [
@@ -112,10 +110,9 @@ class FirstRunWelcomeBanner extends StatelessWidget {
           Expanded(
             child: Text(
               'Baby $babyName is here!',
-              style: GoogleFonts.baloo2(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
           ),
         ],
@@ -181,11 +178,14 @@ class FirstRunEmptyInsightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final nonna = context.nonnaTheme;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: OnboardingColors.border),
+        border: Border.all(color: theme.colorScheme.outline),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
@@ -193,17 +193,15 @@ class FirstRunEmptyInsightCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: GoogleFonts.inter(
+            style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w700,
-              fontSize: 15,
             ),
           ),
           const SizedBox(height: 6),
           Text(
             message,
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              color: OnboardingColors.muted,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: nonna.muted,
               height: 1.4,
             ),
           ),

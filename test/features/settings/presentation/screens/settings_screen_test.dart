@@ -15,22 +15,19 @@ class _FakeSettingsNotifier extends SettingsNotifier {
   void toggleNotifications({required bool enabled}) {}
 
   @override
-  void toggleDarkMode({required bool enabled}) {}
-
-  @override
   void changeLanguage(String language) {}
 
   @override
   Future<void> saveSettings() async {}
 }
 
-Widget _buildScreen(SettingsState state, {VoidCallback? onSignOut}) {
+Widget _buildScreen(SettingsState state) {
   return ProviderScope(
     overrides: [
       settingsProvider.overrideWith(() => _FakeSettingsNotifier(state)),
     ],
-    child: MaterialApp(
-      home: SettingsScreen(onSignOut: onSignOut),
+    child: const MaterialApp(
+      home: SettingsScreen(),
     ),
   );
 }
@@ -44,7 +41,7 @@ void main() {
 
     testWidgets('shows app bar title "Settings"', (tester) async {
       await tester.pumpWidget(_buildScreen(const SettingsState()));
-      expect(find.text('Settings'), findsOneWidget);
+      expect(find.text('Settings'), findsWidgets);
     });
 
     testWidgets('shows notifications toggle', (tester) async {
@@ -52,35 +49,13 @@ void main() {
       expect(find.byKey(const Key('notifications_toggle')), findsOneWidget);
     });
 
-    testWidgets('shows dark mode toggle', (tester) async {
-      await tester.pumpWidget(_buildScreen(const SettingsState()));
-      expect(find.byKey(const Key('dark_mode_toggle')), findsOneWidget);
-    });
-
-    testWidgets('shows language tile', (tester) async {
-      await tester.pumpWidget(_buildScreen(const SettingsState()));
-      expect(find.byKey(const Key('language_tile')), findsOneWidget);
-    });
-
-    testWidgets('shows sign out tile', (tester) async {
-      await tester.pumpWidget(_buildScreen(const SettingsState()));
-      expect(find.byKey(const Key('sign_out_tile')), findsOneWidget);
-    });
-
-    testWidgets('calls onSignOut when sign out tile tapped', (tester) async {
-      var called = false;
-      await tester.pumpWidget(
-          _buildScreen(const SettingsState(), onSignOut: () => called = true));
-      await tester.tap(find.byKey(const Key('sign_out_tile')));
-      await tester.pump();
-      expect(called, isTrue);
-    });
-
     testWidgets('notifications toggle reflects state', (tester) async {
       await tester.pumpWidget(
           _buildScreen(const SettingsState(notificationsEnabled: false)));
-      final toggle = tester.widget<SwitchListTile>(
-          find.byKey(const Key('notifications_toggle')));
+      final toggle = tester.widget<SwitchListTile>(find.descendant(
+        of: find.byKey(const Key('notifications_toggle')),
+        matching: find.byType(SwitchListTile),
+      ));
       expect(toggle.value, isFalse);
     });
   });

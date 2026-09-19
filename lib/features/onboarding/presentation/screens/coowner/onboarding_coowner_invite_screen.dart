@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:nonna_app/core/constants/onboarding_integration_keys.dart';
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/invite_accept_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
@@ -84,17 +85,17 @@ class _OnboardingCoOwnerInviteScreenState
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               fontSize: 13,
-              color: OnboardingColors.muted,
+              color: context.nonnaTheme.muted,
             ),
           ),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
             decoration: BoxDecoration(
-              color: OnboardingColors.surface,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(
-                  color: OnboardingColors.peachDark.withValues(alpha: 0.5)),
+                  color: context.nonnaTheme.peachDark.withValues(alpha: 0.5)),
             ),
             child: Column(
               children: [
@@ -105,7 +106,7 @@ class _OnboardingCoOwnerInviteScreenState
                   style: GoogleFonts.baloo2(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: OnboardingColors.text,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -115,9 +116,9 @@ class _OnboardingCoOwnerInviteScreenState
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(
+              Icon(
                 Icons.verified_user_outlined,
-                color: OnboardingColors.sageDark,
+                color: context.nonnaTheme.sageDark,
                 size: 20,
               ),
               const SizedBox(width: 10),
@@ -126,7 +127,7 @@ class _OnboardingCoOwnerInviteScreenState
                   'As a co-owner, you\'ll have full access to edit, invite, and manage, just like $inviterName.',
                   style: GoogleFonts.inter(
                     fontSize: 13,
-                    color: OnboardingColors.muted,
+                    color: context.nonnaTheme.muted,
                     height: 1.45,
                   ),
                 ),

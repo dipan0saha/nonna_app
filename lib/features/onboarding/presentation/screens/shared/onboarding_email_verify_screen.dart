@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/app_metrics.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
@@ -154,14 +156,14 @@ class _OnboardingEmailVerifyScreenState
               child: Container(
                 width: 96,
                 height: 96,
-                decoration: const BoxDecoration(
-                  color: OnboardingColors.sageTint,
+                decoration: BoxDecoration(
+                  color: context.nonnaTheme.sageTint,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.mail_outline_rounded,
                   size: 38,
-                  color: OnboardingColors.sageDark,
+                  color: context.nonnaTheme.sageDark,
                 ),
               ),
             ),
@@ -175,8 +177,8 @@ class _OnboardingEmailVerifyScreenState
               textAlign: TextAlign.center,
               text: TextSpan(
                 style: GoogleFonts.inter(
-                  fontSize: OnboardingMetrics.supportTextSize,
-                  color: OnboardingColors.muted,
+                  fontSize: AppMetrics.supportTextSize,
+                  color: context.nonnaTheme.muted,
                   height: 1.45,
                 ),
                 children: [
@@ -185,8 +187,8 @@ class _OnboardingEmailVerifyScreenState
                   ),
                   TextSpan(
                     text: email,
-                    style: const TextStyle(
-                      color: OnboardingColors.text,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -205,8 +207,8 @@ class _OnboardingEmailVerifyScreenState
                 style: TextStyle(
                   fontSize: 13,
                   color: _resendMessage == 'Verification email sent.'
-                      ? OnboardingColors.sageDark
-                      : Colors.red,
+                      ? context.nonnaTheme.sageDark
+                      : Theme.of(context).colorScheme.error,
                 ),
               ),
             ],

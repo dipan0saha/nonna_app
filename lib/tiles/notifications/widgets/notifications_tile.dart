@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/notification.dart' as app_notification;
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -80,7 +79,7 @@ class NotificationsTile extends StatelessWidget {
               vertical: 2,
             ),
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(AppSpacing.l),
             ),
             child: Text(
@@ -158,7 +157,7 @@ class _NotificationItem extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isUnread
-              ? AppColors.primary.withValues(alpha: 0.1)
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(AppSpacing.xs),
         ),
@@ -188,7 +187,7 @@ class _NotificationItem extends StatelessWidget {
                   Text(
                     notification.body,
                     style: context.textTheme.bodySmall?.copyWith(
-                      color: AppColors.onSurfaceSecondary(context.colorScheme),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -201,8 +200,8 @@ class _NotificationItem extends StatelessWidget {
                 width: 8,
                 height: 8,
                 margin: const EdgeInsets.only(top: 4, left: AppSpacing.xs),
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
                   shape: BoxShape.circle,
                 ),
               ),

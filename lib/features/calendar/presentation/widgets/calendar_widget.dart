@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:intl/intl.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 
 /// Custom calendar widget
 ///
@@ -252,10 +253,10 @@ class _DayCell extends StatelessWidget {
     BoxBorder? border;
 
     if (isSelected) {
-      bgColor = AppColors.primaryDark;
+      bgColor = context.nonnaTheme.sageDark;
       textColor = Colors.white;
     } else if (isToday) {
-      border = Border.all(color: AppColors.primaryDark, width: 1.5);
+      border = Border.all(color: context.nonnaTheme.sageDark, width: 1.5);
     }
 
     return GestureDetector(
@@ -290,7 +291,9 @@ class _DayCell extends StatelessWidget {
                 height: 5,
                 margin: const EdgeInsets.only(top: 2),
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.white : AppColors.secondary,
+                  color: isSelected
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.secondary,
                   shape: BoxShape.circle,
                 ),
               )

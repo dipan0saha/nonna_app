@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/invitation_status.dart';
 import 'package:nonna_app/core/models/invitation.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/tiles/core/tile_icons.dart';
 import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
@@ -73,7 +73,7 @@ class InvitesStatusTile extends StatelessWidget {
               vertical: 2,
             ),
             decoration: BoxDecoration(
-              color: AppColors.secondary,
+              color: Theme.of(context).colorScheme.secondary,
               borderRadius: BorderRadius.circular(AppSpacing.l),
             ),
             child: Text(
@@ -138,13 +138,13 @@ class InvitesStatusTile extends StatelessWidget {
 Color _statusColor(InvitationStatus status) {
   switch (status) {
     case InvitationStatus.pending:
-      return Colors.orange;
+      return AppColors.warning;
     case InvitationStatus.accepted:
-      return Colors.green;
+      return AppColors.success;
     case InvitationStatus.revoked:
-      return Colors.red;
+      return AppColors.error;
     case InvitationStatus.expired:
-      return Colors.grey;
+      return AppColors.muted;
   }
 }
 
@@ -349,7 +349,7 @@ class _InvitationRow extends StatelessWidget {
                     key: Key('revoke_button_${invitation.id}'),
                     onPressed: () => onRevoke!(invitation),
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.red,
+                      foregroundColor: Theme.of(context).colorScheme.error,
                     ),
                     child: const Text('Revoke'),
                   ),

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/baby_membership.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -74,13 +73,14 @@ class NewFollowersTile extends StatelessWidget {
               vertical: 2,
             ),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.2),
+              color:
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               '$activeCount',
               style: context.textTheme.labelSmall?.copyWith(
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -151,7 +151,7 @@ class _FollowerRow extends StatelessWidget {
           children: [
             Icon(
               Icons.person_outline,
-              color: AppColors.primary,
+              color: Theme.of(context).colorScheme.primary,
               size: 20,
             ),
             AppSpacing.horizontalGapS,
@@ -170,7 +170,7 @@ class _FollowerRow extends StatelessWidget {
                   Text(
                     'Joined $joinedDate',
                     style: context.textTheme.bodySmall?.copyWith(
-                      color: AppColors.onSurfaceSecondary(context.colorScheme),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -180,13 +180,13 @@ class _FollowerRow extends StatelessWidget {
               _StatusBadge(
                 key: Key('removed_badge_${follower.userId}'),
                 label: 'Removed',
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.error,
               )
             else
               _StatusBadge(
                 key: Key('active_badge_${follower.userId}'),
                 label: 'Active',
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
           ],
         ),

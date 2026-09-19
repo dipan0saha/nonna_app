@@ -8,7 +8,6 @@ import 'core/router/app_router.dart';
 import 'core/services/deep_link_service.dart';
 import 'core/themes/app_theme.dart';
 import 'core/widgets/deep_link_listener.dart';
-import 'features/settings/presentation/providers/settings_provider.dart';
 import 'l10n/l10n.dart';
 
 void main() async {
@@ -27,17 +26,14 @@ class MyApp extends ConsumerWidget {
     return init.when(
       data: (_) {
         final router = ref.watch(routerProvider);
-        final settings = ref.watch(settingsProvider);
 
         return DeepLinkListener(
           router: router,
           child: MaterialApp.router(
             routerConfig: router,
             title: 'Nonna App',
-            theme: AppTheme.getLightTheme(settings.fontFamily),
-            darkTheme: AppTheme.getDarkTheme(settings.fontFamily),
-            themeMode:
-                settings.darkModeEnabled ? ThemeMode.dark : ThemeMode.light,
+            theme: AppTheme.lightTheme,
+            themeMode: ThemeMode.light,
             themeAnimationDuration: Duration.zero,
 
             // Localization configuration
@@ -76,7 +72,7 @@ class InitializationErrorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nonna App',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      theme: AppTheme.lightTheme,
       home: Scaffold(
         body: Center(
           child: Padding(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/photo.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -148,13 +149,13 @@ class _PhotoItem extends StatelessWidget {
                 imageUrl: photo.thumbnailPath ?? photo.storagePath,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
-                  color: AppColors.primaryLight,
+                  color: context.nonnaTheme.sageTint,
                   child: const Center(
                     child: CircularProgressIndicator(),
                   ),
                 ),
                 errorWidget: (context, url, error) => Container(
-                  color: AppColors.primaryLight,
+                  color: context.nonnaTheme.sageTint,
                   child: photo.caption != null
                       ? Center(
                           child: Padding(
@@ -168,9 +169,11 @@ class _PhotoItem extends StatelessWidget {
                             ),
                           ),
                         )
-                      : const Center(
-                          child: Icon(Icons.broken_image,
-                              color: AppColors.primaryDark),
+                      : Center(
+                          child: Icon(
+                            Icons.broken_image,
+                            color: context.nonnaTheme.sageDark,
+                          ),
                         ),
                 ),
               ),
@@ -197,8 +200,9 @@ class _PhotoItem extends StatelessWidget {
                     Icon(
                       item.isSquished ? Icons.favorite : Icons.favorite_border,
                       size: 12,
-                      color:
-                          item.isSquished ? AppColors.secondary : Colors.white,
+                      color: item.isSquished
+                          ? Theme.of(context).colorScheme.secondary
+                          : Colors.white,
                     ),
                     const SizedBox(width: 3),
                     Text(

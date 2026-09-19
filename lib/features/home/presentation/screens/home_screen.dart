@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
@@ -452,12 +453,12 @@ class _RoleChip extends StatelessWidget {
       avatar: Icon(
         icon,
         size: 16,
-        color: isSelected ? Colors.white : AppColors.primaryDark,
+        color: isSelected ? Colors.white : context.nonnaTheme.sageDark,
       ),
       label: Text(label),
       selected: isSelected,
       onSelected: (_) => onTap(),
-      selectedColor: AppColors.primaryDark,
+      selectedColor: context.nonnaTheme.sageDark,
       labelStyle: TextStyle(
         color: isSelected ? Colors.white : null,
       ),

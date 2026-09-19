@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
+import 'package:nonna_app/core/themes/app_metrics.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 
 class OnboardingHeadline extends StatelessWidget {
   const OnboardingHeadline(this.text, {super.key, this.textAlign});
@@ -14,12 +14,7 @@ class OnboardingHeadline extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: GoogleFonts.baloo2(
-        fontSize: OnboardingMetrics.headlineSize,
-        fontWeight: FontWeight.w700,
-        color: OnboardingColors.text,
-        height: 1.15,
-      ),
+      style: Theme.of(context).textTheme.headlineMedium,
     );
   }
 }
@@ -35,11 +30,7 @@ class OnboardingSupportText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: GoogleFonts.inter(
-        fontSize: OnboardingMetrics.supportTextSize,
-        color: OnboardingColors.muted,
-        height: 1.45,
-      ),
+      style: Theme.of(context).textTheme.bodyMedium,
     );
   }
 }
@@ -74,16 +65,16 @@ class OnboardingTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
           Text(
             label!,
-            style: GoogleFonts.inter(
-              fontSize: 13,
+            style: theme.textTheme.labelMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: OnboardingColors.text,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
@@ -101,9 +92,8 @@ class OnboardingTextField extends StatelessWidget {
             validator: validator,
             onFieldSubmitted: onFieldSubmitted,
             textInputAction: textInputAction,
-            style: GoogleFonts.inter(
-              fontSize: OnboardingMetrics.supportTextSize,
-              color: OnboardingColors.text,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface,
             ),
             decoration: InputDecoration(hintText: hint),
           ),
@@ -141,15 +131,17 @@ class _OnboardingPasswordFieldState extends State<OnboardingPasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final muted = context.nonnaTheme.muted;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.label,
-          style: GoogleFonts.inter(
-            fontSize: 13,
+          style: theme.textTheme.labelMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: OnboardingColors.text,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 8),
@@ -160,9 +152,8 @@ class _OnboardingPasswordFieldState extends State<OnboardingPasswordField> {
           validator: widget.validator,
           onFieldSubmitted: widget.onFieldSubmitted,
           textInputAction: TextInputAction.done,
-          style: GoogleFonts.inter(
-            fontSize: OnboardingMetrics.supportTextSize,
-            color: OnboardingColors.text,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
           ),
           decoration: InputDecoration(
             hintText: widget.hint,
@@ -171,7 +162,7 @@ class _OnboardingPasswordFieldState extends State<OnboardingPasswordField> {
                 _obscure
                     ? Icons.visibility_outlined
                     : Icons.visibility_off_outlined,
-                color: OnboardingColors.muted,
+                color: muted,
               ),
               onPressed: () => setState(() => _obscure = !_obscure),
             ),
@@ -189,23 +180,26 @@ class OnboardingDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final muted = context.nonnaTheme.muted;
+    final border = theme.colorScheme.outline;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 18),
       child: Row(
         children: [
-          const Expanded(child: Divider(color: OnboardingColors.border)),
+          Expanded(child: Divider(color: border)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
               label,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: OnboardingColors.muted,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: muted,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          const Expanded(child: Divider(color: OnboardingColors.border)),
+          Expanded(child: Divider(color: border)),
         ],
       ),
     );
@@ -221,11 +215,10 @@ class OnboardingHelperText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.inter(
-        fontSize: 12,
-        color: OnboardingColors.muted,
-        height: 1.4,
-      ),
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: context.nonnaTheme.muted,
+            height: 1.4,
+          ),
     );
   }
 }
@@ -246,6 +239,8 @@ class OnboardingDatePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final nonna = context.nonnaTheme;
     final display = value == null
         ? placeholder
         : '${value!.year}-${value!.month.toString().padLeft(2, '0')}-${value!.day.toString().padLeft(2, '0')}';
@@ -255,10 +250,9 @@ class OnboardingDatePickerField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.inter(
-            fontSize: 13,
+          style: theme.textTheme.labelMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: OnboardingColors.text,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 8),
@@ -268,27 +262,25 @@ class OnboardingDatePickerField extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
             decoration: BoxDecoration(
-              border: Border.all(color: OnboardingColors.border),
-              borderRadius:
-                  BorderRadius.circular(OnboardingMetrics.fieldRadius),
+              border: Border.all(color: theme.colorScheme.outline),
+              borderRadius: BorderRadius.circular(AppMetrics.fieldRadius),
             ),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     display,
-                    style: GoogleFonts.inter(
-                      fontSize: OnboardingMetrics.supportTextSize,
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: value == null
-                          ? OnboardingColors.muted
-                          : OnboardingColors.text,
+                          ? nonna.muted
+                          : theme.colorScheme.onSurface,
                     ),
                   ),
                 ),
-                const Icon(
+                Icon(
                   Icons.calendar_today_outlined,
                   size: 16,
-                  color: OnboardingColors.muted,
+                  color: nonna.muted,
                 ),
               ],
             ),
@@ -315,6 +307,9 @@ class OnboardingBottomLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final linkColor = context.nonnaTheme.sageDark;
+
     return Padding(
       padding: const EdgeInsets.only(top: 18, bottom: 8),
       child: GestureDetector(
@@ -323,16 +318,15 @@ class OnboardingBottomLink extends StatelessWidget {
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              color: OnboardingColors.muted,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: context.nonnaTheme.muted,
             ),
             children: [
               TextSpan(text: prefix),
               TextSpan(
                 text: actionLabel,
-                style: const TextStyle(
-                  color: OnboardingColors.sageDark,
+                style: TextStyle(
+                  color: linkColor,
                   fontWeight: FontWeight.w700,
                 ),
               ),

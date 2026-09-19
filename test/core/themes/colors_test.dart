@@ -6,19 +6,19 @@ void main() {
   group('AppColors', () {
     group('Brand Colors', () {
       test('primary color is sage green', () {
-        expect(AppColors.primary, const Color(0xFFA8C5AD));
+        expect(AppColors.primary, const Color(0xFFA8C99B));
       });
 
       test('primary dark is darker variant', () {
-        expect(AppColors.primaryDark, const Color(0xFF5A7F62));
+        expect(AppColors.primaryDark, const Color(0xFF7FAE6E));
       });
 
       test('primary light is lighter variant', () {
-        expect(AppColors.primaryLight, const Color(0xFFD4E4D6));
+        expect(AppColors.primaryLight, const Color(0xFFEAF3E4));
       });
 
       test('secondary color is peach/coral', () {
-        expect(AppColors.secondary, const Color(0xFFFFB899));
+        expect(AppColors.secondary, const Color(0xFFF5B99B));
       });
     });
 
@@ -74,19 +74,19 @@ void main() {
 
     group('Text Colors', () {
       test('text primary is dark', () {
-        expect(AppColors.textPrimary, AppColors.gray900);
+        expect(AppColors.textPrimary, const Color(0xFF2D2D2D));
       });
 
-      test('text secondary is medium gray', () {
-        expect(AppColors.textSecondary, AppColors.gray600);
+      test('text secondary is muted', () {
+        expect(AppColors.textSecondary, AppColors.muted);
       });
 
       test('text disabled is light gray', () {
         expect(AppColors.textDisabled, AppColors.gray400);
       });
 
-      test('text on primary is white', () {
-        expect(AppColors.textOnPrimary, AppColors.white);
+      test('text on primary is dark green', () {
+        expect(AppColors.textOnPrimary, AppColors.primaryButtonForeground);
       });
     });
 
@@ -126,8 +126,8 @@ void main() {
     });
 
     group('Special Purpose Colors', () {
-      test('background is light gray', () {
-        expect(AppColors.background, AppColors.gray50);
+      test('background matches prototype --bg', () {
+        expect(AppColors.background, const Color(0xFFF6F6F7));
       });
 
       test('surface is white', () {
@@ -135,7 +135,7 @@ void main() {
       });
 
       test('divider color is defined', () {
-        expect(AppColors.divider, AppColors.gray300);
+        expect(AppColors.divider, AppColors.border);
       });
 
       test('shadow color has low opacity', () {

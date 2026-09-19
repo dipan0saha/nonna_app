@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/vote_type.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
@@ -118,7 +120,9 @@ class _PredictionVotesSmartTileState
               Center(
                 child: Text(
                   state.error!,
-                  style: const TextStyle(color: Colors.red),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
               )
             else ...[
@@ -195,7 +199,8 @@ class _GenderVoteSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.face, size: 20, color: AppColors.secondary),
+            Icon(Icons.face,
+                size: 20, color: Theme.of(context).colorScheme.secondary),
             const SizedBox(width: 8),
             Text(
               l10n.tile_predictions_gender_title,
@@ -213,7 +218,7 @@ class _GenderVoteSection extends StatelessWidget {
               l10n.tile_predictions_gender_your_vote(
                   translatedGenderValue ?? ''),
               style: TextStyle(
-                color: AppColors.primaryDark,
+                color: context.nonnaTheme.sageDark,
                 fontWeight: FontWeight.w500,
                 fontSize: 13,
               ),
@@ -225,7 +230,7 @@ class _GenderVoteSection extends StatelessWidget {
               child: _GenderButton(
                 label: l10n.tile_predictions_gender_boy,
                 icon: Icons.male,
-                color: Colors.blue,
+                color: AppColors.info,
                 isSelected: currentValue == 'Boy',
                 voteCount: boyCount,
                 totalVotes: totalGenderVotes,
@@ -238,7 +243,7 @@ class _GenderVoteSection extends StatelessWidget {
               child: _GenderButton(
                 label: l10n.tile_predictions_gender_girl,
                 icon: Icons.female,
-                color: Colors.pink,
+                color: AppColors.secondary,
                 isSelected: currentValue == 'Girl',
                 voteCount: girlCount,
                 totalVotes: totalGenderVotes,
@@ -280,7 +285,9 @@ class _GenderButton extends StatelessWidget {
         totalVotes > 0 ? (voteCount / totalVotes * 100).round() : 0;
 
     return Material(
-      color: isSelected ? color.withValues(alpha: 0.12) : AppColors.gray50,
+      color: isSelected
+          ? color.withValues(alpha: 0.12)
+          : Theme.of(context).colorScheme.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: isSubmitting ? null : onTap,
@@ -290,7 +297,9 @@ class _GenderButton extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isSelected ? color : AppColors.gray200,
+              color: isSelected
+                  ? color
+                  : Theme.of(context).colorScheme.outlineVariant,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -302,7 +311,9 @@ class _GenderButton extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? color : AppColors.gray700,
+                  color: isSelected
+                      ? color
+                      : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               if (totalVotes > 0) ...[
@@ -311,7 +322,7 @@ class _GenderButton extends StatelessWidget {
                   '$percentage% ($voteCount)',
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.gray500,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -352,8 +363,8 @@ class _BirthdateVoteSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.calendar_today,
-                size: 20, color: AppColors.secondary),
+            Icon(Icons.calendar_today,
+                size: 20, color: Theme.of(context).colorScheme.secondary),
             const SizedBox(width: 8),
             Text(
               l10n.tile_predictions_birthdate_title,
@@ -372,7 +383,7 @@ class _BirthdateVoteSection extends StatelessWidget {
                 DateFormat.yMMMd(locale).format(currentDate),
               ),
               style: TextStyle(
-                color: AppColors.primaryDark,
+                color: context.nonnaTheme.sageDark,
                 fontWeight: FontWeight.w500,
                 fontSize: 13,
               ),
@@ -397,8 +408,8 @@ class _BirthdateVoteSection extends StatelessWidget {
             ),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              foregroundColor: AppColors.primaryDark,
-              side: const BorderSide(color: AppColors.primaryDark),
+              foregroundColor: context.nonnaTheme.sageDark,
+              side: BorderSide(color: context.nonnaTheme.sageDark),
             ),
           ),
         ),
@@ -429,12 +440,13 @@ class _VoteSummary extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(Icons.bar_chart, size: 18, color: AppColors.gray500),
+        Icon(Icons.bar_chart,
+            size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
         const SizedBox(width: 6),
         Text(
           l10n.tile_predictions_summary(genderVotes, birthdateVotes),
           style: theme.textTheme.bodySmall?.copyWith(
-            color: AppColors.gray500,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
       ],

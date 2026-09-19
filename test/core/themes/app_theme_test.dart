@@ -6,14 +6,10 @@ import 'package:nonna_app/core/themes/colors.dart';
 void main() {
   group('AppTheme', () {
     group('Light Theme', () {
-      test('light theme is defined', () {
+      test('light theme uses Material 3', () {
         final theme = AppTheme.lightTheme;
         expect(theme, isNotNull);
         expect(theme.brightness, Brightness.light);
-      });
-
-      test('light theme uses Material 3', () {
-        final theme = AppTheme.lightTheme;
         expect(theme.useMaterial3, isTrue);
       });
 
@@ -85,18 +81,22 @@ void main() {
       test('light theme has bottom nav bar theme', () {
         final theme = AppTheme.lightTheme;
         expect(theme.bottomNavigationBarTheme, isNotNull);
+        expect(
+          theme.bottomNavigationBarTheme.selectedItemColor,
+          AppColors.secondaryDark,
+        );
+        expect(
+          theme.bottomNavigationBarTheme.unselectedItemColor,
+          AppColors.navInactive,
+        );
       });
     });
 
     group('Dark Theme', () {
-      test('dark theme is defined', () {
+      test('dark theme uses Material 3', () {
         final theme = AppTheme.darkTheme;
         expect(theme, isNotNull);
         expect(theme.brightness, Brightness.dark);
-      });
-
-      test('dark theme uses Material 3', () {
-        final theme = AppTheme.darkTheme;
         expect(theme.useMaterial3, isTrue);
       });
 
@@ -244,7 +244,7 @@ void main() {
       test('light theme has primary icon theme', () {
         final theme = AppTheme.lightTheme;
         expect(theme.primaryIconTheme, isNotNull);
-        expect(theme.primaryIconTheme.color, AppColors.primary);
+        expect(theme.primaryIconTheme.color, AppColors.primaryDark);
       });
 
       test('dark theme has icon theme with light colors', () {

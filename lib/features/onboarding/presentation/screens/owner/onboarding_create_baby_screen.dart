@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,7 +11,6 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/gender.dart';
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/user_baby_profiles_provider.dart';
@@ -306,13 +307,13 @@ class _OnboardingCreateBabyScreenState
                 height: 104,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border:
-                      Border.all(color: OnboardingColors.border, width: 1.5),
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.outline, width: 1.5),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.photo_camera_outlined,
                   size: 28,
-                  color: OnboardingColors.muted,
+                  color: context.nonnaTheme.muted,
                 ),
               ),
             const SizedBox(height: 8),
@@ -321,7 +322,7 @@ class _OnboardingCreateBabyScreenState
               style: GoogleFonts.inter(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: OnboardingColors.sageDark,
+                color: context.nonnaTheme.sageDark,
               ),
             ),
           ],
@@ -384,7 +385,7 @@ class _OnboardingCreateBabyScreenState
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: OnboardingColors.text,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
@@ -403,7 +404,8 @@ class _OnboardingCreateBabyScreenState
                 const SizedBox(height: 16),
                 Text(
                   babyState.saveError!,
-                  style: const TextStyle(color: Colors.red, fontSize: 13),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.error, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
                 const OnboardingHelperText(

@@ -1,8 +1,8 @@
 {
   "title": "Nonna App - Complete Architecture & Codebase Understanding",
-  "summary": "Comprehensive understanding of the Nonna Flutter app: baby milestone tracking and family sharing. Covers dynamic tile architecture, Supabase backend, Riverpod state, owner/follower roles, prototype onboarding (owner/follower/co-owner), 23 domain models, 22 services, 18 tile widgets, and full navigation.",
+  "summary": "Comprehensive understanding of the Nonna Flutter app: baby milestone tracking and family sharing. Covers dynamic tile architecture, global brand/theme (prototype-aligned light theme), Supabase backend, Riverpod state, owner/follower roles, prototype onboarding (owner/follower/co-owner), 23 domain models, 22 services, 18 tile widgets, and full navigation.",
   "created": "2026-05-03T17:30:00Z",
-  "updated": "2026-09-08T14:30:00Z",
+  "updated": "2026-09-19T18:00:00Z",
   "references": [
     "docs/99_master_reference_docs/Nonna_Project_Understanding.md",
     "docs/99_master_reference_docs/Database_Schema_and_Functions.md",
@@ -11,8 +11,10 @@
     "docs/99_master_reference_docs/Current_System_Gaps.md",
     "lib/core/router/app_router.dart",
     "lib/core/router/route_guards.dart",
+    "lib/core/services/deep_link_service.dart",
     "lib/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart",
-    "lib/core/themes/onboarding_theme.dart",
+    "lib/core/themes/app_theme.dart",
+    "lib/core/themes/nonna_theme_extension.dart",
     "lib/core/utils/tile_factory.dart",
     "lib/core/utils/tile_loader.dart",
     "lib/features/home/presentation/screens/home_screen.dart",

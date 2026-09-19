@@ -142,13 +142,11 @@ class NonnaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
-    final theme = ref.watch(themeProvider);
     
     return MaterialApp.router(
       title: 'Nonna',
-      theme: theme.lightTheme,
-      darkTheme: theme.darkTheme,
-      themeMode: theme.mode,
+      theme: AppTheme.lightTheme,
+      themeMode: ThemeMode.light,
       routerConfig: router,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/core/themes/colors.dart';
 
 /// RSVP status enumeration
 ///
@@ -65,11 +66,11 @@ enum RsvpStatus {
   Color get color {
     switch (this) {
       case RsvpStatus.yes:
-        return Colors.green;
+        return AppColors.success;
       case RsvpStatus.no:
-        return Colors.red;
+        return AppColors.error;
       case RsvpStatus.maybe:
-        return Colors.orange;
+        return AppColors.warning;
     }
   }
 }

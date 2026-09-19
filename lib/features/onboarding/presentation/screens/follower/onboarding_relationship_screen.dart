@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/invite_accept_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
@@ -88,17 +89,17 @@ class _OnboardingRelationshipScreenState
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
               decoration: BoxDecoration(
-                color: OnboardingColors.sageTint,
+                color: context.nonnaTheme.sageTint,
                 borderRadius: BorderRadius.circular(999),
                 border:
-                    Border.all(color: OnboardingColors.sageDark, width: 1.5),
+                    Border.all(color: context.nonnaTheme.sageDark, width: 1.5),
               ),
               child: Text(
                 relationship,
                 style: GoogleFonts.baloo2(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
-                  color: OnboardingColors.sageDark,
+                  color: context.nonnaTheme.sageDark,
                 ),
               ),
             ),

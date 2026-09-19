@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 
 /// A widget that displays an animated squish (❤️-style) button with a count.
 ///
@@ -73,7 +72,7 @@ class _SquishPhotoWidgetState extends State<SquishPhotoWidget>
             scale: _scaleAnimation,
             child: Icon(
               widget.isSquished ? Icons.favorite : Icons.favorite_border,
-              color: AppColors.secondary,
+              color: Theme.of(context).colorScheme.secondary,
               size: 32,
             ),
           ),

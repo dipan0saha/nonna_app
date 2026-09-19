@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -60,7 +59,7 @@ class ChecklistTile extends StatelessWidget {
       key: const Key('checklist_progress_text'),
       '$completedCount/${items.isEmpty ? 0 : items.length}',
       style: context.textTheme.bodySmall?.copyWith(
-        color: AppColors.onSurfaceSecondary(context.colorScheme),
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
     );
 
@@ -72,10 +71,12 @@ class ChecklistTile extends StatelessWidget {
           ? LinearProgressIndicator(
               key: const Key('checklist_progress_bar'),
               value: progressPercentage / 100,
-              backgroundColor: AppColors.onSurfaceHint(context.colorScheme)
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .onSurfaceVariant
                   .withValues(alpha: 0.2),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primary,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
               ),
             )
           : null,
@@ -135,8 +136,8 @@ class _ChecklistRow extends StatelessWidget {
                   : Icons.radio_button_unchecked,
               key: Key('checklist_icon_${item.id}'),
               color: item.isCompleted
-                  ? AppColors.primary
-                  : AppColors.onSurfaceHint(context.colorScheme),
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
               size: 20,
             ),
             AppSpacing.horizontalGapS,
@@ -150,7 +151,7 @@ class _ChecklistRow extends StatelessWidget {
                       decoration:
                           item.isCompleted ? TextDecoration.lineThrough : null,
                       color: item.isCompleted
-                          ? AppColors.onSurfaceHint(context.colorScheme)
+                          ? Theme.of(context).colorScheme.onSurfaceVariant
                           : null,
                     ),
                   ),

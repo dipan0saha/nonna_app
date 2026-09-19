@@ -11,7 +11,7 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_complete_profile_screen.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_email_verify_screen.dart';
-import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_scaffold.dart';
+import 'package:nonna_app/core/themes/app_theme.dart';
 import 'package:nonna_app/features/profile/presentation/providers/profile_provider.dart';
 
 class _FakeAuthNotifier extends AuthNotifier {
@@ -56,7 +56,8 @@ Widget _wrap(
       profileProvider.overrideWith(_FakeProfileNotifier.new),
     ],
     child: MaterialApp(
-      home: OnboardingThemeScope(child: child),
+      theme: AppTheme.lightTheme,
+      home: child,
     ),
   );
 }

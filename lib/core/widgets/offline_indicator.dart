@@ -54,7 +54,7 @@ class OfflineIndicator extends StatelessWidget {
   /// Sync in-progress message
   final String syncMessage;
 
-  /// Background colour of the banner (defaults to `Colors.red.shade700`)
+  /// Background colour of the banner (defaults to theme error dark)
   final Color? backgroundColor;
 
   /// Text / icon colour for the banner (defaults to `Colors.white`)
@@ -64,7 +64,7 @@ class OfflineIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!isOffline) return const SizedBox.shrink();
 
-    final bgColor = backgroundColor ?? Colors.red.shade700;
+    final bgColor = backgroundColor ?? Theme.of(context).colorScheme.error;
     final fgColor = textColor ?? Colors.white;
 
     return Material(

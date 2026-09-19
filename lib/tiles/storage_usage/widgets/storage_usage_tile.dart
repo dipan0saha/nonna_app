@@ -2,10 +2,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/tiles/storage_usage/providers/storage_usage_provider.dart';
 import 'package:nonna_app/tiles/core/tile_icons.dart';
 import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
@@ -83,13 +83,13 @@ class _StorageEmpty extends StatelessWidget {
           Icon(
             Icons.storage_outlined,
             size: 20,
-            color: AppColors.onSurfaceHint(context.colorScheme),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           AppSpacing.horizontalGapS,
           Text(
             'Storage data unavailable',
             style: context.textTheme.bodySmall?.copyWith(
-              color: AppColors.onSurfaceHint(context.colorScheme),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -106,16 +106,17 @@ class _StorageSummary extends StatelessWidget {
   static const _warningThreshold = 80.0;
   static const _criticalThreshold = 95.0;
 
-  Color _barColor(double pct) {
-    if (pct >= _criticalThreshold) return Colors.red;
-    if (pct >= _warningThreshold) return Colors.orange;
-    return AppColors.primary;
+  Color _barColor(BuildContext context, double pct) {
+    final semantic = context.nonnaTheme;
+    if (pct >= _criticalThreshold) return semantic.error;
+    if (pct >= _warningThreshold) return semantic.warning;
+    return semantic.sage;
   }
 
   @override
   Widget build(BuildContext context) {
     final pct = info.usagePercentage.clamp(0.0, 100.0);
-    final barColor = _barColor(pct);
+    final barColor = _barColor(context, pct);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +147,7 @@ class _StorageSummary extends StatelessWidget {
           '${info.photoCount} photo${info.photoCount == 1 ? '' : 's'} · ${info.availableFormatted} available',
           key: const Key('storage_detail_text'),
           style: context.textTheme.bodySmall?.copyWith(
-            color: AppColors.onSurfaceSecondary(context.colorScheme),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
       ],
@@ -174,7 +175,7 @@ class _StorageDonutChartState extends State<_StorageDonutChart> {
   @override
   Widget build(BuildContext context) {
     final pct = widget.info.usagePercentage.clamp(0.0, 100.0);
-    const availableColor = Color(0xFFBBDEFB); // Material blue-100
+    final availableColor = context.nonnaTheme.sageTint;
 
     final sections = [
       PieChartSectionData(
@@ -249,7 +250,7 @@ class _StorageDonutChartState extends State<_StorageDonutChart> {
               Container(
                 width: 9,
                 height: 9,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: availableColor,
                   shape: BoxShape.circle,
                 ),

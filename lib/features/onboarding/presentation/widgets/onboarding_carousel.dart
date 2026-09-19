@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
+import 'package:nonna_app/core/themes/app_metrics.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OnboardingLogoMark extends StatelessWidget {
   const OnboardingLogoMark({super.key});
@@ -15,7 +16,7 @@ class OnboardingLogoMark extends StatelessWidget {
           style: GoogleFonts.baloo2(
             fontSize: 28,
             fontWeight: FontWeight.w800,
-            color: OnboardingColors.sageDark,
+            color: context.nonnaTheme.sageDark,
           ),
         ),
         const SizedBox(height: 4),
@@ -25,7 +26,7 @@ class OnboardingLogoMark extends StatelessWidget {
             fontSize: 11,
             letterSpacing: 1.2,
             fontWeight: FontWeight.w600,
-            color: OnboardingColors.muted,
+            color: context.nonnaTheme.muted,
           ),
         ),
       ],
@@ -90,18 +91,16 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: isActive
-                  ? OnboardingMetrics.activeDotWidth
-                  : OnboardingMetrics.dotSize,
-              height: OnboardingMetrics.dotSize,
+              width: isActive ? AppMetrics.activeDotWidth : AppMetrics.dotSize,
+              height: AppMetrics.dotSize,
               decoration: BoxDecoration(
                 color: isActive
-                    ? OnboardingColors.sageDark
-                    : OnboardingColors.border,
+                    ? context.nonnaTheme.sageDark
+                    : Theme.of(context).colorScheme.outline,
                 borderRadius: BorderRadius.circular(
                   isActive
-                      ? OnboardingMetrics.activeDotRadius
-                      : OnboardingMetrics.dotSize / 2,
+                      ? AppMetrics.activeDotRadius
+                      : AppMetrics.dotSize / 2,
                 ),
               ),
             );
@@ -132,8 +131,8 @@ class OnboardingSegmentedControl extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: OnboardingColors.border),
-        borderRadius: BorderRadius.circular(OnboardingMetrics.fieldRadius),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
+        borderRadius: BorderRadius.circular(AppMetrics.fieldRadius),
       ),
       child: Row(
         children: [
@@ -173,16 +172,17 @@ class _Segment extends StatelessWidget {
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: selected ? OnboardingColors.sageTint : Colors.transparent,
-            borderRadius: BorderRadius.circular(OnboardingMetrics.fieldRadius),
+            color: selected ? context.nonnaTheme.sageTint : Colors.transparent,
+            borderRadius: BorderRadius.circular(AppMetrics.fieldRadius),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
             style: GoogleFonts.inter(
               fontWeight: FontWeight.w600,
-              color:
-                  selected ? OnboardingColors.sageDark : OnboardingColors.muted,
+              color: selected
+                  ? context.nonnaTheme.sageDark
+                  : context.nonnaTheme.muted,
             ),
           ),
         ),
@@ -217,13 +217,13 @@ class OnboardingPillSelect extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
             decoration: BoxDecoration(
               color: selected
-                  ? OnboardingColors.sageTint
-                  : OnboardingColors.surface,
+                  ? context.nonnaTheme.sageTint
+                  : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(999),
               border: Border.all(
                 color: selected
-                    ? OnboardingColors.sageDark
-                    : OnboardingColors.border,
+                    ? context.nonnaTheme.sageDark
+                    : Theme.of(context).colorScheme.outline,
               ),
             ),
             child: Text(
@@ -231,8 +231,8 @@ class OnboardingPillSelect extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontWeight: FontWeight.w600,
                 color: selected
-                    ? OnboardingColors.sageDark
-                    : OnboardingColors.text,
+                    ? context.nonnaTheme.sageDark
+                    : Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -262,10 +262,14 @@ class OnboardingChip extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? OnboardingColors.sage : OnboardingColors.surface,
+          color: selected
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
-            color: selected ? OnboardingColors.sage : OnboardingColors.border,
+            color: selected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.outline,
           ),
         ),
         child: Text(
@@ -274,8 +278,8 @@ class OnboardingChip extends StatelessWidget {
             fontSize: 13,
             fontWeight: FontWeight.w600,
             color: selected
-                ? OnboardingColors.primaryButtonText
-                : OnboardingColors.text,
+                ? context.nonnaTheme.primaryButtonForeground
+                : Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ),
@@ -299,14 +303,17 @@ class OnboardingMomentCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [OnboardingColors.sageTint, OnboardingColors.surface],
-          stops: [0, 0.6],
+          colors: [
+            context.nonnaTheme.sageTint,
+            Theme.of(context).colorScheme.surface,
+          ],
+          stops: const [0, 0.6],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: OnboardingColors.sageTint),
+        border: Border.all(color: context.nonnaTheme.sageTint),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,7 +323,7 @@ class OnboardingMomentCard extends StatelessWidget {
             style: GoogleFonts.baloo2(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: OnboardingColors.text,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),

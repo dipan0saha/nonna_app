@@ -10,7 +10,7 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/owner/onboarding_batch_invite_screen.dart';
-import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_scaffold.dart';
+import 'package:nonna_app/core/themes/app_theme.dart';
 
 class _FakeAuthNotifier extends AuthNotifier {
   _FakeAuthNotifier(this._initial);
@@ -62,8 +62,9 @@ void main() {
           ),
           babyProfileProvider.overrideWith(_FakeBabyProfileNotifier.new),
         ],
-        child: const MaterialApp(
-          home: OnboardingThemeScope(child: OnboardingBatchInviteScreen()),
+        child: MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const OnboardingBatchInviteScreen(),
         ),
       ),
     );

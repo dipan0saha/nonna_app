@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Relationship options for batch invite rows (Phase 1e).
 const kOnboardingRelationshipOptions = [
@@ -43,12 +43,12 @@ class OnboardingInviteRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: showOwnerBadge
-              ? OnboardingColors.peachDark
-              : OnboardingColors.border,
+              ? context.nonnaTheme.peachDark
+              : Theme.of(context).colorScheme.outline,
         ),
         color: showOwnerBadge
-            ? OnboardingColors.peachTint.withValues(alpha: 0.35)
-            : OnboardingColors.surface,
+            ? context.nonnaTheme.peachTint.withValues(alpha: 0.35)
+            : Theme.of(context).colorScheme.surface,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class OnboardingInviteRow extends StatelessWidget {
                   'Invitee',
                   style: GoogleFonts.inter(
                     fontWeight: FontWeight.w700,
-                    color: OnboardingColors.text,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -69,7 +69,7 @@ class OnboardingInviteRow extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: OnboardingColors.peachTint,
+                    color: context.nonnaTheme.peachTint,
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -77,7 +77,7 @@ class OnboardingInviteRow extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: OnboardingColors.peachDark,
+                      color: context.nonnaTheme.peachDark,
                     ),
                   ),
                 ),
@@ -85,7 +85,7 @@ class OnboardingInviteRow extends StatelessWidget {
                 IconButton(
                   onPressed: onRemove,
                   icon: const Icon(Icons.close, size: 18),
-                  color: OnboardingColors.muted,
+                  color: context.nonnaTheme.muted,
                 ),
             ],
           ),
@@ -119,7 +119,7 @@ class OnboardingInviteRow extends StatelessWidget {
             enabled: false,
             decoration: InputDecoration(
               hintText: 'Phone (coming soon)',
-              hintStyle: GoogleFonts.inter(color: OnboardingColors.muted),
+              hintStyle: GoogleFonts.inter(color: context.nonnaTheme.muted),
             ),
           ),
         ],

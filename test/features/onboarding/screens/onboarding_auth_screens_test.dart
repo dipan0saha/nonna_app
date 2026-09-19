@@ -10,7 +10,7 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_types.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_login_screen.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_signup_screen.dart';
-import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_scaffold.dart';
+import 'package:nonna_app/core/themes/app_theme.dart';
 
 class _FakeAuthNotifier extends AuthNotifier {
   _FakeAuthNotifier(this._initial);
@@ -50,7 +50,8 @@ Widget _wrap(Widget child, {required LocalStorageService storage}) {
           () => _FakeAuthNotifier(const AuthState.unauthenticated())),
     ],
     child: MaterialApp(
-      home: OnboardingThemeScope(child: child),
+      theme: AppTheme.lightTheme,
+      home: child,
     ),
   );
 }

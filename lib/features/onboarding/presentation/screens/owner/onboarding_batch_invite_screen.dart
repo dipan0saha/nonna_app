@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:nonna_app/core/enums/user_role.dart';
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
@@ -225,7 +226,7 @@ class _OnboardingBatchInviteScreenState
                           '👑 This person will also be a Baby Profile Owner',
                           style: GoogleFonts.inter(
                             fontSize: 12,
-                            color: OnboardingColors.peachDark,
+                            color: context.nonnaTheme.peachDark,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -233,19 +234,21 @@ class _OnboardingBatchInviteScreenState
                     if (row.skipMessage != null)
                       Text(
                         row.skipMessage!,
-                        style:
-                            const TextStyle(color: Colors.orange, fontSize: 12),
+                        style: TextStyle(
+                            color: context.nonnaTheme.warning, fontSize: 12),
                       ),
                     if (row.error != null)
                       Text(
                         row.error!,
-                        style: const TextStyle(color: Colors.red, fontSize: 12),
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontSize: 12),
                       ),
                     if (row.sent)
-                      const Text(
+                      Text(
                         'Invitation sent',
                         style: TextStyle(
-                          color: OnboardingColors.sageDark,
+                          color: context.nonnaTheme.sageDark,
                           fontSize: 12,
                         ),
                       ),

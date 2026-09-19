@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 
 /// Shared tile header that keeps icon and title alignment consistent.
 class TileHeader extends StatelessWidget {
@@ -51,7 +50,7 @@ class TileHeader extends StatelessWidget {
             Icon(
               icon,
               size: iconSize,
-              color: iconColor ?? AppColors.primary,
+              color: iconColor ?? Theme.of(context).colorScheme.primary,
             ),
             AppSpacing.horizontalGapS,
             Expanded(

@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/rsvp_status.dart';
 import 'package:nonna_app/core/models/event.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -128,7 +127,7 @@ class _EventCard extends StatelessWidget {
           children: [
             Icon(
               Icons.calendar_today,
-              color: AppColors.primary,
+              color: Theme.of(context).colorScheme.primary,
               size: 20,
             ),
             AppSpacing.horizontalGapS,
@@ -146,7 +145,7 @@ class _EventCard extends StatelessWidget {
                   Text(
                     dateStr,
                     style: context.textTheme.bodySmall?.copyWith(
-                      color: AppColors.onSurfaceSecondary(context.colorScheme),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   if (event.location != null) ...[
@@ -156,15 +155,16 @@ class _EventCard extends StatelessWidget {
                         Icon(
                           Icons.location_on_outlined,
                           size: 14,
-                          color: AppColors.onSurfaceHint(context.colorScheme),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         AppSpacing.horizontalGapXS,
                         Expanded(
                           child: Text(
                             event.location!,
                             style: context.textTheme.bodySmall?.copyWith(
-                              color:
-                                  AppColors.onSurfaceHint(context.colorScheme),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

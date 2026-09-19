@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +10,6 @@ import 'package:nonna_app/core/constants/first_moment_presets.dart';
 import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/gender.dart';
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
@@ -213,8 +214,8 @@ class _OnboardingFirstMomentScreenState
               child: ElevatedButton(
                 onPressed: _addNameSuggestion,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: OnboardingColors.sage,
-                  foregroundColor: OnboardingColors.primaryButtonText,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: context.nonnaTheme.primaryButtonForeground,
                   padding: EdgeInsets.zero,
                 ),
                 child: const Text('+', style: TextStyle(fontSize: 20)),
@@ -232,7 +233,7 @@ class _OnboardingFirstMomentScreenState
                   draft.gender == Gender.female ? 'Girl' : 'Boy';
               return Chip(
                 label: Text('${draft.name} · $genderLabel'),
-                backgroundColor: OnboardingColors.sageTint,
+                backgroundColor: context.nonnaTheme.sageTint,
               );
             }).toList(),
           ),
@@ -255,17 +256,18 @@ class _OnboardingFirstMomentScreenState
                 width: double.infinity,
                 height: 120,
                 decoration: BoxDecoration(
-                  border: Border.all(color: OnboardingColors.border),
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.outline),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: _photoFile != null
-                    ? const Icon(
+                    ? Icon(
                         Icons.check_circle,
-                        color: OnboardingColors.sageDark,
+                        color: context.nonnaTheme.sageDark,
                       )
-                    : const Icon(
+                    : Icon(
                         Icons.add_a_photo_outlined,
-                        color: OnboardingColors.muted,
+                        color: context.nonnaTheme.muted,
                       ),
               ),
               const SizedBox(height: 8),
@@ -274,7 +276,7 @@ class _OnboardingFirstMomentScreenState
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: OnboardingColors.sageDark,
+                  color: context.nonnaTheme.sageDark,
                 ),
               ),
             ],
@@ -392,7 +394,8 @@ class _OnboardingFirstMomentScreenState
               if (_saveError != null) ...[
                 Text(
                   _saveError!,
-                  style: const TextStyle(color: Colors.red, fontSize: 13),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.error, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
                 const OnboardingHelperText('Tap Continue to try again.'),

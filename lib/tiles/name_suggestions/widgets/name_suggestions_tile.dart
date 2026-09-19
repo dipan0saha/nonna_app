@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/enums/gender.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
@@ -119,7 +120,7 @@ class _NameSuggestionsSmartTileState
                   key: const Key('add_name_suggestion_button'),
                   icon: Icon(
                     _showForm ? Icons.close : Icons.add_circle_outline,
-                    color: AppColors.primaryDark,
+                    color: context.nonnaTheme.sageDark,
                   ),
                   onPressed: () => setState(() => _showForm = !_showForm),
                 ),
@@ -149,7 +150,9 @@ class _NameSuggestionsSmartTileState
               Center(
                 child: Text(
                   state.error!,
-                  style: const TextStyle(color: Colors.red),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
               )
             else if (state.suggestions.isEmpty)
@@ -194,7 +197,7 @@ class _AddNameForm extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.primaryPale,
+        color: context.nonnaTheme.sageTint,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -256,7 +259,7 @@ class _AddNameForm extends StatelessWidget {
                   : const Icon(Icons.send, size: 18),
               label: Text(isSubmitting ? 'Submitting...' : 'Suggest Name'),
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primaryDark,
+                backgroundColor: context.nonnaTheme.sageDark,
               ),
             ),
           ),
@@ -347,11 +350,13 @@ class _VoteButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isVoted
-              ? AppColors.primaryDark.withValues(alpha: 0.12)
+              ? context.nonnaTheme.sageDark.withValues(alpha: 0.12)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isVoted ? AppColors.primaryDark : AppColors.gray300,
+            color: isVoted
+                ? context.nonnaTheme.sageDark
+                : Theme.of(context).colorScheme.outline,
           ),
         ),
         child: Row(
@@ -360,7 +365,9 @@ class _VoteButton extends StatelessWidget {
             Icon(
               isVoted ? Icons.favorite : Icons.favorite_border,
               size: 18,
-              color: isVoted ? AppColors.primaryDark : AppColors.gray500,
+              color: isVoted
+                  ? context.nonnaTheme.sageDark
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             if (count > 0) ...[
               const SizedBox(width: 4),
@@ -368,7 +375,9 @@ class _VoteButton extends StatelessWidget {
                 '$count',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: isVoted ? AppColors.primaryDark : AppColors.gray600,
+                  color: isVoted
+                      ? context.nonnaTheme.sageDark
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                   fontSize: 13,
                 ),
               ),

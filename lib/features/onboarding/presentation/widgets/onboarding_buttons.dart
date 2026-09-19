@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
+import 'package:nonna_app/core/themes/app_metrics.dart';
 
 /// Minimum touch target per a11y (#52).
 const double _kMinTouchTarget = 44;
@@ -35,32 +34,21 @@ class OnboardingPrimaryButton extends StatelessWidget {
           key: buttonKey,
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: OnboardingColors.sage,
-            foregroundColor: OnboardingColors.primaryButtonText,
-            disabledBackgroundColor:
-                OnboardingColors.sage.withValues(alpha: 0.5),
-            elevation: 0,
             padding: const EdgeInsets.symmetric(
-              vertical: OnboardingMetrics.buttonVerticalPadding,
+              vertical: AppMetrics.buttonVerticalPadding,
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(OnboardingMetrics.buttonRadius),
-            ),
+            minimumSize: const Size.fromHeight(_kMinTouchTarget),
           ),
           child: isLoading
-              ? const SizedBox(
+              ? SizedBox(
                   width: 22,
                   height: 22,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(
-                  label,
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
-                ),
+                )
+              : Text(label),
         ),
       ),
     );
@@ -98,15 +86,10 @@ class OnboardingOutlineButton extends StatelessWidget {
           key: buttonKey,
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
-            foregroundColor: OnboardingColors.text,
-            side: const BorderSide(color: OnboardingColors.border, width: 1.5),
             padding: const EdgeInsets.symmetric(
-              vertical: OnboardingMetrics.buttonVerticalPadding,
+              vertical: AppMetrics.buttonVerticalPadding,
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(OnboardingMetrics.buttonRadius),
-            ),
+            minimumSize: const Size.fromHeight(_kMinTouchTarget),
           ),
           child: isLoading
               ? const SizedBox(
@@ -121,11 +104,7 @@ class OnboardingOutlineButton extends StatelessWidget {
                       leading!,
                       const SizedBox(width: 10),
                     ],
-                    Text(
-                      label,
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
+                    Text(label),
                   ],
                 ),
         ),

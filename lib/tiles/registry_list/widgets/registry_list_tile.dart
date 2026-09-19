@@ -10,7 +10,6 @@ import 'package:nonna_app/features/registry/presentation/widgets/registry_filter
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/tiles/core/tile_icons.dart';
 import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
@@ -68,7 +67,7 @@ class RegistryListSmartTile extends ConsumerWidget {
                   _SectionHeader(
                     title: 'Available Items',
                     count: availableItems.length,
-                    color: AppColors.primary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   ...availableItems.map(
                     (itemWithStatus) => _RegistryItemRow(
@@ -87,7 +86,7 @@ class RegistryListSmartTile extends ConsumerWidget {
                     _SectionHeader(
                       title: 'Purchased Items',
                       count: purchasedItems.length,
-                      color: AppColors.secondary,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     ...purchasedItems.map(
                       (itemWithStatus) => _RegistryItemRow(
@@ -199,16 +198,16 @@ class _RegistryItemRow extends StatelessWidget {
 
     if (canUnpurchase) {
       icon = Icons.undo;
-      iconColor = AppColors.warningDark;
+      iconColor = Theme.of(context).colorScheme.error;
       tooltip = 'Mark as unpurchased';
     } else if (itemWithStatus.isPurchased) {
       icon = Icons.lock;
-      iconColor = AppColors.onSurfaceHint(Theme.of(context).colorScheme);
+      iconColor = Theme.of(context).colorScheme.onSurfaceVariant;
       tooltip =
           isOwner ? 'Already purchased by someone else' : 'Already purchased';
     } else {
       icon = Icons.check_circle_outline;
-      iconColor = AppColors.success;
+      iconColor = Theme.of(context).colorScheme.tertiary;
       tooltip = 'Mark as purchased';
     }
 
@@ -239,8 +238,7 @@ class _RegistryItemRow extends StatelessWidget {
                 : 'Added $addedDate • Purchased'
             : 'Added $addedDate',
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color:
-                  AppColors.onSurfaceSecondary(Theme.of(context).colorScheme),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
       ),
       trailing: IconButton(
@@ -265,8 +263,8 @@ class _PriorityBadge extends StatelessWidget {
   Color _priorityColor(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     if (priority >= 4) return scheme.error;
-    if (priority == 3) return AppColors.secondary;
-    return AppColors.primary;
+    if (priority == 3) return Theme.of(context).colorScheme.secondary;
+    return Theme.of(context).colorScheme.primary;
   }
 
   @override

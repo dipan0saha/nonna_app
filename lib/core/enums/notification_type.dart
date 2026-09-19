@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/core/themes/colors.dart';
 
 /// Notification type enumeration
 ///
@@ -110,31 +111,31 @@ enum NotificationType {
   Color get color {
     switch (this) {
       case NotificationType.system:
-        return Colors.blue;
+        return AppColors.info;
       case NotificationType.event:
-        return Colors.purple;
+        return AppColors.primaryDark;
       case NotificationType.photo:
-        return Colors.pink;
+        return AppColors.secondary;
       case NotificationType.registryPurchase:
-        return Colors.green;
+        return AppColors.success;
       case NotificationType.comment:
-        return Colors.orange;
+        return AppColors.warning;
       case NotificationType.like:
-        return Colors.red;
+        return AppColors.error;
       case NotificationType.follower:
-        return Colors.teal;
+        return AppColors.primary;
       case NotificationType.invitation:
-        return Colors.indigo;
+        return AppColors.secondaryDark;
       case NotificationType.rsvp:
-        return Colors.amber;
+        return AppColors.warningDark;
       case NotificationType.nameSuggestion:
-        return Colors.yellow;
+        return AppColors.primary;
       case NotificationType.vote:
-        return Colors.deepPurple;
+        return AppColors.secondaryDark;
       case NotificationType.ownerUpdate:
-        return Colors.cyan;
+        return AppColors.primaryDark;
       case NotificationType.milestone:
-        return Colors.deepOrange;
+        return AppColors.secondary;
     }
   }
 

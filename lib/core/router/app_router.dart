@@ -51,7 +51,6 @@ import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboar
 import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_email_verify_screen.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/shared/onboarding_complete_profile_screen.dart';
 import 'package:nonna_app/features/onboarding/presentation/utils/onboarding_auth_helpers.dart';
-import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_scaffold.dart';
 
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 
@@ -154,7 +153,7 @@ String _extraString(GoRouterState state, String key, [String fallback = '']) {
   return extra?[key] as String? ?? fallback;
 }
 
-Widget _onboardingPage(Widget child) => OnboardingThemeScope(child: child);
+Widget _onboardingPage(Widget child) => child;
 
 List<RouteBase> get _routes => [
       // -----------------------------------------------------------------------

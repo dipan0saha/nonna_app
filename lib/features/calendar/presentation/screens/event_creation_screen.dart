@@ -383,7 +383,7 @@ class _EventCreationScreenState extends ConsumerState<EventCreationScreen> {
                 AppSpacing.verticalGapS,
                 Text(
                   _saveError!,
-                  style: const TextStyle(color: Colors.red),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                   textAlign: TextAlign.center,
                 ),
               ],

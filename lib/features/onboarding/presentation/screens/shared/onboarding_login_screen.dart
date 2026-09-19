@@ -159,7 +159,8 @@ class _OnboardingLoginScreenState extends ConsumerState<OnboardingLoginScreen> {
           if (auth.hasError && auth.errorMessage != null) ...[
             Text(
               auth.errorMessage!,
-              style: const TextStyle(color: Colors.red, fontSize: 13),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.error, fontSize: 13),
             ),
             const SizedBox(height: 12),
           ],

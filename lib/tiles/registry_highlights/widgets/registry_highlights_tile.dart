@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -106,8 +105,8 @@ class _RegistryItemRow extends StatelessWidget {
   Color _priorityColor(BuildContext context, int priority) {
     final scheme = Theme.of(context).colorScheme;
     if (priority >= 4) return scheme.error;
-    if (priority == 3) return AppColors.secondary;
-    return AppColors.primary;
+    if (priority == 3) return Theme.of(context).colorScheme.secondary;
+    return Theme.of(context).colorScheme.primary;
   }
 
   @override
@@ -140,8 +139,8 @@ class _RegistryItemRow extends StatelessWidget {
                   ? Icons.check_circle_rounded
                   : Icons.radio_button_unchecked_rounded,
               color: item.isPurchased
-                  ? AppColors.primary
-                  : AppColors.onSurfaceHint(context.colorScheme),
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
               size: 20,
             ),
           ],

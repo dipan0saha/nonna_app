@@ -9,7 +9,7 @@ import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dar
 import 'package:nonna_app/features/auth/presentation/providers/auth_state.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/baby_profile_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/screens/owner/onboarding_create_baby_screen.dart';
-import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_scaffold.dart';
+import 'package:nonna_app/core/themes/app_theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 class _FakeAuthNotifier extends AuthNotifier {
@@ -53,7 +53,8 @@ Widget _wrap(Widget child, {required LocalStorageService storage}) {
       babyProfileProvider.overrideWith(_FakeBabyProfileNotifier.new),
     ],
     child: MaterialApp(
-      home: OnboardingThemeScope(child: child),
+      theme: AppTheme.lightTheme,
+      home: child,
     ),
   );
 }

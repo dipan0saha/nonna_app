@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:nonna_app/core/themes/colors.dart';
-
 /// Side navigation rail shown on tablet (≥ 600 dp) screens.
 ///
 /// Mirrors the 5 destinations of [AppBottomNavBar]. Passed to
@@ -18,13 +16,14 @@ class AppNavigationRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
     return NavigationRail(
       key: const Key('app_navigation_rail'),
       selectedIndex: selectedIndex,
       onDestinationSelected: onDestinationSelected,
       labelType: NavigationRailLabelType.all,
-      selectedIconTheme: const IconThemeData(color: AppColors.primary),
-      selectedLabelTextStyle: const TextStyle(color: AppColors.primary),
+      selectedIconTheme: IconThemeData(color: primary),
+      selectedLabelTextStyle: TextStyle(color: primary),
       destinations: const [
         NavigationRailDestination(
           icon: Icon(Icons.home_outlined),

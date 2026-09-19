@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/core/widgets/empty_state.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
@@ -70,7 +71,7 @@ class RsvpTasksTile extends StatelessWidget {
               vertical: 2,
             ),
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(AppSpacing.l),
             ),
             child: Text(
@@ -143,7 +144,9 @@ class _RsvpTaskRow extends StatelessWidget {
           children: [
             Icon(
               item.needsResponse ? Icons.pending_actions : Icons.check_circle,
-              color: item.needsResponse ? AppColors.primary : Colors.green,
+              color: item.needsResponse
+                  ? Theme.of(context).colorScheme.primary
+                  : context.nonnaTheme.success,
               size: 20,
             ),
             AppSpacing.horizontalGapS,
@@ -161,7 +164,7 @@ class _RsvpTaskRow extends StatelessWidget {
                   Text(
                     dateStr,
                     style: context.textTheme.bodySmall?.copyWith(
-                      color: AppColors.onSurfaceSecondary(context.colorScheme),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -175,16 +178,16 @@ class _RsvpTaskRow extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: item.needsResponse
-                    ? Colors.orange.shade100
-                    : Colors.green.shade100,
+                    ? AppColors.warningLight
+                    : AppColors.successLight,
                 borderRadius: BorderRadius.circular(AppSpacing.xs),
               ),
               child: Text(
                 item.needsResponse ? 'Pending' : 'Responded',
                 style: context.textTheme.labelSmall?.copyWith(
                   color: item.needsResponse
-                      ? Colors.orange.shade800
-                      : Colors.green.shade800,
+                      ? AppColors.warningDark
+                      : AppColors.successDark,
                 ),
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/core/themes/colors.dart';
 
 /// Extension methods for BuildContext
 ///
@@ -199,7 +200,7 @@ extension ContextExtensions on BuildContext {
     showSnackBar(
       message,
       duration: duration,
-      backgroundColor: Colors.green,
+      backgroundColor: AppColors.success,
     );
   }
 

@@ -1,7 +1,7 @@
 # Nonna App - Architecture and Workflow Reference
 
 **Document Version**: 3.1
-**Last Updated**: September 8, 2026
+**Last Updated**: September 19, 2026
 **Location**: `docs/99_master_reference_docs/Nonna_Architecture_and_Workflow_Reference.md`
 **Status**: Living Document - Fully updated with Version 3.0 standards and unified codebase specifications
 
@@ -37,8 +37,9 @@ When details conflict, use this order:
 ---
 
 ## Recent Implementation Updates (September 2026)
-- **Prototype onboarding**: Owner/follower/co-owner first-run flows under `lib/features/onboarding/presentation/` with `onboardingCoordinatorProvider` persistence and `OnboardingTheme` scope on all `/onboarding/*` routes.
-- **Cold-start entry**: `initialLocation` → `/onboarding/owner/carousel`; `route_guards.dart` gates `/home` until onboarding complete.
+- **Prototype onboarding**: Owner/follower/co-owner first-run flows under `lib/features/onboarding/presentation/` with `onboardingCoordinatorProvider` persistence; styling uses global `AppTheme.lightTheme` (no per-route theme override).
+- **Prototype-aligned shell**: `#F6F6F7` scaffold, sage-dark home branding, peach-dark bottom-nav selection, semantic status colors via `NonnaThemeExtension` + `ColorScheme.error`.
+- **Cold-start entry**: `DeepLinkService.captureColdStartLink()` in `main()`; GoRouter `initialLocation` → `DeepLinkService.initialRoute ?? /onboarding/owner/carousel`; `route_guards.dart` gates `/home` until onboarding complete.
 - **Invite deep links**: `/invite-accept?token=` → `get_invitation_preview` RPC (anon-safe) → path-specific invite screens → `accept_invitation` RPC.
 - **Batch invite dedupe**: `check_baby_membership_by_email` RPC skips existing members on `OnboardingBatchInviteScreen`.
 - **Deprecated**: `/role-selection` redirects to owner carousel; legacy `/login` and `/signup` remain for non-onboarding entry.
@@ -46,7 +47,7 @@ When details conflict, use this order:
 ## Recent Implementation Updates (May 2026)
 - **Consolidated Home App Bar**: Consolidated create-profile, baby info, and owner-only manage-followers actions into a single PopupMenuButton to reduce visual clutter.
 - **Fullscreen Follower Routes**: Added `FollowersManagementScreen` (`/baby-profile/followers`) and `InviteFollowersScreen` (`/baby-profile/followers/invite`) outside the shell navigator.
-- **Dynamic Typography**: Integrated 11 premium Google Fonts (e.g., Plus Jakarta Sans, Inter, Montserrat) selectable globally from the Settings screen.
+- **Brand typography (current):** Fixed **Inter** (body) + **Baloo 2** (display) via `AppTheme.lightTheme`; legacy Settings font picker removed (September 2026).
 - **Owner Gift Override**: Updated registry business logic and RLS policies to allow baby profile owners to unmark/delete ANY registry purchase on their baby's profile, regardless of who bought it.
 - **Auto-Selection**: Baby profile creation now auto-selects the new profile and switches Home to owner role context.
 - **Hardened Sign-Out**: Wipes OneSignal and Firebase identities clean before executing Supabase sign-out to prevent credential crossover.
@@ -81,12 +82,10 @@ The app composes major screens (Home, Gallery, Calendar, Registry, Fun) using ti
 - `lib/core/router/app_router.dart` - Standardized paths, branch Navigator keys, and GoRouter settings.
 
 ### Sequence:
-1. `main()` initializes Flutter bindings and hooks up Sentry/observability error boundaries.
-2. `AppInitializationService.initialize()` connects to Supabase, local storage, and initializes 3rd party SDKs in parallel (fail-open policy).
-3. If initialization succeeds, the app runs inside `ProviderScope` and mounts `MyApp`.
-4. `MyApp` watches `appInitializationProvider`.
-5. `MaterialApp.router` is created via `routerProvider`.
-6. GoRouter refresh listenable watches `isAuthenticatedProvider`, `onboardingCoordinatorProvider`, and `isOnboardingCompletedProvider` to re-evaluate `RouteGuards.authRedirect`.
+1. `main()` calls `WidgetsFlutterBinding.ensureInitialized()`, then `DeepLinkService.captureColdStartLink()` for cold-start URIs (invite/auth).
+2. `runApp(ProviderScope(child: MyApp()))`; `MyApp` watches `appInitializationProvider` which runs `AppInitializationService.initialize()` (Supabase, local storage, Firebase, OneSignal, observability — fail-open where configured).
+3. On success, `MaterialApp.router` uses `AppTheme.lightTheme` and `routerProvider` / `appRouter`.
+4. GoRouter `refreshListenable` watches auth + onboarding completion providers to re-evaluate `RouteGuards.authRedirect`.
 
 ---
 
@@ -94,7 +93,7 @@ The app composes major screens (Home, Gallery, Calendar, Registry, Fun) using ti
 
 ### Routing Structure:
 * **Outside the Shell**:
-  * **Onboarding (prototype)**: `/onboarding/*` (carousel, signup, login, email-verify, complete-profile, owner create-baby / first-moment / batch-invite, follower/co-owner invite paths, wrong-email). Wrapped in `OnboardingThemeScope`. All public while onboarding incomplete.
+  * **Onboarding (prototype)**: `/onboarding/*` (carousel, signup, login, email-verify, complete-profile, owner create-baby / first-moment / batch-invite, follower/co-owner invite paths, wrong-email). Uses global `AppTheme.lightTheme` (same sage/peach brand as the shell). All public while onboarding incomplete.
   * **Invite accept**: `/invite-accept?token=` (public; resumes follower/co-owner path)
   * Legacy auth: `/login`, `/signup`, `/role-selection` (redirects to owner carousel)
   * Fullscreen screens (parentNavigatorKey = root): `/profile`, `/profile/edit`, `/settings`, `/baby-profile`, `/baby-profile/create`, `/baby-profile/:id/edit`, `/baby-profile/followers`, `/baby-profile/followers/invite`
@@ -141,8 +140,8 @@ The app composes major screens (Home, Gallery, Calendar, Registry, Fun) using ti
 ## Inventory Baseline
 
 * **Domain Models**: **23** active domain models under `lib/core/models/`.
-* **Shared Services**: **22** active shared services under `lib/core/services/` (managing backup, sync, error boundaries, push channels, and storage).
-* **Tile Component Folders**: **20** subdirectories inside `lib/tiles/` (including `core` infrastructure, **18 functional smart tiles**, and the deprecated `registry_deals` folder).
+* **Shared Services**: **23** active service modules under `lib/core/services/` (includes `DeepLinkService`; backup, sync, push, storage, etc.). Connectivity helpers: `lib/core/di/network_status_notifier.dart`, `connectivity_wrapper.dart`.
+* **Tile Component Folders**: **19** subdirectories inside `lib/tiles/` (`core` infrastructure + **18** functional smart tiles; ghost `registry_deals/` removed).
 
 ---
 
@@ -171,10 +170,10 @@ Standard workflows are consolidated into the project **[Makefile](file:///Users/
 ---
 
 ## Quick File Map For Developers
-* Boot sequence & App launch: `lib/main.dart` -> `lib/core/services/app_initialization_service.dart`
+* Boot sequence & App launch: `lib/main.dart` → `deep_link_service.dart` → `app_initialization_service.dart`
 * Router and navigation stacks: `lib/core/router/app_router.dart` + `lib/core/router/route_guards.dart`
 * Onboarding coordinator & routes: `lib/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart`, `onboarding_routes.dart`
-* Onboarding theme: `lib/core/themes/onboarding_theme.dart`
+* Global theme (onboarding + shell): `lib/core/themes/app_theme.dart`, `nonna_theme_extension.dart`, `app_metrics.dart` (`onboarding_theme.dart` — deprecated aliases only)
 * Global dependency injections: `lib/core/di/providers.dart`
 * Decoupled configuration load: `lib/core/utils/tile_loader.dart`
 * Screen dynamic composition: `lib/core/utils/tile_factory.dart`

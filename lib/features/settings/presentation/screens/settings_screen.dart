@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
+import 'package:nonna_app/core/themes/colors.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/features/settings/presentation/providers/settings_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -44,42 +46,11 @@ class SettingsScreen extends ConsumerWidget {
                         title: 'Push Notifications',
                         subtitle: 'Receive updates about events',
                         icon: Icons.notifications_active_rounded,
-                        iconColor: Colors.amber.shade600,
-                        backgroundColor: Colors.amber.shade100,
+                        iconColor: AppColors.warningDark,
+                        backgroundColor: AppColors.warningLight,
                         value: state.notificationsEnabled,
                         onChanged: (v) =>
                             notifier.toggleNotifications(enabled: v),
-                      ),
-                      const _Divider(),
-                      _EnhancedSwitchTile(
-                        key: const Key('dark_mode_toggle'),
-                        title: 'Dark Mode',
-                        subtitle: 'Switch between light and dark theme',
-                        icon: Icons.dark_mode_rounded,
-                        iconColor: Colors.deepPurple.shade600,
-                        backgroundColor: Colors.deepPurple.shade100,
-                        value: state.darkModeEnabled,
-                        onChanged: (v) => notifier.toggleDarkMode(enabled: v),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.l),
-
-                  // Language & Typography Section
-                  _SectionHeader(
-                      title: 'Customization',
-                      color: Theme.of(context).colorScheme.onSurface),
-                  _SettingsCard(
-                    children: [
-                      _EnhancedListTile(
-                        key: const Key('font_tile'),
-                        title: 'App Font',
-                        subtitle: state.fontFamily,
-                        icon: Icons.text_fields_rounded,
-                        iconColor: Colors.teal.shade600,
-                        backgroundColor: Colors.teal.shade100,
-                        onTap: () => _showFontPicker(
-                            context, state.fontFamily, notifier),
                       ),
                     ],
                   ),
@@ -95,8 +66,8 @@ class SettingsScreen extends ConsumerWidget {
                         title: 'Help & Support',
                         subtitle: 'Get help or send feedback',
                         icon: Icons.help_outline_rounded,
-                        iconColor: Colors.green.shade600,
-                        backgroundColor: Colors.green.shade100,
+                        iconColor: context.nonnaTheme.sageDark,
+                        backgroundColor: AppColors.sageTint,
                         onTap: () async {
                           final uri = Uri(
                             scheme: 'mailto',
@@ -149,100 +120,6 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Future<void> _showFontPicker(
-    BuildContext context,
-    String current,
-    SettingsNotifier notifier,
-  ) async {
-    final fonts = [
-      'Plus Jakarta Sans',
-      'Inter',
-      'Outfit',
-      'Poppins',
-      'Roboto',
-      'Montserrat',
-      'Nunito',
-      'Lato',
-      'Manrope',
-      'Quicksand',
-      'Rubik',
-      'Source Serif 4',
-      'Lora',
-    ];
-
-    // Switching to a more modern beautiful bottom sheet for font selection
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        maxChildSize: 0.9,
-        minChildSize: 0.4,
-        expand: false,
-        builder: (context, scrollController) => SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: AppSpacing.m),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.m),
-              Text(
-                'Select App Font',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: AppSpacing.s),
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: fonts.length,
-                  itemBuilder: (context, index) {
-                    final font = fonts[index];
-                    final isSelected = current == font;
-                    return ListTile(
-                      key: Key('font_option_$font'),
-                      leading: isSelected
-                          ? Icon(Icons.check_circle_rounded,
-                              color: Theme.of(context).colorScheme.primary)
-                          : const Icon(Icons.radio_button_unchecked_rounded),
-                      title: Text(
-                        font,
-                        style: TextStyle(
-                          fontFamily: font,
-                          fontSize: 16,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected
-                              ? Theme.of(context).colorScheme.primary
-                              : null,
-                        ),
-                      ),
-                      onTap: () {
-                        notifier.changeFontFamily(font);
-                        Navigator.of(ctx).pop();
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

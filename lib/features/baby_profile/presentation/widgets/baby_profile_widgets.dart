@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/baby_membership.dart';
 import 'package:nonna_app/core/models/baby_profile.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 
 /// Card displaying a baby profile summary (name, gender icon, birth status).
 class BabyProfileCard extends StatelessWidget {
@@ -48,7 +49,7 @@ class BabyProfileCard extends StatelessWidget {
                             ? 'Due ${_formatDate(profile.expectedBirthDate!)}'
                             : 'Birth date unknown',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
                 ],
@@ -80,9 +81,9 @@ class FollowerListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       key: Key('follower_list_item_${membership.userId}'),
-      leading: const CircleAvatar(
-        backgroundColor: AppColors.primaryLight,
-        child: Icon(Icons.person, color: AppColors.primaryDark),
+      leading: CircleAvatar(
+        backgroundColor: context.nonnaTheme.sageTint,
+        child: Icon(Icons.person, color: context.nonnaTheme.sageDark),
       ),
       title: Text(membership.displayName ?? membership.userId),
       subtitle: membership.relationshipLabel != null
@@ -90,8 +91,10 @@ class FollowerListItem extends StatelessWidget {
           : null,
       trailing: onRemove != null
           ? IconButton(
-              icon: const Icon(Icons.remove_circle_outline,
-                  color: AppColors.error),
+              icon: Icon(
+                Icons.remove_circle_outline,
+                color: Theme.of(context).colorScheme.error,
+              ),
               tooltip: 'Remove follower',
               onPressed: onRemove,
             )
@@ -127,7 +130,8 @@ class DeleteProfileDialog {
               Navigator.of(ctx).pop();
               onConfirm();
             },
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error),
             child: const Text('Delete'),
           ),
         ],

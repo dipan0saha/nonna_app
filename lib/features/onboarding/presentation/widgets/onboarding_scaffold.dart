@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:nonna_app/core/di/providers.dart';
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
+import 'package:nonna_app/core/themes/app_metrics.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/core/widgets/offline_indicator.dart';
 
 /// Shared scaffold for onboarding screens — prototype padding, offline banner,
@@ -33,8 +34,9 @@ class OnboardingScaffold extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isOnline = ref.watch(isOnlineProvider);
 
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: OnboardingColors.surface,
+      backgroundColor: theme.scaffoldBackgroundColor,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       body: SafeArea(
         child: Column(
@@ -43,7 +45,7 @@ class OnboardingScaffold extends ConsumerWidget {
             OfflineIndicator(isOffline: !isOnline),
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: OnboardingMetrics.horizontalPadding,
+                horizontal: AppMetrics.horizontalPadding,
               ),
               child: _TopRow(
                 showBack: showBack,
@@ -59,7 +61,7 @@ class OnboardingScaffold extends ConsumerWidget {
                 behavior: HitTestBehavior.translucent,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: OnboardingMetrics.horizontalPadding,
+                    horizontal: AppMetrics.horizontalPadding,
                   ),
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
@@ -70,9 +72,9 @@ class OnboardingScaffold extends ConsumerWidget {
             if (bottom != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  OnboardingMetrics.horizontalPadding,
+                  AppMetrics.horizontalPadding,
                   0,
-                  OnboardingMetrics.horizontalPadding,
+                  AppMetrics.horizontalPadding,
                   16,
                 ),
                 child: bottom!,
@@ -101,6 +103,7 @@ class _TopRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nonna = context.nonnaTheme;
     return SizedBox(
       height: 44,
       child: Row(
@@ -109,7 +112,7 @@ class _TopRow extends StatelessWidget {
             IconButton(
               onPressed: onBack,
               icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-              color: OnboardingColors.text,
+              color: Theme.of(context).colorScheme.onSurface,
               tooltip: 'Back',
             )
           else
@@ -121,28 +124,13 @@ class _TopRow extends StatelessWidget {
               child: Text(
                 skipLabel,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: OnboardingColors.sageDark,
+                      color: nonna.sageDark,
                       fontWeight: FontWeight.w600,
                     ),
               ),
             ),
         ],
       ),
-    );
-  }
-}
-
-/// Wraps onboarding routes in the isolated prototype theme.
-class OnboardingThemeScope extends StatelessWidget {
-  const OnboardingThemeScope({super.key, required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      data: OnboardingTheme.themeData,
-      child: child,
     );
   }
 }

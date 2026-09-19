@@ -98,7 +98,7 @@ class _FollowersManagementScreenState
             children: [
               Text(
                 state.error!,
-                style: const TextStyle(color: Colors.red),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
                 textAlign: TextAlign.center,
               ),
               AppSpacing.verticalGapM,
@@ -164,7 +164,8 @@ class _FollowersManagementScreenState
                 'Sent ${invitation.createdAt.toLocal().toString().split('.').first}',
               ),
               trailing: IconButton(
-                icon: const Icon(Icons.cancel_outlined, color: Colors.red),
+                icon: Icon(Icons.cancel_outlined,
+                    color: Theme.of(context).colorScheme.error),
                 tooltip: 'Revoke invitation',
                 onPressed: () => _revokeInvitation(invitation.id),
               ),

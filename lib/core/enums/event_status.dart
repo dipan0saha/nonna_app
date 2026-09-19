@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/core/themes/colors.dart';
 
 /// Event status enumeration
 ///
@@ -49,15 +50,15 @@ enum EventStatus {
   Color get color {
     switch (this) {
       case EventStatus.scheduled:
-        return Colors.blue;
+        return AppColors.info;
       case EventStatus.ongoing:
-        return Colors.green;
+        return AppColors.success;
       case EventStatus.completed:
-        return Colors.grey;
+        return AppColors.muted;
       case EventStatus.cancelled:
-        return Colors.red;
+        return AppColors.error;
       case EventStatus.draft:
-        return Colors.orange;
+        return AppColors.warning;
     }
   }
 

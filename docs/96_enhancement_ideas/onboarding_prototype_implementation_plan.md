@@ -57,7 +57,7 @@
 ### Build net-new
 
 - Onboarding feature module (`lib/features/onboarding/presentation/`) — same layout as `auth`, `baby_profile`, `home`
-- Prototype design system in core (`lib/core/themes/onboarding_theme.dart`) — separate from global [app_theme.dart](lib/core/themes/app_theme.dart)
+- Prototype design system in core — **originally** `onboarding_theme.dart` (isolated); **now** merged into global [app_theme.dart](lib/core/themes/app_theme.dart) (see Post-MVP brand unification)
 - Shared onboarding widgets under `presentation/widgets/`
 - Onboarding coordinator (`presentation/providers/onboarding_coordinator_provider.dart`)
 - 20+ onboarding screens under `presentation/screens/`
@@ -303,20 +303,20 @@ This plan follows existing Nonna patterns documented in [App_Structure_Nonna.md]
 |------------|------------------------|
 | Feature = presentation-only | Screens/widgets/providers under `lib/features/onboarding/presentation/`; no `data/` or `domain/` folders |
 | No repository layer | Providers call existing `babyProfileProvider`, `authProvider`, `DatabaseService` — onboarding providers orchestrate only |
-| Themes in core | `OnboardingTheme` lives in `lib/core/themes/` alongside `app_theme.dart` and `colors.dart` |
+| Themes in core | Onboarding uses `AppTheme.lightTheme`, `NonnaThemeExtension`, and `AppMetrics` in `lib/core/themes/` |
 | Constants in core | Static presets in `lib/core/constants/` alongside `supabase_tables.dart` |
 | Router in core | Routes added to [app_router.dart](lib/core/router/app_router.dart); guards in [route_guards.dart](lib/core/router/route_guards.dart) |
 | Tests mirror features | Widget/provider tests in `test/features/onboarding/` |
 | Tiles unchanged | First-run home reuses existing tiles (`CountdownTile`, `NewBabyWelcomeTile`, etc.) — no onboarding tiles |
 | Extend, don't duplicate logic | Accept flow stays in [invite_accept_provider.dart](lib/features/baby_profile/presentation/providers/invite_accept_provider.dart); create-baby stays in `babyProfileProvider.createProfile()` |
 
-**Theme isolation:** Wrap each onboarding route in a `Theme(data: OnboardingTheme.themeData, child: ...)` override so prototype fonts/colors do not affect the main app shell.
+**Theme (current):** No per-route `Theme` override. Onboarding and the main shell share one light theme; screens read tokens via `Theme.of(context)` and `context.nonnaTheme`.
 
 ---
 
 ## Design System — Match Prototype Exactly
 
-Create [lib/core/themes/onboarding_theme.dart](lib/core/themes/onboarding_theme.dart) with tokens from the HTML `:root` (do **not** rely on global `AppColors` for onboarding screens):
+Prototype `:root` tokens are defined in [colors.dart](lib/core/themes/colors.dart) and wired through [app_theme.dart](lib/core/themes/app_theme.dart) and [nonna_theme_extension.dart](lib/core/themes/nonna_theme_extension.dart). Historical MVP used a separate `onboarding_theme.dart` file (deprecated).
 
 | Token | Hex | Usage |
 |-------|-----|-------|
@@ -1155,7 +1155,7 @@ test/features/onboarding/
 
 | Risk | Mitigation |
 |------|------------|
-| Global theme conflicts | `OnboardingTheme` in `lib/core/themes/`; wrap onboarding routes in `Theme` override |
+| Global theme conflicts | ✅ Resolved — single `AppTheme.lightTheme`; onboarding migrated off isolated theme scope |
 | Folder drift | Strict `presentation/` subfolder; no `data/` or `theme/` inside feature |
 | OAuth users skip email verify | Coordinator branches on `authMethod` like prototype JS |
 | Max 2 owners exceeded | Validate before send; show inline error on invite row; catch DB trigger on accept |
@@ -1217,6 +1217,12 @@ test/features/onboarding/
 | Invite TTL (#65) | Document 7-day constant |
 | Stale `pending` past `expires_at` (#69) | RPC treats as expired; optional status backfill post-MVP |
 | Legacy invite screen (#66) | Remove after wrapper |
+
+---
+
+## Post-MVP brand unification (done)
+
+Onboarding sage/peach tokens are the **global** light theme: `AppTheme.lightTheme`, `NonnaThemeExtension`, and `AppMetrics`. `OnboardingThemeScope` removed; Settings no longer exposes font or dark mode.
 
 ---
 

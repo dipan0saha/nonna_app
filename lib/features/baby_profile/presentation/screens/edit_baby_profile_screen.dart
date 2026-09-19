@@ -261,7 +261,8 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
                     AppSpacing.verticalGapS,
                     Text(
                       state.saveError!,
-                      style: const TextStyle(color: Colors.red),
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.error),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -285,8 +286,9 @@ class _EditBabyProfileScreenState extends ConsumerState<EditBabyProfileScreen> {
                   OutlinedButton(
                     onPressed: state.isSaving ? null : _confirmDelete,
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red),
+                      foregroundColor: Theme.of(context).colorScheme.error,
+                      side: BorderSide(
+                          color: Theme.of(context).colorScheme.error),
                     ),
                     child: const Text('Delete Profile'),
                   ),

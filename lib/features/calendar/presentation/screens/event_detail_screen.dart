@@ -94,7 +94,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
             child: const Text('Delete'),
           ),
         ],
@@ -315,13 +317,13 @@ class _GuestRow extends StatelessWidget {
     final String chipLabel;
     switch (entry.rsvp.status) {
       case RsvpStatus.yes:
-        chipColor = Colors.green;
+        chipColor = entry.rsvp.status.color;
         chipLabel = 'Going';
       case RsvpStatus.no:
-        chipColor = Colors.red;
+        chipColor = entry.rsvp.status.color;
         chipLabel = 'Declined';
       case RsvpStatus.maybe:
-        chipColor = Colors.orange;
+        chipColor = entry.rsvp.status.color;
         chipLabel = 'Awaiting';
     }
 

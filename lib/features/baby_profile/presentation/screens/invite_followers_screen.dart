@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
@@ -180,7 +181,7 @@ class _InviteFollowersScreenState extends ConsumerState<InviteFollowersScreen> {
                 Text(
                   _successMessage!,
                   key: const Key('invite_success_message'),
-                  style: const TextStyle(color: Colors.green),
+                  style: TextStyle(color: context.nonnaTheme.success),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -272,7 +273,7 @@ class _InviteFollowersScreenState extends ConsumerState<InviteFollowersScreen> {
                 Text(
                   _errorMessage!,
                   key: const Key('invite_error_message'),
-                  style: const TextStyle(color: Colors.red),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                   textAlign: TextAlign.center,
                 ),
               ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 
 /// Reusable authentication form widgets
 ///
@@ -234,12 +233,14 @@ class AuthPrimaryButton extends StatelessWidget {
         key: buttonKey ?? Key('auth_primary_button_$label'),
         onPressed: isLoading ? null : onPressed,
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.onPrimary,
+                  ),
                 ),
               )
             : Text(label),
@@ -363,7 +364,7 @@ class AuthDivider extends StatelessWidget {
           child: Text(
             'OR',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
         ),
@@ -393,20 +394,22 @@ class AuthErrorMessage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.errorLight,
+        color: Theme.of(context).colorScheme.errorContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+        border: Border.all(
+            color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.error_outline, color: AppColors.error, size: 20),
+          Icon(Icons.error_outline,
+              color: Theme.of(context).colorScheme.error, size: 20),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               message,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.error,
+                    color: Theme.of(context).colorScheme.error,
                   ),
             ),
           ),

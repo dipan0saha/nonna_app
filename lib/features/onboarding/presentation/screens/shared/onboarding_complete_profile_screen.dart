@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +12,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:nonna_app/core/config/app_config.dart';
 import 'package:nonna_app/core/di/providers.dart';
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
@@ -267,13 +268,14 @@ class _OnboardingCompleteProfileScreenState
       height: 104,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: OnboardingColors.border, width: 1.5),
-        color: OnboardingColors.surface,
+        border: Border.all(
+            color: Theme.of(context).colorScheme.outline, width: 1.5),
+        color: Theme.of(context).colorScheme.surface,
       ),
-      child: const Icon(
+      child: Icon(
         Icons.photo_camera_outlined,
         size: 28,
-        color: OnboardingColors.muted,
+        color: context.nonnaTheme.muted,
       ),
     );
   }
@@ -325,7 +327,7 @@ class _OnboardingCompleteProfileScreenState
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: OnboardingColors.sageDark,
+                          color: context.nonnaTheme.sageDark,
                         ),
                       ),
                     ],
@@ -350,7 +352,7 @@ class _OnboardingCompleteProfileScreenState
                     child: Checkbox(
                       key: const Key('onboarding_complete_profile_terms'),
                       value: _termsAccepted,
-                      activeColor: OnboardingColors.sage,
+                      activeColor: Theme.of(context).colorScheme.primary,
                       onChanged: isLoading
                           ? null
                           : (value) =>
@@ -368,7 +370,7 @@ class _OnboardingCompleteProfileScreenState
                         text: TextSpan(
                           style: GoogleFonts.inter(
                             fontSize: 13,
-                            color: OnboardingColors.muted,
+                            color: context.nonnaTheme.muted,
                             height: 1.45,
                           ),
                           children: [
@@ -383,7 +385,7 @@ class _OnboardingCompleteProfileScreenState
                                   'Terms of Service',
                                   style: GoogleFonts.inter(
                                     fontSize: 13,
-                                    color: OnboardingColors.sageDark,
+                                    color: context.nonnaTheme.sageDark,
                                     fontWeight: FontWeight.w700,
                                     decoration: TextDecoration.underline,
                                   ),
@@ -401,7 +403,7 @@ class _OnboardingCompleteProfileScreenState
                                   'Privacy Policy',
                                   style: GoogleFonts.inter(
                                     fontSize: 13,
-                                    color: OnboardingColors.sageDark,
+                                    color: context.nonnaTheme.sageDark,
                                     fontWeight: FontWeight.w700,
                                     decoration: TextDecoration.underline,
                                   ),

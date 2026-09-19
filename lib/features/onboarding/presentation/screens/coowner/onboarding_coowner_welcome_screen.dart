@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/invite_accept_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_routes.dart';
@@ -76,13 +77,13 @@ class _OnboardingCoOwnerWelcomeScreenState
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    OnboardingColors.peachTint.withValues(alpha: 0.6),
+                    context.nonnaTheme.peachTint.withValues(alpha: 0.6),
                     Colors.white,
                   ],
                 ),
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
-                  color: OnboardingColors.peachDark.withValues(alpha: 0.4),
+                  color: context.nonnaTheme.peachDark.withValues(alpha: 0.4),
                 ),
               ),
               child: Column(
@@ -103,7 +104,7 @@ class _OnboardingCoOwnerWelcomeScreenState
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                       fontSize: 12.5,
-                      color: OnboardingColors.muted,
+                      color: context.nonnaTheme.muted,
                       height: 1.45,
                     ),
                   ),

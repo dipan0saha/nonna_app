@@ -100,9 +100,10 @@ class LocalStorageService {
   // Theme
   // ==========================================
 
-  /// Get the saved theme mode
+  /// Legacy persisted theme mode (`light` / `dark` / `system`).
   ///
-  /// Returns 'light', 'dark', or 'system'
+  /// The app is **light-only** (`ThemeMode.light` in `main.dart`). This getter
+  /// remains for backward-compatible reads and existing persistence tests.
   String get themeMode {
     _ensureInitialized();
     return _prefs!.getString(_keyThemeMode) ?? 'light';
@@ -118,10 +119,13 @@ class LocalStorageService {
   // Typography
   // ==========================================
 
-  /// Get the saved font family
+  /// Legacy persisted font family (Settings font picker removed).
+  ///
+  /// Typography is fixed to Inter + Baloo 2 via `AppTheme.lightTheme`; stored
+  /// values are ignored by the UI but may still be read/written for migration.
   String get fontFamily {
     _ensureInitialized();
-    return _prefs!.getString(_keyFontFamily) ?? 'Plus Jakarta Sans';
+    return _prefs!.getString(_keyFontFamily) ?? 'Inter';
   }
 
   /// Set the font family

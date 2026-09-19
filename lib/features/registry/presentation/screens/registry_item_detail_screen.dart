@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +8,6 @@ import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/constants/supabase_tables.dart';
 import 'package:nonna_app/core/di/providers.dart';
 import 'package:nonna_app/core/models/registry_item.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/features/registry/presentation/providers/registry_screen_provider.dart';
 import 'package:nonna_app/features/home/presentation/providers/home_screen_provider.dart';
 import 'package:nonna_app/core/enums/user_role.dart';
@@ -161,7 +161,7 @@ class _RegistryItemDetailScreenState
                   5,
                   (i) => Icon(
                     i < item.priority ? Icons.star : Icons.star_border,
-                    color: AppColors.secondary,
+                    color: Theme.of(context).colorScheme.secondary,
                     size: 20,
                   ),
                 ),
@@ -200,11 +200,15 @@ class _RegistryItemDetailScreenState
               key: const Key('purchase_status_row'),
               children: [
                 if (isPurchased) ...[
-                  const Icon(Icons.check_circle, color: Colors.green),
+                  Icon(Icons.check_circle, color: context.nonnaTheme.success),
                   AppSpacing.horizontalGapXS,
-                  const Text('Purchased',
-                      style: TextStyle(
-                          color: Colors.green, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Purchased',
+                    style: TextStyle(
+                      color: context.nonnaTheme.success,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ] else ...[
                   const Icon(Icons.radio_button_unchecked),
                   AppSpacing.horizontalGapXS,

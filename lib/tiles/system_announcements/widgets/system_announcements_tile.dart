@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/models/system_announcement.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/error_view.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/tiles/core/tile_icons.dart';
 import 'package:nonna_app/tiles/core/widgets/tile_header.dart';
 
@@ -101,16 +101,16 @@ class _AnnouncementCard extends StatelessWidget {
   final SystemAnnouncement announcement;
   final void Function(String)? onDismiss;
 
-  Color _priorityColor(AnnouncementPriority priority) {
+  Color _priorityColor(BuildContext context, AnnouncementPriority priority) {
     switch (priority) {
       case AnnouncementPriority.critical:
-        return Colors.red;
+        return context.nonnaTheme.error;
       case AnnouncementPriority.high:
-        return Colors.orange;
+        return context.nonnaTheme.warning;
       case AnnouncementPriority.medium:
-        return AppColors.primary;
+        return context.nonnaTheme.sage;
       case AnnouncementPriority.low:
-        return Colors.grey;
+        return context.nonnaTheme.muted;
     }
   }
 
@@ -129,7 +129,7 @@ class _AnnouncementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _priorityColor(announcement.priority);
+    final color = _priorityColor(context, announcement.priority);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
@@ -157,7 +157,7 @@ class _AnnouncementCard extends StatelessWidget {
                 Text(
                   announcement.body,
                   style: context.textTheme.bodySmall?.copyWith(
-                    color: AppColors.onSurfaceSecondary(context.colorScheme),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

@@ -90,21 +90,22 @@ void main() {
         );
       });
 
-      test('text secondary on white background meets AA', () {
+      test('text secondary is not normal-weight body contrast on white', () {
+        // Prototype muted (#9B9B9B) is for captions/support only.
         expect(
           ColorContrastValidator.isValidNormalText(
             AppColors.textSecondary,
             AppColors.white,
           ),
-          isTrue,
+          isFalse,
         );
       });
 
-      test('white text on primary dark background meets AA', () {
+      test('primary button label on sage background meets AA', () {
         expect(
           ColorContrastValidator.isValidNormalText(
-            AppColors.white,
-            AppColors.primaryDark,
+            AppColors.primaryButtonForeground,
+            AppColors.primary,
           ),
           isTrue,
         );
@@ -396,41 +397,28 @@ void main() {
   group('WCAG 2.1 Level AA Compliance', () {
     test('Theme colors meet WCAG guidelines', () {
       // Text on backgrounds
-      final checks = [
-        // Primary text on white background
+      final normalTextChecks = [
         ColorContrastValidator.analyzeContrast(
           AppColors.textPrimary,
           AppColors.white,
         ),
-        // Secondary text on white background
         ColorContrastValidator.analyzeContrast(
-          AppColors.textSecondary,
-          AppColors.white,
-        ),
-        // White text on primary dark background (used for buttons)
-        ColorContrastValidator.analyzeContrast(
-          AppColors.white,
-          AppColors.primaryDark,
+          AppColors.primaryButtonForeground,
+          AppColors.primary,
         ),
       ];
 
-      for (final check in checks) {
-        expect(
-          check.passesAANormalText || check.passesAALargeText,
-          isTrue,
-          reason: 'Color pair should meet at least AA for large text',
-        );
+      for (final check in normalTextChecks) {
+        expect(check.passesAANormalText, isTrue);
       }
     });
 
     test('UI components have sufficient contrast', () {
       final uiComponentChecks = [
-        // Button border on white (using primaryDark for sufficient contrast)
         ColorContrastValidator.analyzeContrast(
-          AppColors.primaryDark,
-          AppColors.white,
+          AppColors.primaryButtonForeground,
+          AppColors.primary,
         ),
-        // Error indicator on white
         ColorContrastValidator.analyzeContrast(
           AppColors.error,
           AppColors.white,

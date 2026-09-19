@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:nonna_app/core/constants/spacing.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 
 /// Displays a user avatar using a cached network image, falling back to
 /// initials when no URL is provided.
@@ -32,7 +33,7 @@ class ProfileAvatar extends StatelessWidget {
     return CircleAvatar(
       key: const Key('profile_avatar'),
       radius: radius,
-      backgroundColor: AppColors.primaryLight,
+      backgroundColor: context.nonnaTheme.sageTint,
       child: avatarUrl != null && avatarUrl!.isNotEmpty
           ? ClipOval(
               child: CachedNetworkImage(
@@ -58,8 +59,8 @@ class _Initials extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       initials.toUpperCase(),
-      style: const TextStyle(
-        color: AppColors.primaryDark,
+      style: TextStyle(
+        color: context.nonnaTheme.sageDark,
         fontWeight: FontWeight.bold,
         fontSize: 20,
       ),
@@ -151,7 +152,7 @@ class ProfileSettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       key: Key('profile_settings_item_$label'),
-      leading: Icon(icon, color: AppColors.primaryDark),
+      leading: Icon(icon, color: context.nonnaTheme.sageDark),
       title: Text(label),
       trailing: trailing ?? const Icon(Icons.chevron_right),
       onTap: onTap,

@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:intl/intl.dart';
 import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:nonna_app/core/constants/spacing.dart';
 import 'package:nonna_app/core/enums/gender.dart';
 import 'package:nonna_app/core/models/baby_profile.dart';
-import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/core/widgets/shimmer_placeholder.dart';
 import 'package:nonna_app/core/extensions/context_extensions.dart';
 import 'package:nonna_app/tiles/core/tile_icons.dart';
@@ -48,7 +49,7 @@ class NewBabyWelcomeTile extends StatelessWidget {
             TileHeader(
               icon: TileIcons.newBabyWelcome,
               title: AppLocalizations.of(context).tile_welcome_title,
-              iconColor: AppColors.secondary,
+              iconColor: Theme.of(context).colorScheme.secondary,
             ),
             AppSpacing.verticalGapS,
             _buildBody(context),
@@ -109,7 +110,7 @@ class _WelcomeContent extends StatelessWidget {
                     profile.name,
                     style: context.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primaryDark,
+                      color: context.nonnaTheme.sageDark,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -251,7 +252,7 @@ class _StatChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: AppColors.primary),
+        Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
         const SizedBox(width: 4),
         Text(label, style: context.textTheme.bodySmall),
       ],
@@ -275,13 +276,13 @@ class _DayCounterBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.s, vertical: AppSpacing.xs / 2),
       decoration: BoxDecoration(
-        color: AppColors.secondaryLight,
+        color: context.nonnaTheme.peachTint,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         label,
         style: context.textTheme.labelMedium?.copyWith(
-          color: AppColors.secondaryDark,
+          color: context.nonnaTheme.peachDark,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -329,12 +330,13 @@ class _ErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.error_outline, color: AppColors.error, size: 20),
+        Icon(Icons.error_outline,
+            color: Theme.of(context).colorScheme.error, size: 20),
         AppSpacing.horizontalGapS,
         Expanded(
           child: Text(message,
               style: context.textTheme.bodySmall
-                  ?.copyWith(color: AppColors.error)),
+                  ?.copyWith(color: Theme.of(context).colorScheme.error)),
         ),
         if (onRetry != null)
           TextButton(

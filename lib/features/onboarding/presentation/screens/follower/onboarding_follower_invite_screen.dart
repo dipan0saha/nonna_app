@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:nonna_app/core/constants/onboarding_integration_keys.dart';
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/baby_profile/presentation/providers/invite_accept_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_coordinator_provider.dart';
 import 'package:nonna_app/features/onboarding/presentation/providers/onboarding_types.dart';
@@ -96,16 +97,17 @@ class _OnboardingFollowerInviteScreenState
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 fontSize: 13,
-                color: OnboardingColors.muted,
+                color: context.nonnaTheme.muted,
               ),
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
               decoration: BoxDecoration(
-                color: OnboardingColors.surface,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: OnboardingColors.border),
+                border:
+                    Border.all(color: Theme.of(context).colorScheme.outline),
               ),
               child: Column(
                 children: [
@@ -116,7 +118,7 @@ class _OnboardingFollowerInviteScreenState
                     style: GoogleFonts.baloo2(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: OnboardingColors.text,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -126,9 +128,9 @@ class _OnboardingFollowerInviteScreenState
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
+                Icon(
                   Icons.verified_user_outlined,
-                  color: OnboardingColors.sageDark,
+                  color: context.nonnaTheme.sageDark,
                   size: 20,
                 ),
                 const SizedBox(width: 10),
@@ -137,7 +139,7 @@ class _OnboardingFollowerInviteScreenState
                     'A private space just for family & friends. Nothing here is public.',
                     style: GoogleFonts.inter(
                       fontSize: 13,
-                      color: OnboardingColors.muted,
+                      color: context.nonnaTheme.muted,
                       height: 1.45,
                     ),
                   ),

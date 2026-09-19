@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
+import 'package:nonna_app/core/themes/colors.dart';
 
 /// Decorative icon blob for owner carousel slides (prototype art).
 class OnboardingCarouselArt extends StatelessWidget {
@@ -30,28 +30,41 @@ class OnboardingCarouselArt extends StatelessWidget {
   }
 }
 
+/// Static slide art presets (palette matches [AppTheme.lightTheme]).
 class OnboardingCarouselSlideArt {
-  static Widget homeIcon() => const OnboardingCarouselArt(
-        backgroundColor: OnboardingColors.sageTint,
-        child: Icon(Icons.home_outlined,
-            size: 64, color: OnboardingColors.sageDark),
+  static Widget homeIcon() => OnboardingCarouselArt(
+        backgroundColor: AppColors.sageTint,
+        child: Icon(
+          Icons.home_outlined,
+          size: 64,
+          color: AppColors.primaryDark,
+        ),
       );
 
-  static Widget peopleIcon() => const OnboardingCarouselArt(
-        backgroundColor: OnboardingColors.peachTint,
-        child: Icon(Icons.people_outline,
-            size: 64, color: OnboardingColors.peachDark),
+  static Widget peopleIcon() => OnboardingCarouselArt(
+        backgroundColor: AppColors.peachTint,
+        child: Icon(
+          Icons.people_outline,
+          size: 64,
+          color: AppColors.secondaryDark,
+        ),
       );
 
-  static Widget calendarIcon() => const OnboardingCarouselArt(
-        backgroundColor: OnboardingColors.sageTint,
-        child: Icon(Icons.calendar_month_outlined,
-            size: 64, color: OnboardingColors.sageDark),
+  static Widget calendarIcon() => OnboardingCarouselArt(
+        backgroundColor: AppColors.sageTint,
+        child: Icon(
+          Icons.calendar_month_outlined,
+          size: 64,
+          color: AppColors.primaryDark,
+        ),
       );
 
-  static Widget photoIcon() => const OnboardingCarouselArt(
-        backgroundColor: OnboardingColors.peachTint,
-        child: Icon(Icons.photo_library_outlined,
-            size: 64, color: OnboardingColors.peachDark),
+  static Widget photoIcon() => OnboardingCarouselArt(
+        backgroundColor: AppColors.peachTint,
+        child: Icon(
+          Icons.photo_library_outlined,
+          size: 64,
+          color: AppColors.secondaryDark,
+        ),
       );
 }

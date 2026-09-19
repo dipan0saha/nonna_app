@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
+import 'package:nonna_app/core/themes/nonna_theme_extension.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:nonna_app/core/themes/onboarding_theme.dart';
 import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_buttons.dart';
 import 'package:nonna_app/features/onboarding/presentation/widgets/onboarding_fields.dart';
 
@@ -31,14 +32,20 @@ class OnboardingInviteCard extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: isCoOwner
-                  ? [OnboardingColors.peachTint, OnboardingColors.surface]
-                  : [OnboardingColors.sageTint, OnboardingColors.surface],
+                  ? [
+                      context.nonnaTheme.peachTint,
+                      Theme.of(context).colorScheme.surface
+                    ]
+                  : [
+                      context.nonnaTheme.sageTint,
+                      Theme.of(context).colorScheme.surface
+                    ],
             ),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: isCoOwner
-                  ? OnboardingColors.peachDark
-                  : OnboardingColors.sageTint,
+                  ? context.nonnaTheme.peachDark
+                  : context.nonnaTheme.sageTint,
             ),
           ),
           child: Column(
@@ -49,7 +56,7 @@ class OnboardingInviteCard extends StatelessWidget {
                 style: GoogleFonts.baloo2(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: OnboardingColors.text,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
@@ -74,7 +81,7 @@ class OnboardingInviteCard extends StatelessWidget {
               child: Text(
                 'Not who this was meant for?',
                 style: GoogleFonts.inter(
-                  color: OnboardingColors.muted,
+                  color: context.nonnaTheme.muted,
                   fontWeight: FontWeight.w600,
                 ),
               ),

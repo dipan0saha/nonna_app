@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nonna_app/core/themes/colors.dart';
 import 'package:nonna_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Gender enumeration
@@ -66,11 +67,11 @@ enum Gender {
   Color get color {
     switch (this) {
       case Gender.male:
-        return Colors.blue;
+        return AppColors.info;
       case Gender.female:
-        return Colors.pink;
+        return AppColors.secondary;
       case Gender.unknown:
-        return Colors.grey;
+        return AppColors.muted;
     }
   }
 }
